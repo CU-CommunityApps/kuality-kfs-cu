@@ -16,3 +16,16 @@ Then(/^the acct lookup should appear$/) do
     page.chart_code.should exist
   end
 end
+
+When(/^I enter an account number and search$/) do
+  on AccountLookup do |page|
+    page.number.set '0142900'
+    page.search
+  end
+end
+
+When(/^The account is found$/) do
+  on AccountLookup do |page|
+    page.item_row('0142900').should exist
+  end
+end
