@@ -1,0 +1,2 @@
+default: -r features --format pretty
+headless: HEADLESS=true --tags ~@draft, ~@wip, ~@pending -r features --format pretty

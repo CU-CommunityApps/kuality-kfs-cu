@@ -1,0 +1,3 @@
+class AccountLookup < Lookups
+
+end
