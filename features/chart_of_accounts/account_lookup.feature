@@ -2,18 +2,18 @@ Feature: Account Lookup
   Summary: As a KFS user
     I want to see acct look up screen beacause it has custom cornell fields
   Scenario:
-    Given I am logged in as a KFS Fiscal Officer am logged in as a kfs user
+    Given I am logged in as a KFS User
 
-    When I access acct lookup
+    When I access Account Lookup
 
-    Then the acct lookup should appear
+    Then the Account Lookup page should appear
 
 
     Scenario:
-      Given I am logged in as a KFS Fiscal Officer am logged in as a kfs user
+      Given I am logged in as a KFS User
 
-      Given I access acct lookup
+      Given I access Account Lookup
 
-      When I enter an account number and search
+      When I enter an Account Number and search
 
-      Then The account is found
+      Then The Account is found

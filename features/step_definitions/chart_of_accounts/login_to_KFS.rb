@@ -7,7 +7,7 @@ end
 
 Given(/^I am logged in as a KFS User$/) do
   visit LoginPage do |page|
-    page.username.set 'ccs1'
+    page.username.set 'khuntley'
     page.login
   end
 end
