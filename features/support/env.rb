@@ -39,4 +39,4 @@ After do |scenario|
 end
 
 # Comment out to help with debugging...
-# at_exit { kuality.browser.close }
+at_exit { kuality.browser.close }
