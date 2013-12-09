@@ -16,7 +16,7 @@ World StringFactory
 World DateFactory
 
 if ENV['HEADLESS']
-  headless = Headless.new #(display: 42)
+  headless = Headless.new
   headless.start
   at_exit do
     headless.destroy
