@@ -12,6 +12,14 @@ World Foundry
 World StringFactory
 World DateFactory
 
+if ENV['HEADLESS']
+  headless = Headless.new #(display: 42)
+  headless.start
+  at_exit do
+    headless.destroy
+  end
+end
+
 kuality = Kuality.new @config[:browser]
 
 Before do
