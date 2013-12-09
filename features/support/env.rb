@@ -1,4 +1,7 @@
+require 'rubygems'
 require 'yaml'
+require 'cucumber'
+require 'headless'
 
 @config = YAML.load_file("#{File.dirname(__FILE__)}/config.yml")[:basic]
 
