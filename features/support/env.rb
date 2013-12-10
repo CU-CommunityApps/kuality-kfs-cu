@@ -1,4 +1,7 @@
+require 'rubygems'
 require 'yaml'
+require 'cucumber'
+require 'headless'
 
 @config = YAML.load_file("#{File.dirname(__FILE__)}/config.yml")[:basic]
 
@@ -11,6 +14,14 @@ require 'rspec/matchers'
 World Foundry
 World StringFactory
 World DateFactory
+
+if ENV['HEADLESS']
+  headless = Headless.new
+  headless.start
+  at_exit do
+    headless.destroy
+  end
+end
 
 kuality = Kuality.new @config[:browser]
 
@@ -28,4 +39,4 @@ After do |scenario|
 end
 
 # Comment out to help with debugging...
-# at_exit { kuality.browser.close }
+at_exit { kuality.browser.close }
