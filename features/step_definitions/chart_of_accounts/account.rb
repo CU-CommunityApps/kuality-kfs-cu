@@ -8,9 +8,7 @@ end
 
 Then /^the Account Maintenance Document goes to final$/ do
   @account.view
-  on Account do |page|
-    page.header_status.should == 'Final'
-  end
+  on(AccountPage).document_status.should == 'Final'
 end
 
 When(/^I create an account with blank SubFund group Code$/) do
