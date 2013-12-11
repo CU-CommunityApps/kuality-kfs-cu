@@ -1,6 +1,6 @@
 class AccountObject < DataObject
 
-#  include Navigation
+  include Navigation
 #  include DateFactory
   include StringFactory
 
@@ -66,5 +66,7 @@ class AccountObject < DataObject
     on(AccountPage).submit
   end
 
-
+  def view
+    @browser.goto "#{$base_url}kew/DocHandler.do?command=displayDocSearchView&docId=#{@document_id}"
+  end
 end
