@@ -4,7 +4,7 @@ Feature: KFS Fiscal Officer Account Creation
   because I want to support a new project
 
 #  Background:
-#    Given I am backdoored as bla
+#    Given I am logged in via CUWebLogin
 
   Scenario: Create an Account
     Given I am logged in as a KFS Fiscal Officer

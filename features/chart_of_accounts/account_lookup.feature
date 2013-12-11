@@ -1,6 +1,10 @@
 Feature: Account Lookup
   Summary: As a KFS user
     I want to see acct look up screen because it has custom cornell fields
+
+#  Background:
+#    Given I am logged in via CUWebLogin
+
   Scenario:
     Given I am logged in as a KFS User
 
