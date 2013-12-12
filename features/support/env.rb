@@ -6,6 +6,10 @@ require 'headless'
 @config = YAML.load_file("#{File.dirname(__FILE__)}/config.yml")[:basic]
 
 $base_url = @config[:url]
+if ENV['URL']
+  $base_url = ENV['URL']
+end
+
 $file_folder = "#{File.dirname(__FILE__)}/../../lib/resources/"
 
 require "#{File.dirname(__FILE__)}/../../lib/kuality-kfs"
