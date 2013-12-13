@@ -52,7 +52,7 @@ class AccountObject < DataObject
       page.expand_all
       page.type_cd.fit @type_cd
       page.description.focus
-      page.alert.ok
+      page.alert.ok if page.alert.exists? # Because, y'know, sometimes it doesn't actually come up...
       fill_out page, :description, :chart_code, :number, :name, :org_cd, :campus_cd,
                :effective_date, :postal_cd, :city, :state, :address, :sub_fnd_group_cd,
                :higher_ed_funct_cd, :restricted_status_cd, :fo_principal_name, :supervisor_principal_name,
