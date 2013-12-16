@@ -1,0 +1,37 @@
+admin:
+  :first_name: admin
+  :last_name:  admin
+unassigneduser: # AKA: "Principal Name
+  :user_name:        unassigneduser
+  :description:      creating user with 'unassigned' role
+  :affiliation_type: Student
+  :campus_code:      'UN - UNIVERSITY'
+  :first_name:       PleaseDoNot
+  :last_name:        AddOrEditRoles
+  :addresses:
+    - :type:    Home
+      :line_1:  475 n scottsdale rd
+      :city:    scottsdale
+      :state:   ARIZONA
+      :country: United States
+      :zip:     85257
+      :default: :set
+    - :type:    Work
+      :line_1:  475 n scottsdale rd
+      :city:    scottsdale
+      :state:   ARIZONA
+      :country: United States
+      :zip:     85257
+      :default: :clear
+  :phones:
+    - :type:    Home
+      :number:  602-228-3876
+      :default: :set
+    - :type:    Facsimile
+      :number:  602-597-5350
+      :default: :clear
+  :rolez:
+    - :id:   '106'
+      :name: Unassigned
+      :qualifiers:
+        - :unit: '000001'

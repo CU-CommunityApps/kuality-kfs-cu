@@ -28,9 +28,13 @@ if ENV['HEADLESS']
 end
 
 kuality = Kuality.new @config[:browser]
+$users = Users.instance
 
 Before do
   @browser = kuality.browser
+  $users.clear
+  # Add the admin user to the Users...
+  $users << UserObject.new(@browser)
 end
 
 After do |scenario|
@@ -40,7 +44,9 @@ After do |scenario|
     embed 'screenshot.png', 'image/png'
   end
 
+  $users.current_user.sign_out unless $users.current_user==nil
+
 end
 
 # Comment out to help with debugging...
-at_exit { kuality.browser.close }
+#at_exit { kuality.browser.close }

@@ -1,6 +1,5 @@
 class AccountLookup < Lookups
 
-
   element(:chart_code) { |b| b.frm.text_field(name: 'chartOfAccountsCode') }
   element(:number) { |b| b.frm.text_field(name: 'accountNumber') }
   element(:name) { |b| b.frm.text_field(name: 'accountName') }
