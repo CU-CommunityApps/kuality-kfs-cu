@@ -12,7 +12,7 @@ end
 
 $file_folder = "#{File.dirname(__FILE__)}/../../lib/resources/"
 
-require "#{File.dirname(__FILE__)}/../../lib/kuality-kfs"
+require "#{File.dirname(__FILE__)}/../../lib/kuality-kfs-cu"
 require 'rspec/matchers'
 
 World Foundry
@@ -27,7 +27,7 @@ if ENV['HEADLESS']
   end
 end
 
-kuality = Kuality.new @config[:browser]
+kuality = KualityKFS.new @config[:browser]
 $users = Users.instance
 
 Before do
