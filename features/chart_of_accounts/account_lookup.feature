@@ -4,17 +4,17 @@ Feature: Account Lookup
 
   Scenario:
     Given I am logged in as a KFS User
-
     When I access Account Lookup
-
     Then the Account Lookup page should appear
-
 
    # Scenario:
     #   Given I am logged in as a KFS User
-
     #   Given I access Account Lookup
-
     #   When I enter an Account Number and search
-
     #   Then The Account is found
+
+  @wip
+  Scenario: KFS User accesses Account Lookup and views Cornell custom fields KFSQA-557
+    Given   I am logged in as a KFS User
+    When    I access Account Lookup
+    Then    the Account Lookup page should appear with Cornell custom fields

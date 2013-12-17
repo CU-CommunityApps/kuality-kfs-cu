@@ -8,3 +8,4 @@ Feature: KFS Fiscal Officer Account Creation
     And   I create an Account
     When  I submit the Account
     Then  the Account Maintenance Document goes to final
+
