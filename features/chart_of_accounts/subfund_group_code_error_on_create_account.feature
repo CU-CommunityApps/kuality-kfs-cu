@@ -5,6 +5,6 @@ Feature: SubFund Group Code error on Create 6071
 
   Scenario: Create an Account
     Given I am logged in as a KFS User
-    And I create an account with blank SubFund group Code
+    And   I create an account with blank SubFund group Code
     When  I submit the Account
-    Then I should get an error on saving that I left the SubFund Group Code field blank
+    Then  I should get an error on saving that I left the SubFund Group Code field blank

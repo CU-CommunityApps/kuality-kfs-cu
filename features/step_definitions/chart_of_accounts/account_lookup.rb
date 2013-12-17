@@ -16,6 +16,12 @@ When /^I enter an Account Number and search$/ do
   end
 end
 
+When /^I search for all accounts$/ do
+  on AccountLookupPage do |page|
+    page.search
+  end
+end
+
 When /^The Account is found$/ do
   on AccountLookupPage do |page|
     page.item_row('0142900').should exist
@@ -24,7 +30,6 @@ end
 
 Then /^the Account Lookup page should appear with Cornell custom fields$/ do
   on AccountLookupPage do |page|
-    page.org_cd.should exist
     page.responsibility_center_code.should exist
     page.reports_to_org_code.should exist
     page.reports_to_coa_code.should exist
