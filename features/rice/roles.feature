@@ -8,7 +8,7 @@ Feature: Roles Administration
     Given I am backdoored as "khuntley"
     And   I create a Group
     And   I am backdoored as "admin"
-    And   create an 'unassigned' User
+    And   create an 'Financial System User' User
     And   create a Role with permission to create financial processing documents
     And   add the Group to the Role
     When  I add the User to the Group
