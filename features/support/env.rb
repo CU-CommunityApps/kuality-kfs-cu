@@ -44,7 +44,7 @@ After do |scenario|
     embed 'screenshot.png', 'image/png'
   end
 
-  $users.current_user.sign_out unless $users.current_user==nil
+  $users.current_user.sign_out unless $users.current_user.nil?
 
 end
 
