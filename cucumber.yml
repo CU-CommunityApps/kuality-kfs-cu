@@ -1,3 +1,4 @@
 default: -r features --format pretty
+debug: DEBUG=true -r features --format pretty
 headless: HEADLESS=true --tags ~@draft,~@wip,~@pending -r features --format pretty
 headless_json: HEADLESS=true --tags ~@draft,~@wip,~@pending -r features --format pretty --format json -o ../kuality-kfs-cu-cu-output.json

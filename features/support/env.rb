@@ -48,5 +48,6 @@ After do |scenario|
 
 end
 
-# Comment out to help with debugging...
-#at_exit { kuality.browser.close }
+if ENV['DEBUG']
+  at_exit { kuality.browser.close }
+end
