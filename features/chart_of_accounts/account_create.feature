@@ -6,5 +6,5 @@ Feature: KFS Fiscal Officer Account Creation
   Scenario: Create an Account
     Given I am logged in as a KFS Fiscal Officer
     And   I create an Account
-    When  I submit the Account
-    Then  the Account Maintenance Document goes to final
+    When  I blanket approve the Account
+    Then  the Account Maintenance Document goes to PROCESSED

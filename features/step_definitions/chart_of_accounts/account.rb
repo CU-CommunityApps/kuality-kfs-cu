@@ -6,9 +6,14 @@ When /^I submit the Account$/ do
   @account.submit
 end
 
-Then /^the Account Maintenance Document goes to final$/ do
+When /^I blanket approve the Account$/ do
+  @account.blanket_approve
+  sleep(5)
+end
+
+Then /^the Account Maintenance Document goes to (.*)/ do |doc_status|
   @account.view
-  on(AccountPage).document_status.should == 'Final'
+  on(AccountPage).document_status.should == doc_status
 end
 
 When /^I create an account with blank SubFund group Code$/ do

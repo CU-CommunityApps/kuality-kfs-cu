@@ -1,5 +1,5 @@
 Given /^I am logged in as a KFS Fiscal Officer$/ do
-  visit(BackdoorLoginPage).login_as('Ccs1')
+  visit(BackdoorLoginPage).login_as('dh273')
 end
 
 Given(/^I am logged in as a KFS User$/) do
