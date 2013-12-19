@@ -1,4 +1,4 @@
-And /^I create an Account Global edoc$/ do
+And /^I create an Account Global eDoc$/ do
   @account_global = create AccountGlobalObject
 end
 
