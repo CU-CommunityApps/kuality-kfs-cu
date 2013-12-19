@@ -50,9 +50,11 @@ end
 And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
   on AccountLookupPage do |page|
     page.subfund_program_code.set 'BOARD'
+    page.search
     page.edit_random
   end
   on AccountPage do |page|
+    page.description.set random_alphanums(40, 'AFT')
     page.subfund_program_code.set 'board'
     page.save
   end
