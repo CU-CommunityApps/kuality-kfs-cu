@@ -5,9 +5,9 @@ Feature: Roles Administration
   the system users can do.
 
   Scenario: Adding an unassigned user to a Group in a Financial Processing Role
-    Given I am backdoored as "khuntley"
+    Given I am logged in as a KFS Chart User
     And   I create a Group
-    And   I am backdoored as "admin"
+    And   I am logged in as "admin"
     And   create an 'Financial System User' User
     And   create a Role with permission to create financial processing documents
     And   add the Group to the Role

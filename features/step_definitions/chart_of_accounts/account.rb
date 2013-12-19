@@ -21,10 +21,7 @@ When /^I create an account with blank SubFund group Code$/ do
 end
 
 Then /^I should get an error on saving that I left the SubFund Group Code field blank$/ do
-#  on AccountPage do |page|
-#    page.errors.should include 'Sub-Fund Group Code (SubFundGrpCd) is a required field.'
   on(AccountPage).errors.should include 'Sub-Fund Group Code (SubFundGrpCd) is a required field.'
- # end
 end
 
 
@@ -45,3 +42,21 @@ end
 Then /^the Account Maintenance Document saves with no errors$/  do
   on(AccountPage).document_status.should == 'SAVED'
 end
+
+Then /^the Account Maintenance Document submits with no errors$/  do
+  on(AccountPage).document_status.should == 'ENROUTE'
+end
+
+And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
+  on AccountLookupPage do |page|
+    page.subfund_program_code.set 'BOARD'
+    page.search
+    page.edit_random
+  end
+  on AccountPage do |page|
+    page.description.set random_alphanums(40, 'AFT')
+    page.subfund_program_code.set 'board'
+    page.save
+  end
+end
+
