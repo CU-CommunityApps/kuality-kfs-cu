@@ -8,3 +8,9 @@ Feature: KFS Fiscal Officer Account Creation
     And   I create an Account
     When  I blanket approve the Account
     Then  the Account Maintenance Document goes to PROCESSED
+
+  @wip
+  Scenario: KFS User Initiates an Account document with only a description field KFSQA-554
+    Given I am logged in as a KFS User
+    When  I Create an Account document with only the Description field populated
+    Then  The document should save successfully
