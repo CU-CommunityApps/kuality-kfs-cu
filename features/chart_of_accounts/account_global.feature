@@ -8,7 +8,7 @@ Feature: Global Account
   @KFSQA-604
   Scenario: KFS User lookup on Major Reporting Category Code
     Given I am logged in as a KFS Fiscal Officer
-    And   I create an Account Global edoc
+    And   I create an Account Global eDoc
     And   I perform a Major Reporting Category Code Lookup
     Then  I should see a list of Major Reporting Category Codes
 
