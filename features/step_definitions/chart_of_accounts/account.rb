@@ -43,7 +43,7 @@ Then /^the Account Maintenance Document saves with no errors$/  do
   on(AccountPage).document_status.should == 'SAVED'
 end
 
-Then /^the Account Maintenance Document submits with no errors$/  do
+Then /^the Account Maintenance Document has no errors$/  do
   on(AccountPage).document_status.should == 'ENROUTE'
 end
 
@@ -58,5 +58,6 @@ And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
     page.subfund_program_code.set 'board'
     page.save
   end
+  @account = make AccountObject
 end
 
