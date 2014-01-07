@@ -4,6 +4,7 @@ Feature: Roles Administration
   roles in the system, so that I can control what
   the system users can do.
 
+  @pending
   Scenario: Adding an unassigned user to a Group in a Financial Processing Role
     Given I am logged in as a KFS Chart User
     And   I create a Group
