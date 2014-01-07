@@ -12,7 +12,7 @@ Feature: Global Account
     And   I perform a Major Reporting Category Code Lookup
     Then  I should see a list of Major Reporting Category Codes
 
-  @KFSQA-577 @wip
+  @KFSQA-577
   Scenario: Create an Account Global using an organization hierarchy
     Given I am logged in as a KFS Chart Manager
     And   I create an Account Global maintenance document with multiple accounting lines
