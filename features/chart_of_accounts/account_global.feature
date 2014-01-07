@@ -8,6 +8,7 @@ Feature: Global Account
     And   I perform a Major Reporting Category Code Lookup
     Then  I should see a list of Major Reporting Category Codes
 
+    @wip
 #    TODO:: Move this to a better location as more tests are written
 #  Feature: KFSQA-577 Account Global Lookup Modification
 #  As a KFS Chart Manager I want to add multiple account lines to the Account Global using Organizational Codes because this will save me time
