@@ -24,7 +24,6 @@ Then /^I should get an error on saving that I left the SubFund Group Code field 
   on(AccountPage).errors.should include 'Sub-Fund Group Code (SubFundGrpCd) is a required field.'
 end
 
-
 And /^I copy an Account$/ do
   steps %{
     Given I access Account Lookup
@@ -59,4 +58,3 @@ And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
     page.save
   end
 end
-

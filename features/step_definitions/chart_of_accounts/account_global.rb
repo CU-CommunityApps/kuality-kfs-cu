@@ -27,7 +27,12 @@ When(/^I submit the document$/) do
   @account_global.submit
 end
 
-Then(/^the document should go to final$/) do
+And(/^I create an Account Global eDoc with an existing Major Reporting Category$/) do
+  @account_global = create AccountGlobalObject,
+                           major_reporting_category_code: 'FACULTY'
+end
+
+Then(/^The Account Global eDoc will become final$/) do
   on(AccountGlobalPage) do |page|
     page.reload
     page.document_status.should == 'FINAL'
