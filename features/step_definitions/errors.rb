@@ -7,3 +7,7 @@ Then /^an error should say (.*)$/ do |error|
   }
   $current_page.errors.should include errors[error]
 end
+
+Then(/^I get an error$/) do
+  $current_page.errors.length.should_not == 0
+end

@@ -60,3 +60,27 @@ And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
   end
 end
 
+
+And /^I clone a random Account with the following changes:$/ do |table|
+  updates = table.rows_hash
+  steps %{
+    Given I access Account Lookup
+    And   I search for all accounts
+  }
+  on AccountLookupPage do |page|
+    page.copy_random
+  end
+  on AccountPage do |page|
+    page.description.set updates['Description']
+    page.name.set updates['Name']
+    page.chart_code.set updates['Chart Code']
+    page.number.set updates['Number']
+    page.blanket_approve
+  end
+end
+
+When /^I close the Account$/ do
+  visit AccountLookupPage do |page|
+    page.search
+  end
+end
