@@ -65,11 +65,13 @@ end
 
 And /^I clone a random Account with the following changes:$/ do |table|
   updates = table.rows_hash
-  steps %{
-    Given I access Account Lookup
-    And   I search for all accounts
-  }
+  #steps %{
+  #  Given I access Account Lookup
+  #  And   I search for all accounts
+  #}
+  visit(MainPage).account
   on AccountLookupPage do |page|
+    step 'I search for all accounts'
     page.copy_random
   end
   on AccountPage do |page|

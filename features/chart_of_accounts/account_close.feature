@@ -8,7 +8,7 @@ Feature: Account Close
     And   I clone a random Account with the following changes:
       | Name        | Test Account             |
       | Chart Code  | IT                       |
-      | Description | [KFSQA-587] Test Account |
+      | Description | [KFSQA-551] Test Account |
       | Number      | 1KQA587                  |
     Given I am logged in as a KFS User
     When  I blanket approve a Pre-Encumbrance Document for Account number "1KQA587"
