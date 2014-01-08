@@ -48,6 +48,7 @@ Then /^the Account Maintenance Document has no errors$/  do
 end
 
 And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
+  visit(MainPage).account
   on AccountLookupPage do |page|
     page.subfund_program_code.set 'BOARD'
     page.search
