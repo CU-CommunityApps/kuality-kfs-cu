@@ -1,4 +1,4 @@
-And /^I create an Account Global eDoc$/ do
+And /^I create an Account Global edoc$/ do
   @account_global = create AccountGlobalObject
 end
 
@@ -23,12 +23,18 @@ And /^I create an Account Global maintenance document with multiple accounting l
                            search_account_number: '10007*'
 end
 
-When /^I submit the Account Global maintenance document$/ do
+When(/^I submit the document$/) do
   @account_global.submit
 end
 
-Then /^the Account Global maintenance document should go to final$/ do
+And /^I create an Account Global eDoc with an existing Major Reporting Category$/ do
+  @account_global = create AccountGlobalObject,
+                           major_reporting_category_code: 'FACULTY' # TODO: It would be nice if this could be obtained either through a search or a service, instead of being hard-coded.
+end
+
+Then /^The Account Global eDoc will become final$/ do
   on AccountGlobalPage do |page|
+    sleep 10
     page.reload
     page.document_status.should == 'FINAL'
   end

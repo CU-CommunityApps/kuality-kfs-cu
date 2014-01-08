@@ -19,10 +19,9 @@ Feature: Global Account
     When  I submit the Account Global maintenance document
     Then  the Account Global maintenance document should go to final
 
-@wip
-@KFSQA-572
+  @KFSQA-572 @wip
   Scenario: Create Account Global eDoc with Major Reporting Category
-    Given   I am logged in as a KFS Chart Manager
-    And      I create an Account Global eDoc with an existing Major Reporting Category
-    When  I submit the document
-    Then    The Account Global eDoc will become final
+    Given I am logged in as a KFS Chart Manager
+    And   I create an Account Global eDoc with an existing Major Reporting Category
+    When  I submit the Account Global maintenance document
+    Then  The Account Global eDoc will become final
