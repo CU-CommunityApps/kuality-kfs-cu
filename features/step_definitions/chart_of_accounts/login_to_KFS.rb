@@ -18,6 +18,6 @@ Given /^I am logged in as a KFS Chart User$/  do
   visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
 end
 
-Given(/^I am logged in as a KFS Chart Manager$/) do
+Given /^I am logged in as a KFS Chart Manager$/ do
   visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
 end
