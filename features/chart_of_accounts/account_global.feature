@@ -7,7 +7,7 @@ Feature: Global Account
   [KFSQA-572] As a KFS Chart Manager I want create a Account Global Maintenance document with a Major Reporting Category,
               because it is a Cornell specific field.
 
-@KFSQA-604
+  @KFSQA-604
   Scenario: KFS User lookup on Major Reporting Category Code
     Given I am logged in as a KFS Fiscal Officer
     And   I create an Account Global Maintenance document
