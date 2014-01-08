@@ -1,7 +1,7 @@
 Feature: KFS Fiscal Officer Account Creation
 
-  As a KFS Fiscal Officer I want to create an Account
-  because I want to support a new project
+  [smoke] As a KFS Fiscal Officer I want to create an Account
+          because I want to support a new project
 
   @smoke
   Scenario: Create an Account
