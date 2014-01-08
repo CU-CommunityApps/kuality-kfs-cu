@@ -2,6 +2,10 @@ And /^I create an Account$/ do
   @account = create AccountObject, press: AccountPage::SAVE
 end
 
+And /^I create an Account with a lower case Sub Fund Program$/ do
+  @account = create AccountObject, sub_fnd_group_cd: 'board', press: AccountPage::SAVE
+end
+
 When /^I submit the Account$/ do
   @account.submit
 end
