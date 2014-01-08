@@ -1,9 +1,9 @@
 Feature: Account Close
 
-  Closing Accounts should be subject to certain constraints.
+  [KFSQA-551/KFSQA-587] As a KFS Chart Manager, the Account cannot be closed with open encumbrances.
 
-  @wip
-  Scenario: As a KFS Chart Manager, the Account cannot be closed with open encumbrances. KFSQA-587
+  @KFSQA-551 @KFSQA-587 @wip
+  Scenario: As a KFS Chart Manager, the Account cannot be closed with open encumbrances.
     Given I am logged in as a KFS Chart Manager
     And   I clone a random Account with the following changes:
       | Name        | Test Account             |
