@@ -6,4 +6,4 @@ Feature: Account Edit
     And   I access Account Lookup
     And   I edit an Account to enter a Sub Fund Program in lower case
     When  I submit the Account
-    Then  the Account Maintenance Document submits with no errors
+    Then  the Account Maintenance Document has no errors

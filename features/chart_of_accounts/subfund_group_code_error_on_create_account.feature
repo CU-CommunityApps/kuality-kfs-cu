@@ -8,3 +8,4 @@ Feature: SubFund Group Code error on Create 6071
     And   I create an account with blank SubFund group Code
     When  I submit the Account
     Then  I should get an error on saving that I left the SubFund Group Code field blank
+
