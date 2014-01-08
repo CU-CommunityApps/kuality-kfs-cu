@@ -1,7 +1,7 @@
 Feature: Account Creation as a KFS User
 
-    As a KFS User I want to want to be notified
-    when I do not fill out the form correctly
+  [KFSQA-563] As a KFS User I want to want to be notified
+              when I do not fill out the form correctly
 
   @KFSQA-563
   Scenario: I want to be notified when I leave SubFund Group Code empty

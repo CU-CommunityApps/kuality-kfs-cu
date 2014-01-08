@@ -1,6 +1,8 @@
 Feature: Account Lookup
-  Summary: As a KFS user
-    I want to see acct look up screen because it has custom cornell fields
+
+  [smoke]     As a KFS User I should be able to access the Account Lookup page.
+  [smoke]     As a KFS User I should be able to search for an Account Number.
+  [KFSQA-557] As a KFS user I want to see acct look up screen because it has custom cornell fields.
 
   @smoke
   Scenario:
