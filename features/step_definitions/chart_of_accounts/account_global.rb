@@ -1,4 +1,4 @@
-And /^I create an Account Global edoc$/ do
+And /^I create an Account Global Maintenance document$/ do
   @account_global = create AccountGlobalObject
 end
 
@@ -17,7 +17,7 @@ Then /^I should see a list of Major Reporting Category Codes$/ do
   end
 end
 
-And /^I create an Account Global maintenance document with multiple accounting lines$/ do
+And /^I create an Account Global Maintenance document with multiple accounting lines$/ do
   @account_global = create AccountGlobalObject,
                            add_multiple_accounting_lines: 'yes',
                            search_account_number: '10007*'
@@ -27,12 +27,12 @@ When(/^I submit the document$/) do
   @account_global.submit
 end
 
-And /^I create an Account Global eDoc with an existing Major Reporting Category$/ do
+And /^I create an Account Global Maintenance document with an existing Major Reporting Category$/ do
   @account_global = create AccountGlobalObject,
                            major_reporting_category_code: 'FACULTY' # TODO: It would be nice if this could be obtained either through a search or a service, instead of being hard-coded.
 end
 
-Then /^The Account Global eDoc will become final$/ do
+Then /^The Account Global Maintenance document will become final$/ do
   on AccountGlobalPage do |page|
     sleep 10
     page.reload
