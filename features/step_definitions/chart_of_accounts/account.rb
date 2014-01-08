@@ -2,6 +2,10 @@ And /^I create an Account$/ do
   @account = create AccountObject
 end
 
+And /^I create an Account with a lower case Sub Fund Program$/ do
+  @account = create AccountObject, sub_fnd_group_cd: 'board'
+end
+
 When /^I submit the Account$/ do
   @account.submit
 end
@@ -39,15 +43,12 @@ And /^I copy an Account$/ do
   end
 end
 
-Then /^the Account Maintenance Document saves with no errors$/  do
-  on(AccountPage).document_status.should == 'SAVED'
-end
-
 Then /^the Account Maintenance Document submits with no errors$/  do
   on(AccountPage).document_status.should == 'ENROUTE'
 end
 
 And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
+  visit(MainPage).account
   on AccountLookupPage do |page|
     page.subfund_program_code.set 'BOARD'
     page.search

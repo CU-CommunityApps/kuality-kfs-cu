@@ -1,8 +1,4 @@
 
-When /^I access Account Lookup$/ do
-  visit(MainPage).account
-end
-
 Then /^the Account Lookup page should appear$/ do
   on AccountLookupPage do |page|
     page.chart_code.should exist
