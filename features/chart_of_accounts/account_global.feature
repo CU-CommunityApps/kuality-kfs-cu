@@ -6,6 +6,8 @@ Feature: Global Account
               because this will save me time.
   [KFSQA-572] As a KFS Chart Manager I want create a Account Global Maintenance document with a Major Reporting Category,
               because it is a Cornell specific field.
+  [KFSQA-618] As a KFS Fiscal Officer I need to create an account with a Major Reporting Category Code field
+              because I need to manage in-year financial activity, fund balances and year-end reporting.
 
 @KFSQA-604
   Scenario: KFS User lookup on Major Reporting Category Code
@@ -22,8 +24,19 @@ Feature: Global Account
     Then  The Account Global Maintenance document will become final
 
   @KFSQA-572
-  Scenario: Create Account Global eDoc with Major Reporting Category
+  Scenario: Create Account Global Maintenance document with Major Reporting Category Code
     Given I am logged in as a KFS Chart Manager
-    And   I create an Account Global Maintenance document with an existing Major Reporting Category
-    When  I submit the document
+    When I create a Account Global Maintenance document with a Major Reporting Category Code of FACULTY
+    And  I submit the document
     Then  The Account Global Maintenance document will become final
+
+  @KFSQA-618 @wip
+  Scenario: KFS Chart Manager create an Account Global Maintenance document with a invalid Major Reporting Category Code
+    Given I am logged in as a KFS Chart Manager
+    When I create a Account Global Maintenance document with a Major Reporting Category Code of INVALID
+    And I submit the document
+   Then account global should show an error that says The specified Major Reporting Category Code does not exist.
+    When I enter a valid Major Reporting Category Code of FACULTY
+    And I submit the document
+    Then  The Account Global Maintenance document will become final
+

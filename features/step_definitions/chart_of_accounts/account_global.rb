@@ -23,13 +23,8 @@ And /^I create an Account Global Maintenance document with multiple accounting l
                            search_account_number: '10007*'
 end
 
-When(/^I submit the document$/) do
+When /^I submit the document$/ do
   @account_global.submit
-end
-
-And /^I create an Account Global Maintenance document with an existing Major Reporting Category$/ do
-  @account_global = create AccountGlobalObject,
-                           major_reporting_category_code: 'FACULTY' # TODO: It would be nice if this could be obtained either through a search or a service, instead of being hard-coded.
 end
 
 Then /^The Account Global Maintenance document will become final$/ do
@@ -38,4 +33,21 @@ Then /^The Account Global Maintenance document will become final$/ do
     page.reload
     page.document_status.should == 'FINAL'
   end
+end
+
+When /^I create a Account Global Maintenance document with a Major Reporting Category Code of (.*)$/ do |value_for_field|
+  @account_global = create AccountGlobalObject,
+                           major_reporting_category_code: "#{value_for_field}"
+  # TODO: It would be nice if this could be obtained either through a search or a service, instead of being hard-coded.
+  #changed this code to allow for user to enter valid and invalid major reporting category code for 2 different tests
+end
+#
+When(/^I enter a valid Major Reporting Category Code of (.*)$/) do |value_of_field|
+  on AccountGlobalPage do |page|
+    page.major_reporting_category_code.fit "#{value_of_field}"
+  end
+end
+
+Then(/^account global should show an error that says (.*)$/) do |error|
+  on(AccountGlobalPage).errors.should include error
 end
