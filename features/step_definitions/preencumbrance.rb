@@ -5,6 +5,11 @@ When /^I blanket approve a Pre-Encumbrance Document for Account number "([^"]*)"
     page.account_number.set acct_num
     page.object.set         '6100'
     page.amount.set         '0.01'
+
+    page.add_encumbrance
+
+    @document_id
+    page.blanket_approve
   end
 end
 
