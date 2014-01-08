@@ -1,5 +1,7 @@
 Feature: Account Edit
-  As a KFS Chart User when editing an Account I should be able to enter data into Sub Fund Program field regardless of case because custom fields should behave similarly to base fields.
+  [KFSQA-606] As a KFS Chart User when editing an Account
+              I should be able to enter data into Sub Fund Program field regardless of case
+              because custom fields should behave similarly to base fields.
 
   @KFSQA-606 @pending
   Scenario: Account Edit Sub Fund Program case sensitive test on Submit
