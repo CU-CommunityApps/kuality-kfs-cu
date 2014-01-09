@@ -16,10 +16,6 @@ When /^I enter an Account Number and search$/ do
   end
 end
 
-When /^I access Account Lookup$/ do
-  visit(MainPage).account
-end
-
 When /^I search for all accounts$/ do
   on AccountLookupPage do |page|
     page.search
@@ -29,6 +25,12 @@ end
 When /^The Account is found$/ do
   on AccountLookupPage do |page|
     page.item_row('0142900').should exist
+  end
+end
+
+When /^Accounts should be returned$/ do
+  on AccountLookupPage do |page|
+    page.results_table.should exist
   end
 end
 
