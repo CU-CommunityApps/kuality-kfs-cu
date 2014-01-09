@@ -1,5 +1,9 @@
 And /^I create an Account$/ do
-  @account = create AccountObject
+  @account = create AccountObject, press: AccountPage::SAVE
+end
+
+And /^I create an Account with a lower case Sub Fund Program$/ do
+  @account = create AccountObject, sub_fnd_group_cd: 'board', press: AccountPage::SAVE
 end
 
 When /^I submit the Account$/ do
@@ -8,7 +12,7 @@ end
 
 When /^I blanket approve the Account$/ do
   @account.blanket_approve
-  sleep(5)
+  sleep(10)
 end
 
 Then /^the Account Maintenance Document goes to (.*)/ do |doc_status|
@@ -17,16 +21,12 @@ Then /^the Account Maintenance Document goes to (.*)/ do |doc_status|
 end
 
 When /^I create an account with blank SubFund group Code$/ do
-  @account = create AccountObject, sub_fnd_group_cd: ''
+  @account = create AccountObject, sub_fnd_group_cd: '', press: AccountPage::SUBMIT
 end
 
 Then /^I should get an error on saving that I left the SubFund Group Code field blank$/ do
-#  on AccountPage do |page|
-#    page.errors.should include 'Sub-Fund Group Code (SubFundGrpCd) is a required field.'
   on(AccountPage).errors.should include 'Sub-Fund Group Code (SubFundGrpCd) is a required field.'
- # end
 end
-
 
 And /^I copy an Account$/ do
   steps %{
@@ -44,4 +44,23 @@ end
 
 Then /^the Account Maintenance Document saves with no errors$/  do
   on(AccountPage).document_status.should == 'SAVED'
+end
+
+Then /^the Account Maintenance Document has no errors$/  do
+  on(AccountPage).document_status.should == 'ENROUTE'
+end
+
+And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
+  visit(MainPage).account
+  on AccountLookupPage do |page|
+    page.subfund_program_code.set 'BOARD'
+    page.search
+    page.edit_random
+  end
+  on AccountPage do |page|
+    page.description.set random_alphanums(40, 'AFT')
+    page.subfund_program_code.set 'board'
+    page.save
+  end
+  @account = make AccountObject
 end

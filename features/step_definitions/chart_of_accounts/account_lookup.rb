@@ -16,6 +16,10 @@ When /^I enter an Account Number and search$/ do
   end
 end
 
+When /^I access Account Lookup$/ do
+  visit(MainPage).account
+end
+
 When /^I search for all accounts$/ do
   on AccountLookupPage do |page|
     page.search
