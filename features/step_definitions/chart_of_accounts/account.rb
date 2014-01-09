@@ -60,7 +60,7 @@ And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
   end
 end
 
-When /^I Create an Account document with only the ([^"]*) field populated$/ do |field|
+When /^I create an Account document with only the ([^"]*) field populated$/ do |field|
   default_fields = {
       description:          random_alphanums(40, 'AFT'),
       chart_code:           'IT', #TODO grab this from config file
