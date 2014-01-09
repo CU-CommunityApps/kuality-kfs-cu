@@ -19,6 +19,20 @@ end
 
 And /^I create an Account Global Maintenance document with multiple accounting lines$/ do
   @account_global = create AccountGlobalObject,
+                           supervisor_principal_name:  '',
+                           manager_principal_name: '',
+                           org_cd:               '',
+                           sub_fnd_group_code:   '',
+                           acct_expire_date:     '',
+                           postal_code:            '',
+                           city:                 '',
+                           state:                '',
+                           address:              '',
+                           contintuation_coa_code: '',
+                           contintuation_acct_number: '',
+                           income_stream_financial_cost_cd:  '',
+                           income_stream_account_number:     '',
+                           sufficient_funds_cd:    '',
                            add_multiple_accounting_lines: 'yes',
                            search_account_number: '10007*'
 end
