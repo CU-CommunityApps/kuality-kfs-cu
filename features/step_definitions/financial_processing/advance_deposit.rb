@@ -9,8 +9,8 @@ And(/^Nightly Batch Jobs run$/) do
     Given I am logged in as a KFS Technical Administrator
   }
   run_nightly_out(true)
-  run_poster(true)
   run_scrubber(true)
+  run_poster(true)
 end
 
 When(/^I submit the AD document$/) do
