@@ -13,6 +13,7 @@ Feature: KFS Fiscal Officer Account Creation
     When  I blanket approve the Account
     Then  the Account Maintenance Document goes to PROCESSED
 
+  @KFSQA-606
   Scenario: Account Edit Sub Fund Program case sensitive test on Submit - KFSQA-606
     Given I am logged in as a KFS Chart User
     When  I create an Account with a lower case Sub Fund Program

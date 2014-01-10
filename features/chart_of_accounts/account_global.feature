@@ -9,7 +9,7 @@ Feature: Global Account
   [KFSQA-618] As a KFS Fiscal Officer I need to create an account with a Major Reporting Category Code field
               because I need to manage in-year financial activity, fund balances and year-end reporting.
 
-@KFSQA-604
+  @KFSQA-604
   Scenario: KFS User lookup on Major Reporting Category Code
     Given I am logged in as a KFS Fiscal Officer
     And   I create an Account Global Maintenance document
@@ -30,7 +30,7 @@ Feature: Global Account
     And  I submit the Account Global Maintenance document
     Then  The Account Global Maintenance document will become FINAL
 
-  @KFSQA-618 @wip
+  @KFSQA-618
   Scenario: KFS Chart Manager create an Account Global Maintenance document with a invalid Major Reporting Category Code
     Given I am logged in as a KFS Chart Manager
     When I create a Account Global Maintenance document with a Major Reporting Category Code of INVALID

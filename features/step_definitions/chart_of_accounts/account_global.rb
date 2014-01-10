@@ -70,7 +70,7 @@ end
   #changed this code to allow for user to enter valid and invalid major reporting category code for 2 different tests
 end
 #
-When(/^I enter a valid Major Reporting Category Code of (.*)$/) do |value_of_field|
+When /^I enter a valid Major Reporting Category Code of (.*)$/ do |value_of_field|
   on AccountGlobalPage do |page|
     page.major_reporting_category_code.fit "#{value_of_field}"
   end
