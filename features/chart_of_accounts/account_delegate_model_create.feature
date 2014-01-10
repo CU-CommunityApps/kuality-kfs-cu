@@ -4,4 +4,4 @@ Feature: Account Delegate Model Create
   Scenario: Create an Account Global Model eDoc with an Invalid Organization Code
     Given I am logged in as a KFS Chart Manager
     When  I create an Account Delegate Model with an invalid Organization Code
-    Then  an error should say "The specified Organization Code does not exist."
+    Then  I should get an error saying "The specified Organization Code does not exist."
