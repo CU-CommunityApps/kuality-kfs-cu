@@ -24,7 +24,7 @@ Feature: Account Lookup
     When    I access Account Lookup
     Then    the Account Lookup page should appear with Cornell custom fields
 
-  @KFSQA-575 @wip
+  @KFSQA-575
   Scenario: Lookup an Account as a Chart Admin
     Given   I am logged in as a KFS Chart Administrator
     And     I access Account Lookup
