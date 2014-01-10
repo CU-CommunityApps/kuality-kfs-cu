@@ -50,6 +50,14 @@ Then /^the Account Maintenance Document has no errors$/  do
   on(AccountPage).document_status.should == 'ENROUTE'
 end
 
+And /^I edit an Account$/ do
+  visit(MainPage).account
+  on AccountLookupPage do |page|
+    page.search
+    page.edit_random
+  end
+end
+
 And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
   visit(MainPage).account
   on AccountLookupPage do |page|
@@ -58,9 +66,41 @@ And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
     page.edit_random
   end
   on AccountPage do |page|
+    @account = make AccountObject
     page.description.set random_alphanums(40, 'AFT')
     page.subfund_program_code.set 'board'
     page.save
   end
-  @account = make AccountObject
+end
+
+When(/^I enter (.*) as an invalid Sub-Fund Program Code$/) do |sub_fund_program_code|
+  on AccountPage do |page|
+    @account = make AccountObject
+    page.description.set random_alphanums(40, 'AFT')
+    page.subfund_program_code.set sub_fund_program_code
+    page.save
+  end
+end
+
+Then /^an error in the (.*) tab should say (.*)$/ do |tab, error|
+  @error_msg = ''
+  on AccountPage do |page|
+    case tab
+      when 'Account Maintenance'
+        @error_msg = page.account_maintenance_errmsg.text
+      else
+        page.save
+    end
+  end
+  @error_msg.should == error
+end
+
+
+And /^I edit an Account with a Sub-Fund Group Code of (.*)/ do |sub_fund_group_code|
+  visit(MainPage).account
+  on AccountLookupPage do |page|
+    page.sub_fnd_group_cd.set sub_fund_group_code
+    page.search
+    page.edit_random
+  end
 end

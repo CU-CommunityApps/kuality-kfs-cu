@@ -31,7 +31,7 @@ Feature: Account Lookup
     When    I search for all accounts
     Then    Accounts should be returned
 
-  @KFSA-574 @wip
+  @KFSA-574
   Scenario Outline: Lookup an Account using Cornell specific fields
     Given   I am logged in as a KFS Chart Manager
     And     I access Account Lookup
