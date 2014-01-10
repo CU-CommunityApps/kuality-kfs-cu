@@ -2,13 +2,15 @@ And(/^I create a Sub-Object Code Global$/) do
   @subObjectCodeGlobal = create SubObjectCodeGlobalObject
 end
 
-, multiple_accounting_lines_account_number_lookup: '100071*'
-And(/^ retrieve multiple account lines using Organization Code (.*)$/) do |org_code|
-  @sub
+When(/^I add multiple account lines using Organization Code (.*)$/) do |org_code|
+  @subObjectCodeGlobal.add_multiple_account_lines(org_code)
 end
 
-Then(/^I should verify the organizations came as in the hierarchy \(complete\?\) how\?$/) do
-  pending # express the regexp above with the code you wish you had
+Then(/^Retrieved accounts equal all Active Accounts for Organization Code "(.*?)"$/) do |multiple_account_numbers|
+  accounts = "#{multiple_account_numbers}".split(', ')
+  accounts.each do |an_account_number|
+    on SubObjectCodeGlobalPage do |page|
+      page.verify_account_number('IT', an_account_number).should exist
+    end
+  end
 end
-
-
