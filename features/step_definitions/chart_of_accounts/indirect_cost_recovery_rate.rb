@@ -14,5 +14,4 @@ end
 
 Then /^the Indirect Cost Recovery Rate lookup should return results$/ do
   on(IndirectCostRecoveryRateLookupPage).results_table.rows.length.should > 0
-  #on(IndirectCostRecoveryRateLookupPage).item_row('EC1').should exist
 end
