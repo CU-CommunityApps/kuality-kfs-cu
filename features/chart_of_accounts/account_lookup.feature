@@ -8,8 +8,8 @@ Feature: Account Lookup
   @smoke
   Scenario:
     Given I am logged in as a KFS User
-    When I access Account Lookup
-    Then the Account Lookup page should appear
+    When  I access Account Lookup
+    Then  the Account Lookup page should appear
 
   @smoke @pending
   Scenario:
@@ -20,23 +20,23 @@ Feature: Account Lookup
 
   @KFSQA-557
   Scenario: KFS User accesses Account Lookup and views Cornell custom fields
-    Given   I am logged in as a KFS User
-    When    I access Account Lookup
-    Then    the Account Lookup page should appear with Cornell custom fields
+    Given I am logged in as a KFS User
+    When  I access Account Lookup
+    Then  the Account Lookup page should appear with Cornell custom fields
 
   @KFSQA-575
   Scenario: Lookup an Account as a Chart Admin
-    Given   I am logged in as a KFS Chart Administrator
-    And     I access Account Lookup
-    When    I search for all accounts
-    Then    Accounts should be returned
+    Given I am logged in as a KFS Chart Administrator
+    And   I access Account Lookup
+    When  I search for all accounts
+    Then  Accounts should be returned
 
-  @KFSA-574 @wip
+  @KFSA-574
   Scenario Outline: Lookup an Account using Cornell specific fields
-    Given   I am logged in as a KFS Chart Manager
-    And     I access Account Lookup
-    When    I lookup an Account with <field_name>
-    Then    Accounts should be returned
+    Given I am logged in as a KFS Chart Manager
+    And   I access Account Lookup
+    When  I lookup an Account with <field_name>
+    Then  Accounts should be returned
   Examples:
     | field_name                        |
     | Account Manager Principal Name    |
