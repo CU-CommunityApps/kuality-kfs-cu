@@ -32,8 +32,7 @@ Feature: Account Lookup
     Then    Accounts should be returned
 
   @KFSA-574 @wip
-  Scenario Outline: Lookup an Account using Cornell specific fields Account Manager Principal Name
-                    and Account Supervisor Principal Name
+  Scenario Outline: Lookup an Account using Cornell specific fields
     Given   I am logged in as a KFS Chart Manager
     And     I access Account Lookup
     When    I lookup an Account with <field_name>
