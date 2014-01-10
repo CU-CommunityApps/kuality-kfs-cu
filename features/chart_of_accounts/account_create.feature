@@ -6,7 +6,7 @@ Feature: KFS Fiscal Officer Account Creation
               to enter data into Sub Fund Program field regardless of case
               because custom fields should behave similarly to base fields.
 
-  @smoke
+  @smoke @pending
   Scenario: Create an Account
     Given I am logged in as a KFS Fiscal Officer
     And   I create an Account
