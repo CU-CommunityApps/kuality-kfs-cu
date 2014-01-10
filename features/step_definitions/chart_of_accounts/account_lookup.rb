@@ -16,10 +16,6 @@ When /^I enter an Account Number and search$/ do
   end
 end
 
-When /^I access Account Lookup$/ do
-  visit(MainPage).account
-end
-
 When /^I search for all accounts$/ do
   on AccountLookupPage do |page|
     page.search
@@ -29,6 +25,12 @@ end
 When /^The Account is found$/ do
   on AccountLookupPage do |page|
     page.item_row('0142900').should exist
+  end
+end
+
+When /^Accounts should be returned$/ do
+  on AccountLookupPage do |page|
+    page.results_table.should exist
   end
 end
 
@@ -43,5 +45,17 @@ Then /^the Account Lookup page should appear with Cornell custom fields$/ do
     page.major_reporting_category_code.should exist
     page.acct_manager_principal_name.should exist
     page.acct_supervisor_principal_name.should exist
+  end
+end
+
+When /^I lookup an Account with (.*)$/ do |field_name|
+  on AccountLookupPage do |page|
+    case
+      when field_name == 'Account Manager Principal Name '
+        page.acct_manager_principal_name.set 'nja3' #TODO get from config
+      when field_name == 'Account Supervisor Principal Name'
+        page.acct_supervisor_principal_name.set 'jcs28' #TODO get from config
+    end
+    page.search
   end
 end
