@@ -11,7 +11,3 @@ When /^I lookup a Rate ID using an alpha\-numeric value in the Indirect Cost Rec
   end
 
 end
-
-Then /^the Indirect Cost Recovery Rate lookup should return results$/ do
-  on(IndirectCostRecoveryRateLookupPage).results_table.rows.length.should > 0
-end
