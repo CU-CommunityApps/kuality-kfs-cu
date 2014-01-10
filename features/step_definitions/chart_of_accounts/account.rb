@@ -2,13 +2,17 @@ And /^I create an Account$/ do
   @account = create AccountObject
 end
 
+And /^I create an Account with a lower case Sub Fund Program$/ do
+  @account = create AccountObject, sub_fnd_group_cd: 'board', press: AccountPage::SAVE
+end
+
 When /^I submit the Account$/ do
   @account.submit
 end
 
 When /^I blanket approve the Account$/ do
   @account.blanket_approve
-  sleep(5)
+  sleep(10)
 end
 
 Then /^the Account Maintenance Document goes to (.*)/ do |doc_status|
@@ -17,7 +21,7 @@ Then /^the Account Maintenance Document goes to (.*)/ do |doc_status|
 end
 
 When /^I create an account with blank SubFund group Code$/ do
-  @account = create AccountObject, sub_fnd_group_cd: ''
+  @account = create AccountObject, sub_fnd_group_cd: '', press: AccountPage::SUBMIT
 end
 
 Then /^I should get an error on saving that I left the SubFund Group Code field blank$/ do
@@ -43,11 +47,12 @@ Then /^the Account Maintenance Document saves with no errors$/  do
   on(AccountPage).document_status.should == 'SAVED'
 end
 
-Then /^the Account Maintenance Document submits with no errors$/  do
+Then /^the Account Maintenance Document has no errors$/  do
   on(AccountPage).document_status.should == 'ENROUTE'
 end
 
 And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
+  visit(MainPage).account
   on AccountLookupPage do |page|
     page.subfund_program_code.set 'BOARD'
     page.search
@@ -58,6 +63,7 @@ And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
     page.subfund_program_code.set 'board'
     page.save
   end
+  @account = make AccountObject
 end
 
 When /^I create an Account document with only the ([^"]*) field populated$/ do |field|
