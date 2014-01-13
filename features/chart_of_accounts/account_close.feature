@@ -12,7 +12,9 @@ Feature: Account Close
       | Number      | 1KQA587                  |
     Given I am logged in as a KFS User
     When  I blanket approve a Pre-Encumbrance Document for Account number "1KQA587"
-    Then  the Pre-Encumbrance posts either as a pending or completed GL entry
+    Then  the Pre-Encumbrance posts a GL Entry with one of the following statuses
+      | PENDING   |
+      | COMPLETED |
     Given I am logged in as a KFS Chart Manager
     When  I close the Account
     Then  I get an error

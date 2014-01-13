@@ -13,6 +13,8 @@ When /^I blanket approve a Pre-Encumbrance Document for Account number "([^"]*)"
   end
 end
 
-Then /^the Pre-Encumbrance posts either as a pending or completed GL entry$/ do
-  pending
+Then /^the Pre-Encumbrance posts a GL Entry with one of the following statuses$/ do |required_statuses|
+  visit PreEncumbrancePage do |page|
+    required_statuses.should include page.document_status
+  end
 end
