@@ -17,4 +17,4 @@ Feature: Account Close
       | COMPLETED |
     Given I am logged in as a KFS Chart Manager
     When  I close the Account
-    Then  I get an error
+    Then  The document should have no errors
