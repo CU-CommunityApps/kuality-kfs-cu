@@ -107,20 +107,17 @@ end
 
 And /^I clone a random Account with the following changes:$/ do |table|
   updates = table.rows_hash
-  #steps %{
-  #  Given I access Account Lookup
-  #  And   I search for all accounts
-  #}
   visit(MainPage).account
   on AccountLookupPage do |page|
     step 'I search for all accounts'
     page.copy_random
   end
   on AccountPage do |page|
-    page.description.set updates['Description']
-    page.name.set updates['Name']
-    page.chart_code.set updates['Chart Code']
-    page.number.set updates['Number']
+    @account_number = random_alphanums(7)
+    page.description.fit updates['Description']
+    page.name.fit updates['Name']
+    page.chart_code.fit updates['Chart Code']
+    page.number.fit @account_number
     page.blanket_approve
   end
 end
