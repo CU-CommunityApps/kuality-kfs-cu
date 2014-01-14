@@ -8,27 +8,22 @@ And /^I enter an invalid CG Reporting Code of (.*)$/ do |invalid_code|
   end
 end
 
-Then(/^Object Code Global should show an error that says "(.*)”$/) do |error|
-   on(ObjectCodeGlobalPage).errors.should include error
+And /^I Submit the Object Code Global document$/ do
+  on ObjectCodeGlobalPage do |page|
+    page.submit
+  end
 end
 
-
-Then(/^Object Code Global should show an error that says “CG Reporting Code ZZZZ for Chart Code IT does not exist\.”$/) do |error|
+Then(/^Object Code Global should show an error that says (.*?)$/) do |error|
   on(ObjectCodeGlobalPage).errors.should include error
-
 end
 
 Then /^The Object Code Global document status should be PROCESSED$/ do
-  on DocumentSearch do |page|
+  on DocumentSearchPage do |page|
     page.doc_search
-    @time = Time.new
-    page.document_id.set @time.strftime("%m/%d/%Y")
     page.search
-
-   #status in row should be PROCESSED
-
-
-  pending # express the regexp above with the code you wish you had
+    page.result_item('PROCESSED').should exist
+    page.result_item('FINAL').should exist
   end
 end
 
