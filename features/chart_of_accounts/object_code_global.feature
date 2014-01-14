@@ -4,20 +4,17 @@ Feature: Object Code Global
   the CG Reporting Code Maintenance Table. Validated CG Reporting Codes will enable this document to route to processed or final.
   Invalid CG Reporting Codes will produce an error message.
 
-
   @wip @KFSQA-639
   Scenario: Create an Object Code Global with an invalid CR Reporting Code and get an error message
     Given   I am logged in as a KFS Chart Manager
-    And     I create and Object Code Global
-    And     I enter an invalid CG Reporting Code
+    And     I create an Object Code Global
+    And     I enter an invalid CG Reporting Code of ZZZZ
     When    I Blanket Approve the document
-    Then    An error should say “CG Reporting Code (ZZZ) for Chart Code (IT) does not exist.”
-
+    Then    Object Code Global should show an error that says “CG Reporting Code ZZZZ for Chart Code IT does not exist.”
 
   @wip @KFSQA-639
   Scenario: Create an Object Code with a validated CR Reporting Code
     Given   I am logged in as a KFS Chart Manager
-    And      I create and Object Code
-    And      I enter a valid CG Reporting Code
-    When   I Blanket Approve it
-    Then   The Object Code document status should be PROCESSED
+    And     I create an Object Code Global
+    When    I Blanket Approve the document
+    Then    The Object Code Global document status should be PROCESSED

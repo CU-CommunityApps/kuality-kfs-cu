@@ -11,13 +11,8 @@ Then /^I should see the Object Code document in the object code search results$/
   on ObjectCodeLookupPage do |page|
     page.object_code.fit @object_code.object_code
     page.search
-    page.result_item(@object_code.object_code).should exist
-  end
-end
 
-And /^I enter invalid CG Reporting Code$/ do
-  on ObjectCodePage do |page|
-    page.cg_reporting_code.set 'FA!L!'
+    page.find_item_in_table(@object_code.object_code.upcase).should exist
   end
 end
 
