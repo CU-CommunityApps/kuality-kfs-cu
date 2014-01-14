@@ -73,7 +73,7 @@ And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
   end
 end
 
-When(/^I enter (.*) as an invalid Sub-Fund Program Code$/) do |sub_fund_program_code|
+When /^I enter (.*) as an invalid Sub-Fund Program Code$/ do |sub_fund_program_code|
   on AccountPage do |page|
     @account = make AccountObject
     page.description.set random_alphanums(40, 'AFT')
@@ -83,18 +83,13 @@ When(/^I enter (.*) as an invalid Sub-Fund Program Code$/) do |sub_fund_program_
 end
 
 Then /^an error in the (.*) tab should say (.*)$/ do |tab, error|
-  @error_msg = ''
-  on AccountPage do |page|
-    case tab
-      when 'Account Maintenance'
-        @error_msg = page.account_maintenance_errmsg.text
-      else
-        page.save
-    end
-  end
-  @error_msg.should == error
-end
+  hash = {'Account Maintenance' => :account_maintenance_errors}
 
+  on AccountPage do |page|
+    page.send(hash[tab]).should include error
+  end
+
+end
 
 And /^I edit an Account with a Sub-Fund Group Code of (.*)/ do |sub_fund_group_code|
   visit(MainPage).account
@@ -102,5 +97,32 @@ And /^I edit an Account with a Sub-Fund Group Code of (.*)/ do |sub_fund_group_c
     page.sub_fnd_group_cd.set sub_fund_group_code
     page.search
     page.edit_random
+  end
+end
+
+When /^I enter (.*) as an invalid Major Reporting Category Code$/  do |major_reporting_category_code|
+  on AccountPage do |page|
+    @account = make AccountObject
+    page.description.set random_alphanums(40, 'AFT')
+    page.major_reporting_category_code.set major_reporting_category_code
+    page.save
+  end
+end
+
+When /^I enter (.*) as an invalid Appropriation Account Number$/  do |appropriation_account_number|
+  on AccountPage do |page|
+    @account = make AccountObject
+    page.description.set random_alphanums(40, 'AFT')
+    page.appropriation_account_number.set appropriation_account_number
+    page.save
+  end
+end
+
+When /^I enter (.*) as an invalid Labor Benefit Rate Category Code$/  do |labor_benefit_rate_category_code|
+  on AccountPage do |page|
+    @account = make AccountObject
+    page.description.set random_alphanums(40, 'AFT')
+    page.labor_benefit_rate_category_code.set labor_benefit_rate_category_code
+    page.save
   end
 end
