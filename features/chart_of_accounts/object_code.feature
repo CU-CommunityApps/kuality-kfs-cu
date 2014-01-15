@@ -5,7 +5,7 @@ Feature: Object Code
   Invalid CG Reporting Codes will produce an error message.
 
 
-  @wip @KFSQA-594
+  @KFSQA-594
   Scenario: Create an Object Code and Object Code Global and Blanket Approve it.
 
     Given   I am logged in as a KFS Chart Manager
@@ -13,7 +13,7 @@ Feature: Object Code
     When    I Blanket Approve the document
     Then    I should see the Object Code document in the object code search results
 
-  @wip @KFSQA-594
+  @KFSQA-594
   Scenario: Create an Object Code with an invalid CR Reporting Code and get an error message
     Given   I am logged in as a KFS Chart Manager
     And     I edit an Object Code document with object code 6500
