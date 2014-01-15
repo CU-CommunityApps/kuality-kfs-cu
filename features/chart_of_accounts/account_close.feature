@@ -15,6 +15,10 @@ Feature: Account Close
       | PENDING   |
       | COMPLETED |
       | PROCESSED |
-    Given I am logged in as a KFS Chart Manager
+    Given Nightly Batch Jobs run
+    And   I am logged in as a KFS Chart Manager
     When  I close the Account
+    Then  I should get an error saying "This Account cannot be closed because it has an open Encumbrance."
+    When  I disencumber the Account
+    And   I close the Account
     Then  The document should have no errors
