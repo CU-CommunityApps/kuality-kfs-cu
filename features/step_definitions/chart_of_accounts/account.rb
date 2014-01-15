@@ -51,14 +51,6 @@ Then /^the Account Maintenance Document has no errors$/  do
   on(AccountPage).document_status.should == 'ENROUTE'
 end
 
-And /^I edit an Account$/ do
-  visit(MainPage).account
-  on AccountLookupPage do |page|
-    page.search
-    page.edit_random
-  end
-end
-
 And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
   visit(MainPage).account
   on AccountLookupPage do |page|
