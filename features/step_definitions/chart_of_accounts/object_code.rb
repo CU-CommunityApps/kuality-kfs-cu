@@ -27,6 +27,21 @@ And /^I edit an Object Code document with object code (.*)$/ do |the_object_code
   end
 end
 
+And /^I edit an Object Code document$/ do
+  @object_code = make ObjectCodeObject
+
+  on(MainPage).object_code
+  on ObjectCodeLookupPage do |page|
+    page.search
+    page.edit_random
+  end
+  on ObjectCodePage do |page|
+    page.description.set random_alphanums(40, 'AFT')
+    @object_code.document_id = page.document_id
+  end
+
+end
+
 And /^I enter invalid CG Reporting Code of (.*)$/ do |the_reporting_code|
   on ObjectCodePage do |page|
     page.description.set @object_code.description
@@ -34,6 +49,17 @@ And /^I enter invalid CG Reporting Code of (.*)$/ do |the_reporting_code|
   end
 end
 
-Then /^The object code should show an error that says “(.*?)”$/ do |error|
+Then /^The object code should show an error that says "(.*?)"$/ do |error|
   on(ObjectCodePage).errors.should include error
 end
+
+When /^I blanket approve the Object Code document$/ do
+  @object_code.blanket_approve
+  sleep(10)
+end
+
+Then /^the Object Code Document goes to (.*)/ do |doc_status|
+  @object_code.view
+  on(ObjectCodePage).document_status.should == doc_status
+end
+

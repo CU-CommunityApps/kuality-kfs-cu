@@ -5,7 +5,7 @@ Feature: Object Code
   Invalid CG Reporting Codes will produce an error message.
 
 
-  @wip @KFSQA-594
+  @KFSQA-594
   Scenario: Create an Object Code and Object Code Global and Blanket Approve it.
 
     Given   I am logged in as a KFS Chart Manager
@@ -13,11 +13,18 @@ Feature: Object Code
     When    I Blanket Approve the document
     Then    I should see the Object Code document in the object code search results
 
-  @wip @KFSQA-594
+  @KFSQA-594
   Scenario: Create an Object Code with an invalid CR Reporting Code and get an error message
     Given   I am logged in as a KFS Chart Manager
     And     I edit an Object Code document with object code 6500
     And     I enter invalid CG Reporting Code of ZZZZ
     When    I Blanket Approve the document
-    Then    The object code should show an error that says “CG Reporting Code (ZZZZ) for Chart Code (CS) does not exist.”
+    Then    The object code should show an error that says "CG Reporting Code (ZZZZ) for Chart Code (CS) does not exist."
     #object code 6500 has a Chart Code (CS) for the error message.
+
+  @wip @KFSQA-594
+  Scenario: Edit a Financial Object Code Description on the Object Code Document
+    Given   I am logged in as a KFS Chart Manager
+    And     I edit an Object Code document
+    When    I blanket approve the Object Code document
+    Then    the Object Code Document goes to FINAL
