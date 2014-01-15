@@ -14,7 +14,7 @@ And /^I Submit the Object Code Global document$/ do
   end
 end
 
-Then(/^Object Code Global should show an error that says (.*?)$/) do |error|
+Then /^Object Code Global should show an error that says (.*?)$/ do |error|
   on(ObjectCodeGlobalPage).errors.should include error
 end
 
@@ -27,4 +27,8 @@ Then /^The Object Code Global document status should be PROCESSED$/ do
   end
 end
 
-
+And /^I enter an invalid SUNY Object Code$/ do
+  on ObjectCodeGlobalPage do |page|
+    page.suny_object_code.set 'invalid_code'
+  end
+end

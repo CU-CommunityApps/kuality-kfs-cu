@@ -4,6 +4,11 @@ Feature: Object Code Global
   the CG Reporting Code Maintenance Table. Validated CG Reporting Codes will enable this document to route to processed or final.
   Invalid CG Reporting Codes will produce an error message.
 
+  [KFSQA-642] As a KFS Chart Manager, when creating an Object Code Global, the SUNY Object Code will be a
+              numeric value. Validated SUNY Object Codes enable this document to route to processed or final.
+              Invalid SUNY Object Codes (non numeric) will produce an error message.
+
+
   @KFSQA-639 @pending
   Scenario: Create an Object Code Global with an invalid CR Reporting Code and get an error message
     Given   I am logged in as a KFS Chart Manager
@@ -18,3 +23,11 @@ Feature: Object Code Global
     And     I create an Object Code Global
     When    I Blanket Approve the document
     Then    The Object Code Global document status should be PROCESSED
+
+  @KFSQA-642 @wip
+  Scenario: Create an Object Code Global with an invalid SUNY Object Code and get an error message
+    Given   I am logged in as a KFS Chart Manager
+    And     I create an Object Code Global
+    And     I enter an invalid SUNY Object Code
+    When    I Blanket Approve the document
+    Then    an error should say "The SUNY Object Code (SUNYObjCode) may only consist of digits."
