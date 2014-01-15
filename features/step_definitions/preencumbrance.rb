@@ -16,11 +16,9 @@ Then /^the Pre-Encumbrance posts a GL Entry with one of the following statuses$/
 
     page.search
 
-    # Unfortunately, the description gets truncated to 40 characters. Good thing we're clever.
     truncated_description = @preencumbrance.description.length > 40 ? @preencumbrance.description[0,39] : @preencumbrance.description
-    page.item_row(truncated_description).link(text: @preencumbrance.document_id).click
+    page.open_item_via_text(truncated_description, @preencumbrance.document_id)
 
-    @browser.windows.last.use # Focus is lost otherwise, for some odd reason...
     on(PreEncumbrancePage) { |b| required_statuses.should include b.document_status }
   end
 end

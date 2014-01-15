@@ -123,7 +123,40 @@ And /^I clone a random Account with the following changes:$/ do |table|
 end
 
 When /^I close the Account$/ do
-  visit AccountLookupPage do |page|
+  random_account_number = ''
+  visit(MainPage).account
+  on AccountLookupPage do |page|
+    random_account_number = page.get_random_account_number
+
+    page.account_number.fit @account_number
     page.search
+    page.edit_item(@account_number.upcase)
+  end
+  on AccountPage do |edit_page|
+    @document_id = edit_page.document_id
+
+
+    puts edit_page.effective_date.text
+    edit_page.description.fit 'Closing the account'
+    edit_page.expiration_date.fit '' # Since we created it today #TODO Doesn't work...
+    edit_page.continuation_number.fit random_account_number
+    edit_page.continuation_chart_code.select 'IT - Ithaca Campus'
+
+    edit_page.closed.set
+
+    edit_page.blanket_approve
+    edit_page.errors.to_a.should be_empty,
+                                 "Expected no errors during blanket approval of account closure, " <<
+                                 "but found #{edit_page.errors}."
+  end
+
+  sleep 10
+
+  visit(MainPage).account
+  on AccountLookupPage do |page|
+    page.account_number.fit @account_number
+    page.closed_yes.set
+    page.search
+    page.item_row(@account_number)['Closed?'].should == 'Yes'
   end
 end
