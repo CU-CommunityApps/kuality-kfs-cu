@@ -1,6 +1,6 @@
 Feature: Organization
 
-  [KFSQA-581] Summary: As a KFS Chart Administrator I want to copy an Organization without getting an error.
+  [KFSQA-581] As a KFS Chart Administrator I want to copy an Organization without getting an error.
 
   @KFSQA-581
   Scenario: Unselecting actives indicator on a new copy of an existing Organization should go to final.
