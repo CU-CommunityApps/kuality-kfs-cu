@@ -51,14 +51,6 @@ Then /^the Account Maintenance Document has no errors$/  do
   on(AccountPage).document_status.should == 'ENROUTE'
 end
 
-And /^I edit an Account$/ do
-  visit(MainPage).account
-  on AccountLookupPage do |page|
-    page.search
-    page.edit_random
-  end
-end
-
 And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
   visit(MainPage).account
   on AccountLookupPage do |page|
@@ -165,4 +157,17 @@ When /^I create an Account document with only the ([^"]*) field populated$/ do |
   end
 
   @account = create AccountObject, default_fields
+end
+
+And /^I edit an Account$/ do
+  visit(MainPage).account
+  on AccountLookupPage do |page|
+    page.search
+    page.edit_random
+  end
+  on AccountPage do |page|
+    @account = make AccountObject
+    page.description.set random_alphanums(40, 'AFT')
+    @account.document_id = page.document_id
+  end
 end
