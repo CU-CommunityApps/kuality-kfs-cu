@@ -82,7 +82,7 @@ When /^I enter (.*) as an invalid Sub-Fund Program Code$/ do |sub_fund_program_c
   end
 end
 
-Then /^an error in the (.*) tab should say (.*)$/ do |tab, error|
+Then /^an error in the (.*) tab should say "(.*)"$/ do |tab, error|
   hash = {'Account Maintenance' => :account_maintenance_errors}
 
   on AccountPage do |page|
