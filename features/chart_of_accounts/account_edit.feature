@@ -37,7 +37,6 @@ Feature: Account Edit
     Then  an error in the Account Maintenance tab should say "Invalid Labor Benefit Rate Code"
     Then  an error in the Account Maintenance tab should say "The specified Labor Benefit Rate Category Code XX does not exist."
 
-  @wip
   @KFSQA-610
   Scenario: Edit an Account as KFS Chart Admin
     Given I am am logged in as a KFS Chart Administrator
