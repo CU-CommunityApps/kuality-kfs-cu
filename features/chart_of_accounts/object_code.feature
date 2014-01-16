@@ -4,10 +4,8 @@ Feature: Object Code
   the CG Reporting Code Maintenance Table. Validated CG Reporting Codes will enable this document to route to processed or final.
   Invalid CG Reporting Codes will produce an error message.
 
-
   @KFSQA-594
   Scenario: Create an Object Code and Object Code Global and Blanket Approve it.
-
     Given   I am logged in as a KFS Chart Manager
     And     I create an Object Code document
     When    I Blanket Approve the document
