@@ -37,14 +37,11 @@ When /^I disencumber the Account$/ do
     # The description field gets truncated to 40 characters for this display. Joy.
     truncated_description = @preencumbrance.description.length > 40 ? @preencumbrance.description[0,39] : @preencumbrance.description
     page.open_item_via_text(truncated_description, @preencumbrance.document_id)
+    @preencumbrance.disencumbrance_reference_number = on(PreEncumbrancePage) { |p| p.first_encumbrance_reference_number }
   end
 
-  on(PreEncumbrancePage) do |page|
-    page.accounting_lines.
-  end # Figure out how to actually grab the reference number...
-
-exit
-
   # Note: You must have captured the account number of the random account in a previous step to use this step.
-  @preencumbrance = create PreEncumbranceObject, disencumbrance_account_number: @account_number, press: PreEncumbrancePage::BLANKET_APPROVE
+  @preencumbrance = create PreEncumbranceObject, disencumbrance_account_number: @account_number,
+                                                 disencumbrance_reference_number: @preencumbrance.disencumbrance_reference_number,
+                                                 press: PreEncumbrancePage::BLANKET_APPROVE
 end

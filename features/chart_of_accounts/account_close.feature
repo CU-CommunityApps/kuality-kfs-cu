@@ -20,5 +20,6 @@ Feature: Account Close
     When  I close the Account
     Then  I should get an error saying "This Account cannot be closed because it has an open Encumbrance."
     When  I disencumber the Account
+    And   Nightly Batch Jobs run
     And   I close the Account
     Then  The document should have no errors
