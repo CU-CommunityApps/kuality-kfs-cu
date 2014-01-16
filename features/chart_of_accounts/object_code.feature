@@ -18,4 +18,3 @@ Feature: Object Code
     And     I enter invalid CG Reporting Code of ZZZZ
     When    I Blanket Approve the document
     Then    The object code should show an error that says "CG Reporting Code (ZZZZ) for Chart Code (CS) does not exist."
-    #object code 6500 has a Chart Code (CS) for the error message.
