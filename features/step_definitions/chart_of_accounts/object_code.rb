@@ -11,7 +11,6 @@ Then /^I should see the Object Code document in the object code search results$/
   on ObjectCodeLookupPage do |page|
     page.object_code.fit @object_code.object_code
     page.search
-
     page.find_item_in_table(@object_code.object_code.upcase).should exist
   end
 end

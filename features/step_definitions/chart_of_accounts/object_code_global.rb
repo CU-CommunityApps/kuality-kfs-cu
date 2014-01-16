@@ -21,8 +21,8 @@ end
 Then /^The Object Code Global document status should be PROCESSED$/ do
   on DocumentSearchPage do |page|
     page.doc_search
+    page.document_id_field.when_present.set @object_code_global.document_id
     page.search
-    page.result_item('PROCESSED').should exist
     page.result_item('FINAL').should exist
   end
 end
