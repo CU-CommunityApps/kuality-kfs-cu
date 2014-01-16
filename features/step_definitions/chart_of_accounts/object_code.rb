@@ -34,6 +34,6 @@ And /^I enter invalid CG Reporting Code of (.*)$/ do |the_reporting_code|
   end
 end
 
-Then /^The object code should show an error that says “(.*?)”$/ do |error|
+Then /^The object code should show an error that says "(.*?)"$/ do |error|
   on(ObjectCodePage).errors.should include error
 end
