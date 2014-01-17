@@ -18,3 +18,12 @@ Feature: Object Code
     And     I enter invalid CG Reporting Code of ZZZZ
     When    I Blanket Approve the document
     Then    The object code should show an error that says "CG Reporting Code (ZZZZ) for Chart Code (CS) does not exist."
+
+
+  @KFSQA-596 @wip
+  Scenario: Edit an Object Code and update the Financial Object Code Description
+    Given   I am logged in as a KFS Chart Manager
+    And     I edit an Object Code
+    And     I update the Financial Object Code Descripton
+    When    I Blanket Approve the document
+    Then    The document should have no errors

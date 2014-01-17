@@ -38,3 +38,21 @@ end
 Then /^The object code should show an error that says "(.*?)"$/ do |error|
   on(ObjectCodePage).errors.should include error
 end
+
+
+And /^I edit an Object Code$/ do
+  visit(MainPage).object_code
+  on ObjectCodeLookupPage do |page|
+    page.search
+    page.edit_random
+  end
+  on ObjectCodePage do |page|
+    @objectCode = make ObjectCodeObject
+    page.description.set random_alphanums(40, 'AFT')
+    @objectCode.document_id = page.document_id
+  end
+end
+
+And /^I update the Financial Object Code Descripton$/ do
+  on(ObjectCodePage).financial_object_code_description.set random_alphanums(60, 'AFT')
+end
