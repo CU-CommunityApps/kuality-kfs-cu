@@ -171,3 +171,7 @@ And /^I edit an Account$/ do
     @account.document_id = page.document_id
   end
 end
+
+When /^I input a lowercase Major Reporting Category Code value$/  do
+  on(AccountPage).major_reporting_category_code.set == 'FACULTY' #TODO parameterize
+end

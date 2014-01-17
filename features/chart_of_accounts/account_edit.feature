@@ -7,6 +7,9 @@ Feature: Account Edit
 
   [KFSQA-610] Summary: As a KFS Chart Administrator I want to update an Account without getting a stack trace error.
 
+  [KFSQA-632] As a KFS Fiscal Officer I need to edit an account using the Major Reporting Category Code field and enter
+              a lowercase value and have it convert to UPPERCASE because I need to manage in-year financial activity,
+              fund balances and year-end reporting.
 
   @KFSQA-593
   Scenario: Edit an Account with an invalid Sub-Fund Program Code
@@ -41,5 +44,13 @@ Feature: Account Edit
   Scenario: Edit an Account as KFS Chart Admin
     Given I am am logged in as a KFS Chart Administrator
     And   I edit an Account
+    When  I blanket approve the Account
+    Then  the Account Maintenance Document goes to PROCESSED
+
+  @KFSQA-632 @wip
+  Scenario: KFS Chart Manager edits an Account with Major Reporting Category Code
+    Given I am logged in as a KFS Chart Manager
+    And   I edit an Account
+    When  I input a lowercase Major Reporting Category Code value
     When  I blanket approve the Account
     Then  the Account Maintenance Document goes to PROCESSED
