@@ -43,3 +43,23 @@ Feature: Account Edit
     And   I edit an Account
     When  I blanket approve the Account
     Then  the Account Maintenance Document goes to PROCESSED
+
+  @KFSQA-619 @wip
+  Scenario: Create an Account that matches Sub-Fund Group Code and Sub-Fund Program Code with an Appropriation Account Number
+    Given I am logged in as a KFS Chart Manager
+    And   I edit an Account
+    And   I enter Sub Fund Group Code of INFHFO
+    And   I enter Sub Fund Program Code of CENTER
+    And   I enter Appropriation Account Number of LTIP
+    When  I blanket approve the Account
+    Then  the Account Maintenance Document goes to PROCESSED
+
+  @KFSQA-619 @wip
+  Scenario: Create an Account that does not match Sub-Fund Group Code and Sub-Fund Program Code with an Appropriation Account Number
+    Given I am logged in as a KFS Chart Manager
+    And   I edit an Account
+    And   I enter Sub Fund Group Code of INFHFO
+    And   I enter Sub Fund Program Code of CENTER
+    And   I enter Appropriation Account Number of C771503
+    When  I submit the Account
+    Then  an error in the Account Maintenance tab should say "Appropriation Account Number C771503 is not associated with Sub-Fund Group Code INFHFO."
