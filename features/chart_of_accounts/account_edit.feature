@@ -12,7 +12,7 @@ Feature: Account Edit
   Scenario: Edit an Account with an invalid Sub-Fund Program Code
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account with a Sub-Fund Group Code of PLCAPT
-    When  I enter XXXX as an invalid Sub-Fund Program Code
+    When  I enter a Sub-Fund Program Code of XXXX
     Then  an error in the Account Maintenance tab should say "Sub-Fund Program Code XXXX is not associated with Sub-Fund Group Code PLCAPT."
 
   @KFSQA-593
