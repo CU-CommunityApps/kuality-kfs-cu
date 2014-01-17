@@ -1,6 +1,7 @@
-And /^I create an Object Code Global$/ do
+And /^I create an? Object Code Global$/ do
   @object_code_global = create ObjectCodeGlobalObject
 end
+
 
 And /^I enter an invalid CG Reporting Code of (.*)$/ do |invalid_code|
   on ObjectCodeGlobalPage do |page|
@@ -26,5 +27,6 @@ Then /^The Object Code Global document status should be PROCESSED$/ do
     page.result_item('FINAL').should exist
   end
 end
+
 
 
