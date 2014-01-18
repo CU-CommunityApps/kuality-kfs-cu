@@ -172,6 +172,9 @@ And /^I edit an Account$/ do
   end
 end
 
+When /^I input a lowercase Major Reporting Category Code value$/  do
+  on(AccountPage).major_reporting_category_code.set == 'FACULTY' #TODO parameterize
+end
 
 And(/^I create an Account with an Appropriation Account Number of (.*) and Sub-Fund Program Code of (.*)/) do |appropriation_accountNumber, subfund_program_code|
   @account = create AccountObject

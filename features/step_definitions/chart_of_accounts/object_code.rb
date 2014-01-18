@@ -7,11 +7,11 @@ When /^I Blanket Approve the document$/ do
 end
 
 Then /^I should see the Object Code document in the object code search results$/ do
-  on(MainPage).object_code
+  visit(MainPage).object_code
+
   on ObjectCodeLookupPage do |page|
     page.object_code.fit @object_code.object_code
     page.search
-
     page.find_item_in_table(@object_code.object_code.upcase).should exist
   end
 end
@@ -19,7 +19,8 @@ end
 And /^I edit an Object Code document with object code (.*)$/ do |the_object_code|
   @object_code = make ObjectCodeObject
 
-  on(MainPage).object_code
+  visit(MainPage).object_code
+
   on ObjectCodeLookupPage do |page|
     page.object_code.set the_object_code
     page.search
