@@ -20,7 +20,7 @@ Feature: Object Code
     Then    The object code should show an error that says "CG Reporting Code (ZZZZ) for Chart Code (CS) does not exist."
 
 
-  @KFSQA-596 @wip
+  @KFSQA-596
   Scenario: Edit an Object Code and update the Financial Object Code Description
     Given   I am logged in as a KFS Chart Manager
     And     I edit an Object Code
