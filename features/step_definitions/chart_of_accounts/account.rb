@@ -66,7 +66,7 @@ And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
   end
 end
 
-When /^I enter (.*) as an (.*) Sub-Fund Program Code$/ do |sub_fund_program_code|
+When /^I enter a Sub-Fund Program Code of (.*)$/ do |sub_fund_program_code|
   on AccountPage do |page|
     @account = make AccountObject
     page.description.set random_alphanums(40, 'AFT')
