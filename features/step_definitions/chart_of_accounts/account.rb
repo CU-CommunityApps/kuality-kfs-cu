@@ -66,7 +66,7 @@ And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
   end
 end
 
-When /^I enter (.*) as an invalid Sub-Fund Program Code$/ do |sub_fund_program_code|
+When /^I enter a Sub-Fund Program Code of (.*)$/ do |sub_fund_program_code|
   on AccountPage do |page|
     @account = make AccountObject
     page.description.set random_alphanums(40, 'AFT')
@@ -170,4 +170,30 @@ And /^I edit an Account$/ do
     page.description.set random_alphanums(40, 'AFT')
     @account.document_id = page.document_id
   end
+end
+
+When /^I input a lowercase Major Reporting Category Code value$/  do
+  on(AccountPage).major_reporting_category_code.set == 'FACULTY' #TODO parameterize
+end
+
+And(/^I create an Account with an Appropriation Account Number of (.*) and Sub-Fund Program Code of (.*)/) do |appropriation_accountNumber, subfund_program_code|
+  @account = create AccountObject
+  on AccountPage do |page|
+    page.appropriation_account_number.set appropriation_accountNumber
+    page.subfund_program_code.set subfund_program_code
+    @account.document_id = page.document_id
+  end
+
+end
+
+And /^I enter Sub Fund Group Code of (.*)/ do |sub_fnd_group_cd|
+  on(AccountPage).sub_fnd_group_cd.set sub_fnd_group_cd
+end
+
+And /^I enter Sub Fund Program Code of (.*)/  do |subfund_program_code|
+  on(AccountPage).subfund_program_code.set subfund_program_code
+end
+
+And /^I enter Appropriation Account Number of (.*)/  do |appropriation_account_number|
+  on(AccountPage).appropriation_account_number.set appropriation_account_number
 end
