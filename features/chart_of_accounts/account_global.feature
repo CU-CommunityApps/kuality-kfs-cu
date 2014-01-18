@@ -12,29 +12,26 @@ Feature: Global Account
   @KFSQA-604
   Scenario: KFS User lookup on Major Reporting Category Code
     Given I am logged in as a KFS Fiscal Officer
-    And   I create an Account Global Maintenance document
+    When  I save an Account Global Maintenance document
     And   I perform a Major Reporting Category Code Lookup
     Then  I should see a list of Major Reporting Category Codes
 
   @KFSQA-572
   Scenario: Create Account Global Maintenance document with Major Reporting Category Code
     Given I am logged in as a KFS Chart Manager
-    When  I create a Account Global Maintenance document with a Major Reporting Category Code of FACULTY
-    And   I submit the Account Global Maintenance document
+    When  I submit a Account Global Maintenance document with a Major Reporting Category Code of FACULTY
     Then  The Account Global Maintenance document will become FINAL
 
   @KFSQA-577
   Scenario: Create an Account Global using an organization hierarchy
     Given I am logged in as a KFS Chart Manager
-    And   I create an Account Global Maintenance document with multiple accounting lines
-    When  I submit the Account Global Maintenance document
+    When  I submit an Account Global Maintenance document with multiple accounting lines
     Then  The Account Global Maintenance document will become FINAL
 
   @KFSQA-618
   Scenario: KFS Chart Manager create an Account Global Maintenance document with a invalid Major Reporting Category Code
     Given I am logged in as a KFS Chart Manager
-    When  I create a Account Global Maintenance document with a Major Reporting Category Code of INVALID
-    And   I submit the Account Global Maintenance document
+    When  I submit a Account Global Maintenance document with a Major Reporting Category Code of INVALID
     Then  account global should show an error that says "The specified Major Reporting Category Code does not exist."
     When  I enter a valid Major Reporting Category Code of FACULTY
     And   I submit the Account Global Maintenance document

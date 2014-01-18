@@ -1,9 +1,11 @@
-And /^I create an Object Code document$/ do
-  @object_code = create ObjectCodeObject
+And /^I (#{ObjectCodePage::available_buttons}) an Object Code document$/ do |button|
+  @object_code = create ObjectCodeObject, press: button
 end
 
-When /^I Blanket Approve the document$/ do
-  on(ObjectCodePage).blanket_approve
+When /^I (#{ObjectCodePage::available_buttons}) the Object Code document$/ do |button|
+  button.gsub!(' ', '_')
+  on(ObjectCodePage).send(button)
+  sleep 10 if button == 'blanket_approve'
 end
 
 Then /^I should see the Object Code document in the object code search results$/ do
