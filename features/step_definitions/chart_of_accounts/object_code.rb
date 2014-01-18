@@ -2,7 +2,7 @@ And /^I create an Object Code document$/ do
   @object_code = create ObjectCodeObject
 end
 
-When /^I Blanket Approve the document$/ do
+When /^I Blanket Approve the Object Code document$/ do
   on(ObjectCodePage).blanket_approve
 end
 
