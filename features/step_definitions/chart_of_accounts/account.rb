@@ -38,8 +38,14 @@ And /^I copy an Account$/ do
     page.copy_random
   end
   on AccountPage do |page|
-    page.description.set 'testing copy'
+    page.description.set 'AFT testing copy'
+    page.chart_code.set 'IT' #TODO get from config
+    number = random_alphanums(4, 'AFT')
+    page.number.set number
     page.save
+    @account = make AccountObject
+    @account.number = number
+    @account.document_id = page.document_id
   end
 end
 
@@ -196,4 +202,42 @@ end
 
 And /^I enter Appropriation Account Number of (.*)/  do |appropriation_account_number|
   on(AccountPage).appropriation_account_number.set appropriation_account_number
+end
+
+And /^I close the Account$/ do
+  on AccountPage do |page|
+    page.closed.select
+    page.account_expiration_date.set page.effective_date.value
+  end
+end
+
+And /^I edit the Account$/ do
+  visit(MainPage).account
+  on AccountLookupPage do |page|
+    page.number.set @account.number
+    page.search
+    page.edit_random
+  end
+  on AccountPage do |page|
+    page.description.set 'AFT testing edit'
+  end
+end
+
+And /^I enter a Continuation Chart Of Accounts Code that equals the Chart of Account Code$/ do
+  on AccountPage do |page|
+    page.continuation_chart_code.fit 'IT - Ithaca Campus'
+  end
+end
+
+And /^I enter a Continuation Account Number that equals the Account Number$/ do
+  on AccountPage do |page|
+    page.continuation_account_number.fit page.original_account_number
+  end
+end
+
+Then(/^an empty error should appear$/) do
+  on AccountPage do |page|
+    page.left_errmsg_tabs.should exist
+
+  end
 end

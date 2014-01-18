@@ -11,6 +11,9 @@ Feature: Account Edit
               a lowercase value and have it convert to UPPERCASE because I need to manage in-year financial activity,
               fund balances and year-end reporting.
 
+  [KFSQA-586] Summary: As a KFS Chart Manager, the Account Number and the Continuation Account on that account cannot
+                       and should not ever be the equal as this defeats the purpose of a continuation account.
+
   @KFSQA-593
   Scenario: Edit an Account with an invalid Sub-Fund Program Code
     Given I am logged in as a KFS Chart Manager
@@ -75,3 +78,15 @@ Feature: Account Edit
     And   I enter Appropriation Account Number of C771503
     When  I submit the Account
     Then  an error in the Account Maintenance tab should say "Appropriation Account Number C771503 is not associated with Sub-Fund Group Code INFHFO."
+
+  @KFSQA-586 @wip
+  Scenario: Try to continue an Account to itself
+    Given   I am logged in as a KFS Chart Manager
+    And     I copy an Account
+    And     I blanket approve the Account
+    And     I edit the Account
+    And     I close the Account
+    And     I enter a Continuation Account Number that equals the Account Number
+    And     I enter a Continuation Chart Of Accounts Code that equals the Chart of Account Code
+    When    I blanket approve the Account
+    Then    an empty error should appear
