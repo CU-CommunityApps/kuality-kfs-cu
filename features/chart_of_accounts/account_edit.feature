@@ -7,12 +7,15 @@ Feature: Account Edit
 
   [KFSQA-610] Summary: As a KFS Chart Administrator I want to update an Account without getting a stack trace error.
 
+  [KFSQA-632] As a KFS Fiscal Officer I need to edit an account using the Major Reporting Category Code field and enter
+              a lowercase value and have it convert to UPPERCASE because I need to manage in-year financial activity,
+              fund balances and year-end reporting.
 
   @KFSQA-593
   Scenario: Edit an Account with an invalid Sub-Fund Program Code
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account with a Sub-Fund Group Code of PLCAPT
-    When  I enter XXXX as an invalid Sub-Fund Program Code
+    When  I enter a Sub-Fund Program Code of XXXX
     Then  an error in the Account Maintenance tab should say "Sub-Fund Program Code XXXX is not associated with Sub-Fund Group Code PLCAPT."
 
   @KFSQA-593
@@ -43,3 +46,32 @@ Feature: Account Edit
     And   I edit an Account
     When  I blanket approve the Account
     Then  the Account Maintenance Document goes to PROCESSED
+
+  @KFSQA-632
+  Scenario: KFS Chart Manager edits an Account with Major Reporting Category Code
+    Given I am logged in as a KFS Chart Manager
+    And   I edit an Account
+    When  I input a lowercase Major Reporting Category Code value
+    When  I blanket approve the Account
+    Then  the Account Maintenance Document goes to PROCESSED
+    Then  the Account Maintenance Document goes to PROCESSED
+
+  @KFSQA-619
+  Scenario: Create an Account that matches Sub-Fund Group Code and Sub-Fund Program Code with an Appropriation Account Number
+    Given I am logged in as a KFS Chart Manager
+    And   I edit an Account
+    And   I enter Sub Fund Group Code of INFHFO
+    And   I enter Sub Fund Program Code of CENTER
+    And   I enter Appropriation Account Number of LTIP
+    When  I blanket approve the Account
+    Then  the Account Maintenance Document goes to PROCESSED
+
+  @KFSQA-619
+  Scenario: Create an Account that does not match Sub-Fund Group Code and Sub-Fund Program Code with an Appropriation Account Number
+    Given I am logged in as a KFS Chart Manager
+    And   I edit an Account
+    And   I enter Sub Fund Group Code of INFHFO
+    And   I enter Sub Fund Program Code of CENTER
+    And   I enter Appropriation Account Number of C771503
+    When  I submit the Account
+    Then  an error in the Account Maintenance tab should say "Appropriation Account Number C771503 is not associated with Sub-Fund Group Code INFHFO."
