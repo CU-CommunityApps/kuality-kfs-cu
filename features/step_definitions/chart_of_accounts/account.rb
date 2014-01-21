@@ -1,5 +1,24 @@
+And /^I (#{AccountPage::available_buttons}) an Account document$/ do |button|
+  button.gsub!(' ', '_')
+  @account = create AccountObject, press: button
+end
+
 And /^I create an Account/ do
   @account = create AccountObject
+end
+
+And /^I copy an Account$/ do
+  steps %{
+    Given I access Account Lookup
+    And   I search for all accounts
+  }
+  on AccountLookupPage do |page|
+    page.copy_random
+  end
+  on AccountPage do |page|
+    page.description.set 'testing copy'
+    page.save
+  end
 end
 
 When /^I (#{AccountPage::available_buttons}) the Account document$/ do |button|
@@ -10,9 +29,6 @@ end
 
 And /^I save an Account with a lower case Sub Fund Program$/ do
   @account = create AccountObject, sub_fnd_group_cd: 'board', press: :save
-When /^I blanket approve the Account$/ do
-  @account.blanket_approve
-  sleep(5)
 end
 
 Then /^the Account Maintenance Document goes to (.*)/ do |doc_status|
