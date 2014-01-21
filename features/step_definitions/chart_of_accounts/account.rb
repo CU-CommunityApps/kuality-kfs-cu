@@ -12,11 +12,14 @@ And /^I (#{AccountPage::available_buttons}) an Account$/ do |button|
       page.save
     end
   else
+    button.gsub!(' ', '_')
     @account = create AccountObject, press: button
+    sleep 10 if button == 'blanket_approve'
   end
 end
 
 When /^I (#{AccountPage::available_buttons}) the Account$/ do |button|
+
   button.gsub!(' ', '_')
   @account.send(button)
   sleep 10 if button == 'blanket_approve'
