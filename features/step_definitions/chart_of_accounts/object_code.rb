@@ -1,14 +1,16 @@
-And /^I create an Object Code document$/ do
-  @object_code = create ObjectCodeObject
+And /^I (#{ObjectCodePage::available_buttons}) an Object Code document$/ do |button|
+  button.gsub!(' ', '_')
+  @object_code = create ObjectCodeObject, press: button
 end
 
-When /^I Blanket Approve the document$/ do
-  on(ObjectCodePage).blanket_approve
+When /^I (#{ObjectCodePage::available_buttons}) the Object Code document$/ do |button|
+  button.gsub!(' ', '_')
+  @object_code.send(button)
+  sleep 10 if button == 'blanket_approve'
 end
 
 Then /^I should see the Object Code document in the object code search results$/ do
-  visit(MainPage).object_code
-
+  on(MainPage).object_code
   on ObjectCodeLookupPage do |page|
     page.object_code.fit @object_code.object_code
     page.search
@@ -17,12 +19,12 @@ Then /^I should see the Object Code document in the object code search results$/
 end
 
 And /^I edit an Object Code document with object code (.*)$/ do |the_object_code|
-  @object_code = make ObjectCodeObject
+  @object_code = make ObjectCodeObject, object_code: the_object_code
 
   visit(MainPage).object_code
 
   on ObjectCodeLookupPage do |page|
-    page.object_code.set the_object_code
+    page.object_code.set @object_code.object_code
     page.search
     page.edit_item(the_object_code)
   end
@@ -39,20 +41,54 @@ Then /^The object code should show an error that says "(.*?)"$/ do |error|
   on(ObjectCodePage).errors.should include error
 end
 
+And /^I enter a valid Reports to Object Code$/ do
+  on ObjectCodePage do |page|
+    page.search_reports_to_object_code
+  end
 
-And /^I edit an Object Code$/ do
+  on ObjectCodeLookupPage do |page|
+    page.object_code.set ''
+    page.search
+    page.return_random
+  end
+
+  on ObjectCodePage do |page|
+    @object_code.reports_to_object_code = page.reports_to_object_code.value
+    page.description.set @object_code.description
+  end
+
+end
+
+When /^I Lookup the Object Code (.*)$/ do |the_object_code|
+  visit(MainPage).object_code
+
+  on ObjectCodeLookupPage do |page|
+    page.object_code.set the_object_code
+    page.search
+    page.edit_item(@object_code.object_code)
+  end
+end
+
+Then /^The Lookup should display the Reports to Object Code$/ do
+  on ObjectCodePage do |page|
+    page.reports_to_object_code.value.should == @object_code.reports_to_object_code
+  end
+end
+
+And /^I edit an Object Code document$/ do
   visit(MainPage).object_code
   on ObjectCodeLookupPage do |page|
     page.search
     page.edit_random
   end
   on ObjectCodePage do |page|
-    @objectCode = make ObjectCodeObject
+    @object_code = make ObjectCodeObject
     page.description.set random_alphanums(40, 'AFT')
-    @objectCode.document_id = page.document_id
+
+    @object_code.document_id = page.document_id
   end
 end
 
-And /^I update the Financial Object Code Descripton$/ do
+And /^I update the Financial Object Code Description/ do
   on(ObjectCodePage).financial_object_code_description.set random_alphanums(60, 'AFT')
 end

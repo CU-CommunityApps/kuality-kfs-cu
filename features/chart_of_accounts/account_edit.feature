@@ -47,7 +47,7 @@ Feature: Account Edit
   Scenario: Edit an Account as KFS Chart Admin
     Given I am am logged in as a KFS Chart Administrator
     And   I edit an Account
-    When  I blanket approve the Account
+    When  I blanket approve the Account document
     Then  the Account Maintenance Document goes to PROCESSED
 
   @KFSQA-632
@@ -55,7 +55,7 @@ Feature: Account Edit
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account
     When  I input a lowercase Major Reporting Category Code value
-    When  I blanket approve the Account
+    When  I blanket approve the Account document
     Then  the Account Maintenance Document goes to PROCESSED
     Then  the Account Maintenance Document goes to PROCESSED
 
@@ -66,7 +66,7 @@ Feature: Account Edit
     And   I enter Sub Fund Group Code of INFHFO
     And   I enter Sub Fund Program Code of CENTER
     And   I enter Appropriation Account Number of LTIP
-    When  I blanket approve the Account
+    When  I blanket approve the Account document
     Then  the Account Maintenance Document goes to PROCESSED
 
   @KFSQA-619
@@ -76,7 +76,7 @@ Feature: Account Edit
     And   I enter Sub Fund Group Code of INFHFO
     And   I enter Sub Fund Program Code of CENTER
     And   I enter Appropriation Account Number of C771503
-    When  I submit the Account
+    When  I submit the Account document
     Then  an error in the Account Maintenance tab should say "Appropriation Account Number C771503 is not associated with Sub-Fund Group Code INFHFO."
 
   @KFSQA-586 @wip

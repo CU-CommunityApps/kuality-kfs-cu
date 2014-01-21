@@ -5,7 +5,8 @@ require 'headless'
 
 @config = YAML.load_file("#{File.dirname(__FILE__)}/config.yml")[:basic]
 
-$base_url = @config[:url]
+$base_url = @config[:kfs_url]
+$base_rice_url = @config[:rice_url]
 if ENV['URL']
   $base_url = ENV['URL']
 end
@@ -49,5 +50,5 @@ After do |scenario|
 end
 
 if !ENV['DEBUG']
-  at_exit { kuality.browser.close }
+#  at_exit { kuality.browser.close }
 end
