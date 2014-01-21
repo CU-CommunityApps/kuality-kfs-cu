@@ -16,7 +16,7 @@ And /^I (#{AccountPage::available_buttons}) an Account document$/ do |button|
   end
 end
 
-And /^I copy an Account$/ do |button|
+And /^I copy an Account$/ do
   steps %{
     Given I access Account Lookup
     And   I search for all accounts
