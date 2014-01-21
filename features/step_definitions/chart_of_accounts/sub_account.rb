@@ -10,7 +10,7 @@ When /^I (#{SubAccountPage::available_buttons}) the Sub-Account document$/ do |b
 end
 
 And /^I Create a Sub-Account with Sub-Account Type CS$/ do
-  @sub_account = create SubAccountObject, type_code: 'CS', press: SubAccountPage::SAVE
+  @sub_account = create SubAccountObject, type_code: 'CS', press: :save
 end
 
 When /^I tab away from the Account Number field$/ do

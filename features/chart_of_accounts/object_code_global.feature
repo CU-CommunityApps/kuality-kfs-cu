@@ -17,5 +17,5 @@ Feature: Object Code Global
   Scenario: Create an Object Code with a validated CR Reporting Code
     Given   I am logged in as a KFS Chart Manager
     And     I save an Object Code Global document
-    When    I blanket approve the Object Code document
+    When    I blanket approve the Object Code Global document
     Then    The Object Code Global document status should be PROCESSED
