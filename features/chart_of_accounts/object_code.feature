@@ -26,7 +26,7 @@ Feature: Object Code
     Given  I am logged in as a KFS Chart Manager
     And     I edit an Object Code document with object code 1111
     And     I enter a valid Reports to Object Code
-    And     I Submit the Object Code document
+    And     I submit the Object Code document
     When    I Lookup the Object Code 1111
     Then    The Lookup should display the Reports to Object Code
 
