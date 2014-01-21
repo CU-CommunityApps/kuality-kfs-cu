@@ -1,4 +1,4 @@
-And /^I create an Account Global eDoc$/ do
+And /^I create an Account Global Maintenance document$/ do
   @account_global = create AccountGlobalObject
 end
 
@@ -21,19 +21,66 @@ Then /^I should see a list of Major Reporting Category Codes$/ do
   end
 end
 
-And /^I create an Account Global maintenance document with multiple accounting lines$/ do
+And /^I create an Account Global Maintenance document with multiple accounting lines$/ do
   @account_global = create AccountGlobalObject,
+                           supervisor_principal_name:  '',
+                           manager_principal_name: '',
+                           org_cd:               '',
+                           sub_fnd_group_code:   '',
+                           acct_expire_date:     '',
+                           postal_code:            '',
+                           city:                 '',
+                           state:                '',
+                           address:              '',
+                           contintuation_coa_code: '',
+                           contintuation_acct_number: '',
+                           income_stream_financial_cost_cd:  '',
+                           income_stream_account_number:     '',
+                           sufficient_funds_cd:    '',
                            add_multiple_accounting_lines: 'yes',
                            search_account_number: '10007*'
 end
 
-When /^I submit the Account Global maintenance document$/ do
+When /^I submit the Account Global Maintenance document$/ do
   @account_global.submit
 end
 
-Then /^the Account Global maintenance document should go to final$/ do
+Then /^The Account Global Maintenance document will become (.*)/ do |status|
   on AccountGlobalPage do |page|
+    sleep 10
     page.reload
-    page.document_status.should == 'FINAL'
+    page.document_status.should == status
   end
+end
+end
+
+  When /^I create a Account Global Maintenance document with a Major Reporting Category Code of (.*)$/ do |value_for_field|
+  @account_global = create AccountGlobalObject,
+                           supervisor_principal_name:  '',
+                           manager_principal_name: '',
+                           org_cd:               '',
+                           sub_fnd_group_code:   '',
+                           acct_expire_date:     '',
+                           postal_code:            '',
+                           city:                 '',
+                           state:                '',
+                           address:              '',
+                           contintuation_coa_code: '',
+                           contintuation_acct_number: '',
+                           income_stream_financial_cost_cd:  '',
+                           income_stream_account_number:     '',
+                           sufficient_funds_cd:    '',
+                           major_reporting_category_code: "#{value_for_field}"
+  # TODO: It would be nice if this could be obtained either through a search or a service, instead of being hard-coded.
+  #changed this code to allow for user to enter valid and invalid major reporting category code for 2 different tests
+end
+#
+When /^I enter a valid Major Reporting Category Code of (.*)$/ do |value_of_field|
+  on AccountGlobalPage do |page|
+    page.major_reporting_category_code.fit "#{value_of_field}"
+  end
+end
+
+Then /^account global should show an error that says "(.*?)"$/ do |error|
+  on(AccountGlobalPage).errors.should include error
 end
