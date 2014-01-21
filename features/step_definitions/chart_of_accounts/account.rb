@@ -237,7 +237,6 @@ end
 
 Then(/^an empty error should appear$/) do
   on AccountPage do |page|
-    page.left_errmsg_tabs.should exist
-
+    page.error_message_of('').should exist
   end
 end
