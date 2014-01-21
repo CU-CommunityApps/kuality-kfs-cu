@@ -1,6 +1,6 @@
-When /^I blanket approve a Pre-Encumbrance Document for the random Account$/ do
+When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance Document for the random Account$/ do |button|
   # Note: You must have captured the account number of the random account in a previous step to use this step.
-  @preencumbrance = create PreEncumbranceObject, encumbrance_account_number: @account_number, press: PreEncumbrancePage::BLANKET_APPROVE
+  @preencumbrance = create PreEncumbranceObject, encumbrance_account_number: @account_number, press: button.gsub(' ', '_')
 end
 
 Then /^the Pre-Encumbrance posts a GL Entry with one of the following statuses$/ do |required_statuses|
@@ -43,5 +43,5 @@ When /^I disencumber the Account$/ do
   # Note: You must have captured the account number of the random account in a previous step to use this step.
   @preencumbrance = create PreEncumbranceObject, disencumbrance_account_number: @account_number,
                                                  disencumbrance_reference_number: @preencumbrance.disencumbrance_reference_number,
-                                                 press: PreEncumbrancePage::BLANKET_APPROVE
+                                                 press: :blanket_approve
 end
