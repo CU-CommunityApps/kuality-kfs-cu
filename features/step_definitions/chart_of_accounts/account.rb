@@ -1,4 +1,5 @@
 And /^I (#{AccountPage::available_buttons}) an Account$/ do |button|
+  button.gsub!(' ', '_')
   if button == 'copy'
     steps %{
       Given I access Account Lookup
@@ -18,8 +19,32 @@ end
 
 When /^I (#{AccountPage::available_buttons}) the Account$/ do |button|
   button.gsub!(' ', '_')
-  @account.send(button)
-  sleep 10 if button == 'blanket_approve'
+  if button == 'close'
+    random_account_number = ''
+    visit(MainPage).account
+    on AccountLookupPage do |page|
+      random_account_number = page.get_random_account_number
+
+      page.account_number.fit @account_number
+      page.search
+      page.edit_item(@account_number.upcase)
+    end
+    on AccountPage do |edit_page|
+      @document_id = edit_page.document_id
+
+      edit_page.description.fit 'Closing the account'
+      edit_page.expiration_date.fit right_now[:date_w_slashes]
+      edit_page.continuation_number.fit random_account_number
+      edit_page.continuation_chart_code.select 'IT - Ithaca Campus'
+
+      edit_page.closed.set
+
+      edit_page.submit
+    end
+  else
+    @account.send(button)
+    sleep 10 if button == 'blanket_approve'
+  end
 end
 
 And /^I save an Account with a lower case Sub Fund Program$/ do
@@ -208,29 +233,5 @@ And /^I clone a random Account with the following changes:$/ do |table|
     page.chart_code.fit updates['Chart Code']
     page.number.fit @account_number
     page.blanket_approve
-  end
-end
-
-When /^I close the Account$/ do
-  random_account_number = ''
-  visit(MainPage).account
-  on AccountLookupPage do |page|
-    random_account_number = page.get_random_account_number
-
-    page.account_number.fit @account_number
-    page.search
-    page.edit_item(@account_number.upcase)
-  end
-  on AccountPage do |edit_page|
-    @document_id = edit_page.document_id
-
-    edit_page.description.fit 'Closing the account'
-    edit_page.expiration_date.fit right_now[:date_w_slashes]
-    edit_page.continuation_number.fit random_account_number
-    edit_page.continuation_chart_code.select 'IT - Ithaca Campus'
-
-    edit_page.closed.set
-
-    edit_page.submit
   end
 end
