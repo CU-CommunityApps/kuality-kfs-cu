@@ -38,8 +38,8 @@ And /^I (.*) an Account Global Maintenance document with multiple accounting lin
                            press: button
 end
 
-When /^I (.*) the Account Global Maintenance document$/ do |button|
-  button.gsub!(' ', '_').downcase!
+When /^I (#{AccountGlobalPage::available_buttons}) the Account Global Maintenance document$/ do |button|
+  button.gsub!(' ', '_')
   @account_global.send(button)
   sleep 10 if button == 'blanket_approve'
 end

@@ -5,7 +5,7 @@ And /^I (#{AdvanceDepositPage::available_buttons}) an AD document$/ do |button|
 end
 
 When /^I (#{AdvanceDepositPage::available_buttons}) the AD document$/ do |button|
-  button.gsub!(' ', '_').downcase!
+  button.gsub!(' ', '_')
   @advance_deposit.view
   @advance_deposit.send(button)
   sleep 10 if button == 'blanket_approve'
