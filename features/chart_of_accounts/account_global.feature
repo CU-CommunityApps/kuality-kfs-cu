@@ -46,5 +46,5 @@ Feature: Global Account
   Scenario: Create Account Global eDoc with blank fields KFSQA-571
     Given I am logged in as a KFS Chart Manager
     And   I create an Account Global eDoc with blank Fiscal Officer Principal Name, Account Supervisor Principal Name, Account Manager Name, and CFDA fields
-    When  I submit the Account Global maintenance document
-    Then  the Account Global maintenance document should go to final
+    When  I submit the Account Global Maintenance document
+    Then  The Account Global Maintenance document will become FINAL

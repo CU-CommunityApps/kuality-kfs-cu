@@ -52,7 +52,6 @@ Then /^The Account Global Maintenance document will become (.*)/ do |status|
     page.document_status.should == status
   end
 end
-end
 
   When /^I create a Account Global Maintenance document with a Major Reporting Category Code of (.*)$/ do |value_for_field|
   @account_global = create AccountGlobalObject,
