@@ -21,6 +21,6 @@ Feature: Sub Account
     And     I am logged in as the FO of the Account
     And     The Sub-Account document should be in my action list
     And     I approve the document
-    When    I am logged in as a Contract and Grant Processor
-    And     The Sub-Account document should be in my action list
+#    When    I am logged in as a Contract and Grant Processor
+#    And     The Sub-Account document should be in my action list
     Then    the Sub-Account document goes to FINAL
