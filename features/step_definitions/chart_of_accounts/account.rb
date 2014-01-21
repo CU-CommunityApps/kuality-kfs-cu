@@ -1,19 +1,6 @@
 And /^I (#{AccountPage::available_buttons}) an Account document$/ do |button|
-  if button == 'copy'
-    steps %{
-      Given I access Account Lookup
-      And   I search for all accounts
-    }
-    on AccountLookupPage do |page|
-      page.copy_random
-    end
-    on AccountPage do |page|
-      page.description.set 'testing copy'
-      page.save
-    end
-  else
-    @account = create AccountObject, press: button
-  end
+  button.gsub!(' ', '_')
+  @account = create AccountObject, press: button
 end
 
 And /^I copy an Account$/ do
