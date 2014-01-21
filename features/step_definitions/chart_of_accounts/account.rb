@@ -1,4 +1,4 @@
-And /^I (#{AccountPage::available_buttons}) an Account$/ do |button|
+And /^I (#{AccountPage::available_buttons}) an Account document$/ do |button|
   if button == 'copy'
     steps %{
       Given I access Account Lookup
@@ -16,7 +16,21 @@ And /^I (#{AccountPage::available_buttons}) an Account$/ do |button|
   end
 end
 
-When /^I (#{AccountPage::available_buttons}) the Account$/ do |button|
+And /^I copy an Account$/ do |button|
+  steps %{
+    Given I access Account Lookup
+    And   I search for all accounts
+  }
+  on AccountLookupPage do |page|
+    page.copy_random
+  end
+  on AccountPage do |page|
+    page.description.set 'testing copy'
+    page.save
+  end
+end
+
+When /^I (#{AccountPage::available_buttons}) the Account document$/ do |button|
   button.gsub!(' ', '_')
   @account.send(button)
   sleep 10 if button == 'blanket_approve'

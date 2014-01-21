@@ -1,4 +1,4 @@
-When /^I (#{AccountDelegatePage::available_buttons}) an Account Delegate$/ do |button|
+When /^I (#{AccountDelegatePage::available_buttons}) an Account Delegate document$/ do |button|
   @accountDelegate = create AccountDelegateObject, press: button
 end
 

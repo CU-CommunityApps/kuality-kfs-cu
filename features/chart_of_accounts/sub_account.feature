@@ -17,10 +17,10 @@ Feature: Sub Account
   Scenario: Create a Sub-Account with Sub-Account Type CS and verity routing to CG Processor.
     Given   I am logged in as a KFS User
     And     I Create a Sub-Account with Sub-Account Type CS
-    And     I submit the Sub-Account
+    And     I submit the Sub-Account document
     And     I am logged in as the FO of the Account
     And     The Sub-Account document should be in my action list
-    And     I approve the document
+    And     I approve the Sub-Account document
 #    When    I am logged in as a Contract and Grant Processor
 #    And     The Sub-Account document should be in my action list
     Then    the Sub-Account document goes to FINAL

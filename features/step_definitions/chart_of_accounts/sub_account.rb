@@ -24,10 +24,6 @@ Then /^The Indirect Cost Rate ID field should not be null$/ do
   on(SubAccountPage).icr_identifier.value.should == ''
 end
 
-And /^I submit the Sub-Account$/ do
-  @sub_account.submit
-end
-
 
 And /^I am logged in as the FO of the Account$/ do
   sleep(1)
@@ -43,11 +39,6 @@ And /^The Sub-Account document should be in my action list$/ do
     on(ActionList).last
   end
   on(ActionList).result_item(@sub_account.document_id).should exist
-end
-
-And /^I approve the document$/ do
-  @sub_account.view
-  @sub_account.approve
 end
 
 When(/^I am logged in as a Contract and Grant Processor$/) do

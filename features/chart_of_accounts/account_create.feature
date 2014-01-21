@@ -11,7 +11,7 @@ Feature: KFS Fiscal Officer Account Creation
   @smoke @pending
   Scenario: Create an Account
     Given I am logged in as a KFS Fiscal Officer
-    When  I blanket approve an Account
+    When  I blanket approve an Account document
     Then  the Account Maintenance Document goes to PROCESSED
 
   @KFSQA-554
