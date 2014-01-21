@@ -2,6 +2,10 @@ And /^I create an Account Global Maintenance document$/ do
   @account_global = create AccountGlobalObject
 end
 
+And(/^I create an Account Global eDoc with blank Fiscal Officer Principal Name, Account Supervisor Principal Name, Account Manager Name, and CFDA fields$/) do
+  @account_global = create AccountGlobalObject, fo_principal_name: '', supervisor_principal_name: '', manager_principal_name: '', cfda_number: ''
+end
+
 And /^I perform a Major Reporting Category Code Lookup$/ do
   on AccountGlobalPage do |page|
     page.major_reporting_code_lookup

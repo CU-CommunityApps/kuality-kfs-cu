@@ -6,6 +6,8 @@ Feature: Global Account
   because it is a Cornell specific field.
   [KFSQA-577] As a KFS Chart Manager I want to add multiple account lines to the Account Global using Organizational Codes
               because this will save me time.
+  [KFSQA-571] Summary: As a KFS Chart Manager I want create a Account Global eDoc with blank Fiscal Officer Principal Name,
+              Account Supervisor Principal Name, Account Manager Name and CFDA fields because they are not required.
   [KFSQA-618] As a KFS Fiscal Officer I need to create an account with a Major Reporting Category Code field
               because I need to manage in-year financial activity, fund balances and year-end reporting.
 
@@ -40,3 +42,9 @@ Feature: Global Account
     And   I submit the Account Global Maintenance document
     Then  The Account Global Maintenance document will become FINAL
 
+  @KFSQA-571
+  Scenario: Create Account Global eDoc with blank fields KFSQA-571
+    Given I am logged in as a KFS Chart Manager
+    And   I create an Account Global eDoc with blank Fiscal Officer Principal Name, Account Supervisor Principal Name, Account Manager Name, and CFDA fields
+    When  I submit the Account Global Maintenance document
+    Then  The Account Global Maintenance document will become FINAL
