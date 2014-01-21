@@ -12,7 +12,7 @@ end
 
 When /^I blanket approve the Account$/ do
   @account.blanket_approve
-  sleep(10)
+  sleep(5)
 end
 
 Then /^the Account Maintenance Document goes to (.*)/ do |doc_status|
