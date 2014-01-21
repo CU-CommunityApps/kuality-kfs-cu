@@ -3,7 +3,7 @@ Feature: Global Account
   [KFSQA-604] As a KFS Fiscal Officer I need to perform a lookup on the Major Reporting Category Code field
               because I need to manage in-year financial activity, fund balances and year-end reporting.
   [KFSQA-572] As a KFS Chart Manager I want create a Account Global Maintenance document with a Major Reporting Category,
-  because it is a Cornell specific field.
+              because it is a Cornell specific field.
   [KFSQA-577] As a KFS Chart Manager I want to add multiple account lines to the Account Global using Organizational Codes
               because this will save me time.
   [KFSQA-618] As a KFS Fiscal Officer I need to create an account with a Major Reporting Category Code field

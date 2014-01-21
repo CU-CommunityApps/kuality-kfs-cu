@@ -1,10 +1,11 @@
 Feature: Object Code
 
   [KFSQA-594] As a KFS Chart Manager, when creating an Object Code, the CG Reporting Code will validate against
-  the CG Reporting Code Maintenance Table. Validated CG Reporting Codes will enable this document to route to processed or final.
-  Invalid CG Reporting Codes will produce an error message.
-  [KFSQA-580] Bug: Object Code Global dropping values of Reports To Object Code. As a KFS Chart Manager I want to enter an Object Code Global and know it will update the Reports to Object Code with my input because this will eliminate subsequent manual rework.
-
+              the CG Reporting Code Maintenance Table. Validated CG Reporting Codes will enable this document
+              to route to processed or final. Invalid CG Reporting Codes will produce an error message.
+  [KFSQA-580] Object Code Global dropping values of Reports To Object Code. As a KFS Chart Manager I want to
+              enter an Object Code Global and know it will update the Reports to Object Code with my input
+              because this will eliminate subsequent manual rework.
 
   @KFSQA-594
   Scenario: Create an Object Code and Object Code Global and Blanket Approve it.

@@ -1,8 +1,9 @@
 Feature: Object Code Global
 
-  [KFSQA-639] As a KFS Chart Manager, when creating an Object Code, the CG Reporting Code will validate against
-  the CG Reporting Code Maintenance Table. Validated CG Reporting Codes will enable this document to route to processed or final.
-  Invalid CG Reporting Codes will produce an error message.
+  [KFSQA-639] As a KFS Chart Manager, when creating an Object Code, the CG Reporting Code will validate
+              against the CG Reporting Code Maintenance Table. Validated CG Reporting Codes will enable
+              this document to route to processed or final. Invalid CG Reporting Codes will produce an
+              error message.
 
   @KFSQA-639 @pending
   Scenario: Create an Object Code Global with an invalid CR Reporting Code and get an error message
