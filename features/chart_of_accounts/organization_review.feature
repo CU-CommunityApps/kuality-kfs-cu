@@ -15,4 +15,4 @@ Feature: Organization Review
     Given   I am logged in as a KFS Chart Manager
     And     I create an Organization Review
     When    I Blanket Approve the Organization Review document
-    Then    the Organization Review Role Maintenance Document goes to FINAl
+    Then    the Organization Review Role Maintenance Document goes to FINAL
