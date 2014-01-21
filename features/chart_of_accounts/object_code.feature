@@ -8,7 +8,7 @@ Feature: Object Code
   Scenario: Create an Object Code and Object Code and Blanket Approve it.
     Given   I am logged in as a KFS Chart Manager
     And     I create an Object Code document
-    When    I Blanket Approve the document
+    When    I Blanket Approve the Object Code document
     Then    I should see the Object Code document in the object code search results
 
   @KFSQA-594
@@ -16,5 +16,5 @@ Feature: Object Code
     Given   I am logged in as a KFS Chart Manager
     And     I edit an Object Code document with object code 6500
     And     I enter invalid CG Reporting Code of ZZZZ
-    When    I Blanket Approve the document
+    When    I Blanket Approve the Object Code document
     Then    The object code should show an error that says "CG Reporting Code (ZZZZ) for Chart Code (CS) does not exist."

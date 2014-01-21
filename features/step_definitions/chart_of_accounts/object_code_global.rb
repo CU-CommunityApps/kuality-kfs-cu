@@ -28,3 +28,6 @@ Then /^The Object Code Global document status should be PROCESSED$/ do
 end
 
 
+When /^I Blanket Approve the Object Code Global document$/ do
+  on(ObjectCodeGlobalPage).blanket_approve
+end
