@@ -1,39 +1,11 @@
-And /^I (#{AccountPage::available_buttons}) an Account document$/ do |button|
-  if button == 'copy'
-    steps %{
-      Given I access Account Lookup
-      And   I search for all accounts
-    }
-    on AccountLookupPage do |page|
-      page.copy_random
-    end
-    on AccountPage do |page|
-      page.description.set 'testing copy'
-      page.save
-    end
-  else
-    @account = create AccountObject, press: button
-  end
-end
-
-And /^I copy an Account$/ do |button|
-  steps %{
-    Given I access Account Lookup
-    And   I search for all accounts
-  }
-  on AccountLookupPage do |page|
-    page.copy_random
-  end
-  on AccountPage do |page|
-    page.description.set 'testing copy'
-    page.save
-  end
+And /^I create an Account/ do
+  @account = create AccountObject
 end
 
 When /^I (#{AccountPage::available_buttons}) the Account document$/ do |button|
   button.gsub!(' ', '_')
   @account.send(button)
-  sleep 10 if button == 'blanket_approve'
+  sleep 5 if button == 'blanket_approve'
 end
 
 And /^I save an Account with a lower case Sub Fund Program$/ do
@@ -54,27 +26,6 @@ end
 
 Then /^I should get an error on saving that I left the SubFund Group Code field blank$/ do
   on(AccountPage).errors.should include 'Sub-Fund Group Code (SubFundGrpCd) is a required field.'
-end
-
-
-And /^I copy an Account$/ do
-  steps %{
-    Given I access Account Lookup
-    And   I search for all accounts
-  }
-  on AccountLookupPage do |page|
-    page.copy_random
-  end
-  on AccountPage do |page|
-    page.description.set 'AFT testing copy'
-    page.chart_code.set 'IT' #TODO get from config
-    number = random_alphanums(4, 'AFT')
-    page.number.set number
-    page.save
-    @account = make AccountObject
-    @account.number = number
-    @account.document_id = page.document_id
-  end
 end
 
 Then /^the Account Maintenance Document saves with no errors$/  do
@@ -264,8 +215,24 @@ And /^I enter a Continuation Account Number that equals the Account Number$/ do
   end
 end
 
-Then(/^an empty error should appear$/) do
+Then /^an empty error should appear$/ do
   on AccountPage do |page|
     page.error_message_of('').should exist
+  end
+end
+
+And /^I copy an Account$/ do
+  on AccountLookupPage do |page|
+    page.copy_random
+  end
+  on AccountPage do |page|
+    page.description.set 'AFT testing copy'
+    page.chart_code.set 'IT' #TODO get from config
+    number = random_alphanums(4, 'AFT')
+    page.number.set number
+    page.save
+    @account = make AccountObject
+    @account.number = number
+    @account.document_id = page.document_id
   end
 end

@@ -82,11 +82,13 @@ Feature: Account Edit
   @KFSQA-586 @wip
   Scenario: Try to continue an Account to itself
     Given   I am logged in as a KFS Chart Manager
+    And     I access Account Lookup
+    And     I search for all accounts
     And     I copy an Account
-    And     I blanket approve the Account
+    And     I blanket approve the Account document
     And     I edit the Account
     And     I close the Account
     And     I enter a Continuation Account Number that equals the Account Number
     And     I enter a Continuation Chart Of Accounts Code that equals the Chart of Account Code
-    When    I blanket approve the Account
+    When    I blanket approve the Account document
     Then    an empty error should appear
