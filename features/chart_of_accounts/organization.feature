@@ -7,5 +7,5 @@ Feature: Organization
     Given I am logged in as a KFS Chart Administrator
     And   I copy an Organization
     And   I make the Organization inactive
-    When  I blanket approve the Organization
+    When  I blanket approve the Organization document
     Then  the Organization Maintenance Document goes to PROCESSED

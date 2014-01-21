@@ -1,4 +1,5 @@
 And /^I (#{AccountGlobalPage::available_buttons}) an Account Global Maintenance document$/ do |button|
+  button.gsub!(' ', '_')
   @account_global = create AccountGlobalObject, press: button
 end
 

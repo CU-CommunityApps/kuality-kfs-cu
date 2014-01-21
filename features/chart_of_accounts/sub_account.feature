@@ -9,7 +9,7 @@ Feature: Sub Account
   @KFSQA-590
   Scenario: Verify “null” does not display in the ICR ID field when I create a Sub-Account
     Given I am logged in as a KFS Chart Manager
-    And   I save a Sub-Account
+    And   I save a Sub-Account document
     When  I tab away from the Account Number field
     Then  The Indirect Cost Rate ID field should not be null
 

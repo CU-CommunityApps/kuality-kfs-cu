@@ -1,4 +1,5 @@
-And /^I (#{SubObjectCodeGlobalPage::available_buttons}) a Sub-Object Code Global$/ do |button|
+And /^I (#{SubObjectCodeGlobalPage::available_buttons}) a Sub-Object Code Global document$/ do |button|
+  button.gsub!(' ', '_')
   @sub_object_code_global = create SubObjectCodeGlobalObject, press: button
 end
 

@@ -1,4 +1,5 @@
 And /^I (#{ObjectCodePage::available_buttons}) an Object Code document$/ do |button|
+  button.gsub!(' ', '_')
   @object_code = create ObjectCodeObject, press: button
 end
 
@@ -74,7 +75,7 @@ Then /^The Lookup should display the Reports to Object Code$/ do
   end
 end
 
-And /^I edit an Object Code$/ do
+And /^I edit an Object Code document$/ do
   visit(MainPage).object_code
   on ObjectCodeLookupPage do |page|
     page.search

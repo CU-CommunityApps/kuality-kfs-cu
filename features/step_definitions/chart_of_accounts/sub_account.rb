@@ -1,4 +1,5 @@
-And /^I (#{SubAccountPage::available_buttons}) a Sub-Account$/ do |button|
+And /^I (#{SubAccountPage::available_buttons}) a Sub-Account document$/ do |button|
+  button.gsub!(' ', '_')
   @sub_account = create SubAccountObject, press: button
 end
 
