@@ -6,7 +6,7 @@ end
 When /^I (#{ObjectCodeGlobalPage::available_buttons}) the Object Code Global document$/ do |button|
   button.gsub!(' ', '_')
   on(ObjectCodeGlobalPage).send(button)
-  sleep 10 if button == 'blanket_approve'
+  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
 end
 
 And /^I enter an invalid CG Reporting Code of (.*)$/ do |invalid_code|

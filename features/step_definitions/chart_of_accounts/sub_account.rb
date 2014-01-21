@@ -5,8 +5,9 @@ end
 
 When /^I (#{SubAccountPage::available_buttons}) the Sub-Account document$/ do |button|
   button.gsub!(' ', '_')
-  on(SubAccountPage).send(button)
-  sleep 10 if button == 'blanket_approve'
+  @sub_account.view
+  @sub_account.send(button)
+  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
 end
 
 And /^I Create a Sub-Account with Sub-Account Type CS$/ do

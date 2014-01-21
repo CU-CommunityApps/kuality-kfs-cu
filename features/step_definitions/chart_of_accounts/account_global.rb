@@ -46,7 +46,7 @@ end
 When /^I (#{AccountGlobalPage::available_buttons}) the Account Global Maintenance document$/ do |button|
   button.gsub!(' ', '_')
   @account_global.send(button)
-  sleep 10 if button == 'blanket_approve'
+  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
 end
 
 Then /^The Account Global Maintenance document will become (.*)/ do |status|

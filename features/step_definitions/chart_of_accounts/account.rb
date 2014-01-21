@@ -1,19 +1,6 @@
 And /^I (#{AccountPage::available_buttons}) an Account document$/ do |button|
-  if button == 'copy'
-    steps %{
-      Given I access Account Lookup
-      And   I search for all accounts
-    }
-    on AccountLookupPage do |page|
-      page.copy_random
-    end
-    on AccountPage do |page|
-      page.description.set 'testing copy'
-      page.save
-    end
-  else
-    @account = create AccountObject, press: button
-  end
+  button.gsub!(' ', '_')
+  @account = create AccountObject, press: button
 end
 
 And /^I copy an Account$/ do
@@ -33,7 +20,7 @@ end
 When /^I (#{AccountPage::available_buttons}) the Account document$/ do |button|
   button.gsub!(' ', '_')
   @account.send(button)
-  sleep 10 if button == 'blanket_approve'
+  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
 end
 
 And /^I save an Account with a lower case Sub Fund Program$/ do

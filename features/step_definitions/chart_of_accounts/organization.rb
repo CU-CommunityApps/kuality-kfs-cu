@@ -5,10 +5,8 @@ end
 
 When /^I (#{OrganizationPage::available_buttons}) the Organization document$/ do |button|
   button.gsub!(' ', '_')
-  on OrganizationPage do |page|
-    page.send(button)
-  end
-  sleep 10 if button == 'blanket_approve'
+  on(OrganizationPage).send(button)
+  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
 end
 
 And /^I make the Organization inactive$/ do

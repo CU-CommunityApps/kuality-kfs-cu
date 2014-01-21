@@ -6,7 +6,7 @@ end
 When /^I (#{ObjectCodePage::available_buttons}) the Object Code document$/ do |button|
   button.gsub!(' ', '_')
   @object_code.send(button)
-  sleep 10 if button == 'blanket_approve'
+  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
 end
 
 Then /^I should see the Object Code document in the object code search results$/ do
