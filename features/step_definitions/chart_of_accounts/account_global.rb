@@ -39,7 +39,7 @@ And /^I (.*) an Account Global Maintenance document with multiple accounting lin
 end
 
 When /^I (.*) the Account Global Maintenance document$/ do |button|
-  button.gsub!(' ', '_')
+  button.gsub!(' ', '_').downcase!
   @account_global.send(button)
   sleep 10 if button == 'blanket_approve'
 end
