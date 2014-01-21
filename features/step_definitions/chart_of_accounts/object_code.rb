@@ -1,15 +1,15 @@
-And /^I create an Object Code document$/ do
-  @object_code = create ObjectCodeObject
+And /^I (#{ObjectCodePage::available_buttons}) an Object Code document$/ do |button|
+  @object_code = create ObjectCodeObject, press: button
 end
 
-When /^I Blanket Approve the Object Code document$/ do
-  #on(ObjectCodePage).blanket_approve
-  @object_code.blanket_approve
+When /^I (#{ObjectCodePage::available_buttons}) the Object Code document$/ do |button|
+  button.gsub!(' ', '_')
+  @object_code.send(button)
+  sleep 10 if button == 'blanket_approve'
 end
 
 Then /^I should see the Object Code document in the object code search results$/ do
-  visit(MainPage).object_code
-
+  on(MainPage).object_code
   on ObjectCodeLookupPage do |page|
     page.object_code.fit @object_code.object_code
     page.search
@@ -40,7 +40,7 @@ Then /^The object code should show an error that says "(.*?)"$/ do |error|
   on(ObjectCodePage).errors.should include error
 end
 
-And(/^I enter a valid Reports to Object Code$/) do
+And /^I enter a valid Reports to Object Code$/ do
   on ObjectCodePage do |page|
     page.search_reports_to_object_code
   end
@@ -58,11 +58,7 @@ And(/^I enter a valid Reports to Object Code$/) do
 
 end
 
-And(/^I Submit the Object Code document$/) do
-  @object_code.submit
-end
-
-When(/^I Lookup the Object Code (.*)$/) do |the_object_code|
+When /^I Lookup the Object Code (.*)$/ do |the_object_code|
   visit(MainPage).object_code
 
   on ObjectCodeLookupPage do |page|
@@ -72,7 +68,7 @@ When(/^I Lookup the Object Code (.*)$/) do |the_object_code|
   end
 end
 
-Then(/^The Lookup should display the Reports to Object Code$/) do
+Then /^The Lookup should display the Reports to Object Code$/ do
   on ObjectCodePage do |page|
     page.reports_to_object_code.value.should == @object_code.reports_to_object_code
   end

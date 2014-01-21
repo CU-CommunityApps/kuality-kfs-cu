@@ -7,7 +7,7 @@ Feature: Advance Deposit
   @KFSQA-608
   Scenario: AD Create Save and continue after batch processes
     Given I am logged in as a KFS User
-    And   I create an AD document
+    And   I save an AD document
     And   Nightly Batch Jobs run
     And   I am logged in as a KFS User
     When  I submit the AD document

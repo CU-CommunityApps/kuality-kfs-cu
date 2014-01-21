@@ -1,5 +1,11 @@
-And /^I create a Sub-Account$/ do
-  @sub_account = create SubAccountObject, press: SubAccountPage::SAVE
+And /^I (#{SubAccountPage::available_buttons}) a Sub-Account$/ do |button|
+  @sub_account = create SubAccountObject, press: button
+end
+
+When /^I (#{SubAccountPage::available_buttons}) the Sub-Account document$/ do |button|
+  button.gsub!(' ', '_')
+  on(SubAccountPage).send(button)
+  sleep 10 if button == 'blanket_approve'
 end
 
 And /^I Create a Sub-Account with Sub-Account Type CS$/ do
