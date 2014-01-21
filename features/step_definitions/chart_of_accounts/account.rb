@@ -185,8 +185,8 @@ And(/^I create an Account with an Appropriation Account Number of (.*) and Sub-F
 
 end
 
-And /^I enter Sub Fund Group Code of (.*)/ do |sub_fnd_group_cd|
-  on(AccountPage).sub_fnd_group_code.set sub_fnd_group_cd
+And /^I enter Sub Fund Group Code of (.*)/ do |sub_fnd_group_code|
+  on(AccountPage).sub_fnd_group_code.set sub_fnd_group_code
 end
 
 And /^I enter Sub Fund Program Code of (.*)/  do |subfund_program_code|

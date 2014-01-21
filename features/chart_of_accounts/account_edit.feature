@@ -79,7 +79,7 @@ Feature: Account Edit
     When  I submit the Account document
     Then  an error in the Account Maintenance tab should say "Appropriation Account Number C771503 is not associated with Sub-Fund Group Code INFHFO."
 
-  @KFSQA-586 @wip
+  @KFSQA-586
   Scenario: Try to continue an Account to itself
     Given   I am logged in as a KFS Chart Manager
     And     I access Account Lookup
