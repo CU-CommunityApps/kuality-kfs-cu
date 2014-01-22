@@ -1,5 +1,10 @@
-And /^I create an Account Global Maintenance document$/ do
-  @account_global = create AccountGlobalObject
+And /^I (#{AccountGlobalPage::available_buttons}) an Account Global Maintenance document$/ do |button|
+  button.gsub!(' ', '_')
+  @account_global = create AccountGlobalObject, press: button
+end
+
+And(/^I create an Account Global eDoc with blank Fiscal Officer Principal Name, Account Supervisor Principal Name, Account Manager Name, and CFDA fields$/) do
+  @account_global = create AccountGlobalObject, fo_principal_name: '', supervisor_principal_name: '', manager_principal_name: '', cfda_number: ''
 end
 
 And /^I perform a Major Reporting Category Code Lookup$/ do
@@ -17,28 +22,31 @@ Then /^I should see a list of Major Reporting Category Codes$/ do
   end
 end
 
-And /^I create an Account Global Maintenance document with multiple accounting lines$/ do
+And /^I (.*) an Account Global Maintenance document with multiple accounting lines$/ do |button|
   @account_global = create AccountGlobalObject,
                            supervisor_principal_name:  '',
                            manager_principal_name: '',
-                           org_cd:               '',
+                           org_code:               '',
                            sub_fnd_group_code:   '',
                            acct_expire_date:     '',
                            postal_code:            '',
                            city:                 '',
                            state:                '',
                            address:              '',
-                           contintuation_coa_code: '',
-                           contintuation_acct_number: '',
-                           income_stream_financial_cost_cd:  '',
+                           continuation_coa_code: '',
+                           continuation_acct_number: '',
+                           income_stream_financial_cost_code:  '',
                            income_stream_account_number:     '',
-                           sufficient_funds_cd:    '',
+                           sufficient_funds_code:    '',
                            add_multiple_accounting_lines: 'yes',
-                           search_account_number: '10007*'
+                           search_account_number: '10007*',
+                           press: button
 end
 
-When /^I submit the Account Global Maintenance document$/ do
-  @account_global.submit
+When /^I (#{AccountGlobalPage::available_buttons}) the Account Global Maintenance document$/ do |button|
+  button.gsub!(' ', '_')
+  @account_global.send(button)
+  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
 end
 
 Then /^The Account Global Maintenance document will become (.*)/ do |status|
@@ -49,27 +57,28 @@ Then /^The Account Global Maintenance document will become (.*)/ do |status|
   end
 end
 
-  When /^I create a Account Global Maintenance document with a Major Reporting Category Code of (.*)$/ do |value_for_field|
+When /^I (.*) a Account Global Maintenance document with a Major Reporting Category Code of (.*)$/ do |button, value_for_field|
   @account_global = create AccountGlobalObject,
                            supervisor_principal_name:  '',
                            manager_principal_name: '',
-                           org_cd:               '',
+                           org_code:               '',
                            sub_fnd_group_code:   '',
                            acct_expire_date:     '',
                            postal_code:            '',
                            city:                 '',
                            state:                '',
                            address:              '',
-                           contintuation_coa_code: '',
-                           contintuation_acct_number: '',
-                           income_stream_financial_cost_cd:  '',
+                           continuation_coa_code: '',
+                           continuation_acct_number: '',
+                           income_stream_financial_cost_code:  '',
                            income_stream_account_number:     '',
-                           sufficient_funds_cd:    '',
-                           major_reporting_category_code: "#{value_for_field}"
+                           sufficient_funds_code:    '',
+                           major_reporting_category_code: "#{value_for_field}",
+                           press: button
   # TODO: It would be nice if this could be obtained either through a search or a service, instead of being hard-coded.
   #changed this code to allow for user to enter valid and invalid major reporting category code for 2 different tests
 end
-#
+
 When /^I enter a valid Major Reporting Category Code of (.*)$/ do |value_of_field|
   on AccountGlobalPage do |page|
     page.major_reporting_category_code.fit "#{value_of_field}"

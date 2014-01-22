@@ -1,4 +1,3 @@
-
 When /^I access Account Lookup$/ do
   visit(MainPage).account
 end
