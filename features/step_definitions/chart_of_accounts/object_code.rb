@@ -42,7 +42,6 @@ And /^I edit an Object Code document$/ do
     page.description.set random_alphanums(40, 'AFT')
     @object_code.document_id = page.document_id
   end
-
 end
 
 And /^I enter invalid CG Reporting Code of (.*)$/ do |the_reporting_code|
@@ -87,20 +86,6 @@ end
 Then /^The Lookup should display the Reports to Object Code$/ do
   on ObjectCodePage do |page|
     page.reports_to_object_code.value.should == @object_code.reports_to_object_code
-  end
-end
-
-And /^I edit an Object Code document$/ do
-  visit(MainPage).object_code
-  on ObjectCodeLookupPage do |page|
-    page.search
-    page.edit_random
-  end
-  on ObjectCodePage do |page|
-    @object_code = make ObjectCodeObject
-    page.description.set random_alphanums(40, 'AFT')
-
-    @object_code.document_id = page.document_id
   end
 end
 

@@ -1,6 +1,7 @@
 And /^I (#{AccountPage::available_buttons}) an Account document$/ do |button|
   button.gsub!(' ', '_')
   @account = create AccountObject, press: button
+  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
 end
 
 When /^I (#{AccountPage::available_buttons}) the Account document$/ do |button|
@@ -31,7 +32,6 @@ end
 
 Then /^the Account Maintenance Document goes to (.*)/ do |doc_status|
   @account.view
-  on(AccountPage).reload
   on(AccountPage).document_status.should == doc_status
 end
 
