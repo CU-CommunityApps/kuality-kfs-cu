@@ -1,18 +1,36 @@
-And /^I create an Account$/ do
+And /^I (#{AccountPage::available_buttons}) an Account document$/ do |button|
+  button.gsub!(' ', '_')
+  @account = create AccountObject, press: button
+end
+
+And /^I create an Account/ do
   @account = create AccountObject
 end
 
-And /^I create an Account with a lower case Sub Fund Program$/ do
-  @account = create AccountObject, sub_fnd_group_cd: 'board', press: AccountPage::SAVE
+And /^I copy an Account$/ do
+  on AccountLookupPage do |page|
+    page.copy_random
+  end
+  on AccountPage do |page|
+    page.description.set 'AFT testing copy'
+    page.chart_code.set 'IT' #TODO get from config
+    number = random_alphanums(4, 'AFT')
+    page.number.set number
+    page.save
+    @account = make AccountObject
+    @account.number = number
+    @account.document_id = page.document_id
+  end
 end
 
-When /^I submit the Account$/ do
-  @account.submit
+When /^I (#{AccountPage::available_buttons}) the Account document$/ do |button|
+  button.gsub!(' ', '_')
+  @account.send(button)
+  sleep 5 if button == 'blanket_approve'
 end
 
-When /^I blanket approve the Account$/ do
-  @account.blanket_approve
-  sleep(10)
+And /^I save an Account with a lower case Sub Fund Program$/ do
+  @account = create AccountObject, sub_fnd_group_cd: 'board', press: :save
 end
 
 Then /^the Account Maintenance Document goes to (.*)/ do |doc_status|
@@ -20,27 +38,12 @@ Then /^the Account Maintenance Document goes to (.*)/ do |doc_status|
   on(AccountPage).document_status.should == doc_status
 end
 
-When /^I create an account with blank SubFund group Code$/ do
-  @account = create AccountObject, sub_fnd_group_cd: '', press: AccountPage::SUBMIT
+When /^I submit an account with blank SubFund group Code$/ do
+  @account = create AccountObject, sub_fnd_group_cd: '', press: :submit
 end
 
 Then /^I should get an error on saving that I left the SubFund Group Code field blank$/ do
   on(AccountPage).errors.should include 'Sub-Fund Group Code (SubFundGrpCd) is a required field.'
-end
-
-
-And /^I copy an Account$/ do
-  steps %{
-    Given I access Account Lookup
-    And   I search for all accounts
-  }
-  on AccountLookupPage do |page|
-    page.copy_random
-  end
-  on AccountPage do |page|
-    page.description.set 'testing copy'
-    page.save
-  end
 end
 
 Then /^the Account Maintenance Document saves with no errors$/  do
@@ -66,7 +69,7 @@ And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
   end
 end
 
-When /^I enter (.*) as an invalid Sub-Fund Program Code$/ do |sub_fund_program_code|
+When /^I enter a Sub-Fund Program Code of (.*)$/ do |sub_fund_program_code|
   on AccountPage do |page|
     @account = make AccountObject
     page.description.set random_alphanums(40, 'AFT')
@@ -87,7 +90,7 @@ end
 And /^I edit an Account with a Sub-Fund Group Code of (.*)/ do |sub_fund_group_code|
   visit(MainPage).account
   on AccountLookupPage do |page|
-    page.sub_fnd_group_cd.set sub_fund_group_code
+    page.sub_fnd_group_cd.fit sub_fund_group_code
     page.search
     page.edit_random
   end
@@ -97,7 +100,7 @@ When /^I enter (.*) as an invalid Major Reporting Category Code$/  do |major_rep
   on AccountPage do |page|
     @account = make AccountObject
     page.description.set random_alphanums(40, 'AFT')
-    page.major_reporting_category_code.set major_reporting_category_code
+    page.major_reporting_category_code.fit major_reporting_category_code
     page.save
   end
 end
@@ -106,7 +109,7 @@ When /^I enter (.*) as an invalid Appropriation Account Number$/  do |appropriat
   on AccountPage do |page|
     @account = make AccountObject
     page.description.set random_alphanums(40, 'AFT')
-    page.appropriation_account_number.set appropriation_account_number
+    page.appropriation_account_number.fit appropriation_account_number
     page.save
   end
 end
@@ -115,12 +118,12 @@ When /^I enter (.*) as an invalid Labor Benefit Rate Category Code$/  do |labor_
   on AccountPage do |page|
     @account = make AccountObject
     page.description.set random_alphanums(40, 'AFT')
-    page.labor_benefit_rate_category_code.set labor_benefit_rate_category_code
+    page.labor_benefit_rate_category_code.fit labor_benefit_rate_category_code
     page.save
   end
 end
 
-When /^I create an Account document with only the ([^"]*) field populated$/ do |field|
+When /^I save an Account document with only the ([^"]*) field populated$/ do |field|
   default_fields = {
       description:          random_alphanums(40, 'AFT'),
       chart_code:           'IT', #TODO grab this from config file
@@ -156,7 +159,7 @@ When /^I create an Account document with only the ([^"]*) field populated$/ do |
       default_fields.each {|k, _| default_fields[k] = '' unless k.to_s.eql?('description') }
   end
 
-  @account = create AccountObject, default_fields
+  @account = create AccountObject, default_fields.merge({press: :save})
 end
 
 And /^I edit an Account$/ do
@@ -169,5 +172,68 @@ And /^I edit an Account$/ do
     @account = make AccountObject
     page.description.set random_alphanums(40, 'AFT')
     @account.document_id = page.document_id
+  end
+end
+
+When /^I input a lowercase Major Reporting Category Code value$/  do
+  on(AccountPage).major_reporting_category_code.set == 'FACULTY' #TODO parameterize
+end
+
+And(/^I create an Account with an Appropriation Account Number of (.*) and Sub-Fund Program Code of (.*)/) do |appropriation_accountNumber, subfund_program_code|
+  @account = create AccountObject
+  on AccountPage do |page|
+    page.appropriation_account_number.set appropriation_accountNumber
+    page.subfund_program_code.set subfund_program_code
+    @account.document_id = page.document_id
+  end
+
+end
+
+And /^I enter Sub Fund Group Code of (.*)/ do |sub_fnd_group_cd|
+  on(AccountPage).sub_fnd_group_cd.set sub_fnd_group_cd
+end
+
+And /^I enter Sub Fund Program Code of (.*)/  do |subfund_program_code|
+  on(AccountPage).subfund_program_code.set subfund_program_code
+end
+
+And /^I enter Appropriation Account Number of (.*)/  do |appropriation_account_number|
+  on(AccountPage).appropriation_account_number.set appropriation_account_number
+end
+
+And /^I close the Account$/ do
+  on AccountPage do |page|
+    page.closed.select
+    page.account_expiration_date.set page.effective_date.value
+  end
+end
+
+And /^I edit the Account$/ do
+  visit(MainPage).account
+  on AccountLookupPage do |page|
+    page.number.set @account.number
+    page.search
+    page.edit_random
+  end
+  on AccountPage do |page|
+    page.description.set 'AFT testing edit'
+  end
+end
+
+And /^I enter a Continuation Chart Of Accounts Code that equals the Chart of Account Code$/ do
+  on AccountPage do |page|
+    page.continuation_chart_code.fit 'IT - Ithaca Campus'
+  end
+end
+
+And /^I enter a Continuation Account Number that equals the Account Number$/ do
+  on AccountPage do |page|
+    page.continuation_account_number.fit page.original_account_number
+  end
+end
+
+Then /^an empty error should appear$/ do
+  on AccountPage do |page|
+    page.error_message_of('').should exist
   end
 end
