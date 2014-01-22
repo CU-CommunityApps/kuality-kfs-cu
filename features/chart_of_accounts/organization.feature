@@ -13,7 +13,7 @@ Feature: Organization
     When  I blanket approve the Organization document
     Then  the Organization Maintenance Document goes to PROCESSED
 
-  @KFSQA-582 @wip
+  @KFSQA-582
   Scenario: Inactivate an Organization Code having all closed accounts.
     Given   I am logged in as a KFS Chart Manager
     When    I inactivate an Organization Code with closed accounts

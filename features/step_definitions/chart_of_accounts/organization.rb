@@ -43,20 +43,6 @@ And /^I make the Organization inactive$/ do
   on(OrganizationPage).active.clear
 end
 
-When /^I submit the Organization$/ do
-  @organization.submit
-end
-
-Then /^the Organization Maintenance Document goes to (.*)/ do |doc_status|
-  sleep 5
-  @organization.view
-  on(OrganizationPage).document_status.should == doc_status
-end
-
-When /^I blanket approve the Organization$/ do
-  @organization.blanket_approve
-end
-
 When /^I inactivate an Organization Code with closed accounts$/ do
   steps %{
     Given I access Organization Lookup
