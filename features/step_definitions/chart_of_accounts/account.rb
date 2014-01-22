@@ -198,10 +198,28 @@ And /^I enter Appropriation Account Number of (.*)/  do |appropriation_account_n
   on(AccountPage).appropriation_account_number.set appropriation_account_number
 end
 
-And /^I close the Account$/ do
+And /^I close the Account by clicking (.*)$/ do |button|
+  button.gsub!(' ', '_')
+
+  visit(MainPage).account
+
+  # First, let's get a random continuation account
+  random_continuation_account_number = on(AccountLookupPage).get_random_account_number
+
+  # Now, let's try to close that account
+  on AccountLookupPage do |page|
+    page.account_number.set @account_number
+    page.search
+    page.edit_random # should only select the guy we want, after all
+  end
   on AccountPage do |page|
-    page.closed.select
-    page.account_expiration_date.set page.effective_date.value
+    page.description.fit                 "Closing Account #{@account_number}"
+    page.continuation_account_number.fit random_continuation_account_number
+    page.continuation_chart_code.fit     'IT - Ithaca Campus'
+    page.account_expiration_date.fit     page.effective_date.value
+    page.closed.set
+
+    page.send(button)
   end
 end
 
@@ -243,7 +261,10 @@ And /^I clone a random Account with the following changes:$/ do |table|
     page.copy_random
   end
   on AccountPage do |page|
+    @document_id = page.document_id
     @account_number = random_alphanums(7)
+    puts @document_id
+    puts @account_number
     page.description.fit updates['Description']
     page.name.fit updates['Name']
     page.chart_code.fit updates['Chart Code']
