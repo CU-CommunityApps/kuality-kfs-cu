@@ -22,7 +22,7 @@ Then /^Object Code Global should show an error that says (.*?)$/ do |error|
 end
 
 Then /^The Object Code Global document status should be PROCESSED$/ do
-  on DocumentSearchPage do |page|
+  on DocumentSearc do |page|
     page.doc_search
     page.document_id_field.when_present.set @object_code_global.document_id
     page.search
