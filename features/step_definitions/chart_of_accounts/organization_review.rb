@@ -18,11 +18,13 @@ Then /^the Organization Review Role Maintenance Document goes to (.*)/ do |doc_s
   on(OrganizationReviewRolePage).document_status.should == doc_status
 end
 
-And /^I create an Organization Review/ do
-  @organization_review_role = create OrganizationReviewRoleObject
+And /^I (#{OrganizationPage::available_buttons}) an Organization Review document/ do |button|
+  button.gsub!(' ', '_')
+  @organization_review_role = create OrganizationReviewRoleObject, press: button
 end
 
-
-When /^I Blanket Approve the Organization Review document$/ do
-    on(OrganizationReviewRolePage).blanket_approve
+When /^I (#{AccountPage::available_buttons}) the Organization Review document$/ do |button|
+  button.gsub!(' ', '_')
+  @organization_review_role.send(button)
+  sleep 5 if button == 'blanket_approve'
 end

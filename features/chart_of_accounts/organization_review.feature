@@ -10,9 +10,9 @@ Feature: Organization Review
     And     I edit an Organization Review
     Then    the Organization Review Role Maintenance Document goes to SAVED
 
-  @KFSQA-584 @wip
+  @KFSQA-584
   Scenario: Create an Organization Review, Blanket Approve it, have it go to Final.
     Given   I am logged in as a KFS Chart Manager
-    And     I create an Organization Review
-    When    I Blanket Approve the Organization Review document
+    And     I save an Organization Review document
+    When    I blanket approve the Organization Review document
     Then    the Organization Review Role Maintenance Document goes to FINAL
