@@ -1,5 +1,6 @@
-When /^I create an Account Delegate$/ do
-  @accountDelegate = create AccountDelegateObject
+When /^I (#{AccountDelegatePage::available_buttons}) an Account Delegate document$/ do |button|
+  button.gsub!(' ', '_')
+  @accountDelegate = create AccountDelegateObject, press: button
 end
 
 Then /^the Approval From This Amount and Approval To This Amount fields should be blank$/ do

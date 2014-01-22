@@ -11,18 +11,17 @@ Feature: KFS Fiscal Officer Account Creation
   @smoke @pending
   Scenario: Create an Account
     Given I am logged in as a KFS Fiscal Officer
-    And   I create an Account
-    When  I blanket approve the Account
+    When  I blanket approve an Account document
     Then  the Account Maintenance Document goes to PROCESSED
 
   @KFSQA-554
   Scenario: KFS User Initiates an Account document with only a description field
     Given I am logged in as a KFS User
-    When  I create an Account document with only the Description field populated
+    When  I save an Account document with only the Description field populated
     Then  The document should save successfully
     
   @KFSQA-606
   Scenario: Account Edit Sub Fund Program case sensitive test on Submit
     Given I am logged in as a KFS Chart User
-    When  I create an Account with a lower case Sub Fund Program
+    When  I save an Account with a lower case Sub Fund Program
     Then  the Account Maintenance Document goes to SAVED
