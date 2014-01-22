@@ -1,4 +1,5 @@
-When /^I (#{AccountDelegatePage::available_buttons}) an Account Delegate$/ do |button|
+When /^I (#{AccountDelegatePage::available_buttons}) an Account Delegate document$/ do |button|
+  button.gsub!(' ', '_')
   @accountDelegate = create AccountDelegateObject, press: button
 end
 

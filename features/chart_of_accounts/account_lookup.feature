@@ -6,13 +6,13 @@ Feature: Account Lookup
   [KFSQA-575] As a KFS Chart Administrator I want to lookup an Account without getting a stack trace error.
 
   @smoke
-  Scenario:
+  Scenario: Account lookup page should appear
     Given I am logged in as a KFS User
     When  I access Account Lookup
     Then  the Account Lookup page should appear
 
   @smoke @pending
-  Scenario:
+  Scenario: Account Lookup should return account through search
     Given I am logged in as a KFS User
     Given I access Account Lookup
     When  I enter an Account Number and search

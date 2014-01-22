@@ -5,5 +5,5 @@ Feature: Account Delegate Create
   @KFSQA-567
   Scenario: Create an Account Delegate
     Given I am logged in as a KFS Fiscal Officer
-    When  I save an Account Delegate
+    When  I save an Account Delegate document
     Then  the Approval From This Amount and Approval To This Amount fields should be blank

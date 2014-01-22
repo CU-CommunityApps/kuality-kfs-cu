@@ -1,11 +1,12 @@
 And /^I (#{ObjectCodePage::available_buttons}) an Object Code document$/ do |button|
+  button.gsub!(' ', '_')
   @object_code = create ObjectCodeObject, press: button
 end
 
 When /^I (#{ObjectCodePage::available_buttons}) the Object Code document$/ do |button|
   button.gsub!(' ', '_')
   @object_code.send(button)
-  sleep 10 if button == 'blanket_approve'
+  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
 end
 
 Then /^I should see the Object Code document in the object code search results$/ do
@@ -26,6 +27,20 @@ And /^I edit an Object Code document with object code (.*)$/ do |the_object_code
     page.object_code.set @object_code.object_code
     page.search
     page.edit_item(the_object_code)
+  end
+end
+
+And /^I edit an Object Code document$/ do
+  @object_code = make ObjectCodeObject
+
+  on(MainPage).object_code
+  on ObjectCodeLookupPage do |page|
+    page.search
+    page.edit_random
+  end
+  on ObjectCodePage do |page|
+    page.description.set random_alphanums(40, 'AFT')
+    @object_code.document_id = page.document_id
   end
 end
 
@@ -74,20 +89,17 @@ Then /^The Lookup should display the Reports to Object Code$/ do
   end
 end
 
-And /^I edit an Object Code$/ do
-  visit(MainPage).object_code
-  on ObjectCodeLookupPage do |page|
-    page.search
-    page.edit_random
-  end
-  on ObjectCodePage do |page|
-    @object_code = make ObjectCodeObject
-    page.description.set random_alphanums(40, 'AFT')
-
-    @object_code.document_id = page.document_id
-  end
-end
-
 And /^I update the Financial Object Code Description/ do
   on(ObjectCodePage).financial_object_code_description.set random_alphanums(60, 'AFT')
 end
+
+#When /^I blanket approve the Object Code document$/ do
+#  @object_code.blanket_approve
+#  sleep(10)
+#end
+
+Then /^the Object Code Document goes to (.*)/ do |doc_status|
+  @object_code.view
+  on(ObjectCodePage).document_status.should == doc_status
+end
+
