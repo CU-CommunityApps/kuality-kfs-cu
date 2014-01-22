@@ -1,15 +1,16 @@
-And /^I (#{SubAccountPage::available_buttons}) a Sub-Account$/ do |button|
+And /^I (#{SubAccountPage::available_buttons}) a Sub-Account document$/ do |button|
   @sub_account = create SubAccountObject, press: button
 end
 
 When /^I (#{SubAccountPage::available_buttons}) the Sub-Account document$/ do |button|
   button.gsub!(' ', '_')
-  on(SubAccountPage).send(button)
-  sleep 10 if button == 'blanket_approve'
+  @sub_account.view
+  @sub_account.send(button)
+  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
 end
 
-And /^I (#{SubAccountPage::available_buttons}) a Sub-Account with Sub-Account Type CS$/ do |button|
-  @sub_account = create SubAccountObject, type_code: 'CS', press: button
+And /^I Create a Sub-Account with Sub-Account Type CS$/ do
+  @sub_account = create SubAccountObject, type_code: 'CS', press: :save
 end
 
 When /^I tab away from the Account Number field$/ do
@@ -21,10 +22,6 @@ end
 
 Then /^The Indirect Cost Rate ID field should not be null$/ do
   on(SubAccountPage).icr_identifier.value.should == ''
-end
-
-And /^I submit the Sub-Account$/ do
-  @sub_account.submit
 end
 
 
@@ -42,11 +39,6 @@ And /^The Sub-Account document should be in my action list$/ do
     on(ActionList).last
   end
   on(ActionList).result_item(@sub_account.document_id).should exist
-end
-
-And /^I approve the document$/ do
-  @sub_account.view
-  @sub_account.approve
 end
 
 When(/^I am logged in as a Contract and Grant Processor$/) do

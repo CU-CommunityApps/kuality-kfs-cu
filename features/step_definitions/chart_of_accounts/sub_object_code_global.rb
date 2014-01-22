@@ -1,11 +1,12 @@
-And /^I (#{SubObjectCodeGlobalPage::available_buttons}) a Sub-Object Code Global$/ do |button|
+And /^I (#{SubObjectCodeGlobalPage::available_buttons}) a Sub-Object Code Global document$/ do |button|
+  button.gsub!(' ', '_')
   @sub_object_code_global = create SubObjectCodeGlobalObject, press: button
 end
 
 When /^I (#{SubObjectCodeGlobalPage::available_buttons}) the Sub-Object Code Global document$/ do |button|
   button.gsub!(' ', '_')
   on(SubObjectCodeGlobalPage).send(button)
-  sleep 10 if button == 'blanket_approve'
+  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
 end
 
 When /^I add multiple account lines using Organization Code (.*)$/ do |org_code|

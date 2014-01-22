@@ -9,18 +9,18 @@ Feature: Sub Account
   @KFSQA-590
   Scenario: Verify “null” does not display in the ICR ID field when I create a Sub-Account
     Given I am logged in as a KFS Chart Manager
-    And   I save a Sub-Account
+    And   I save a Sub-Account document
     When  I tab away from the Account Number field
     Then  The Indirect Cost Rate ID field should not be null
 
   @KFSQA-591
   Scenario: Create a Sub-Account with Sub-Account Type CS and verity routing to CG Processor.
     Given   I am logged in as a KFS User
-    And     I save a Sub-Account with Sub-Account Type CS
-    And     I submit the Sub-Account
+    And     I Create a Sub-Account with Sub-Account Type CS
+    And     I submit the Sub-Account document
     And     I am logged in as the FO of the Account
     And     The Sub-Account document should be in my action list
-    And     I approve the document
+    And     I approve the Sub-Account document
 #    When    I am logged in as a Contract and Grant Processor
 #    And     The Sub-Account document should be in my action list
     Then    the Sub-Account document goes to FINAL

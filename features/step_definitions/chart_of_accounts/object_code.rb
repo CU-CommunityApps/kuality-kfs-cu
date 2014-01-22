@@ -1,11 +1,12 @@
 And /^I (#{ObjectCodePage::available_buttons}) an Object Code document$/ do |button|
+  button.gsub!(' ', '_')
   @object_code = create ObjectCodeObject, press: button
 end
 
 When /^I (#{ObjectCodePage::available_buttons}) the Object Code document$/ do |button|
   button.gsub!(' ', '_')
   @object_code.send(button)
-  sleep 10 if button == 'blanket_approve'
+  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
 end
 
 Then /^I should see the Object Code document in the object code search results$/ do
@@ -89,7 +90,7 @@ Then /^The Lookup should display the Reports to Object Code$/ do
   end
 end
 
-And /^I edit an Object Code$/ do
+And /^I edit an Object Code document$/ do
   visit(MainPage).object_code
   on ObjectCodeLookupPage do |page|
     page.search

@@ -34,7 +34,7 @@ Feature: Object Code
   @KFSQA-596
   Scenario: Edit an Object Code and update the Financial Object Code Description
     Given   I am logged in as a KFS Chart Manager
-    And     I edit an Object Code
+    And     I edit an Object Code document
     And     I update the Financial Object Code Description
     When    I blanket approve the Object Code document
     Then    The document should have no errors
