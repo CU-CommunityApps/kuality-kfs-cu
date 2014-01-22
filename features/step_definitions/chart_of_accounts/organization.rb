@@ -9,10 +9,6 @@ When /^I (#{OrganizationPage::available_buttons}) the Organization document$/ do
   sleep 10 if (button == 'blanket_approve') || (button == 'approve')
 end
 
-And /^I make the Organization inactive$/ do
-  on(OrganizationPage).active.clear
-end
-
 Then /^the Organization Maintenance Document goes to (.*)/ do |doc_status|
   sleep 5
   @organization.view
