@@ -3,7 +3,5 @@ When /^I access Organization Lookup$/ do
 end
 
 When /^I search for all Organizations$/ do
-  on OrganizationLookupPage do |page|
-    page.search
-  end
+  on(OrganizationLookupPage).search
 end

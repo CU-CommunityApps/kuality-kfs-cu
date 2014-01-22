@@ -1,7 +1,13 @@
-And /^I create an? Object Code Global$/ do
-  @object_code_global = create ObjectCodeGlobalObject
+And /^I (#{ObjectCodeGlobalPage::available_buttons}) an Object Code Global document$/ do |button|
+  button.gsub!(' ', '_')
+  @object_code_global = create ObjectCodeGlobalObject, press: button
 end
 
+When /^I (#{ObjectCodeGlobalPage::available_buttons}) the Object Code Global document$/ do |button|
+  button.gsub!(' ', '_')
+  on(ObjectCodeGlobalPage).send(button)
+  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
+end
 
 And /^I enter an invalid CG Reporting Code of (.*)$/ do |invalid_code|
   on ObjectCodeGlobalPage do |page|
@@ -9,13 +15,7 @@ And /^I enter an invalid CG Reporting Code of (.*)$/ do |invalid_code|
   end
 end
 
-And /^I Submit the Object Code Global document$/ do
-  on ObjectCodeGlobalPage do |page|
-    page.submit
-  end
-end
-
-Then(/^Object Code Global should show an error that says (.*?)$/) do |error|
+Then /^Object Code Global should show an error that says (.*?)$/ do |error|
   #There is a bug with this test that does not produce error at this time
   on(ObjectCodeGlobalPage).errors.should include error
 end
@@ -29,10 +29,7 @@ Then /^The Object Code Global document status should be PROCESSED$/ do
   end
 end
 
-When(/^I Blanket Approve the Object Code Global document$/) do
-  @object_code_global.blanket_approve
+
+When /^I Blanket Approve the Object Code Global document$/ do
+  on(ObjectCodeGlobalPage).blanket_approve
 end
-
-
-
-

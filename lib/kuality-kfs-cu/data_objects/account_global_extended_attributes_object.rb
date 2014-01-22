@@ -1,12 +1,10 @@
 #overriding kuality-kfs object
-class AccountGlobalExtendedAttributesObject
+class AccountGlobalObject
 
   attr_accessor :major_reporting_category_code
 
-  def create
-    on AccountGlobalPage do |page|
-      fill_out page, :major_reporting_category_code
-    end
+  def fill_out_extended_attributes
+    on(AccountGlobalPage) { |p| fill_out p, :major_reporting_category_code }
   end
 
 end
