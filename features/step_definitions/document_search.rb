@@ -14,11 +14,8 @@ end
 
 And /^I copy a random (.*) document$/ do |doc_status|
   on DocumentSearch do |search|
-    search.item_row(doc_status).should exist
-    if search.item_row(doc_status).present?
-      @document_id = search.item_row(doc_status).td.link.text
-      doc_search
-    end
+    @document_id = search.docs_with_status(doc_status, search).sample
+    search.open_doc @document_id
     on KFSBasePage do |page|
       page.copy_current_document
       page.description.fit 'AFT testing copy'
@@ -26,3 +23,29 @@ And /^I copy a random (.*) document$/ do |doc_status|
     end
   end
 end
+
+And /^I copy a random (.*) with (.*) status/ do |document, doc_status|
+  doc_type = snake_case document
+  raise "You've entered a document type that isn't in the list.\nPlease update your scenario, or add\nthe document to the list in the step: #{document}" if DOC_CLASSES[doc_type].nil?
+  on DocumentSearch do |search|
+    search.document_type.set DOC_CLASSES[doc_type][0]
+    search.search
+    @document_id = search.docs_with_status(doc_status, search).sample
+    search.open_doc @document_id
+  end
+  on(Kernel.const_get(DOC_CLASSES[doc_type][2])) do |page|
+    page.copy_current_document
+    page.description.fit 'AFT testing copy'
+
+    set(doc_type, make(Kernel.const_get(DOC_CLASSES[doc_type][1]), DOC_OPTIONS[doc_type]))
+
+    page.save
+  end
+end
+
+
+DOC_CLASSES = { account_delegate: ['AD', 'AccountDelegateObject', 'AccountDelegatePage'],
+                other_object: [ 'OtherObjectDocumentType', 'OtherObject', 'OtherObjectPageClass']
+                # More stuff goes here...
+}
+
