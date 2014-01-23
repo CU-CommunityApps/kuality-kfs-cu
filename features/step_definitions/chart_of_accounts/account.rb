@@ -263,8 +263,6 @@ And /^I clone a random Account with the following changes:$/ do |table|
   on AccountPage do |page|
     @document_id = page.document_id
     @account_number = random_alphanums(7)
-    puts @document_id
-    puts @account_number
     page.description.fit updates['Description']
     page.name.fit updates['Name']
     page.chart_code.fit updates['Chart Code']
