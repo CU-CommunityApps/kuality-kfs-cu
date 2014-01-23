@@ -4,14 +4,14 @@ Feature: Account Delegate Global
   [KFSQA-602] As a KFS Chart Manager I want to add multiple account lines to the Account Delegate Global using
   Organizational Codes because this will save me time
 
-  @KFSQA-568
-  Scenario: Edit and Cancel an Account Delegate Model KFSQA-568
+  @KFSQA-568 @wip
+  Scenario: Edit and Cancel an Account Delegate Model
     Given I am logged in as a KFS Chart User
-    And    I Edit an Account Delegate Model
-    When I cancel the eDoc
+    And   I edit an Account Delegate Model
+    When  I cancel the Account Delegate Model document
     Then  I should return to the Main Menu
 
-  @KFSQA-602
+  @KFSQA-602 @wipa
   Scenario: Create an Account Delegate Global using an organization hierarchy
     Given   I am logged in as a KFS Chart Manager
     And     I create an Account Delegate Global with multiple account lines
