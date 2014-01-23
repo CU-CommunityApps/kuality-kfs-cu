@@ -28,7 +28,7 @@ Feature: Sub Account
 #    And     The Sub-Account document should be in my action list
     Then    the Sub-Account document goes to FINAL
 
-  @wip @KFSQA-589
+  @KFSQA-589
   Scenario: Create a Sub-Account with Sub-Account Type CS and ad-hoc approval route it to a member of the Contracts & Grants Processor Role (jis45)
     Given    I am logged in as "rlc56"
     And     I submit a Sub-Account for blanket approval through action list routing with user "jis45"
