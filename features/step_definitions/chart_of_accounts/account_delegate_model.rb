@@ -1,6 +1,5 @@
 When /^I (.*) an Account Delegate Model document with an invalid Organization Code$/ do |button|
-  button.gsub!(' ', '_')
-  @account_delegate_model = create AccountDelegateModelObject, organization_code: 'BSBS', press: button
+  @account_delegate_model = create AccountDelegateModelObject, organization_code: 'BSBS', press: button.gsub(' ', '_')
 end
 
 And /^I edit an Account Delegate Model$/ do

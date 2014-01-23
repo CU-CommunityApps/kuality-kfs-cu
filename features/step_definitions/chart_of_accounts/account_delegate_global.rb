@@ -1,4 +1,4 @@
-And /^I (.*) an Account Delegate Global with multiple account lines$/ do |button|
+And /^I (#{AccountDelegateGlobalPage::available_buttons}) an Account Delegate Global with multiple account lines$/ do |button|
   @account_delegate_global = create AccountDelegateGlobalObject, press: button.gsub(' ', '_')
 end
 
