@@ -1,18 +1,21 @@
 Feature: Account Edit
 
-  [KFSQA-593] Summary: As a KFS Chart Manager, when I edit an Account with an
-                       invalid Sub-Fund Program Code I should get an error message presented
-                       at the top of the Accountant Maintenance Tab. Because the field is validated
-                       against a maintenance table and KFS standards require it.
+  [KFSQA-593] As a KFS Chart Manager, when I edit an Account with an
+              invalid Sub-Fund Program Code I should get an error message presented
+              at the top of the Accountant Maintenance Tab. Because the field is validated
+              against a maintenance table and KFS standards require it.
 
-  [KFSQA-610] Summary: As a KFS Chart Administrator I want to update an Account without getting a stack trace error.
+  [KFSQA-610] As a KFS Chart Administrator I want to update an Account without getting a stack trace error.
 
   [KFSQA-632] As a KFS Fiscal Officer I need to edit an account using the Major Reporting Category Code field and enter
               a lowercase value and have it convert to UPPERCASE because I need to manage in-year financial activity,
               fund balances and year-end reporting.
 
-  [KFSQA-586] Summary: As a KFS Chart Manager, the Account Number and the Continuation Account on that account cannot
-                       and should not ever be the equal as this defeats the purpose of a continuation account.
+  [KFSQA-586] As a KFS Chart Manager, the Account Number and the Continuation Account on that account cannot
+              and should not ever be the equal as this defeats the purpose of a continuation account.
+
+  [KFSQA-569] As a KFS Chart Manager I want to change the account expiration date
+              because I still want any enroute documents to be approved.
 
   @KFSQA-593
   Scenario: Edit an Account with an invalid Sub-Fund Program Code
@@ -92,3 +95,15 @@ Feature: Account Edit
     And     I enter a Continuation Chart Of Accounts Code that equals the Chart of Account Code
     When    I blanket approve the Account document
     Then    an empty error should appear
+
+  @KFSQA-569 @wip
+  Scenario: Approve a GEC with an expired account that has a modified expiration date
+    Given I am logged in as a KFS Chart Administrator
+    And   I have an Account document which is expired
+    And   I finalize the Account document
+    And   I submit a GEC document with the Account and "Account Expired Override" selected
+    And   I edit the Account document to change the Account Expiration Date
+    And   I finalize the Account document
+    And   I am logged in as a KFS System Manager
+    When  I blanket approve the GEC document
+    Then  the Account Maintenance Document goes to FINAL
