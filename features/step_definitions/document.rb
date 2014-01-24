@@ -32,6 +32,7 @@ When /^I (#{BasePage::available_buttons}) the (.*) document$/ do |button, docume
   doc_object = snake_case document
   button.gsub!(' ', '_')
   get(doc_object).send(button)
+  on(YesOrNoPage).yes if button == 'cancel'
 end
 
 Then /^the (.*) document goes to (.*)/ do |document, doc_status|
