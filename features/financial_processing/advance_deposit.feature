@@ -16,11 +16,11 @@ Feature: Advance Deposit
     When  I submit the AD document
     Then  the AD document submits with no errors
 
-  @KFSQA-609 @wip
+  @KFSQA-609
   Scenario: AD Copy and Save KFSQA-609
     Given   I am logged in as a KFS Cash Manager
     And     I access Document Search
     And     I search for all AD documents
-    And     I copy a random FINAL document
-    When    I save the AD document
-    Then    the AD document goes to SAVED
+    And     I copy a random Advance Deposit document with FINAL status
+    When    I save the Advance Deposit document
+    Then    the Advance Deposit document goes to SAVED
