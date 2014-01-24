@@ -8,6 +8,10 @@ Then /^an error should say (.*)$/ do |error|
   $current_page.errors.should include errors[error]
 end
 
+Then /^I should get an error saying "(.*)"$/ do |error_msg|
+  $current_page.errors.should include error_msg
+end
+
 Then /^The document should have no errors$/ do
   $current_page.errors.should == []
 end

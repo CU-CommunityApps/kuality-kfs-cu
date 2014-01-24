@@ -13,8 +13,8 @@ Feature: Account Delegate Global
 
   @KFSQA-602
   Scenario: Create an Account Delegate Global using an organization hierarchy
+    # TODO: Tony, this works despite the fact that we don't actually add multiple account lines. Should we do something about that?
     Given   I am logged in as a KFS Chart Manager
-    And     I create an Account Delegate Global with multiple account lines
-    When    I submit the Account Delegate Global document
+    When    I submit an Account Delegate Global with multiple account lines
     Then    the Account Delegate Global document goes to FINAL
 
