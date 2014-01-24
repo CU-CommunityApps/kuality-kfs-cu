@@ -50,15 +50,15 @@ end
 And /^I submit a balanced Budget Adjustment document$/ do
   @budget_adjustment = create BudgetAdjustmentObject, press: :submit,
                               from_account_number: 'G003704', from_object_code: '4480',
-                              from_current_amount: '250.11', from_line_description: ''
+                              from_current_amount: '250.11', from_line_description: random_alphanums(20, 'AFT FROM'),
+                              to_account_number: 'G013300', to_object_code: '4480',
+                              to_current_amount: '250.11', to_line_description: random_alphanums(20, 'AFT TO'),
+
+
 
 end
 
 Then /^The document status should be ENROUTE$/ do
-  pending # express the regexp above with the code you wish you had
-end
-
-And /^I submit a balanced Budget Adjustment document$/ do
   pending # express the regexp above with the code you wish you had
 end
 
@@ -74,9 +74,6 @@ Then /^The Budget Adjustment document status should be FINAL$/ do
   pending # express the regexp above with the code you wish you had
 end
 
-And /^I submit a balanced Budget Adjustment document$/ do
-  pending # express the regexp above with the code you wish you had
-end
 And /^I view the From Account on the General Ledger Balance with type code CB$/ do
   pending # express the regexp above with the code you wish you had
 end
