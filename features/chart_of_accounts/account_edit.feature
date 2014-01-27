@@ -48,7 +48,7 @@ Feature: Account Edit
     Given I am am logged in as a KFS Chart Administrator
     And   I edit an Account
     When  I blanket approve the Account document
-    Then  the Account Maintenance Document goes to PROCESSED
+    Then  the Account document goes to PROCESSED
 
   @KFSQA-632
   Scenario: KFS Chart Manager edits an Account with Major Reporting Category Code
@@ -56,8 +56,7 @@ Feature: Account Edit
     And   I edit an Account
     When  I input a lowercase Major Reporting Category Code value
     When  I blanket approve the Account document
-    Then  the Account Maintenance Document goes to PROCESSED
-    Then  the Account Maintenance Document goes to PROCESSED
+    Then  the Account document goes to PROCESSED
 
   @KFSQA-619
   Scenario: Create an Account that matches Sub-Fund Group Code and Sub-Fund Program Code with an Appropriation Account Number
@@ -67,7 +66,7 @@ Feature: Account Edit
     And   I enter Sub Fund Program Code of CENTER
     And   I enter Appropriation Account Number of LTIP
     When  I blanket approve the Account document
-    Then  the Account Maintenance Document goes to PROCESSED
+    Then  the Account document goes to PROCESSED
 
   @KFSQA-619
   Scenario: Create an Account that does not match Sub-Fund Group Code and Sub-Fund Program Code with an Appropriation Account Number

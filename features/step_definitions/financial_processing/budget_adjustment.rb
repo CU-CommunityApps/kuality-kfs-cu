@@ -27,10 +27,6 @@ And /^I add a To amount of "(.*)" for account "(.*)" with object code "(.*)" wit
   end
 end
 
-When /^I submit the Budget Adjustment document$/  do
-  on(BudgetAdjustmentPage).submit
-end
-
 Then /^budget adjustment should show an error that says "(.*?)"$/ do |error|
     on(BudgetAdjustmentPage).errors.should include error
 end

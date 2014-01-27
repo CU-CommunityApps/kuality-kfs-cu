@@ -3,18 +3,6 @@ And /^I (#{OrganizationPage::available_buttons}) an Organization document$/ do |
   @organization = create OrganizationObject, press: button
 end
 
-When /^I (#{OrganizationPage::available_buttons}) the Organization document$/ do |button|
-  button.gsub!(' ', '_')
-  on(OrganizationPage).send(button)
-  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
-end
-
-Then /^the Organization Maintenance Document goes to (.*)/ do |doc_status|
-  sleep 5
-  @organization.view
-  on(OrganizationPage).document_status.should == doc_status
-end
-
 And /^I copy an Organization$/ do
   steps %{
     Given I access Organization Lookup
