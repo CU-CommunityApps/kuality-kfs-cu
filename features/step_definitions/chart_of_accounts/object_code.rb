@@ -3,12 +3,6 @@ And /^I (#{ObjectCodePage::available_buttons}) an Object Code document$/ do |but
   @object_code = create ObjectCodeObject, press: button
 end
 
-When /^I (#{ObjectCodePage::available_buttons}) the Object Code document$/ do |button|
-  button.gsub!(' ', '_')
-  @object_code.send(button)
-  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
-end
-
 Then /^I should see the Object Code document in the object code search results$/ do
   on(MainPage).object_code
   on ObjectCodeLookupPage do |page|
@@ -91,15 +85,5 @@ end
 
 And /^I update the Financial Object Code Description/ do
   on(ObjectCodePage).financial_object_code_description.set random_alphanums(60, 'AFT')
-end
-
-#When /^I blanket approve the Object Code document$/ do
-#  @object_code.blanket_approve
-#  sleep(10)
-#end
-
-Then /^the Object Code Document goes to (.*)/ do |doc_status|
-  @object_code.view
-  on(ObjectCodePage).document_status.should == doc_status
 end
 

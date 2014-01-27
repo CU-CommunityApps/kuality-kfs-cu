@@ -23,6 +23,7 @@ Feature: Sub Account
     And     I submit the Sub-Account document
     And     I am logged in as the FO of the Account
     And     The Sub-Account document should be in my action list
+    And     I view the Sub-Account document
     And     I approve the Sub-Account document
 #    When    I am logged in as a Contract and Grant Processor
 #    And     The Sub-Account document should be in my action list
@@ -30,10 +31,11 @@ Feature: Sub Account
 
   @KFSQA-589
   Scenario: Create a Sub-Account with Sub-Account Type CS and ad-hoc approval route it to a member of the Contracts & Grants Processor Role (jis45)
-    Given    I am logged in as "rlc56"
+    Given   I am logged in as "rlc56"
     And     I submit a Sub-Account for blanket approval through action list routing with user "jis45"
     And     The Sub Account document will become ENROUTE
     And     I am logged in as "jis45"
-    When    The Sub-Account Document is in my Action List
-    Then    I can Blanket Approve the Sub-Account Document
+    And     The Sub-Account Document is in my Action List
+    When    I view the Sub-Account document
+    Then    I blanket approve the Sub-Account document
 

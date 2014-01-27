@@ -5,16 +5,17 @@ Feature: Account Delegate Global
   Organizational Codes because this will save me time
 
   @KFSQA-568
-  Scenario: Edit and Cancel an Account Delegate Model
-    Given I am logged in as a KFS Chart User
-    And   I edit an Account Delegate Model
-    When  I cancel the Account Delegate Model document
-    Then  I should return to the Main Menu
+  Scenario: Edit and Cancel an Account Delegate Model KFSQA-568
+    Given   I am logged in as a KFS Chart User
+    And     I edit an Account Delegate Model
+    When    I cancel the Account Delegate Model document
+    Then    I should return to the Main Menu
 
   @KFSQA-602
   Scenario: Create an Account Delegate Global using an organization hierarchy
     # TODO: Tony, this works despite the fact that we don't actually add multiple account lines. Should we do something about that?
     Given   I am logged in as a KFS Chart Manager
-    When    I submit an Account Delegate Global with multiple account lines
+    And     I create an Account Delegate Global with multiple account lines
+    When    I submit the Account Delegate Global document
     Then    the Account Delegate Global document goes to FINAL
 
