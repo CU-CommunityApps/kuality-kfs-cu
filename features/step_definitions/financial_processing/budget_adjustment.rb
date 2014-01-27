@@ -52,10 +52,7 @@ And /^I submit a balanced Budget Adjustment document$/ do
                               from_account_number: 'G003704', from_object_code: '4480',
                               from_current_amount: '250.11', from_line_description: random_alphanums(20, 'AFT FROM'),
                               to_account_number: 'G013300', to_object_code: '4480',
-                              to_current_amount: '250.11', to_line_description: random_alphanums(20, 'AFT TO'),
-
-
-
+                              to_current_amount: '250.11', to_line_description: random_alphanums(20, 'AFT TO')
 end
 
 Then /^The document status should be ENROUTE$/ do
@@ -81,6 +78,7 @@ end
 Then /^The From Account Monthly Balance should match the From amount$/ do
   pending # express the regexp above with the code you wish you had
 end
+
 When /^I view the To Account on the General Ledger Balance with type code CB$/ do
   pending # express the regexp above with the code you wish you had
 end
@@ -88,8 +86,3 @@ end
 Then /^The To Account Monthly Balance should match the From amount$/ do
   pending # express the regexp above with the code you wish you had
 end
-
-
-
-
-
