@@ -4,12 +4,6 @@ And /^I (#{AccountPage::available_buttons}) an Account document$/ do |button|
   sleep 10 if (button == 'blanket_approve') || (button == 'approve')
 end
 
-When /^I (#{AccountPage::available_buttons}) the Account document$/ do |button|
-  button.gsub!(' ', '_')
-  @account.send(button)
-  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
-end
-
 And /^I copy an Account$/ do
   on AccountLookupPage do |page|
     page.copy_random
@@ -28,11 +22,6 @@ end
 
 And /^I save an Account with a lower case Sub Fund Program$/ do
   @account = create AccountObject, sub_fnd_group_code: 'board', press: :save
-end
-
-Then /^the Account Maintenance Document goes to (.*)/ do |doc_status|
-  @account.view
-  on(AccountPage).document_status.should == doc_status
 end
 
 When /^I submit an account with blank SubFund group Code$/ do
