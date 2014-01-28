@@ -8,11 +8,11 @@ Feature: Organization Review
   Scenario: Select an Organization Review to get to the Organization Review Role screen
     Given   I am logged in as a KFS Chart Manager
     And     I edit an Organization Review
-    Then    the Organization Review Role Maintenance Document goes to SAVED
+    Then    the Organization Review Role document goes to SAVED
 
   @KFSQA-584
   Scenario: Create an Organization Review, Blanket Approve it, have it go to Final.
     Given   I am logged in as a KFS Chart Manager
-    And     I save an Organization Review document
-    When    I blanket approve the Organization Review document
-    Then    the Organization Review Role Maintenance Document goes to FINAL
+    And     I save an Organization Review Role document
+    When    I blanket approve the Organization Review Role document
+    Then    the Organization Review Role document goes to FINAL
