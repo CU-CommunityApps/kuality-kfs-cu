@@ -187,7 +187,7 @@ And /^I enter Appropriation Account Number of (.*)/  do |appropriation_account_n
   on(AccountPage).appropriation_account_number.set appropriation_account_number
 end
 
-And /^I close the Account by clicking (.*)$/ do |button|
+And /^I close the Account$/ do |button|
   button.gsub!(' ', '_')
 
   visit(MainPage).account

@@ -17,7 +17,8 @@ Feature: Account Close
       | PROCESSED |
     Given Nightly Batch Jobs run
     And   I am logged in as a KFS Chart Manager
-    When  I close the Account by clicking submit
+    When  I close the Account
+    And   I submit the Account document
     Then  I should get an error saying "This Account cannot be closed because it has an open Encumbrance."
 #    When  I blanket approve a Pre-Encumbrance Document that disencumbers the random Account
 #    And   Nightly Batch Jobs run
