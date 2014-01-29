@@ -3,8 +3,7 @@ And /^I create a Budget Adjustment document$/ do
 end
 
 And /^I (#{ObjectCodeGlobalPage::available_buttons}) a Budget Adjustment document$/ do |button|
-  button.gsub!(' ', '_')
-  @budget_adjustment = create BudgetAdjustmentObject, press: button
+  @budget_adjustment = create BudgetAdjustmentObject, press: button.gsub(' ', '_')
 end
 
 And /^I add a from amount of (.*) for account (.*) with object code (.*)$/  do |amount, account_number, object_code|

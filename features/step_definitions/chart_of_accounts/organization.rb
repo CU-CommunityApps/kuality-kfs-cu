@@ -1,14 +1,11 @@
 And /^I (#{OrganizationPage::available_buttons}) an Organization document$/ do |button|
-  button.gsub!(' ', '_')
-  @organization = create OrganizationObject, press: button
+  @organization = create OrganizationObject, press: button.gsub(' ', '_')
 end
 
 And /^I copy an Organization$/ do
-  steps %{
-    Given I access Organization Lookup
-    And   I search for all Organizations
-  }
+  visit(MainPage).organization
   on OrganizationLookupPage do |page|
+    page.search
     page.copy_random
   end
   @organization = make OrganizationObject
@@ -17,7 +14,7 @@ And /^I copy an Organization$/ do
     page.description.focus
     @organization.begin_date = tomorrow[:date_w_slashes]
     @organization.end_date = in_a_year[:date_w_slashes]
-    @organization.fill_out page, :description, :chart_code, :org_code, :begin_date, :end_date
+    @organization.fill_out page, :description, :chart_code, :organization_code, :begin_date, :end_date
     @organization.document_id = page.document_id
     @browser.alert.ok if @browser.alert.exists? # Because, y'know, sometimes it doesn't actually come up...
   end
@@ -28,9 +25,7 @@ And /^I make the Organization inactive$/ do
 end
 
 When /^I inactivate an Organization Code with closed accounts$/ do
-  steps %{
-    Given I access Organization Lookup
-  }
+  visit(MainPage).organization
   on OrganizationLookupPage do |page|
     page.active_indicator_no.set
     page.search
@@ -40,18 +35,16 @@ When /^I inactivate an Organization Code with closed accounts$/ do
     @organization = make OrganizationObject
     @organization.document_id = page.document_id
     @organization.chart_code = page.ro_chart_code
-    @organization.org_code = page.ro_org_code
+    @organization.organization_code = page.ro_org_code
     page.description.set random_alphanums(40, 'AFT')
     page.active.set
     page.blanket_approve
   end
   sleep(5)
-  steps %{
-    Given I access Organization Lookup
-  }
+  visit(MainPage).organization
   on OrganizationLookupPage do |page|
     page.chart_code.set @organization.chart_code
-    page.org_code.set @organization.org_code
+    page.organization_code.set @organization.organization_code
     page.search
     page.edit_random
   end
@@ -59,7 +52,7 @@ When /^I inactivate an Organization Code with closed accounts$/ do
     @organization = make OrganizationObject
     @organization.document_id = page.document_id
     @organization.chart_code = page.ro_chart_code
-    @organization.org_code = page.ro_org_code
+    @organization.organization_code = page.ro_org_code
     page.description.set random_alphanums(40, 'AFT')
     page.active.clear
     page.blanket_approve

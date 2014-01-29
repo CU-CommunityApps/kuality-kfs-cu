@@ -80,14 +80,14 @@ Feature: Account Edit
 
   @KFSQA-586
   Scenario: Try to continue an Account to itself
-    Given   I am logged in as a KFS Chart Manager
-    And     I access Account Lookup
-    And     I search for all accounts
-    And     I copy an Account
-    And     I blanket approve the Account document
-    And     I edit the Account
-    And     I close the Account
-    And     I enter a Continuation Account Number that equals the Account Number
-    And     I enter a Continuation Chart Of Accounts Code that equals the Chart of Account Code
-    When    I blanket approve the Account document
-    Then    an empty error should appear
+    Given I am logged in as a KFS Chart Manager
+    And   I access Account Lookup
+    And   I search for all accounts
+    And   I clone a random Account with the following changes:
+      | Name        | Test Account             |
+      | Chart Code  | IT                       |
+      | Description | [KFSQA-586] Test Account |
+    And   I close the Account
+    And   I enter a Continuation Account Number that equals the Account Number
+    When  I blanket approve the Account document
+    Then  an empty error should appear
