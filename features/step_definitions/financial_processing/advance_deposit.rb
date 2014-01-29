@@ -1,14 +1,7 @@
 include BatchUtilities
 
 And /^I (#{AdvanceDepositPage::available_buttons}) an AD document$/ do |button|
-  @advance_deposit = create AdvanceDepositObject, press: button
-end
-
-When /^I (#{AdvanceDepositPage::available_buttons}) the AD document$/ do |button|
-  button.gsub!(' ', '_')
-  @advance_deposit.view
-  @advance_deposit.send(button)
-  sleep 10 if button == 'blanket_approve'
+  @advance_deposit = create AdvanceDepositObject, press: button.gsub(' ', '_')
 end
 
 And /^Nightly Batch Jobs run$/ do

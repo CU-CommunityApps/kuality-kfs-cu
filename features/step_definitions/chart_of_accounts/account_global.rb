@@ -26,8 +26,8 @@ And /^I (.*) an Account Global Maintenance document with multiple accounting lin
   @account_global = create AccountGlobalObject,
                            supervisor_principal_name:  '',
                            manager_principal_name: '',
-                           org_code:               '',
-                           sub_fnd_group_code:   '',
+                           organization_code:               '',
+                           sub_fund_group_code:   '',
                            acct_expire_date:     '',
                            postal_code:            '',
                            city:                 '',
@@ -43,26 +43,12 @@ And /^I (.*) an Account Global Maintenance document with multiple accounting lin
                            press: button
 end
 
-When /^I (#{AccountGlobalPage::available_buttons}) the Account Global Maintenance document$/ do |button|
-  button.gsub!(' ', '_')
-  @account_global.send(button)
-  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
-end
-
-Then /^The Account Global Maintenance document will become (.*)/ do |status|
-  on AccountGlobalPage do |page|
-    sleep 10
-    page.reload
-    page.document_status.should == status
-  end
-end
-
 When /^I (.*) a Account Global Maintenance document with a Major Reporting Category Code of (.*)$/ do |button, value_for_field|
   @account_global = create AccountGlobalObject,
                            supervisor_principal_name:  '',
                            manager_principal_name: '',
-                           org_code:               '',
-                           sub_fnd_group_code:   '',
+                           organization_code:               '',
+                           sub_fund_group_code:   '',
                            acct_expire_date:     '',
                            postal_code:            '',
                            city:                 '',

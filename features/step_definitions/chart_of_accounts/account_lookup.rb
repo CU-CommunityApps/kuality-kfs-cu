@@ -16,9 +16,7 @@ When /^I enter an Account Number and search$/ do
 end
 
 When /^I search for all accounts$/ do
-  on AccountLookupPage do |page|
-    page.search
-  end
+  on(AccountLookupPage).search
 end
 
 When /^The Account is found$/ do
