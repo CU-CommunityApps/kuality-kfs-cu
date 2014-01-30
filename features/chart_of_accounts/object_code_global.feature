@@ -13,7 +13,7 @@ Feature: Object Code Global
     When    I submit the Object Code Global document
     Then    Object Code Global should show an error that says CG Reporting Code ZZZZ for Chart Code IT does not exist.
 
-  @KFSQA-639 @wip
+  @KFSQA-639
   Scenario: Create an Object Code with a validated CR Reporting Code
     Given   I am logged in as a KFS Chart Manager
     And     I save an Object Code Global document
