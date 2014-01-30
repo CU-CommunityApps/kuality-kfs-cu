@@ -256,3 +256,7 @@ And /^I clone a random Account with the following changes:$/ do |table|
     page.blanket_approve
   end
 end
+
+And(/^I extend the Expiration Date of the Account document (\d+) days$/) do |arg|
+  pending
+end

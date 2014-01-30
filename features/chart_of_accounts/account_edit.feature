@@ -95,19 +95,20 @@ Feature: Account Edit
     When  I blanket approve the Account document
     Then  an empty error should appear
 
-  @KFSQA-569
+  @KFSQA-569 @wip
   Scenario: Extension of Account expiration dates, while an eDoc is enroute,
             should not prevent eDocs with this Account from going to final status
     Given I am logged in as a KFS User
-    When  I create a GEC document for an Expired Account
-    And   I input an Accounting Line and select “Account Expired Override”
+    When  I create a GEC document for an expired Account
+    And   I add an Accounting Line to the GEC document with "Account Expired Override" selected
     And   I submit the GEC document
     Then  the GEC document goes to ENROUTE
     Given I am logged in as a KFS Chart Administrator
-    When  I edit the Expired Account
-    And   I extend Expiration Date 365 Days and finalize the Account Maintenance document
+    When  I edit the Account
+    And   I extend the Expiration Date of the Account document 365 days
+    And   I blanket approve the Account document
+    And   Nightly Batch Jobs run
     Then  the Account document goes to FINAL
-    Given Nightly Batch Jobs run
     And   I am logged in as a KFS User
-    When  I Blanket Approve the GEC document
+    When  I blanket approve the GEC document
     Then  the Account document goes to FINAL
