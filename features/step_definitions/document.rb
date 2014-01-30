@@ -42,3 +42,40 @@ Then /^the (.*) document goes to (.*)/ do |document, doc_status|
   get(doc_object).view
   $current_page.document_status.should == doc_status
 end
+
+
+And /^I create a (.*) document$/ do |document|
+  doc_object = snake_case document
+  doc_object_class = document.gsub(' ', '') + 'Object'
+  object_klass = Kernel.const_get(doc_object_class)
+
+  object_klass.skip_default_accounting_lines
+  set(doc_object, create(object_klass))
+  get(doc_object).save
+end
+
+And /^I enter to an Accounting Line on the (.*) document with account number (.*) and object code (.*) and amount (.*)$/ do |document, account_number, object_code, amount|
+  doc_page_class = document.gsub(' ', '') + 'Page'
+  page_klass = Kernel.const_get(doc_page_class)
+
+  on page_klass do |page|
+    page.to_account_number.fit account_number
+    page.to_object_code.fit object_code
+    page.to_current_amount.fit amount
+    page.add_to_accounting_line
+  end
+
+end
+
+And /^I enter from an Accounting Line on the (.*) document with account number (.*) and object code (.*) and amount (.*)$/ do |document, account_number, object_code, amount|
+  doc_page_class = document.gsub(' ', '') + 'Page'
+  page_klass = Kernel.const_get(doc_page_class)
+
+  on page_klass do |page|
+    page.from_account_number.fit account_number
+    page.from_object_code.fit object_code
+    page.from_current_amount.fit amount
+    page.add_from_accounting_line
+  end
+
+end
