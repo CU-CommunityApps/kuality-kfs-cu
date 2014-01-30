@@ -1,10 +1,10 @@
 Feature: Account Delegate Global
 
-  [KFSQA-568] As a KFS Chart Manager I want to cancel the Edit of an
-              Account Delegate Model and automatically return to the Main Menu.
-  [KFSQA-602] As a KFS Chart Manager I want to add multiple account lines to the
-              Account Delegate Global using Organizational Codes because this
-              will save me time
+  [KFSQA-568]           As a KFS Chart Manager I want to cancel the Edit of an
+                        Account Delegate Model and automatically return to the Main Menu.
+  [KFSQA-602/KFSQA-570] As a KFS Chart Manager I want to add multiple account lines to the
+                        Account Delegate Global using Organizational Codes because this
+                        will save me time
 
   @KFSQA-568
   Scenario: Edit and Cancel an Account Delegate Model
