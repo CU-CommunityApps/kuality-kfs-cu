@@ -44,46 +44,89 @@ Then /^I verify that Chart Value defaults to IT$/ do
 end
 
 And /^I submit a balanced Budget Adjustment document$/ do
-  @budget_adjustment = create BudgetAdjustmentObject, press: :submit,
+  @budget_adjustment = create BudgetAdjustmentObject, press: :save,
                               from_account_number: 'G003704', from_object_code: '4480',
-                              from_current_amount: '250.11', from_line_description: random_alphanums(20, 'AFT FROM'),
-                              to_account_number: 'G013300', to_object_code: '4480',
-                              to_current_amount: '250.11', to_line_description: random_alphanums(20, 'AFT TO'),
+                              from_current_amount: '250.11', from_line_description: random_alphanums(20, 'AFT FROM 1 '),
+                              from_base_amount: '125', to_account_number: 'G013300', to_object_code: '4480',
+                              to_current_amount: '250.11', to_line_description: random_alphanums(20, 'AFT TO 1 '),
+                              to_base_amount: '125'
 
+    on BudgetAdjustmentPage do |page|
+      @budget_adjustment.adding_a_from_accounting_line(page, 'G003704', '6510', '250.11', random_alphanums(20, 'AFT FROM 2 '), '125')
+      @budget_adjustment.adding_a_to_accounting_line(page, 'G013300', '6510', '250.11', random_alphanums(20, 'AFT TO 2 '), '125')
 
-
+      @press = 'submit'
+      page.send(@press)
+    end
+end
+#
+And /^I view my Budget Adjustment document$/ do
+  visit(MainPage)
+   on DocumentSearch do |page|
+     page.doc_search
+     page.document_id_field.when_present.fit @budget_adjustment.document_id
+     page.search
+     page.open_item(@budget_adjustment.document_id)
+  end
 end
 
-Then /^The document status should be ENROUTE$/ do
-  pending # express the regexp above with the code you wish you had
+Then /^The Budget Adjustment document status should be (.*)$/ do |doc_status|
+  on BudgetAdjustmentPage do |page|
+    sleep 10
+
+    page.document_status.should == doc_status
+  end
 end
 
-And /^I view the Budget Adjustment Document$/ do
-  pending # express the regexp above with the code you wish you had
+And /^I view the From Account on the General Ledger Balance with balance type code of (.*)$/ do |bal_type_code|
+ visit(MainPage).general_ledger_balance
+ on GeneralLedgerBalanceLookupPage do |page|
+   page.chart_code.fit @budget_adjustment.from_chart_code
+   page.account_number.fit @budget_adjustment.from_account_number
+   page.balance_type_code.fit bal_type_code
+   page.search
+
+   #select item?
+
+ end
 end
 
-When /^I approve the Budget Adjustment document$/ do
-  pending # express the regexp above with the code you wish you had
-end
+When /^I view the To Account on the General Ledger Balance with balance type code of (.*)$/ do |bal_type_code|
+  on GeneralLedgerBalanceLookupPage do |page|
+  page.chart_code.fit @budget_adjustment.to_chart_code
+  page.account_number.fit @budget_adjustment.to_account_number
+  page.balance_type_code.fit bal_type_code
+  page.search
 
-Then /^The Budget Adjustment document status should be FINAL$/ do
-  pending # express the regexp above with the code you wish you had
-end
+    #select item?
 
-And /^I view the From Account on the General Ledger Balance with type code CB$/ do
-  pending # express the regexp above with the code you wish you had
+  end
 end
 
 Then /^The From Account Monthly Balance should match the From amount$/ do
-  pending # express the regexp above with the code you wish you had
-end
-When /^I view the To Account on the General Ledger Balance with type code CB$/ do
+  on GeneralLedgerBalanceLookupPage do |page|
+  @budget_adjustment.puts_text_fields(page)
+  @budget_adjustment.puts_links(page)
+  @budget_adjustment.puts_labels(page)
+  @budget_adjustment.puts_links_href(page)
+  sleep 30
+  end
+  #the month should match the amount.
+  #account_number G003704
+  #object_code 4480
+  #amount 250.11
+
   pending # express the regexp above with the code you wish you had
 end
 
-Then /^The To Account Monthly Balance should match the From amount$/ do
+Then /^The To Account Monthly Balance should match the To amount$/ do
   pending # express the regexp above with the code you wish you had
 end
+
+And(/^The line description for the From Account should be displayed$/) do
+  pending # express the regexp above with the code you wish you had
+end
+
 
 
 

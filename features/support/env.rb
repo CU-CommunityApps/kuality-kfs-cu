@@ -50,5 +50,5 @@ After do |scenario|
 end
 
 if !ENV['DEBUG']
-  at_exit { kuality.browser.close }
+  #at_exit { kuality.browser.close }
 end

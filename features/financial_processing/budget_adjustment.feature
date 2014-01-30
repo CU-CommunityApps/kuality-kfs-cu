@@ -5,7 +5,7 @@ Feature: KFS Fiscal Officer Account Copy
      Budget Adjustments within my Account because this is Cornell SOP.
 
 
-  @wip @KFSQA-623
+  @KFSQA-623
   Scenario: Budget Adjustment not allowed to cross Account Sub-Fund Group Codes
     Given   I am logged in as a KFS User
     And     I create a Budget Adjustment document
@@ -24,33 +24,29 @@ Feature: KFS Fiscal Officer Account Copy
   Scenario: Budget Adjustment routing and approval by From and To FO
     Given  I am logged in as "sag3"
     And    I submit a balanced Budget Adjustment document
-    Then   The document status should be ENROUTE
+    Then   The Budget Adjustment document status should be ENROUTE
+    And    I am logged in as "djj1"
+    And    I view my Budget Adjustment document
+    When   I approve the Budget Adjustment document
+    And    I view my Budget Adjustment document
+    Then   The Budget Adjustment document status should be FINAL
 
-    Given I am logged in as "sag3"
-    And   I submit a balanced Budget Adjustment document
-    And   I am logged in as "djj1"
-    And   I view the Budget Adjustment Document
-    When  I approve the Budget Adjustment document
-    Then  The Budget Adjustment document status should be FINAL
-
-
+  @wip @KFSQA-628
+  Scenario: General ledger balance displays correctly for a Budget Adjustment after nightly batch is run
     Given I am logged in as "sag3"
     And    I submit a balanced Budget Adjustment document
-#    And Nightly Batch Jobs run
+    And    I am logged in as "djj1"
+    And    I view my Budget Adjustment document
+    When   I approve the Budget Adjustment document
+    And Nightly Batch Jobs run
     Given I am logged in as "djj1"
-    When I view the From Account on the General Ledger Balance with type code CB
+    When I view the From Account on the General Ledger Balance with balance type code of CB
     Then The From Account Monthly Balance should match the From amount
-
-    When I view the To Account on the General Ledger Balance with type code CB
+    And The line description for the From Account should be displayed
+    When I view the To Account on the General Ledger Balance with balance type code of CB
     Then The To Account Monthly Balance should match the From amount
+    And The line description for the To Account should be displayed
 
-
-#    Line description persists
-
-#
-#
-#
-#
 #    Given I am logged in as "sag3"
 #    When I save a budget adjustment document
 #    And I add a From amount of "250.11" for account "G003704" with object code "4480" with a line description of ""
