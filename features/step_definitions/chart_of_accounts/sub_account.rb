@@ -38,28 +38,23 @@ When(/^I am logged in as a Contract and Grant Processor$/) do
   @user_id = 'drs4'
 end
 
-And /^I (#{SubAccountPage::available_buttons}) a Sub-Account for blanket approval through action list routing with user "(.*)"$/ do |button, approver_user|
-  @sub_account = create SubAccountObject, press: button, account_number: '1258321',
-  cost_sharing_chart_of_accounts_code: 'IT - Ithaca Campus', cost_share_account_number: '1254601',
-  adhoc_approver_userid: approver_user, sub_account_type_code: 'CS', cost_sharing_account_number: '1254601'
+And /^I (#{SubAccountPage::available_buttons}) a Sub-Account through action list routing with adhoc approver user "(.*)"$/ do |button, approver_user|
+  options = {
+    account_number:                      '1258321',
+    cost_sharing_chart_of_accounts_code: 'IT - Ithaca Campus',
+    cost_share_account_number:           '1254601',
+    sub_account_type_code:               'CS',
+    cost_sharing_account_number:         '1254601',
+    adhoc_approver_userid:               approver_user,
+    press: button.gsub(' ', '_')
+  }
+
+  @sub_account = create SubAccountObject, options
 end
 
-And /^I submit the Sub\-Account Document$/ do
-  @sub_account.submit
-end
-
-And /^The Sub Account document will become (.*)$/ do  |status|
-  @sub_account.view
-  on(SubAccountPage).document_status.should == status
-end
-
-When /^The Sub\-Account Document is in my Action List$/ do
+When /^the Sub\-Account Document is in my Action List$/ do
   visit(MainPage).action_list
   on(ActionList).last if on(ActionList).last_link.exists?
 
   on(ActionList).open_item(@sub_account.document_id)
-end
-
-Then /^I can Blanket Approve the Sub\-Account Document$/ do
-  @sub_account.blanket_approve
 end
