@@ -52,22 +52,9 @@ And /^I (#{SubAccountPage::available_buttons}) a Sub-Account through action list
   @sub_account = create SubAccountObject, options
 end
 
-And /^I submit the Sub\-Account Document$/ do
-  @sub_account.submit
-end
-
-And /^The Sub Account document will become (.*)$/ do  |status|
-  @sub_account.view
-  on(SubAccountPage).document_status.should == status
-end
-
 When /^the Sub\-Account Document is in my Action List$/ do
   visit(MainPage).action_list
   on(ActionList).last if on(ActionList).last_link.exists?
 
   on(ActionList).open_item(@sub_account.document_id)
-end
-
-Then /^I can Blanket Approve the Sub\-Account Document$/ do
-  @sub_account.blanket_approve
 end
