@@ -44,7 +44,7 @@ Feature: KFS Fiscal Officer Account Copy
     Then The From Account Monthly Balance should match the From amount
     And The line description for the From Account should be displayed
     When I view the To Account on the General Ledger Balance with balance type code of CB
-    Then The To Account Monthly Balance should match the From amount
+    Then The To Account Monthly Balance should match the To amount
     And The line description for the To Account should be displayed
 
 #    Given I am logged in as "sag3"

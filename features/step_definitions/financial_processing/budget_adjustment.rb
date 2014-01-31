@@ -52,6 +52,7 @@ And /^I submit a balanced Budget Adjustment document$/ do
                               to_base_amount: '125'
 
     on BudgetAdjustmentPage do |page|
+
       @budget_adjustment.adding_a_from_accounting_line(page, 'G003704', '6510', '250.11', random_alphanums(20, 'AFT FROM 2 '), '125')
       @budget_adjustment.adding_a_to_accounting_line(page, 'G013300', '6510', '250.11', random_alphanums(20, 'AFT TO 2 '), '125')
 
@@ -86,9 +87,13 @@ And /^I view the From Account on the General Ledger Balance with balance type co
    page.balance_type_code.fit bal_type_code
    page.search
 
+     page.select_monthly_item('4480', '07')
    #select item?
 
  end
+ sleep 5
+ on(GeneralLedgerEntryLookupPage).select_item(@budget_adjustment.document_id)
+
 end
 
 When /^I view the To Account on the General Ledger Balance with balance type code of (.*)$/ do |bal_type_code|
@@ -98,35 +103,39 @@ When /^I view the To Account on the General Ledger Balance with balance type cod
   page.balance_type_code.fit bal_type_code
   page.search
 
-    #select item?
-
+  page.select_monthly_item('4480', '07')
   end
+  sleep 5
+  on(GeneralLedgerEntryLookupPage).select_item(@budget_adjustment.document_id)
+
 end
 
 Then /^The From Account Monthly Balance should match the From amount$/ do
-  on GeneralLedgerBalanceLookupPage do |page|
-  @budget_adjustment.puts_text_fields(page)
-  @budget_adjustment.puts_links(page)
-  @budget_adjustment.puts_labels(page)
-  @budget_adjustment.puts_links_href(page)
-  sleep 30
+  on BudgetAdjustmentPage do |page|
+
+    page.find_me.should == '(250.11)'
+    end
   end
   #the month should match the amount.
   #account_number G003704
   #object_code 4480
   #amount 250.11
 
-  pending # express the regexp above with the code you wish you had
-end
 
 Then /^The To Account Monthly Balance should match the To amount$/ do
-  pending # express the regexp above with the code you wish you had
+  on BudgetAdjustmentPage do |page|
+
+    page.find_me.should == '(250.11)'
+  end
 end
 
 And(/^The line description for the From Account should be displayed$/) do
-  pending # express the regexp above with the code you wish you had
+  page.line_description_value.should == @budget_adjustment.from_line_description
 end
 
+And(/^The line description for the To Account should be displayed$/) do
+  page.line_description_value.should == @budget_adjustment.to_line_description
+end
 
 
 
