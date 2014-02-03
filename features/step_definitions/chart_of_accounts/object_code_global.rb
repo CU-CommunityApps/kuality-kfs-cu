@@ -1,9 +1,9 @@
 And /^I (#{ObjectCodeGlobalPage::available_buttons}) an Object Code Global document$/ do |button|
-  button.gsub!(' ', '_')
-  @object_code_global = create ObjectCodeGlobalObject, press: button
+  @object_code_global = create ObjectCodeGlobalObject, press: button.gsub(' ', '_')
 end
 
 And /^I enter an invalid CG Reporting Code of (.*)$/ do |invalid_code|
+  on(ObjectCodeGlobalPage).cg_reporting_code.fit invalid_code
   on ObjectCodeGlobalPage do |page|
     page.cg_reporting_code.set invalid_code
   end
