@@ -115,7 +115,6 @@ end
 
 Then /^The To Account Monthly Balance should match the To amount$/ do
   on(BudgetAdjustmentPage).find_to_amount.should == @budget_adjustment.to_current_amount
-  end
 end
 
 And(/^The line description for the From Account should be displayed$/) do
