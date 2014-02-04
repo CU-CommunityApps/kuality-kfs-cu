@@ -1,17 +1,18 @@
 Feature: KFS Fiscal Officer Account Copy
 
-  [KFSQA-623] CF: Budget Adjustment eDoc to balance entries by Account. As a KFS User I want to create a Budget Adjustment but preclude entries from crossing Accounts because of Cornell budget policies.
-  [KFSQA-628] Budget Adjustment edoc going FINAL without FO approval. As a KFS Fiscal Officer (FO) I want to approve all
-     Budget Adjustments within my Account because this is Cornell SOP.
+  [KFSQA-623] CF: Budget Adjustment eDoc to balance entries by Account. As a KFS User
+              I want to create a Budget Adjustment but preclude entries from crossing Accounts because of Cornell budget policies.
+  [KFSQA-628] Budget Adjustment edoc going FINAL without FO approval. As a KFS Fiscal Officer (FO)
+              I want to approve all Budget Adjustments within my Account because this is Cornell SOP.
 
   @KFSQA-623
   Scenario: Budget Adjustment not allowed to cross Account Sub-Fund Group Codes
     Given   I am logged in as a KFS User
-    And     I create a Budget Adjustment document
+    And     I start a Budget Adjustment document
     And     I add a From amount of "100.00" for account "1258322" with object code "4480" with a line description of "aft from1"
     And     I add a to amount of "100" for account "1258323" with object code "4480" with a line description of "aft to 1"
     When    I submit the Budget Adjustment document
-    Then    budget adjustment should show an error that says "The Budget Adjustment document is not balanced within the account."
+    Then    I should get an error saying "The Budget Adjustment document is not balanced within the account."
 
   @wip @KFSQA-628
   Scenario: IT is the default value for Budget Adjustment Chart Values
@@ -23,19 +24,18 @@ Feature: KFS Fiscal Officer Account Copy
   Scenario: Budget Adjustment routing and approval by From and To FO
     Given  I am logged in as "sag3"
     And    I submit a balanced Budget Adjustment document
-    Then   The Budget Adjustment document status should be ENROUTE
+    Then   the Budget Adjustment document goes to ENROUTE
     And    I am logged in as "djj1"
-    And    I view my Budget Adjustment document
+    And    I view the Budget Adjustment document
     When   I approve the Budget Adjustment document
-    And    I view my Budget Adjustment document
-    Then   The Budget Adjustment document status should be FINAL
+    Then   the Budget Adjustment document goes to FINAL
 
   @wip @KFSQA-628
   Scenario: General ledger balance displays correctly for a Budget Adjustment after nightly batch is run
     Given  I am logged in as "sag3"
     And    I submit a balanced Budget Adjustment document
     And    I am logged in as "djj1"
-    And    I view my Budget Adjustment document
+    And    I view the Budget Adjustment document
     When   I approve the Budget Adjustment document
     And    Nightly Batch Jobs run
     Given  I am logged in as "djj1"

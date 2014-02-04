@@ -1,9 +1,11 @@
-And /^I create a Budget Adjustment document$/ do
-  @budget_adjustment = create BudgetAdjustmentObject
+And /^I start a Budget Adjustment document$/ do
+  @budget_adjustment = create BudgetAdjustmentObject, press: nil
 end
 
-And /^I (#{ObjectCodeGlobalPage::available_buttons}) a Budget Adjustment document$/ do |button|
-  @budget_adjustment = create BudgetAdjustmentObject, press: button.gsub(' ', '_')
+And /^I (#{BudgetAdjustmentPage::available_buttons}) a Budget Adjustment document$/ do |button|
+  button.gsub!(' ', '_')
+  @budget_adjustment = create BudgetAdjustmentObject, press: button
+  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
 end
 
 And /^I add a From amount of "(.*)" for account "(.*)" with object code "(.*)" with a line description of "(.*)"$/  do |amount, account_number, object_code, line_desc|
@@ -26,10 +28,6 @@ And /^I add a to amount of "(.*?)" for account "(.*?)" with object code "(.*?)" 
     end
   end
 
-Then /^budget adjustment should show an error that says "(.*?)"$/ do |error|
-    on(BudgetAdjustmentPage).errors.should include error
-end
-
 When /^I open the Budget Adjustment document page$/ do
   on(MainPage).budget_adjustment
 end
@@ -41,8 +39,10 @@ Then /^I verify that Chart Value defaults to IT$/ do
   end
 end
 
-And /^I submit a balanced Budget Adjustment document$/ do
-  @budget_adjustment = create BudgetAdjustmentObject, press: :save,
+And /^I (#{BudgetAdjustmentPage::available_buttons}) a balanced Budget Adjustment document$/ do |button|
+  button.gsub!(' ', '_')
+  @budget_adjustment = create BudgetAdjustmentObject,
+                              press: nil, # We should add the accounting lines before submitting, eh?
                               from_account_number: 'G003704', from_object_code: '4480',
                               from_current_amount: '250.11', from_line_description: random_alphanums(20, 'AFT FROM 1 '),
                               from_base_amount: '125', to_account_number: 'G013300', to_object_code: '4480',
@@ -54,28 +54,8 @@ And /^I submit a balanced Budget Adjustment document$/ do
       @budget_adjustment.adding_a_from_accounting_line(page, 'G003704', '6510', '250.11', random_alphanums(20, 'AFT FROM 2 '), '125')
       @budget_adjustment.adding_a_to_accounting_line(page, 'G013300', '6510', '250.11', random_alphanums(20, 'AFT TO 2 '), '125')
 
-      @press = 'submit'
-      page.send(@press)
+      page.send(button)
     end
-end
-
-#VIEW url uses the username to create the view page, which needs to be corrected to use general view method
-And /^I view my Budget Adjustment document$/ do
-  visit(MainPage)
-   on DocumentSearch do |page|
-     page.doc_search
-     page.document_id_field.when_present.fit @budget_adjustment.document_id
-     page.search
-     page.open_item(@budget_adjustment.document_id)
-  end
-end
-
-Then /^The Budget Adjustment document status should be (.*)$/ do |doc_status|
-  on BudgetAdjustmentPage do |page|
-    sleep 10
-
-    page.document_status.should == doc_status
-  end
 end
 
 And /^I view the From Account on the General Ledger Balance with balance type code of (.*)$/ do |bal_type_code|
@@ -84,12 +64,11 @@ And /^I view the From Account on the General Ledger Balance with balance type co
     page.chart_code.fit @budget_adjustment.from_chart_code
     page.account_number.fit @budget_adjustment.from_account_number
     page.balance_type_code.fit bal_type_code
+    page.including_pending_ledger_entry_all.set
     page.search
     page.select_monthly_item(@budget_adjustment.from_object_code, @budget_adjustment.converted_month_number)
  end
- on GeneralLedgerEntryLookupPage do |page|
-   page.select_this_link_without_frm(@budget_adjustment.document_id)
- end
+ on(GeneralLedgerEntryLookupPage).select_this_link_without_frm(@budget_adjustment.document_id)
 end
 
 When /^I view the To Account on the General Ledger Balance with balance type code of (.*)$/ do |bal_type_code|
@@ -98,6 +77,7 @@ When /^I view the To Account on the General Ledger Balance with balance type cod
     page.chart_code.fit @budget_adjustment.to_chart_code
     page.account_number.fit @budget_adjustment.to_account_number
     page.balance_type_code.fit bal_type_code
+    page.including_pending_ledger_entry_all.set
     page.search
     page.select_monthly_item(@budget_adjustment.to_object_code, @budget_adjustment.converted_month_number)
   end

@@ -51,3 +51,4 @@ end
 
 if !ENV['DEBUG']
   at_exit { kuality.browser.close }
+end
