@@ -99,7 +99,8 @@ Feature: Account Edit
   Scenario: Extension of Account expiration dates, while an eDoc is enroute,
             should not prevent eDocs with this Account from going to final status
     Given I am logged in as a KFS User
-    When  I create a GEC document for an expired Account
+    And   I find an expired Account
+    When  I start a GEC document
     And   I add an Accounting Line to the GEC document with "Account Expired Override" selected
     And   I submit the GEC document
     Then  the GEC document goes to ENROUTE

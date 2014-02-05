@@ -257,6 +257,28 @@ And /^I clone a random Account with the following changes:$/ do |table|
   end
 end
 
-And(/^I extend the Expiration Date of the Account document (\d+) days$/) do |arg|
+And /^I extend the Expiration Date of the Account document (\d+) days$/ do |arg|
   pending
+end
+
+And /^I find an expired Account$/ do
+  visit(MainPage).account
+  on AccountLookupPage do |page|
+    # FIXME: These values should be set by a service.
+    page.chart_code.fit     'IT'
+    page.account_number.fit '147*'
+    page.search
+    page.sort_results_by('Account Expiration Date')
+    page.sort_results_by('Account Expiration Date') # Need to do this twice to get the expired ones in front
+
+    col_index = page.column_index(:account_expiration_date)
+    account_row_index = page.results_table
+                            .rows.collect { |row| row[col_index].text if row[col_index].text.split('/').length == 3}[1..page.results_table.rows.length]
+                            .collect { |cell| DateTime.strptime(cell, '%m/%d/%Y') < DateTime.now }.index(true) # Finds the first qualified one.
+
+    # We're only really interested in these parts
+    @account = make AccountObject
+    @account.number = page.results_table[account_row_index][page.column_index(:account_number)].text
+    @account.chart_code = page.results_table[account_row_index][page.column_index(:chart_code)].text
+  end
 end
