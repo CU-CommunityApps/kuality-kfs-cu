@@ -20,7 +20,6 @@ And /^I copy a random (.*) document with (.*) status/ do |document, doc_status|
   set(doc_object, make(object_klass, document_id: @document_id))
   get(doc_object).save
 #  get(doc_object).pull
-
 end
 
 When /^I view the (.*) document$/ do |document|
@@ -49,7 +48,7 @@ And /^I create a (.*) document$/ do |document|
   doc_object_class = document.gsub(' ', '') + 'Object'
   object_klass = Kernel.const_get(doc_object_class)
 
-  object_klass.skip_default_accounting_lines
+  #object_klass.skip_default_accounting_lines
   set(doc_object, create(object_klass))
   get(doc_object).save
 end
@@ -77,5 +76,4 @@ And /^I enter from an Accounting Line on the (.*) document with account number (
     page.from_current_amount.fit amount
     page.add_from_accounting_line
   end
-
 end
