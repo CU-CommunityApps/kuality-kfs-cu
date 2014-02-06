@@ -28,7 +28,7 @@ Feature: Advance Deposit
     When  I save the Advance Deposit document
     Then  the Advance Deposit document goes to SAVED
 
-  @KFSQA-645 @smoke @wip
+  @KFSQA-645 @smoke
   Scenario: * * * * * Actions to not display on AD
     Given I am logged in as a KFS User
     When  I start an empty Advance Deposit document
