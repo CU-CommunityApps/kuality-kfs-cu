@@ -262,9 +262,8 @@ And /^I clone a random Account with the following changes:$/ do |table|
 end
 
 And /^I extend the Expiration Date of the Account document (\d+) days$/ do |days|
-  days = days.to_i
   on AccountPage do |page|
-    page.account_expiration_date.fit (@account.account_expiration_date + days).strftime("%m/%d/%Y")
+    page.account_expiration_date.fit (@account.account_expiration_date + days.to_i).strftime('%m/%d/%Y')
   end
 end
 
