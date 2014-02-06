@@ -1,9 +1,7 @@
 And /^I copy a random (.*) document with (.*) status/ do |document, doc_status|
   doc_object = snake_case document
-  doc_object_class = document.gsub(' ', '') + 'Object'
-  doc_page_class = document.gsub(' ', '') + 'Page'
-  object_klass = Kernel.const_get(doc_object_class)
-  page_klass = Kernel.const_get(doc_page_class)
+  object_klass = Kernel.const_get(object_class_for(document))
+  page_klass = Kernel.const_get(page_class_for(document))
 
   on DocumentSearch do |search|
     search.document_type.set object_klass::DOC_INFO[:type_code]
@@ -24,8 +22,7 @@ And /^I copy a random (.*) document with (.*) status/ do |document, doc_status|
 end
 
 When /^I view the (.*) document$/ do |document|
-  doc_object = snake_case document
-  get(doc_object).view
+  get(snake_case(document)).view
 end
 
 When /^I (#{BasePage::available_buttons}) the (.*) document$/ do |button, document|
@@ -45,7 +42,7 @@ end
 
 When /^I (#{BasePage::available_buttons}|start) an empty (.*) document$/ do |button, document|
   visit(MainPage).send(snake_case(document))
-  on(Kernel.const_get("#{document.gsub(' ', '')}Page")) do
+  on(Kernel.const_get(page_class_for(document))) do
     $current_page.send(snake_case(button)) unless button == 'start'
   end
 end
