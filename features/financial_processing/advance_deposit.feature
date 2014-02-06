@@ -31,5 +31,5 @@ Feature: Advance Deposit
   @KFSQA-645 @wip
   Scenario: * * * * * Actions to not display on AD
     Given I am logged in as a KFS User
-    When  I submit an empty Advance Deposit document
+    When  I start an empty Advance Deposit document
     Then  "* * * * Actions" should not be displayed in the Accounting Line section
