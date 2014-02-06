@@ -20,7 +20,7 @@ Feature: Advance Deposit
     Then  the AD document submits with no errors
 
   @KFSQA-609
-  Scenario: AD Copy and Save KFSQA-609
+  Scenario: AD Copy and Save
     Given I am logged in as a KFS Cash Manager
     And   I access Document Search
     And   I search for all AD documents
@@ -28,7 +28,7 @@ Feature: Advance Deposit
     When  I save the Advance Deposit document
     Then  the Advance Deposit document goes to SAVED
 
-  @KFSQA-645 @wip
+  @KFSQA-645 @smoke @wip
   Scenario: * * * * * Actions to not display on AD
     Given I am logged in as a KFS User
     When  I start an empty Advance Deposit document
