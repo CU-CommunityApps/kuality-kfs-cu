@@ -217,7 +217,11 @@ And /^I edit the Account$/ do
     page.search
     page.edit_random
   end
-  on(AccountPage).description.fit 'AFT testing edit'
+  on AccountPage do |page|
+    page.description.fit 'AFT testing edit'
+    @account.description = 'AFT testing edit'
+    @account.document_id = page.document_id
+  end
 end
 
 And /^I enter a Continuation Chart Of Accounts Code that equals the Chart of Account Code$/ do
@@ -257,8 +261,11 @@ And /^I clone a random Account with the following changes:$/ do |table|
   end
 end
 
-And /^I extend the Expiration Date of the Account document (\d+) days$/ do |arg|
-  pending
+And /^I extend the Expiration Date of the Account document (\d+) days$/ do |days|
+  days = days.to_i
+  on AccountPage do |page|
+    page.account_expiration_date.fit (@account.account_expiration_date + days).strftime("%m/%d/%Y")
+  end
 end
 
 And /^I find an expired Account$/ do
@@ -274,11 +281,12 @@ And /^I find an expired Account$/ do
     col_index = page.column_index(:account_expiration_date)
     account_row_index = page.results_table
                             .rows.collect { |row| row[col_index].text if row[col_index].text.split('/').length == 3}[1..page.results_table.rows.length]
-                            .collect { |cell| DateTime.strptime(cell, '%m/%d/%Y') < DateTime.now }.index(true) # Finds the first qualified one.
+                            .collect { |cell| DateTime.strptime(cell, '%m/%d/%Y') < DateTime.now }.index(true) + 1 # Finds the first qualified one.
 
     # We're only really interested in these parts
     @account = make AccountObject
     @account.number = page.results_table[account_row_index][page.column_index(:account_number)].text
     @account.chart_code = page.results_table[account_row_index][page.column_index(:chart_code)].text
+    @account.account_expiration_date = DateTime.strptime(page.results_table[account_row_index][page.column_index(:account_expiration_date)].text, '%m/%d/%Y')
   end
 end

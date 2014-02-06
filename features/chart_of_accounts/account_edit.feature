@@ -107,9 +107,11 @@ Feature: Account Edit
     Given I am logged in as a KFS Chart Administrator
     When  I edit the Account
     And   I extend the Expiration Date of the Account document 365 days
-    And   I blanket approve the Account document
+    And   I blanket approve the Account document and deny any questions
     And   Nightly Batch Jobs run
-    Then  the Account document goes to FINAL
+    Then  the Account document goes to PROCESSED
     And   I am logged in as a KFS User
-    When  I blanket approve the GEC document
-    Then  the Account document goes to FINAL
+    When  I view the GEC document
+    And   I blanket approve the GEC document
+    And   Nightly Batch Jobs run
+    Then  the Account document goes to PROCESSED
