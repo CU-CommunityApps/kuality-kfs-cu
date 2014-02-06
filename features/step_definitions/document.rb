@@ -42,3 +42,10 @@ Then /^the (.*) document goes to (.*)/ do |document, doc_status|
   get(doc_object).view
   $current_page.document_status.should == doc_status
 end
+
+When /^I (#{BasePage::available_buttons}|start) an empty (.*) document$/ do |button, document|
+  visit(MainPage).send(snake_case(document))
+  on(Kernel.const_get("#{document.gsub(' ', '')}Page")) do
+    $current_page.send(snake_case(button)) unless button == 'start'
+  end
+end

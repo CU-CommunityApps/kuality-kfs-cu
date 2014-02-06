@@ -7,6 +7,8 @@ Feature: Advance Deposit
   [KFSQA-608] I need to be able to Copy an existing AD and Save the new Document because this
               will allow more efficient creation of multiple documents that are similar.
 
+  [KFSQA-645] Strange Display on when AD is created.
+
   @KFSQA-608
   Scenario: AD Create Save and continue after batch processes
     Given I am logged in as a KFS User
@@ -19,9 +21,15 @@ Feature: Advance Deposit
 
   @KFSQA-609
   Scenario: AD Copy and Save KFSQA-609
-    Given   I am logged in as a KFS Cash Manager
-    And     I access Document Search
-    And     I search for all AD documents
-    And     I copy a random Advance Deposit document with FINAL status
-    When    I save the Advance Deposit document
-    Then    the Advance Deposit document goes to SAVED
+    Given I am logged in as a KFS Cash Manager
+    And   I access Document Search
+    And   I search for all AD documents
+    And   I copy a random Advance Deposit document with FINAL status
+    When  I save the Advance Deposit document
+    Then  the Advance Deposit document goes to SAVED
+
+  @KFSQA-645 @wip
+  Scenario: * * * * * Actions to not display on AD
+    Given I am logged in as a KFS User
+    When  I submit an empty Advance Deposit document
+    Then  "* * * * Actions" should not be displayed in the Accounting Line section
