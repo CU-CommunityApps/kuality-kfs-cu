@@ -95,7 +95,7 @@ Feature: Account Edit
     When  I blanket approve the Account document
     Then  an empty error should appear
 
-  @KFSQA-569
+  @KFSQA-569 @pending
   Scenario: Extension of Account expiration dates, while an eDoc is enroute,
             should not prevent eDocs with this Account from going to final status
     Given I am logged in as a KFS User
