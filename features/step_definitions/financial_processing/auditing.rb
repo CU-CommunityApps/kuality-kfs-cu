@@ -7,6 +7,99 @@ And /^I view my Budget Adjustment document$/ do
   end
 end
 
+And /^I enter an Accounting Line on the (.*) document with account number (.*?) and object code (.*?) and amount (.*?) and reference number of (.*)$/ do |document, account_number, object_code, amount, reference_number|
+  doc_page_class = document.gsub(' ', '') + 'Page'
+  page_klass = Kernel.const_get(doc_page_class)
+
+  on page_klass do |page|
+    page.account_number.fit account_number
+    page.object_code.fit object_code
+    page.amount.fit amount
+    page.reference_number.fit reference_number
+    page.add_accounting_line
+  end
+end
+
+And /^I enter to an Accounting Line on the (.*) document with account number (.*?) and object code (.*?) and amount (.*?)$/ do |document, account_number, object_code, amount|
+  doc_page_class = document.gsub(' ', '') + 'Page'
+  page_klass = Kernel.const_get(doc_page_class)
+
+  on page_klass do |page|
+    page.to_account_number.fit account_number
+    page.to_object_code.fit object_code
+
+    page.to_current_amount.fit amount if page_klass.to_s == 'BudgetAdjustmentPage'
+    page.add_to_increase_accounting_line if page_klass.to_s == 'BudgetAdjustmentPage'
+
+    page.to_amount.fit amount unless page_klass.to_s == 'BudgetAdjustmentPage'
+
+    page.add_to_accounting_line
+  end
+end
+
+And /^I enter from an Accounting Line on the (.*) document with account number (.*?) and object code (.*?) and amount (.*?)$/ do |document, account_number, object_code, amount|
+  doc_page_class = document.gsub(' ', '') + 'Page'
+  page_klass = Kernel.const_get(doc_page_class)
+
+  on page_klass do |page|
+    page.from_account_number.fit account_number
+    page.from_object_code.fit object_code
+
+    page.from_current_amount.fit amount if page_klass.to_s == 'BudgetAdjustmentPage'
+    #page.add_from_decrease_accounting_line if page_klass.to_s == 'BudgetAdjustmentPage'
+
+    page.from_amount.fit amount unless page_klass.to_s == 'BudgetAdjustmentPage'
+    page.add_from_accounting_line
+  end
+end
+
+
+
+And /^I enter a from Accounting Line on the (.*?) document with account number (.*?) and object code (.*?) and amount (.*?) and reference origin code (.*?) and reference number (.*)$/ do |document, account_number, object_code, amount, ref_org_code, ref_number|
+  #for General Error Corection
+  doc_page_class = document.gsub(' ', '') + 'Page'
+  page_klass = Kernel.const_get(doc_page_class)
+
+  on page_klass do |page|
+    page.from_account_number.fit account_number
+    page.from_object_code.fit object_code
+
+    #page.to_current_amount.fit amount if page_klass.to_s == 'BudgetAdjustmentPage'
+    #page.add_to_increase_accounting_line if page_klass.to_s == 'BudgetAdjustmentPage'
+
+    page.from_amount.fit amount #unless page_klass.to_s == 'BudgetAdjustmentPage'
+
+    page.from_reference_origin_code.fit ref_org_code
+    page.from_reference_number.fit ref_number
+
+    page.add_from_accounting_line
+  end
+end
+
+
+And /^I enter a to Accounting Line on the (.*?) document with account number (.*?) and object code (.*?) and amount (.*?) and reference origin code (.*?) and reference number (.*)$/ do |document, account_number, object_code, amount, ref_org_code, ref_number|
+  #for General Error Corection
+  doc_page_class = document.gsub(' ', '') + 'Page'
+  page_klass = Kernel.const_get(doc_page_class)
+
+  on page_klass do |page|
+    page.to_account_number.fit account_number
+    page.to_object_code.fit object_code
+
+    #page.to_current_amount.fit amount if page_klass.to_s == 'BudgetAdjustmentPage'
+    #page.add_to_increase_accounting_line if page_klass.to_s == 'BudgetAdjustmentPage'
+
+    page.to_amount.fit amount #unless page_klass.to_s == 'BudgetAdjustmentPage'
+
+    page.to_reference_origin_code.fit ref_org_code
+    page.to_reference_number.fit ref_number
+
+    page.add_to_accounting_line
+  end
+end
+
+
+
 And /^On the Budget Adjustment I modify the From current amount line item (.*) to be (.*)$/ do |line_item, amount|
   on BudgetAdjustmentPage do |page|
     page.from_amount_line_item(line_item).fit amount
@@ -62,17 +155,6 @@ And(/^On the (.*) I modify the To Object Code line item (\d+) to be (.*)$/) do |
   end
 end
 
-#
-#And(/^On the Budget Adjustment I modify the From Object Code line item (\d+) to be (.*)$/) do |document, line_item, new_object_code|
-#  doc_page_class = document.gsub(' ', '') + 'Page'
-#  page_klass = Kernel.const_get(doc_page_class)
-#
-#  on page_klass do |page|
-#    page.from_object_code_line_item(line_item).fit new_object_code
-#  end
-#end
-
-
 And(/^On the (.*) I modify the Object Code line item (\d+) to be (.*)$/) do |document, line_item, new_object_code|
   doc_page_class = document.gsub(' ', '') + 'Page'
   page_klass = Kernel.const_get(doc_page_class)
@@ -86,6 +168,15 @@ Then /^The Notes and Attachment Tab displays “Accounting Line changed from”$
   on AuxiliaryVoucherPage do |page|
     page.expand_all
     page.account_line_changed_text.should exist
+  end
+end
+
+And /^I view my Pre Encumbrance document$/ do
+  visit(MainPage).doc_search
+  on DocumentSearch do |page|
+    page.document_id_field.fit @document_id
+    page.search
+    page.open_item(@document_id)
   end
 end
 
