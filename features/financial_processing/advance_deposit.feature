@@ -37,8 +37,11 @@ Feature: Advance Deposit
     Then  "* * * * Actions" should not be displayed in the Accounting Line section
 
   @KFSQA-728 @wip
-  Scenario: Copy a Final AD, and then create a new one
+  Scenario: Copy a Final Advance Deposit, and then create a new one
     Given I am logged in as a KFS User
-    When  I copy an Advance Deposit document with a FINAL status
-    And   I blanket approve the Advance Deposit document
-    Then  the Advance Deposit document goes to FINAL
+    And   I access Document Search
+    And   I search for all AD documents
+    When  I copy a document with a FINAL status
+    And   I blanket approve the document
+    And   I reopen the document
+    Then  the document status is FINAL
