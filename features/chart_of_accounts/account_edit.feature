@@ -95,7 +95,7 @@ Feature: Account Edit
     When  I blanket approve the Account document
     Then  an empty error should appear
 
-  @KFSQA-569 @pending
+  @KFSQA-569 @wip
   Scenario: Extension of Account expiration dates, while an eDoc is enroute,
             should not prevent eDocs with this Account from going to final status
     Given I am logged in as a KFS User
@@ -107,9 +107,11 @@ Feature: Account Edit
     Given I am logged in as a KFS Chart Administrator
     When  I edit the Account
     And   I extend the Expiration Date of the Account document 365 days
-    And   I blanket approve the Account document
+    And   I blanket approve the Account document and deny any questions
     And   Nightly Batch Jobs run
-    Then  the Account document goes to FINAL
+    Then  the Account document goes to PROCESSED
     And   I am logged in as a KFS User
-    When  I blanket approve the GEC document
-    Then  the Account document goes to FINAL
+    When  I view the GEC document
+    And   I blanket approve the GEC document
+    And   Nightly Batch Jobs run
+    Then  the Account document goes to PROCESSED
