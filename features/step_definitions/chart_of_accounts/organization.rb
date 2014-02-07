@@ -17,7 +17,7 @@ And /^I copy an Organization$/ do
     page.description.focus
     @organization.begin_date = tomorrow[:date_w_slashes]
     @organization.end_date = in_a_year[:date_w_slashes]
-    @organization.fill_out page, :description, :chart_code, :org_code, :begin_date, :end_date
+    @organization.fill_out page, :description, :chart_code, :organization_code, :begin_date, :end_date
     @organization.document_id = page.document_id
     @browser.alert.ok if @browser.alert.exists? # Because, y'know, sometimes it doesn't actually come up...
   end
@@ -40,7 +40,7 @@ When /^I inactivate an Organization Code with closed accounts$/ do
     @organization = make OrganizationObject
     @organization.document_id = page.document_id
     @organization.chart_code = page.ro_chart_code
-    @organization.org_code = page.ro_org_code
+    @organization.organization_code = page.ro_org_code
     page.description.set random_alphanums(40, 'AFT')
     page.active.set
     page.blanket_approve
@@ -51,7 +51,7 @@ When /^I inactivate an Organization Code with closed accounts$/ do
   }
   on OrganizationLookupPage do |page|
     page.chart_code.set @organization.chart_code
-    page.org_code.set @organization.org_code
+    page.organization_code.set @organization.organization_code
     page.search
     page.edit_random
   end
@@ -59,7 +59,7 @@ When /^I inactivate an Organization Code with closed accounts$/ do
     @organization = make OrganizationObject
     @organization.document_id = page.document_id
     @organization.chart_code = page.ro_chart_code
-    @organization.org_code = page.ro_org_code
+    @organization.organization_code = page.ro_org_code
     page.description.set random_alphanums(40, 'AFT')
     page.active.clear
     page.blanket_approve

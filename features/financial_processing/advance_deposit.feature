@@ -4,7 +4,7 @@ Feature: Advance Deposit
               have run and be able to continue working on the Document because sometimes and
               AD can not be completed in one session.
 
-  [KFSQA-608] I need to be able to Copy an existing AD and Save the new Document because this
+  [KFSQA-609] I need to be able to Copy an existing AD and Save the new Document because this
               will allow more efficient creation of multiple documents that are similar.
 
   @KFSQA-608

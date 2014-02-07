@@ -21,11 +21,11 @@ And /^I copy an Account$/ do
 end
 
 And /^I save an Account with a lower case Sub Fund Program$/ do
-  @account = create AccountObject, sub_fnd_group_code: 'board', press: :save
+  @account = create AccountObject, sub_fund_group_code: 'board', press: :save
 end
 
 When /^I submit an account with blank SubFund group Code$/ do
-  @account = create AccountObject, sub_fnd_group_code: '', press: :submit
+  @account = create AccountObject, sub_fund_group_code: '', press: :submit
 end
 
 Then /^I should get an error on saving that I left the SubFund Group Code field blank$/ do
@@ -76,7 +76,7 @@ end
 And /^I edit an Account with a Sub-Fund Group Code of (.*)/ do |sub_fund_group_code|
   visit(MainPage).account
   on AccountLookupPage do |page|
-    page.sub_fnd_group_code.fit sub_fund_group_code
+    page.sub_fund_group_code.fit sub_fund_group_code
     page.search
     page.edit_random
   end
@@ -123,7 +123,7 @@ When /^I save an Account document with only the ([^"]*) field populated$/ do |fi
       state:                'NY', #TODO grab this from config file
       address:              'Cornell University', #TODO grab this from config file
       type_code:              'CC - Contract College', #TODO grab this from config file
-      sub_fnd_group_code:     'ADMSYS',
+      sub_fund_group_code:     'ADMSYS',
       higher_ed_funct_code:   '4000',
       restricted_status_code: 'U - Unrestricted',
       fo_principal_name:    'dh273',
@@ -175,8 +175,8 @@ And(/^I create an Account with an Appropriation Account Number of (.*) and Sub-F
 
 end
 
-And /^I enter Sub Fund Group Code of (.*)/ do |sub_fnd_group_code|
-  on(AccountPage).sub_fnd_group_code.set sub_fnd_group_code
+And /^I enter Sub Fund Group Code of (.*)/ do |sub_fund_group_code|
+  on(AccountPage).sub_fund_group_code.set sub_fund_group_code
 end
 
 And /^I enter Sub Fund Program Code of (.*)/  do |subfund_program_code|
