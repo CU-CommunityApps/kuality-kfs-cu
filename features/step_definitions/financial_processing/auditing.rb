@@ -46,59 +46,41 @@ And /^I enter from an Accounting Line on the (.*) document with account number (
     page.from_object_code.fit object_code
 
     page.from_current_amount.fit amount if page_klass.to_s == 'BudgetAdjustmentPage'
-    #page.add_from_decrease_accounting_line if page_klass.to_s == 'BudgetAdjustmentPage'
 
     page.from_amount.fit amount unless page_klass.to_s == 'BudgetAdjustmentPage'
     page.add_from_accounting_line
   end
 end
 
-
-
 And /^I enter a from Accounting Line on the (.*?) document with account number (.*?) and object code (.*?) and amount (.*?) and reference origin code (.*?) and reference number (.*)$/ do |document, account_number, object_code, amount, ref_org_code, ref_number|
-  #for General Error Corection
+  #for General Error CorRection
   doc_page_class = document.gsub(' ', '') + 'Page'
   page_klass = Kernel.const_get(doc_page_class)
 
   on page_klass do |page|
     page.from_account_number.fit account_number
     page.from_object_code.fit object_code
-
-    #page.to_current_amount.fit amount if page_klass.to_s == 'BudgetAdjustmentPage'
-    #page.add_to_increase_accounting_line if page_klass.to_s == 'BudgetAdjustmentPage'
-
-    page.from_amount.fit amount #unless page_klass.to_s == 'BudgetAdjustmentPage'
-
+    page.from_amount.fit amount
     page.from_reference_origin_code.fit ref_org_code
     page.from_reference_number.fit ref_number
-
     page.add_from_accounting_line
   end
 end
 
-
 And /^I enter a to Accounting Line on the (.*?) document with account number (.*?) and object code (.*?) and amount (.*?) and reference origin code (.*?) and reference number (.*)$/ do |document, account_number, object_code, amount, ref_org_code, ref_number|
-  #for General Error Corection
+  #for General Error CoRrection
   doc_page_class = document.gsub(' ', '') + 'Page'
   page_klass = Kernel.const_get(doc_page_class)
 
   on page_klass do |page|
     page.to_account_number.fit account_number
     page.to_object_code.fit object_code
-
-    #page.to_current_amount.fit amount if page_klass.to_s == 'BudgetAdjustmentPage'
-    #page.add_to_increase_accounting_line if page_klass.to_s == 'BudgetAdjustmentPage'
-
-    page.to_amount.fit amount #unless page_klass.to_s == 'BudgetAdjustmentPage'
-
+    page.to_amount.fit amount
     page.to_reference_origin_code.fit ref_org_code
     page.to_reference_number.fit ref_number
-
     page.add_to_accounting_line
   end
 end
-
-
 
 And /^On the Budget Adjustment I modify the From current amount line item (.*) to be (.*)$/ do |line_item, amount|
   on BudgetAdjustmentPage do |page|
@@ -145,7 +127,6 @@ And(/^On the (.*) I modify the From Object Code line item (\d+) to be (.*)$/) do
   end
 end
 
-
 And(/^On the (.*) I modify the To Object Code line item (\d+) to be (.*)$/) do |document, line_item, new_object_code|
   doc_page_class = document.gsub(' ', '') + 'Page'
   page_klass = Kernel.const_get(doc_page_class)
@@ -180,6 +161,7 @@ And /^I view my Pre Encumbrance document$/ do
   end
 end
 
+#SHOULD PROBABLY MOVE THESE AT SOME POINT TO A BETTER PLACE
 And /^I visit the main page$/ do
   visit(MainPage)
   puts 'om on main page'

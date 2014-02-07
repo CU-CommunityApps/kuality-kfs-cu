@@ -43,7 +43,6 @@ Then /^the (.*) document goes to (.*)/ do |document, doc_status|
   $current_page.document_status.should == doc_status
 end
 
-
 And /^I create a (.*) document$/ do |document|
   doc_object = snake_case document
   doc_object_class = document.gsub(' ', '') + 'Object'
