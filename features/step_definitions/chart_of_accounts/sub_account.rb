@@ -26,7 +26,8 @@ end
 
 And /^The Sub-Account document should be in my action list$/ do
   sleep(5)
-  on(ActionList).viewAsUser(@user_id)
+  on(ActionList).view_as(@user_id)
+
   on(ActionList).last if on(ActionList).last_link.exists?
   on(ActionList).result_item(@sub_account.document_id).should exist
 end
