@@ -1,9 +1,7 @@
 And /^I copy a random (.*) document with (.*) status/ do |document, doc_status|
   doc_object = snake_case document
-  doc_object_class = document.gsub(' ', '') + 'Object'
-  doc_page_class = document.gsub(' ', '') + 'Page'
-  object_klass = Kernel.const_get(doc_object_class)
-  page_klass = Kernel.const_get(doc_page_class)
+  object_klass = Kernel.const_get(object_class_for(document))
+  page_klass = Kernel.const_get(page_class_for(document))
 
   on DocumentSearch do |search|
     search.document_type.set object_klass::DOC_INFO[:type_code]
@@ -24,8 +22,7 @@ And /^I copy a random (.*) document with (.*) status/ do |document, doc_status|
 end
 
 When /^I view the (.*) document$/ do |document|
-  doc_object = snake_case document
-  get(doc_object).view
+  get(snake_case(document)).view
 end
 
 When /^I (#{BasePage::available_buttons}) the (.*) document$/ do |button, document|
@@ -35,10 +32,34 @@ When /^I (#{BasePage::available_buttons}) the (.*) document$/ do |button, docume
   on(YesOrNoPage).yes if button == 'cancel'
 end
 
+When /^I (#{BasePage::available_buttons}) the (.*) document and confirm any questions$/ do |button, document|
+  step "I #{button} the #{document} document"
+  on YesOrNoPage do |page|
+    sleep 10
+    page.yes if page.yes_button.exists?
+  end
+end
+
+When /^I (#{BasePage::available_buttons}) the (.*) document and deny any questions$/ do |button, document|
+  step "I #{button} the #{document} document"
+  on YesOrNoPage do |page|
+    sleep 10
+    page.no if page.no_button.exists?
+  end
+end
+
 Then /^the (.*) document goes to (.*)/ do |document, doc_status|
   doc_object = snake_case document
+  page_klass = Kernel.const_get(get(doc_object).class.to_s.gsub('Object','Page'))
 
   sleep 10
   get(doc_object).view
-  $current_page.document_status.should == doc_status
+  on(page_klass) { $current_page.document_status.should == doc_status }
+end
+
+When /^I (#{BasePage::available_buttons}|start) an empty (.*) document$/ do |button, document|
+  visit(MainPage).send(snake_case(document))
+  on(Kernel.const_get(page_class_for(document))) do
+    $current_page.send(snake_case(button)) unless button == 'start'
+  end
 end
