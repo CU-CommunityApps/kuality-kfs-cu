@@ -2,6 +2,17 @@ And /^I start a Budget Adjustment document$/ do
   @budget_adjustment = create BudgetAdjustmentObject, press: nil
 end
 
+And /^I create a Budget Adjustment document for file import$/ do
+  @budget_adjustment = create BudgetAdjustmentObject, description:    random_alphanums(20, 'AFT Budget Adj '),
+                              from_chart_code: nil,
+                              from_account_number: nil,
+                              from_object_code: nil,
+                              from_current_amount: nil,
+                              from_file_name: 'BA_test_from.csv',
+                              to_file_name: 'BA_test_to.csv',
+                              press: nil
+end
+
 And /^I (#{BudgetAdjustmentPage::available_buttons}) a Budget Adjustment document$/ do |button|
   button.gsub!(' ', '_')
   @budget_adjustment = create BudgetAdjustmentObject, press: button
@@ -97,10 +108,40 @@ Then /^The To Account Monthly Balance should match the To amount$/ do
   on(BudgetAdjustmentPage).find_to_amount.should == @budget_adjustment.to_current_amount
 end
 
-And(/^The line description for the From Account should be displayed$/) do
+And /^The line description for the From Account should be displayed$/ do
   on(BudgetAdjustmentPage).find_from_line_description.should == @budget_adjustment.from_line_description
 end
 
-And(/^The line description for the To Account should be displayed$/) do
+And /^The line description for the To Account should be displayed$/ do
   on(BudgetAdjustmentPage).find_to_line_description.should == @budget_adjustment.to_line_description
+end
+
+And /^I upload From Accounting Lines containing Base Budget amounts$/ do
+  on BudgetAdjustmentPage do |page|
+    page.import_lines_from
+    page.account_line_from_file_name.set($file_folder+@budget_adjustment.from_file_name)
+    page.add_from_import
+  end
+end
+
+And /^I upload To Accounting Lines containing Base Budget amounts$/ do
+  on BudgetAdjustmentPage do |page|
+    page.import_lines_to
+    page.account_line_to_file_name.set($file_folder+@budget_adjustment.to_file_name)
+    page.add_to_import
+  end
+end
+
+Then /^The GLPE contains 4 Balance Type BB transactions$/ do
+  visit(MainPage).general_ledger_pending_entry
+  on GeneralLedgerPendingEntryLookupPage do |page|
+    page.balance_type_code.fit 'BB'
+    page.document_number.fit @budget_adjustment.document_id
+    page.search
+
+    page.item_row('LINE 1 FROM').should exist
+    page.item_row('LINE 2 FROM').should exist
+    page.item_row('LINE 1 TO').should exist
+    page.item_row('LINE 2 TO').should exist
+  end
 end

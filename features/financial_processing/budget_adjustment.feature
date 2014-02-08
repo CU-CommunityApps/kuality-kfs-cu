@@ -4,6 +4,7 @@ Feature: KFS Fiscal Officer Account Copy
               I want to create a Budget Adjustment but preclude entries from crossing Accounts because of Cornell budget policies.
   [KFSQA-628] Budget Adjustment edoc going FINAL without FO approval. As a KFS Fiscal Officer (FO)
               I want to approve all Budget Adjustments within my Account because this is Cornell SOP.
+  [KFSQA-629] Bug: Budget Adjustment Import Template incorrectly importing Base Budgets (BB), As a KFS User I want to import only BA Base Budget amounts using templates to make the budgeting process more efficient.
 
   @KFSQA-623
   Scenario: Budget Adjustment not allowed to cross Account Sub-Fund Group Codes
@@ -45,3 +46,15 @@ Feature: KFS Fiscal Officer Account Copy
     When   I view the To Account on the General Ledger Balance with balance type code of CB
     Then   The To Account Monthly Balance should match the To amount
     And    The line description for the To Account should be displayed
+
+  @wip @KFSQA-629
+  Scenario: Upload only Base Budget budget transactions using BA Import Template.
+    Given    I am logged in as a KFS Technical Administrator
+    And      I create a Budget Adjustment document for file import
+    And      I upload From Accounting Lines containing Base Budget amounts
+    And      I upload To Accounting Lines containing Base Budget amounts
+    When     I submit the Budget Adjustment document
+    Then     The GLPE contains 4 Balance Type BB transactions
+    When     I view the Budget Adjustment document
+    And      I blanket approve the Budget Adjustment document
+    Then     the Budget Adjustment document goes to PROCESSED
