@@ -145,7 +145,7 @@ And(/^On the (.*) I modify the Object Code line item (\d+) to be (.*)$/) do |doc
   end
 end
 
-Then /^The Notes and Attachment Tab displays “Accounting Line changed from”$/ do
+Then /^The Notes and Attachment Tab displays "Accounting Line changed from"$/ do
   on AuxiliaryVoucherPage do |page|
     page.expand_all
     page.account_line_changed_text.should exist
