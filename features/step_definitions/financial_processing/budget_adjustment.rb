@@ -2,6 +2,12 @@ And /^I start a Budget Adjustment document$/ do
   @budget_adjustment = create BudgetAdjustmentObject, press: nil
 end
 
+And /^I (#{BudgetAdjustmentPage::available_buttons}) a Budget Adjustment document$/ do |button|
+  button.gsub!(' ', '_')
+  @budget_adjustment = create BudgetAdjustmentObject, press: button
+  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
+end
+
 And /^I create a Budget Adjustment document for file import$/ do
   @budget_adjustment = create BudgetAdjustmentObject, description:    random_alphanums(20, 'AFT Budget Adj '),
                               from_chart_code: nil,
@@ -13,11 +19,6 @@ And /^I create a Budget Adjustment document for file import$/ do
                               press: nil
 end
 
-And /^I (#{BudgetAdjustmentPage::available_buttons}) a Budget Adjustment document$/ do |button|
-  button.gsub!(' ', '_')
-  @budget_adjustment = create BudgetAdjustmentObject, press: button
-  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
-end
 
 And /^I add a From amount of "(.*)" for account "(.*)" with object code "(.*)" with a line description of "(.*)"$/  do |amount, account_number, object_code, line_desc|
   on BudgetAdjustmentPage do |page|
