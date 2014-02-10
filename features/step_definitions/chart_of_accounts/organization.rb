@@ -7,6 +7,7 @@ And /^I copy an Organization$/ do
   on OrganizationLookupPage do |page|
     page.search
     page.copy_random
+
   end
   @organization = make OrganizationObject
   on OrganizationPage do |page|
@@ -36,15 +37,15 @@ When /^I inactivate an Organization Code with closed accounts$/ do
     @organization.document_id = page.document_id
     @organization.chart_code = page.ro_chart_code
     @organization.organization_code = page.ro_org_code
-    page.description.set random_alphanums(40, 'AFT')
+    page.description.fit random_alphanums(40, 'AFT')
     page.active.set
     page.blanket_approve
   end
   sleep(5)
   visit(MainPage).organization
   on OrganizationLookupPage do |page|
-    page.chart_code.set @organization.chart_code
-    page.organization_code.set @organization.organization_code
+    page.chart_code.fit @organization.chart_code
+    page.organization_code.fit @organization.organization_code
     page.search
     page.edit_random
   end
@@ -53,7 +54,7 @@ When /^I inactivate an Organization Code with closed accounts$/ do
     @organization.document_id = page.document_id
     @organization.chart_code = page.ro_chart_code
     @organization.organization_code = page.ro_org_code
-    page.description.set random_alphanums(40, 'AFT')
+    page.description.fit random_alphanums(40, 'AFT')
     page.active.clear
     page.blanket_approve
   end

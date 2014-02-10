@@ -5,6 +5,7 @@ And /^I (#{GeneralErrorCorrectionPage::available_buttons}) a GEC document$/ do |
 end
 
 When /^I start a GEC document$/ do
+  visit(MainPage).general_error_correction
   @gec = create GeneralErrorCorrectionObject
 end
 

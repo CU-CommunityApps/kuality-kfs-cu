@@ -50,11 +50,11 @@ end
 
 Then /^the (.*) document goes to (.*)/ do |document, doc_status|
   doc_object = snake_case document
-  page_klass = Kernel.const_get(get(doc_object).class.to_s.gsub('Object','Page'))
+  page_klass = Kernel.const_get(get(doc_object).class.to_s.gsub(/(.*)Object$/,'\1Page'))
 
   sleep 10
   get(doc_object).view
-  on(page_klass) { $current_page.document_status.should == doc_status }
+  on(page_klass).document_status.should == doc_status
 end
 
 When /^I (#{BasePage::available_buttons}|start) an empty (.*) document$/ do |button, document|
