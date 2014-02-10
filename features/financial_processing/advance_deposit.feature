@@ -36,7 +36,7 @@ Feature: Advance Deposit
     When  I start an empty Advance Deposit document
     Then  "* * * * Actions" should not be displayed in the Accounting Line section
 
-  @KFSQA-728 @wip
+  @KFSQA-728
   Scenario: Copy a Final Advance Deposit, and then create a new one
     Given I am logged in as a KFS User
     And   I access Document Search
