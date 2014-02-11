@@ -3,14 +3,7 @@ Feature: FP Auditing
   [KFSQA-631] Cornell University requires an audit trail of changes made by approvers to an eDoc Accounting Line.
               These changes will be stored recorded in the eDdoc Notes and Attachment Tab.
 
-#  @KFSQA-631 @wip
-#  Scenario: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for Budget Adjustment
-#    Given   I am logged in as a KFS User
-#    And     I create a Budget Adjustment document without accounting lines
-#    And     I enter from an Accounting Line on the Budget Adjustment document with account number G003704 and object code 4480 and amount 250
-#    And     I enter from an Accounting Line on the Budget Adjustment document with account number G003704 and object code 6510 and amount 250
-#    And     I enter to an Accounting Line on the Budget Adjustment document with account number G013300 and object code 4480 and amount 250
-#    And     I enter to an Accounting Line on the Budget Adjustment document with account number G013300 and object code 6510 and amount 250
+  @KFSQA-631 @wip
   Scenario: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for Budget Adjustment
     Given   I am logged in as a KFS User
     And     I create a Budget Adjustment document without accounting lines
@@ -22,10 +15,6 @@ Feature: FP Auditing
     And     On the Budget Adjustment I modify the From Object Code line item 0 to be 4486
     And     I save the Budget Adjustment document
     Then    The Notes and Attachment Tab displays "Accounting Line changed from"
-#
-#    And     I am logged in as "djj1"
-#    When    On the 'Budget Adjustment' document I modify the from line item '0' object code to be '4486'
-
 
   @KFSQA-631 @wip
   Scenario: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for Auxiliary Voucher
@@ -38,19 +27,6 @@ Feature: FP Auditing
     And     I view the Auxiliary Voucher document
     And     On the Auxiliary Voucher I modify the From Object Code line item 0 to be 6641
     And     I save the Auxiliary Voucher document
-    Then    The Notes and Attachment Tab displays "Accounting Line changed from"
-
-  @KFSQA-631 @wip
-  Scenario: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for Distribution of Income and Expense
-    Given   I am logged in as "sag3"
-    And     I create a Distribution of Income and Expense document without accounting lines
-    And     I add accounting lines to test the notes tab for the Distribution of Income and Expense doc
-    And     I submit the Distribution of Income and Expense document
-    And     the Distribution of Income and Expense document goes to ENROUTE
-    And     I am logged in as "djj1"
-    And     I view the Distribution of Income and Expense document
-    And     On the Distribution of Income and Expense I modify the From Object Code line item 0 to be 4486
-    And     I save the Distribution of Income and Expense document
     Then    The Notes and Attachment Tab displays "Accounting Line changed from"
 
   @KFSQA-631 @wip
@@ -97,27 +73,22 @@ Feature: FP Auditing
     Given   I am logged in as "<initiator>"
     And     I create a <document> document without accounting lines
     And     I add a From accounting line to the <document> document with:
-#      |document         | <document>        |
       | from account number |<from account number>|
-    |from object code     |<from object code>   |
-    |from amount          |<from amount>        |
+      |from object code     |<from object code>   |
+      |from amount          |<from amount>        |
     And     I add a To accounting line to the <document> document with:
-#      |document         | <document>        |
       |to account number|<to account number>|
       |to object code   |<to object code>   |
       |to amount        |<to amount>        |
-#    And     I enter from an Accounting Line on the <document type> document with account number <from account number> and object code <from object code> and amount <from amount>
-#    And     I enter to an Accounting Line on the <document type> document with account number <to account number> and object code <to object code> and amount <to amount>
     And     I submit the <document> document
-    And     the <document type> document goes to ENROUTE
+    And     the <document> document goes to ENROUTE
     And     I am logged in as "<approver>"
     And     I view the <document> document
-    And     On the <document I modify the <From or To> Object Code line item <line item> to be <modify object code>
-    And     I save the <document type> document
+    And     On the <document> I modify the <From or To> Object Code line item <line item> to be <modify object code>
+    And     I save the <document> document
     Then    The Notes and Attachment Tab displays "Accounting Line changed from"
   Examples:
 |  document                           |initiator | approver|from account number|from object code| from amount| to account number | to object code| to amount | From or To | line item| modify object code  |
 |  Distribution of Income and Expense | sag3     | djj1    | G003704           | 4480           | 255.55     | G013300           | 4480          | 255.55    | From       |  0       | 4486                |
 |  Internal Billing                   | djj1     | sag3    | G003704           | 4023           | 950000.67  | G013300           | 4023          | 950000.67 | To         |  0       | 4024                |
 |  Transfer Of Funds                  | mdw84    | hc224   | A763306           | 8070           | 250        | A763900           | 7070          | 250       | To         |  0       | 8070                |
-
