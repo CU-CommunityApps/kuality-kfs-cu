@@ -1,7 +1,7 @@
 include BatchUtilities
 
 And /^I (#{AdvanceDepositPage::available_buttons}) an AD document$/ do |button|
-  @advance_deposit = create AdvanceDepositObject, press: button
+  @advance_deposit = create AdvanceDepositObject, press: button.gsub(' ', '_')
 end
 
 And /^Nightly Batch Jobs run$/ do

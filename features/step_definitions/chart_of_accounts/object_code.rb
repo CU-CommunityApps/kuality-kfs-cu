@@ -1,6 +1,5 @@
 And /^I (#{ObjectCodePage::available_buttons}) an Object Code document$/ do |button|
-  button.gsub!(' ', '_')
-  @object_code = create ObjectCodeObject, press: button
+  @object_code = create ObjectCodeObject, press: button.gsub(' ', '_')
 end
 
 Then /^I should see the Object Code document in the object code search results$/ do

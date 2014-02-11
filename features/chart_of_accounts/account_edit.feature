@@ -1,18 +1,21 @@
 Feature: Account Edit
 
-  [KFSQA-593] Summary: As a KFS Chart Manager, when I edit an Account with an
-                       invalid Sub-Fund Program Code I should get an error message presented
-                       at the top of the Accountant Maintenance Tab. Because the field is validated
-                       against a maintenance table and KFS standards require it.
+  [KFSQA-593] As a KFS Chart Manager, when I edit an Account with an
+              invalid Sub-Fund Program Code I should get an error message presented
+              at the top of the Accountant Maintenance Tab. Because the field is validated
+              against a maintenance table and KFS standards require it.
 
-  [KFSQA-610] Summary: As a KFS Chart Administrator I want to update an Account without getting a stack trace error.
+  [KFSQA-610] As a KFS Chart Administrator I want to update an Account without getting a stack trace error.
 
   [KFSQA-632] As a KFS Fiscal Officer I need to edit an account using the Major Reporting Category Code field and enter
               a lowercase value and have it convert to UPPERCASE because I need to manage in-year financial activity,
               fund balances and year-end reporting.
 
-  [KFSQA-586] Summary: As a KFS Chart Manager, the Account Number and the Continuation Account on that account cannot
-                       and should not ever be the equal as this defeats the purpose of a continuation account.
+  [KFSQA-586] As a KFS Chart Manager, the Account Number and the Continuation Account on that account cannot
+              and should not ever be the equal as this defeats the purpose of a continuation account.
+
+  [KFSQA-569] As a KFS Chart Manager I want to change the account expiration date
+              because I still want any enroute documents to be approved.
 
   @KFSQA-593
   Scenario: Edit an Account with an invalid Sub-Fund Program Code
@@ -80,14 +83,35 @@ Feature: Account Edit
 
   @KFSQA-586
   Scenario: Try to continue an Account to itself
-    Given   I am logged in as a KFS Chart Manager
-    And     I access Account Lookup
-    And     I search for all accounts
-    And     I copy an Account
-    And     I blanket approve the Account document
-    And     I edit the Account
-    And     I close the Account
-    And     I enter a Continuation Account Number that equals the Account Number
-    And     I enter a Continuation Chart Of Accounts Code that equals the Chart of Account Code
-    When    I blanket approve the Account document
-    Then    an empty error should appear
+    Given I am logged in as a KFS Chart Manager
+    And   I access Account Lookup
+    And   I search for all accounts
+    And   I clone a random Account with the following changes:
+      | Name        | Test Account             |
+      | Chart Code  | IT                       |
+      | Description | [KFSQA-586] Test Account |
+    And   I close the Account
+    And   I enter a Continuation Account Number that equals the Account Number
+    When  I blanket approve the Account document
+    Then  an empty error should appear
+
+  @KFSQA-569
+  Scenario: Extension of Account expiration dates, while an eDoc is enroute,
+            should not prevent eDocs with this Account from going to final status
+    Given I am logged in as a KFS User
+    And   I find an expired Account
+    When  I start a GEC document
+    And   I add an Accounting Line to the GEC document with "Account Expired Override" selected
+    And   I submit the GEC document
+    Then  the GEC document goes to ENROUTE
+    Given I am logged in as a KFS Chart Administrator
+    When  I edit the Account
+    And   I extend the Expiration Date of the Account document 365 days
+    And   I blanket approve the Account document and deny any questions
+    And   Nightly Batch Jobs run
+    Then  the Account document goes to PROCESSED
+    And   I am logged in as a KFS User
+    When  I view the GEC document
+    And   I blanket approve the GEC document
+    And   Nightly Batch Jobs run
+    Then  the Account document goes to PROCESSED

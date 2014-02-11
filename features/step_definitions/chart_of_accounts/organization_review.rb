@@ -13,6 +13,5 @@ And /^I edit an Organization Review$/ do
 end
 
 And /^I (#{OrganizationPage::available_buttons}) an Organization Review Role document/ do |button|
-  button.gsub!(' ', '_')
-  @organization_review_role = create OrganizationReviewRoleObject, press: button
+  @organization_review_role = create OrganizationReviewRoleObject, press: button.gsub(' ', '_')
 end

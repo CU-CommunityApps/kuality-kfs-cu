@@ -1,10 +1,76 @@
 And /^I (#{AccountGlobalPage::available_buttons}) an Account Global Maintenance document$/ do |button|
-  button.gsub!(' ', '_')
-  @account_global = create AccountGlobalObject, press: button
+  @account_global = create AccountGlobalObject, press: button.gsub(' ', '_')
 end
 
-And(/^I create an Account Global eDoc with blank Fiscal Officer Principal Name, Account Supervisor Principal Name, Account Manager Name, and CFDA fields$/) do
-  @account_global = create AccountGlobalObject, fo_principal_name: '', supervisor_principal_name: '', manager_principal_name: '', cfda_number: ''
+And /^I (.*) an Account Global Maintenance document with blank Fiscal Officer Principal Name, Account Supervisor Principal Name, Account Manager Name, and CFDA fields$/ do |button|
+  visit(MainPage).account
+  random_account_number = on(AccountLookupPage).get_random_account_number
+  @account_global = create AccountGlobalObject, fo_principal_name: '',
+                                                supervisor_principal_name: '',
+                                                manager_principal_name: '',
+                                                cfda_number: '',
+                                                income_stream_account_number: random_account_number,
+                                                press: button.gsub(' ', '_')
+end
+
+And /^I (.*) an Account Global Maintenance document with these fields blank:$/ do |button, fields|
+  fields = fields.raw.flatten
+  mappings = {
+    'Description'                                   => :description,
+    'Chart Code'                                    => :new_chart_code,
+    'Account Number'                                => :new_number,
+    'Account Supervisor Principal Name'             => :supervisor_principal_name,
+    'Account Manager Principal Name'                => :manager_principal_name,
+    'Organization Code'                             => :organization_code,
+    'Sub-Fund Group Code'                           => :sub_fund_group_code,
+    'Account Expiration Date'                       => :acct_expire_date,
+    'Account Postal Code'                           => :postal_code,
+    'Account City Name'                             => :city,
+    'Account State Code'                            => :state,
+    'Account Street Address'                        => :address,
+    'Continuation Chart Of Accounts Code'           => :continuation_coa_code,
+    'Continuation Account Number'                   => :continuation_acct_number,
+    'Income Stream Chart Of Accounts Code'          => :income_stream_financial_cost_code,
+    'Income Stream Account Number'                  => :income_stream_account_number,
+    'CFDA Number'                                   => :cfda_number,
+    'Higher Education Function Code'                => :higher_ed_funct_code,
+    'Account Sufficient Funds Code'                 => :sufficient_funds_code,
+    'Transaction Processing Sufficient Funds Check' => :trans_processing_sufficient_funds_code,
+    'Labor Benefit Rate Category Code'              => :labor_benefit_rate_category_code
+  }
+  blank_fields = {
+    :description                            => '',
+    :new_chart_code                         => '',
+    :new_number                             => '',
+    :supervisor_principal_name              => '',
+    :manager_principal_name                 => '',
+    :organization_code                      => '',
+    :sub_fund_group_code                    => '',
+    :acct_expire_date                       => '',
+    :postal_code                            => '',
+    :city                                   => '',
+    :state                                  => '',
+    :address                                => '',
+    :continuation_coa_code                  => '',
+    :continuation_acct_number               => '',
+    :income_stream_financial_cost_code      => '',
+    :income_stream_account_number           => '',
+    :cfda_number                            => '',
+    :higher_ed_funct_code                   => '',
+    :sufficient_funds_code                  => '',
+    :trans_processing_sufficient_funds_code => '',
+    :labor_benefit_rate_category_code       => ''
+  }
+
+  visit(MainPage).account
+  random_account_number = on(AccountLookupPage).get_random_account_number
+
+  options = {
+    income_stream_account_number: random_account_number,
+    press: button.gsub(' ', '_')
+  }.merge!(blank_fields.keep_if{ |bf| mappings.keep_if{ |m| fields.include?(m) }.values.include?(bf) })
+
+  @account_global = create AccountGlobalObject, options
 end
 
 And /^I perform a Major Reporting Category Code Lookup$/ do
@@ -26,8 +92,8 @@ And /^I (.*) an Account Global Maintenance document with multiple accounting lin
   @account_global = create AccountGlobalObject,
                            supervisor_principal_name:  '',
                            manager_principal_name: '',
-                           org_code:               '',
-                           sub_fnd_group_code:   '',
+                           organization_code:               '',
+                           sub_fund_group_code:   '',
                            acct_expire_date:     '',
                            postal_code:            '',
                            city:                 '',
@@ -47,8 +113,8 @@ When /^I (.*) a Account Global Maintenance document with a Major Reporting Categ
   @account_global = create AccountGlobalObject,
                            supervisor_principal_name:  '',
                            manager_principal_name: '',
-                           org_code:               '',
-                           sub_fnd_group_code:   '',
+                           organization_code:               '',
+                           sub_fund_group_code:   '',
                            acct_expire_date:     '',
                            postal_code:            '',
                            city:                 '',

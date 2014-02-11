@@ -5,18 +5,19 @@ And /^I (#{AccountPage::available_buttons}) an Account document$/ do |button|
 end
 
 And /^I copy an Account$/ do
-  on AccountLookupPage do |page|
-    page.copy_random
-  end
+  on(AccountLookupPage).copy_random
   on AccountPage do |page|
-    page.description.set 'AFT testing copy'
-    page.chart_code.set 'IT' #TODO get from config
-    number = random_alphanums(4, 'AFT')
-    page.number.set number
-    page.save
+    page.description.fit 'AFT testing copy'
+    page.chart_code.fit 'IT' #TODO get from config
+    page.number.fit random_alphanums(4, 'AFT')
     @account = make AccountObject
-    @account.number = number
+    @account.chart_code = page.chart_code.text
+    @account.number = page.number.text
+    @account.description = page.description
     @account.document_id = page.document_id
+    @document_id = page.document_id
+    page.save
+    page.left_errmsg_text.should include 'Document was successfully saved.'
   end
 end
 
@@ -115,7 +116,7 @@ When /^I save an Account document with only the ([^"]*) field populated$/ do |fi
       chart_code:           'IT', #TODO grab this from config file
       number:               random_alphanums(7),
       name:                 random_alphanums(10),
-      org_code:               '01G0',
+      organization_code:               '01G0',
       campus_code:            'IT - Ithaca', #TODO grab this from config file
       effective_date:       '01/01/2010',
       postal_code:            '14853', #TODO grab this from config file
@@ -158,14 +159,15 @@ And /^I edit an Account$/ do
     @account = make AccountObject
     page.description.set random_alphanums(40, 'AFT')
     @account.document_id = page.document_id
+    @account.description = page.description
   end
 end
 
 When /^I input a lowercase Major Reporting Category Code value$/  do
-  on(AccountPage).major_reporting_category_code.set == 'FACULTY' #TODO parameterize
+  on(AccountPage).major_reporting_category_code.fit 'FACULTY' #TODO parameterize
 end
 
-And(/^I create an Account with an Appropriation Account Number of (.*) and Sub-Fund Program Code of (.*)/) do |appropriation_accountNumber, subfund_program_code|
+And /^I create an Account with an Appropriation Account Number of (.*) and Sub-Fund Program Code of (.*)/ do |appropriation_accountNumber, subfund_program_code|
   @account = create AccountObject
   on AccountPage do |page|
     page.appropriation_account_number.set appropriation_accountNumber
@@ -188,38 +190,100 @@ And /^I enter Appropriation Account Number of (.*)/  do |appropriation_account_n
 end
 
 And /^I close the Account$/ do
+  visit(MainPage).account
+
+  # First, let's get a random continuation account
+  random_continuation_account_number = on(AccountLookupPage).get_random_account_number
+  # Now, let's try to close that account
+  on AccountLookupPage do |page|
+    page.account_number.fit @account.number
+    page.search
+    page.edit_random # should only select the guy we want, after all
+  end
   on AccountPage do |page|
-    page.closed.select
-    page.account_expiration_date.set page.effective_date.value
+    page.description.fit                 "Closing Account #{@account.number}"
+    page.continuation_account_number.fit random_continuation_account_number
+    page.continuation_chart_code.fit     'IT - Ithaca Campus'
+    page.account_expiration_date.fit     page.effective_date.value
+    page.closed.set
   end
 end
 
 And /^I edit the Account$/ do
   visit(MainPage).account
   on AccountLookupPage do |page|
-    page.number.set @account.number
+    page.chart_code.fit @account.chart_code
+    page.account_number.fit @account.number
     page.search
     page.edit_random
   end
   on AccountPage do |page|
-    page.description.set 'AFT testing edit'
+    page.description.fit 'AFT testing edit'
+    @account.description = 'AFT testing edit'
+    @account.document_id = page.document_id
   end
 end
 
 And /^I enter a Continuation Chart Of Accounts Code that equals the Chart of Account Code$/ do
-  on AccountPage do |page|
-    page.continuation_chart_code.fit 'IT - Ithaca Campus'
-  end
+  on(AccountPage) { |page| page.continuation_chart_code.fit page.chart_code.text }
 end
 
 And /^I enter a Continuation Account Number that equals the Account Number$/ do
-  on AccountPage do |page|
-    page.continuation_account_number.fit page.original_account_number
-  end
+  on(AccountPage) { |page| page.continuation_account_number.fit page.original_account_number }
 end
 
 Then /^an empty error should appear$/ do
   on AccountPage do |page|
     page.error_message_of('').should exist
+  end
+end
+
+And /^I clone a random Account with the following changes:$/ do |table|
+  updates = table.rows_hash
+
+  visit(MainPage).account
+  on AccountLookupPage do |page|
+    page.search
+    page.copy_random
+  end
+  on AccountPage do |page|
+    @document_id = page.document_id
+    @account = make AccountObject, description: updates['Description'],
+                                   name: updates['Name'],
+                                   chart_code: updates['Chart Code'],
+                                   number: random_alphanums(7),
+                                   document_id: page.document_id
+    page.description.fit @account.description
+    page.name.fit @account.name
+    page.chart_code.fit @account.chart_code
+    page.number.fit @account.number
+    page.blanket_approve
+  end
+end
+
+And /^I extend the Expiration Date of the Account document (\d+) days$/ do |days|
+  on(AccountPage).account_expiration_date.fit (@account.account_expiration_date + days.to_i).strftime('%m/%d/%Y')
+end
+
+And /^I find an expired Account$/ do
+  visit(MainPage).account
+  on AccountLookupPage do |page|
+    # FIXME: These values should be set by a service.
+    page.chart_code.fit     'IT'
+    page.account_number.fit '147*'
+    page.search
+    page.sort_results_by('Account Expiration Date')
+    page.sort_results_by('Account Expiration Date') # Need to do this twice to get the expired ones in front
+
+    col_index = page.column_index(:account_expiration_date)
+    account_row_index = page.results_table
+                            .rows.collect { |row| row[col_index].text if row[col_index].text.split('/').length == 3}[1..page.results_table.rows.length]
+                            .collect { |cell| DateTime.strptime(cell, '%m/%d/%Y') < DateTime.now }.index(true) + 1 # Finds the first qualified one.
+
+    # We're only really interested in these parts
+    @account = make AccountObject
+    @account.number = page.results_table[account_row_index][page.column_index(:account_number)].text
+    @account.chart_code = page.results_table[account_row_index][page.column_index(:chart_code)].text
+    @account.account_expiration_date = DateTime.strptime(page.results_table[account_row_index][page.column_index(:account_expiration_date)].text, '%m/%d/%Y')
   end
 end
