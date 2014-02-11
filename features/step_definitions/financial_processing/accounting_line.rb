@@ -52,6 +52,13 @@ When /^I remove (from|to) Accounting Line #([0-9]*) from the (.*) document$/ do 
   end
 end
 
-Then /^the Accounting Line Description equals the General Ledger Accounting Line Description$/ do
-  pending
+Then /^the Accounting Line Description for the (.*) document equals the General Ledger Accounting Line Description$/ do |document|
+  doc_object = get(snake_case(document))
+  on AccountingLine do |lines|
+    # We expect equal from and to lines, so this should be legit.
+    0..doc_object.from_lines.length do |l|
+      lines.result_from_line_description(l).should == doc_object.from_lines[l].line_description
+      lines.result_to_line_description(l).should == doc_object.to_lines[l].line_description
+    end
+  end
 end
