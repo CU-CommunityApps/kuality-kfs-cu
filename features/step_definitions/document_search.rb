@@ -31,3 +31,7 @@ When /^I reopen the document$/ do
     page.open_doc(@document_id)
   end
 end
+
+When /^I lookup the document ID for the (.*) document from the General Ledger$/ do |document|
+  pending
+end

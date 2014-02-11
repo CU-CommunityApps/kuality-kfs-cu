@@ -57,12 +57,12 @@ Then /^the (.*) document goes to (.*)/ do |document, doc_status|
   on(page_klass).document_status.should == doc_status
 end
 
-When /^I (#{BasePage::available_buttons}|start) an empty (.*) document$/ do |button, document|
-  visit(MainPage).send(snake_case(document))
-  on(Kernel.const_get(page_class_for(document))) do
-    $current_page.send(snake_case(button)) unless button == 'start'
-  end
-end
+#When /^I (#{BasePage::available_buttons}|start) an empty (.*) document$/ do |button, document|
+#  visit(MainPage).send(snake_case(document))
+#  on Kernel.const_get(page_class_for(document)) do |page|
+#    page.send(snake_case(button)) unless button == 'start'
+#  end
+#end
 
 And /^I (#{BasePage::available_buttons}) the document$/ do |button|
   button.gsub!(' ', '_')

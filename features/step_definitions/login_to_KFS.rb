@@ -41,3 +41,41 @@ end
 Given /^I am logged in as a KFS System Manager$/ do
   visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
 end
+
+Given /^I am logged in as a KFS User the (.*) document$/ do |eDoc|
+  case eDoc
+    when 'AD'
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+    when 'AV'
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+    when 'BA'
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+    when 'CCR'
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+    when 'DV'
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+    when 'DI'
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+    when 'GEC'
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+    when 'IB'
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+    when 'ICA'
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+    when 'JV-1'
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+    when 'JV-2'
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+    when 'JV-3'
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+    when 'ND'
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+    when 'PE'
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+    when 'SB'
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+    when 'TF'
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+    else visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+  end
+end

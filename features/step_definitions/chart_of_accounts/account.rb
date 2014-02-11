@@ -249,9 +249,9 @@ And /^I clone a random Account with the following changes:$/ do |table|
   on AccountPage do |page|
     @document_id = page.document_id
     @account = make AccountObject, description: updates['Description'],
-                                   name: updates['Name'],
-                                   chart_code: updates['Chart Code'],
-                                   number: random_alphanums(7),
+                                   name:        updates['Name'],
+                                   chart_code:  updates['Chart Code'],
+                                   number:      random_alphanums(7),
                                    document_id: page.document_id
     page.description.fit @account.description
     page.name.fit @account.name
@@ -279,6 +279,7 @@ And /^I find an expired Account$/ do
     account_row_index = page.results_table
                             .rows.collect { |row| row[col_index].text if row[col_index].text.split('/').length == 3}[1..page.results_table.rows.length]
                             .collect { |cell| DateTime.strptime(cell, '%m/%d/%Y') < DateTime.now }.index(true) + 1 # Finds the first qualified one.
+    account_row_index = rand(account_row_index..page.results_table.rows.length)
 
     # We're only really interested in these parts
     @account = make AccountObject
