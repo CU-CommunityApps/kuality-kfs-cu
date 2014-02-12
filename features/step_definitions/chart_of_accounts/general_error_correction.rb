@@ -38,23 +38,23 @@ And /^I add an Accounting Line to the General Error Correction document with "Ac
   end
 end
 
-And /^I add balanced Accounting Lines to the General Error Correction document$/ do
-  on GeneralErrorCorrectionPage do
-    @general_error_correction.add_from_line({
-                                              chart_code:               @account.chart_code,
-                                              account_number:           @account.number,
-                                              object:                   '4480',
-                                              reference_origin_code:    '01',
-                                              reference_number:         '777001',
-                                              amount:                   '25000.11'
-                                            })
-    @general_error_correction.add_to_line({
-                                            chart_code:               @account.chart_code,
-                                            account_number:           @account.number,
-                                            object:                   '4480',
-                                            reference_origin_code:    '01',
-                                            reference_number:         '777002',
-                                            amount:                   '25000.11'
-                                          })
-  end
-end
+#And /^I add balanced Accounting Lines to the General Error Correction document$/ do
+#  on GeneralErrorCorrectionPage do
+#    @general_error_correction.add_from_line({
+#                                              chart_code:               @account.chart_code,
+#                                              account_number:           @account.number,
+#                                              object:                   '4480',
+#                                              reference_origin_code:    '01',
+#                                              reference_number:         '777001',
+#                                              amount:                   '25000.11'
+#                                            })
+#    @general_error_correction.add_to_line({
+#                                            chart_code:               @account.chart_code,
+#                                            account_number:           @account.number,
+#                                            object:                   '4480',
+#                                            reference_origin_code:    '01',
+#                                            reference_number:         '777002',
+#                                            amount:                   '25000.11'
+#                                          })
+#  end
+#end

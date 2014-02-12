@@ -48,7 +48,7 @@ When /^I (#{BasePage::available_buttons}) the (.*) document and deny any questio
   end
 end
 
-Then /^the (.*) document goes to (.*)/ do |document, doc_status|
+Then /^the (.*) document goes to (FINAL|ENROUTE|PROCESSED|INITIATED)$/ do |document, doc_status|
   doc_object = snake_case document
   page_klass = Kernel.const_get(get(doc_object).class.to_s.gsub(/(.*)Object$/,'\1Page'))
 
@@ -57,12 +57,16 @@ Then /^the (.*) document goes to (.*)/ do |document, doc_status|
   on(page_klass).document_status.should == doc_status
 end
 
-#When /^I (#{BasePage::available_buttons}|start) an empty (.*) document$/ do |button, document|
-#  visit(MainPage).send(snake_case(document))
-#  on Kernel.const_get(page_class_for(document)) do |page|
-#    page.send(snake_case(button)) unless button == 'start'
-#  end
-#end
+Then /^the (.*) document goes to (FINAL|ENROUTE|PROCESSED|INITIATED) or (FINAL|ENROUTE|PROCESSED|INITIATED)$/ do |document, first_doc_status, second_doc_status|
+  doc_object = snake_case document
+  page_klass = Kernel.const_get(get(doc_object).class.to_s.gsub(/(.*)Object$/,'\1Page'))
+
+  sleep 10
+  get(doc_object).view
+  on(page_klass) do |page|
+    page.document_status.should satisfy{ |status| status == first_doc_status || status == second_doc_status }
+  end
+end
 
 And /^I (#{BasePage::available_buttons}) the document$/ do |button|
   button.gsub!(' ', '_')

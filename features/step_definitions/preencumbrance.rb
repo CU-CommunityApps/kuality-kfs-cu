@@ -19,3 +19,8 @@ When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance Document t
                                                  disencumbrance_reference_number: encumbrance_reference_number,
                                                  press: button.gsub(' ', '_')
 end
+
+When /^I start an empty Pre-Encumbrance document$/ do
+  visit(MainPage).pre_encumbrance
+  @pre_encumbrance = create PreEncumbranceObject
+end

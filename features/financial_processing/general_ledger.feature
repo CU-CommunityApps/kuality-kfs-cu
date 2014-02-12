@@ -26,29 +26,29 @@ Feature: General Ledger
       | Description | <eDoc> Test Account |
     When  I start an empty <eDoc> document
     And   I add balanced Accounting Lines to the <eDoc> document
-    And   I enter a to Accounting Line Description on the <eDoc> document
+    And   I enter a from Accounting Line Description on the <eDoc> document
     And   I submit the <eDoc> document
     And   I blanket approve the <eDoc> document
-    And   the <eDoc> document goes to PROCESSED
+    And   the <eDoc> document goes to PROCESSED or FINAL
     Given I am logged in as a KFS Chart Administrator
     And   Nightly Batch Jobs run
     When  I lookup the document ID for the <eDoc> document from the General Ledger
     Then  the Accounting Line Description for the <eDoc> document equals the General Ledger Accounting Line Description
   Examples:
-    | eDoc                               | docType |
-#    | Advance Deposit                    | AD      |
-#    | Auxiliary Voucher                  | AV      |
-#    | Budget Adjustment                  | BA      |
-#    | Credit Card Receipt                | CCR     |
-#    | Disbursement Voucher               | DV      |
-#    | Distribution Of Income And Expense | DI      |
-    | General Error Correction           | GEC     |
-#    | Internal Billing                   | IB      |
-#    | Indirect Cost Adjustment           | ICA     |
-#    | Journal Voucher                    | JV-1    |
-#    | Journal Voucher                    | JV-2    |
-#    | Journal Voucher                    | JV-3    |
-#    | Non-Check Disbursement             | ND      |
-#    | Pre-Encumbrance                    | PE      |
-#    | Service Billing                    | SB      |
-#    | Transfer Of Funds                  | TF      |
+    | eDoc                               | docType | done? |
+#    | Advance Deposit                    | AD      | true  |
+#    | Auxiliary Voucher                  | AV      |       |
+#    | Budget Adjustment                  | BA      |       |
+#    | Credit Card Receipt                | CCR     |       |
+#    | Disbursement Voucher               | DV      |       |
+#    | Distribution Of Income And Expense | DI      |       |
+#    | General Error Correction           | GEC     | true  |
+#    | Internal Billing                   | IB      |       |
+#    | Indirect Cost Adjustment           | ICA     |       |
+#    | Journal Voucher                    | JV-1    |       |
+#    | Journal Voucher                    | JV-2    |       |
+#    | Journal Voucher                    | JV-3    |       |
+#    | Non-Check Disbursement             | ND      |       |
+    | Pre-Encumbrance                    | PE      | false |
+#    | Service Billing                    | SB      |       |
+#    | Transfer Of Funds                  | TF      |       |
