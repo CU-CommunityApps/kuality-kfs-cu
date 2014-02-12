@@ -9,6 +9,8 @@ Feature: Advance Deposit
 
   [KFSQA-645] Strange Display on when AD is created.
 
+  [KFSQA-728] As a KFS User I should be able to Copy a Final AD.
+
   @KFSQA-608
   Scenario: AD Create Save and continue after batch processes
     Given I am logged in as a KFS User
@@ -33,3 +35,13 @@ Feature: Advance Deposit
     Given I am logged in as a KFS User
     When  I start an empty Advance Deposit document
     Then  "* * * * Actions" should not be displayed in the Accounting Line section
+
+  @KFSQA-728
+  Scenario: Copy a Final Advance Deposit, and then create a new one
+    Given I am logged in as a KFS User
+    And   I access Document Search
+    And   I search for all AD documents
+    When  I copy a document with a FINAL status
+    And   I blanket approve the document
+    And   I reopen the document
+    Then  the document status is FINAL

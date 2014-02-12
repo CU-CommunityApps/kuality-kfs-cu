@@ -63,3 +63,13 @@ When /^I (#{BasePage::available_buttons}|start) an empty (.*) document$/ do |but
     $current_page.send(snake_case(button)) unless button == 'start'
   end
 end
+
+And /^I (#{BasePage::available_buttons}) the document$/ do |button|
+  button.gsub!(' ', '_')
+  on(KFSBasePage).send(button)
+  on(YesOrNoPage).yes if button == 'cancel'
+end
+
+Then /^the document status is (.*)/ do |doc_status|
+  on(KFSBasePage) { $current_page.document_status.should == doc_status }
+end
