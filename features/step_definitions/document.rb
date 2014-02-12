@@ -48,7 +48,7 @@ When /^I (#{BasePage::available_buttons}) the (.*) document and deny any questio
   end
 end
 
-Then /^the (.*) document goes to (FINAL|ENROUTE|PROCESSED|INITIATED)$/ do |document, doc_status|
+Then /^the (.*) document goes to (.*)$/ do |document, doc_status|
   doc_object = snake_case document
   page_klass = Kernel.const_get(get(doc_object).class.to_s.gsub(/(.*)Object$/,'\1Page'))
 
