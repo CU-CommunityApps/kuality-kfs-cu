@@ -47,7 +47,7 @@ Feature: KFS Fiscal Officer Account Copy
     Then   The To Account Monthly Balance should match the To amount
     And    The line description for the To Account should be displayed
 
-  @wip @KFSQA-629
+  @KFSQA-629
   Scenario: Upload only Base Budget budget transactions using BA Import Template.
     Given    I am logged in as a KFS Technical Administrator
     And      I create a Budget Adjustment document for file import
