@@ -34,26 +34,17 @@ end
 
 When /^I enter a (from|to) Accounting Line Description on the (.*) document$/ do |line_type, document|
   doc_object = get(snake_case(document))
-  #doc_object = snake_case document
-  #case line_type
-  #  when 'from'
-  #    get(doc_object).from_lines[0].edit line_description: 'Hey it works!'
-  #  when 'to'
-  #    get(doc_object).to_lines[0].edit line_description: 'Hey it works too!'
-  #end
   doc_object.accounting_lines[line_type.to_sym][0].edit line_description: "Hey #{line_type} edit works!"
 end
 
 When /^I remove (from|to) Accounting Line #([0-9]*) from the (.*) document$/ do |line_type, line_number, document|
-  #doc_object = snake_case document
-  #case line_type
-  #  when 'from'
-  #    get(doc_object).from_lines.delete_at(line_number.to_i - 1)
-  #  when 'to'
-  #    get(doc_object).to_lines.delete_at(line_number.to_i - 1)
-  #end
-  doc_object = get(snake_case(document))
-  doc_object.accounting_lines[line_type.to_sym][0].edit line_description: "Hey #{line_type} edit works!"
+  doc_object = snake_case document
+  case line_type
+    when 'from'
+      get(doc_object).from_lines.delete_at(line_number.to_i - 1)
+    when 'to'
+      get(doc_object).to_lines.delete_at(line_number.to_i - 1)
+  end
 end
 
 Then /^the Accounting Line Description for the (.*) document equals the General Ledger Accounting Line Description$/ do |document|
@@ -74,33 +65,39 @@ And /^I add balanced Accounting Lines to the (.*) document$/ do |document|
   page_klass = Kernel.const_get(doc_object.class.to_s.gsub(/(.*)Object$/,'\1Page'))
 
   new_from_line = {
-      chart_code:               @account.chart_code,
-      account_number:           @account.number,
-      object:                   '4480',
-      amount:                   '100'
+      chart_code:     @account.chart_code,
+      account_number: @account.number,
+      object:         '4480',
+      amount:         '100'
   }
-  if document == 'General Error Correction'
-    new_from_line.merge!({
-                            reference_number:         '777001',
-                            reference_origin_code:    '01'
-                         })
+  case document
+    when 'General Error Correction'
+      new_from_line.merge!({
+                              reference_number:      '777001',
+                              reference_origin_code: '01'
+                           })
+    when 'Pre-Encumbrance'
+      new_from_line.merge!({ object: '6100' })
   end
 
   new_to_line = {
-      chart_code:               @account.chart_code,
-      account_number:           @account.number,
-      object:                   '4480',
-      amount:                   '100'
+      chart_code:     @account.chart_code,
+      account_number: @account.number,
+      object:         '4480',
+      amount:         '100'
   }
-  if document == 'General Error Correction'
-    new_to_line.merge!({
-                          reference_number:         '777002',
-                          reference_origin_code:    '01'
-                       })
+  case document
+    when'General Error Correction'
+      new_to_line.merge!({
+                           reference_number:      '777002',
+                           reference_origin_code: '01'
+                         })
+    when 'Pre-Encumbrance'
+      new_from_line.merge!({ object: '6100' })
   end
 
   on page_klass do
-    doc_object.add_from_line(new_from_line)
-    doc_object.add_to_line(new_to_line) unless document == 'Advance Deposit'
+    doc_object.add_to_line(new_to_line) unless document == 'Pre-Encumbrance'
+    doc_object.add_from_line(new_from_line) unless document == 'Advance Deposit' # Otherwise it would add two
   end
 end

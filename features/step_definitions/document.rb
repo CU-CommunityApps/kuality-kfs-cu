@@ -57,15 +57,13 @@ Then /^the (.*) document goes to (FINAL|ENROUTE|PROCESSED|INITIATED)$/ do |docum
   on(page_klass).document_status.should == doc_status
 end
 
-Then /^the (.*) document goes to (FINAL|ENROUTE|PROCESSED|INITIATED) or (FINAL|ENROUTE|PROCESSED|INITIATED)$/ do |document, first_doc_status, second_doc_status|
+Then /^the (.*) document goes to one of the following statuses:$/ do |document, required_statuses|
   doc_object = snake_case document
   page_klass = Kernel.const_get(get(doc_object).class.to_s.gsub(/(.*)Object$/,'\1Page'))
 
   sleep 10
   get(doc_object).view
-  on(page_klass) do |page|
-    page.document_status.should satisfy{ |status| status == first_doc_status || status == second_doc_status }
-  end
+  on(page_klass) { |page| required_statuses.raw.flatten.should include page.document_status }
 end
 
 And /^I (#{BasePage::available_buttons}) the document$/ do |button|
