@@ -29,7 +29,7 @@ Feature: General Ledger
     Then  the Accounting Line Description for the <eDoc> document equals the General Ledger Accounting Line Description
   Examples:
     | eDoc                               | docType | source_account | target_account | done? |
-#    | Advance Deposit                    | AD      | 2003600        |                | true  |
+    | Advance Deposit                    | AD      | 2003600        |                | true  |
 #    | Auxiliary Voucher                  | AV      | H853800        | H803800        |       |
 #    | Budget Adjustment                  | BA      | G003704        | G013300        | false |
 #    | Credit Card Receipt                | CCR     | G003704        |                |       |
