@@ -2,7 +2,7 @@ Feature: General Ledger
 
   [KFSQA-649] Cornell University requires an Accounting Line Description input through an eDoc to be recorded in the General Ledger.
 
-  @KFSQA-649 @smoke @nightly-jobs @pending
+  @KFSQA-649 @smoke @nightly-jobs @wip
   Scenario Outline: Accounting Line Description from eDoc updates General Ledger
     Given I am logged in as a KFS Chart Manager
     #Given I am logged in as a KFS Chart Administrator
@@ -30,7 +30,7 @@ Feature: General Ledger
   Examples:
     | eDoc                               | docType | source_account | target_account | done? |
     | Advance Deposit                    | AD      | 2003600        |                | true  |
-#    | Auxiliary Voucher                  | AV      | H853800        | H803800        |       |
+#    | Auxiliary Voucher                  | AV      | H853800        | H803800        | X      |
 #    | Budget Adjustment                  | BA      | G003704        | G013300        | false |
 #    | Credit Card Receipt                | CCR     | G003704        |                |       |
 #    | Disbursement Voucher               | DV      | 5193120        |                |       |
