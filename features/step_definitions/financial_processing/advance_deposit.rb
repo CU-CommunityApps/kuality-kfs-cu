@@ -1,6 +1,7 @@
 include BatchUtilities
 
-And /^I (#{AdvanceDepositPage::available_buttons}) an AD document$/ do |button|
+And /^I (#{AdvanceDepositPage::available_buttons}) an Advance Deposit document$/ do |button|
+  visit(MainPage).advance_deposit
   @advance_deposit = create AdvanceDepositObject, press: button.gsub(' ', '_')
 end
 

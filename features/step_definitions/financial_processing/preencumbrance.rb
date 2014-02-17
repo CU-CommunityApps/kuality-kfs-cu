@@ -12,7 +12,7 @@ end
 
 Then /^the Pre-Encumbrance posts a GL Entry with one of the following statuses$/ do |required_statuses|
   visit(MainPage).general_ledger_entry
-  on(GeneralLedgerEntryLookupPage).find_preencumbrance_doc(@encumbrance)
+  on(GeneralLedgerEntryLookupPage).find_encumbrance_doc(@encumbrance)
   on(PreEncumbrancePage) { |b| required_statuses.raw.flatten.should include b.document_status }
 end
 

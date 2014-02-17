@@ -8,15 +8,17 @@ And /^I start a Budget Adjustment document$/ do
   @budget_adjustment = create BudgetAdjustmentObject, press: nil
 end
 
-And /^I create a Budget Adjustment document for file import$/ do
-  @budget_adjustment = create BudgetAdjustmentObject, description:    random_alphanums(20, 'AFT Budget Adj '),
-                              from_chart_code: nil,
-                              from_account_number: nil,
-                              from_object_code: nil,
-                              from_current_amount: nil,
-                              from_file_name: 'BA_test_from.csv',
-                              to_file_name: 'BA_test_to.csv',
-                              press: nil
+And /^I create a Budget Adjustment document for file import$/ do  # ME!
+  @budget_adjustment = create BudgetAdjustmentObject, press: nil,
+                                                      description: random_alphanums(20, 'AFT Budget Adj '),
+                                                      initial_lines: [{
+                                                                        type: :source,
+                                                                        file_name: 'BA_test_from.csv'
+                                                                      },
+                                                                      {
+                                                                        type: :target,
+                                                                        file_name: 'BA_test_to.csv'
+                                                                      }]
 end
 
 And /^I (#{BudgetAdjustmentPage::available_buttons}) a Budget Adjustment document$/ do |button|
@@ -159,19 +161,25 @@ And(/^The line description for the To Account should be displayed$/) do
   on(BudgetAdjustmentPage).find_target_line_description.should == @budget_adjustment.accounting_lines[:target][0].line_description
 end
 
-And /^I upload From Accounting Lines containing Base Budget amounts$/ do
-  on BudgetAdjustmentPage do |page|
-    page.import_lines_from
-    page.account_line_from_file_name.set($file_folder+@budget_adjustment.from_file_name)
-    page.add_from_import
-  end
-end
+#And /^I upload From Accounting Lines containing Base Budget amounts$/ do
+#  on BudgetAdjustmentPage do |page|
+#    page.import_lines_source
+#    page.account_line_source_file_name.set($file_folder+@budget_adjustment.accounting_lines[:source][0].file_name)
+#    page.add_source_import
+#  end
+#end
 
-And /^I upload To Accounting Lines containing Base Budget amounts$/ do
+And /^I upload (To|From) Accounting Lines containing Base Budget amounts$/ do |type|
   on BudgetAdjustmentPage do |page|
-    page.import_lines_to
-    page.account_line_to_file_name.set($file_folder+@budget_adjustment.to_file_name)
-    page.add_to_import
+    #page.import_lines_target
+    #page.account_line_target_file_name.set($file_folder+@budget_adjustment.accounting_lines[:target][0].file_name)
+    #page.add_target_import
+    case type
+      when 'To'
+        @budget_adjustment.accounting_lines[:target][0].import_lines
+      when 'From'
+        @budget_adjustment.accounting_lines[:source][0].import_lines
+    end
   end
 end
 
