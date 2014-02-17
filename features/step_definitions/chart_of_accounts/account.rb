@@ -261,6 +261,37 @@ And /^I clone a random Account with the following changes:$/ do |table|
   end
 end
 
+And /^I clone Account (.*) with the following changes:$/ do |account_number, table|
+  unless account_number.empty?
+    updates = table.rows_hash
+
+    visit(MainPage).account
+    on AccountLookupPage do |page|
+      page.chart_code.fit     'IT'
+      page.account_number.fit account_number
+      page.search
+      page.copy_random
+    end
+    on AccountPage do |page|
+      @document_id = page.document_id
+      @account = make AccountObject, description: updates['Description'],
+                                     name:        updates['Name'],
+                                     chart_code:  updates['Chart Code'],
+                                     number:      random_alphanums(7),
+                                     document_id: page.document_id
+      page.description.fit @account.description
+      page.name.fit        @account.name
+      page.chart_code.fit  @account.chart_code
+      page.number.fit      @account.number
+      page.supervisor_principal_name.fit @account.supervisor_principal_name
+
+      page.blanket_approve
+    end
+
+    @accounts = @accounts.nil? ? [@account] : @accounts + [@account]
+  end
+end
+
 And /^I extend the Expiration Date of the Account document (\d+) days$/ do |days|
   on(AccountPage).account_expiration_date.fit (@account.account_expiration_date + days.to_i).strftime('%m/%d/%Y')
 end

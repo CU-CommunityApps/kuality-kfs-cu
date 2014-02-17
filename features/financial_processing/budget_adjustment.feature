@@ -9,7 +9,7 @@ Feature: KFS Fiscal Officer Account Copy
   Scenario: Budget Adjustment not allowed to cross Account Sub-Fund Group Codes
     Given   I am logged in as a KFS User
     And     I start a Budget Adjustment document
-    And     I add a From amount of "100.00" for account "1258322" with object code "4480" with a line description of "aft from1"
+    And     I add a from amount of "100.00" for account "1258322" with object code "4480" with a line description of "aft from1"
     And     I add a to amount of "100" for account "1258323" with object code "4480" with a line description of "aft to 1"
     When    I submit the Budget Adjustment document
     Then    I should get an error saying "The Budget Adjustment document is not balanced within the account."

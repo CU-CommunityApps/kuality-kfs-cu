@@ -2,31 +2,22 @@ Feature: General Ledger
 
   [KFSQA-649] Cornell University requires an Accounting Line Description input through an eDoc to be recorded in the General Ledger.
 
-  @remove-me
-  Scenario: Test test
-    Given I am logged in as a KFS User
-    And   I clone a random Account with the following changes:
-      | Name        | Test Account |
-      | Chart Code  | IT           |
-      | Description | Test Account |
-    When  I start an empty General Error Correction document
-    And   I add a to Accounting Line for the General Error Correction document
-    And   I enter a to Accounting Line Description on the General Error Correction document
-    And   I remove to Accounting Line #1 from the General Error Correction document
-    And   I add a to Accounting Line for the General Error Correction document
-    And   I enter a to Accounting Line Description on the General Error Correction document
-    Then  the document status is ENROUTE
-
   @KFSQA-649 @smoke @wip
   Scenario Outline: Accounting Line Description from eDoc updates General Ledger
-    Given I am logged in as a KFS User the <docType> document
-    And   I clone a random Account with the following changes:
-      | Name        | <eDoc> Test Account |
-      | Chart Code  | IT                  |
-      | Description | <eDoc> Test Account |
+    Given I am logged in as a KFS Chart Manager
+    #Given I am logged in as a KFS Chart Administrator
+    And   I clone Account <source_account> with the following changes:
+      | Name                              | <eDoc> Test Account S |
+      | Chart Code                        | IT                    |
+      | Description                       | <eDoc> Test Account S |
+    And   I clone Account <target_account> with the following changes:
+      | Name                              | <eDoc> Test Account T |
+      | Chart Code                        | IT                    |
+      | Description                       | <eDoc> Test Account T |
+    #And   I am logged in as a KFS User for the <docType> document
+    Given I am logged in as a KFS Chart Administrator
     When  I start an empty <eDoc> document
     And   I add balanced Accounting Lines to the <eDoc> document
-    And   I enter a from Accounting Line Description on the <eDoc> document
     And   I submit the <eDoc> document
     And   I blanket approve the <eDoc> document
     And   the <eDoc> document goes to one of the following statuses:
@@ -37,20 +28,20 @@ Feature: General Ledger
     When  I lookup the document ID for the <eDoc> document from the General Ledger
     Then  the Accounting Line Description for the <eDoc> document equals the General Ledger Accounting Line Description
   Examples:
-    | eDoc                               | docType | done? |
-    | Advance Deposit                    | AD      | true  |
-#    | Auxiliary Voucher                  | AV      |       |
-#    | Budget Adjustment                  | BA      |       |
-#    | Credit Card Receipt                | CCR     |       |
-#    | Disbursement Voucher               | DV      |       |
-#    | Distribution Of Income And Expense | DI      |       |
-    | General Error Correction           | GEC     | true  |
-#    | Internal Billing                   | IB      |       |
-#    | Indirect Cost Adjustment           | ICA     |       |
-#    | Journal Voucher                    | JV-1    |       |
-#    | Journal Voucher                    | JV-2    |       |
-#    | Journal Voucher                    | JV-3    |       |
-#    | Non-Check Disbursement             | ND      |       |
-    | Pre-Encumbrance                    | PE      | true |
-#    | Service Billing                    | SB      |       |
-#    | Transfer Of Funds                  | TF      |       |
+    | eDoc                               | docType | source_account | target_account | done? |
+#    | Advance Deposit                    | AD      | 2003600        |                | true  |
+#    | Auxiliary Voucher                  | AV      | H853800        | H803800        |       |
+#    | Budget Adjustment                  | BA      | G003704        | G013300        | false |
+#    | Credit Card Receipt                | CCR     | G003704        |                |       |
+#    | Disbursement Voucher               | DV      | 5193120        |                |       |
+#    | Distribution Of Income And Expense | DI      | G003704        | G013300        |       |
+#    | General Error Correction           | GEC     | G003704        | G013300        | true  |
+#    | Internal Billing                   | IB      | G003704        | G013300        |       |
+#    | Indirect Cost Adjustment           | ICA     | 1278003        | Y404171        |       |
+#    | Journal Voucher                    | JV-1    | G003704        | G013300        |       |
+#    | Journal Voucher                    | JV-2    | G013300        |                |       |
+#    | Journal Voucher                    | JV-3    | G003704        |                |       |
+#    | Non-Check Disbursement             | ND      | G013300        |                |       |
+#    | Pre-Encumbrance                    | PE      | G003704        |                | true  |
+#    | Service Billing                    | SB      | U243700        | G013300        |       |
+#    | Transfer Of Funds                  | TF      | A763306        | A763900        |       |
