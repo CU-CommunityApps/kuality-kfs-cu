@@ -15,7 +15,7 @@ And /^I copy an Organization$/ do
     page.description.focus
     @organization.begin_date = tomorrow[:date_w_slashes]
     @organization.end_date = in_a_year[:date_w_slashes]
-    @organization.fill_out page, :description, :chart_code, :org_code, :begin_date, :end_date
+    @organization.fill_out page, :description, :chart_code, :organization_code, :begin_date, :end_date
     @organization.document_id = page.document_id
     @browser.alert.ok if @browser.alert.exists? # Because, y'know, sometimes it doesn't actually come up...
   end

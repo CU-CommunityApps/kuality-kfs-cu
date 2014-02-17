@@ -54,15 +54,17 @@ And /^I (#{BudgetAdjustmentPage::available_buttons}) a balanced Budget Adjustmen
   button.gsub!(' ', '_')
   @budget_adjustment = create BudgetAdjustmentObject,
                               press: nil, # We should add the accounting lines before submitting, eh?
-                              from_account_number: 'G003704', from_object_code: '4480',
+                              add_accounting_line: false,
+                              from_account_number: 'G003704', from_object_code: '4480' ,from_chart_code: 'IT',
+                              to_object_code: '4480',
                               from_current_amount: '250.11', from_line_description: random_alphanums(20, 'AFT FROM 1 '),
-                              from_base_amount: '125', to_account_number: 'G013300', to_object_code: '4480',
-                              to_current_amount: '250.11', to_line_description: random_alphanums(20, 'AFT TO 1 '),
-                              to_base_amount: '125', to_chart_code: 'IT'
+                              from_base_amount: '125', to_account_number: 'G013300',
+                              to_current_amount: '250.11', to_line_description: random_alphanums(20, 'AFT TO 1 ')
 
     on BudgetAdjustmentPage do |page|
-      #TODO:: Make data object for adding accounting lines (sounds like better solution)
+      @budget_adjustment.adding_a_from_accounting_line(page, 'G003704', '4480', '250.11', random_alphanums(20, 'AFT FROM 1 '), '125')
       @budget_adjustment.adding_a_from_accounting_line(page, 'G003704', '6510', '250.11', random_alphanums(20, 'AFT FROM 2 '), '125')
+      @budget_adjustment.adding_a_to_accounting_line(page, 'G013300', '4480', '250.11', random_alphanums(20, 'AFT TO 1 '), '125')
       @budget_adjustment.adding_a_to_accounting_line(page, 'G013300', '6510', '250.11', random_alphanums(20, 'AFT TO 2 '), '125')
 
       page.send(button)
@@ -72,13 +74,18 @@ end
 And /^I view the From Account on the General Ledger Balance with balance type code of (.*)$/ do |bal_type_code|
   visit(MainPage).general_ledger_balance
   on GeneralLedgerBalanceLookupPage do |page|
+    sleep 10
+    puts @budget_adjustment.from_chart_code.inspect
     page.chart_code.fit @budget_adjustment.from_chart_code
     page.account_number.fit @budget_adjustment.from_account_number
     page.balance_type_code.fit bal_type_code
     page.including_pending_ledger_entry_all.set
     page.search
     page.select_monthly_item(@budget_adjustment.from_object_code, @budget_adjustment.converted_month_number)
- end
+  end
+
+  puts @budget_adjustment.document_id.inspect
+  sleep 30
  on(GeneralLedgerEntryLookupPage).select_this_link_without_frm(@budget_adjustment.document_id)
 end
 
@@ -99,6 +106,8 @@ Then /^The From Account Monthly Balance should match the From amount$/ do
   on BudgetAdjustmentPage do |page|
     page.find_from_amount.should == @budget_adjustment.from_current_amount
     page.find_to_amount.should == @budget_adjustment.to_current_amount
+
+    puts
     page.find_from_line_description.should == @budget_adjustment.from_line_description
     page.find_to_line_description.should == @budget_adjustment.to_line_description
   end

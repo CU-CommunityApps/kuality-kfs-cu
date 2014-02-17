@@ -48,7 +48,7 @@ Feature: Account Edit
 
   @KFSQA-610
   Scenario: Edit an Account as KFS Chart Admin
-    Given I am am logged in as a KFS Chart Administrator
+    Given I am logged in as a KFS Chart Administrator
     And   I edit an Account
     When  I blanket approve the Account document
     Then  the Account document goes to PROCESSED
