@@ -29,19 +29,19 @@ Feature: General Ledger
     Then  the Accounting Line Description for the <eDoc> document equals the General Ledger Accounting Line Description
   Examples:
     | eDoc                               | docType | source_account | target_account | done? |
-    | Advance Deposit                    | AD      | 2003600        |                | true  |
+#    | Advance Deposit                    | AD      | 2003600        |                | true  |
 #    | Auxiliary Voucher                  | AV      | H853800        | H803800        | X      |
 #    | Budget Adjustment                  | BA      | G003704        | G013300        | false |
-#    | Credit Card Receipt                | CCR     | G003704        |                |       |
-#    | Disbursement Voucher               | DV      | 5193120        |                |       |
-#    | Distribution Of Income And Expense | DI      | G003704        | G013300        |       |
+#    | Credit Card Receipt                | CCR     | G003704        |                | X      |
+#    | Disbursement Voucher               | DV      | 5193120        |                | X      |
+#    | Distribution Of Income And Expense | DI      | G003704        | G013300        | X      |
 #    | General Error Correction           | GEC     | G003704        | G013300        | true  |
-#    | Internal Billing                   | IB      | G003704        | G013300        |       |
-#    | Indirect Cost Adjustment           | ICA     | 1278003        | Y404171        |       |
-#    | Journal Voucher                    | JV-1    | G003704        | G013300        |       |
-#    | Journal Voucher                    | JV-2    | G013300        |                |       |
-#    | Journal Voucher                    | JV-3    | G003704        |                |       |
+#    | Internal Billing                   | IB      | G003704        | G013300        | X      |
+#    | Indirect Cost Adjustment           | ICA     | 1278003        | Y404171        | X      |
+#    | Journal Voucher                    | JV-1    | G003704        | G013300        | X      |
+#    | Journal Voucher                    | JV-2    | G013300        |                | ?      |
+#    | Journal Voucher                    | JV-3    | G003704        |                | ?      |
 #    | Non-Check Disbursement             | ND      | G013300        |                |       |
 #    | Pre-Encumbrance                    | PE      | G003704        |                | true  |
 #    | Service Billing                    | SB      | U243700        | G013300        |       |
-#    | Transfer Of Funds                  | TF      | A763306        | A763900        |       |
+#    | Transfer Of Funds                  | TF      | A763306        | A763900        | X      |
