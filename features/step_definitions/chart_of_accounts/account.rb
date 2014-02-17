@@ -249,15 +249,46 @@ And /^I clone a random Account with the following changes:$/ do |table|
   on AccountPage do |page|
     @document_id = page.document_id
     @account = make AccountObject, description: updates['Description'],
-                                   name: updates['Name'],
-                                   chart_code: updates['Chart Code'],
-                                   number: random_alphanums(7),
+                                   name:        updates['Name'],
+                                   chart_code:  updates['Chart Code'],
+                                   number:      random_alphanums(7),
                                    document_id: page.document_id
     page.description.fit @account.description
     page.name.fit @account.name
     page.chart_code.fit @account.chart_code
     page.number.fit @account.number
     page.blanket_approve
+  end
+end
+
+And /^I clone Account (.*) with the following changes:$/ do |account_number, table|
+  unless account_number.empty?
+    updates = table.rows_hash
+
+    visit(MainPage).account
+    on AccountLookupPage do |page|
+      page.chart_code.fit     'IT'
+      page.account_number.fit account_number
+      page.search
+      page.copy_random
+    end
+    on AccountPage do |page|
+      @document_id = page.document_id
+      @account = make AccountObject, description: updates['Description'],
+                                     name:        updates['Name'],
+                                     chart_code:  updates['Chart Code'],
+                                     number:      random_alphanums(7),
+                                     document_id: page.document_id
+      page.description.fit @account.description
+      page.name.fit        @account.name
+      page.chart_code.fit  @account.chart_code
+      page.number.fit      @account.number
+      page.supervisor_principal_name.fit @account.supervisor_principal_name
+
+      page.blanket_approve
+    end
+
+    @accounts = @accounts.nil? ? [@account] : @accounts + [@account]
   end
 end
 
@@ -279,6 +310,7 @@ And /^I find an expired Account$/ do
     account_row_index = page.results_table
                             .rows.collect { |row| row[col_index].text if row[col_index].text.split('/').length == 3}[1..page.results_table.rows.length]
                             .collect { |cell| DateTime.strptime(cell, '%m/%d/%Y') < DateTime.now }.index(true) + 1 # Finds the first qualified one.
+    account_row_index = rand(account_row_index..page.results_table.rows.length)
 
     # We're only really interested in these parts
     @account = make AccountObject
