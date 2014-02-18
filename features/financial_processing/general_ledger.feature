@@ -2,7 +2,7 @@ Feature: General Ledger
 
   [KFSQA-649] Cornell University requires an Accounting Line Description input through an eDoc to be recorded in the General Ledger.
 
-  @KFSQA-649 @smoke @nightly-jobs @pending
+  @KFSQA-649 @smoke @nightly-jobs @wip
   Scenario Outline: Accounting Line Description from eDoc updates General Ledger
     Given I am logged in as a KFS Chart Manager
     #Given I am logged in as a KFS Chart Administrator
@@ -30,18 +30,18 @@ Feature: General Ledger
   Examples:
     | eDoc                               | docType | source_account | target_account | done? |
 #    | Advance Deposit                    | AD      | 2003600        |                | true  |
-#    | Auxiliary Voucher                  | AV      | H853800        | H803800        | X      |
-#    | Budget Adjustment                  | BA      | G003704        | G013300        | false |
-#    | Credit Card Receipt                | CCR     | G003704        |                | X      |
-#    | Disbursement Voucher               | DV      | 5193120        |                | X      |
-#    | Distribution Of Income And Expense | DI      | G003704        | G013300        | X      |
+#    | Auxiliary Voucher                  | AV      | H853800        |                | false |
+#    | Budget Adjustment                  | BA      | G003704        | G013300        | M     |
+#    | Credit Card Receipt                | CCR     | G003704        |                | X     |
+#    | Disbursement Voucher               | DV      | 5193120        |                | X     |
+#    | Distribution Of Income And Expense | DI      | G003704        | G013300        | true  |
 #    | General Error Correction           | GEC     | G003704        | G013300        | true  |
-#    | Internal Billing                   | IB      | G003704        | G013300        | X      |
-#    | Indirect Cost Adjustment           | ICA     | 1278003        | Y404171        | X      |
-#    | Journal Voucher                    | JV-1    | G003704        | G013300        | X      |
-#    | Journal Voucher                    | JV-2    | G013300        |                | ?      |
-#    | Journal Voucher                    | JV-3    | G003704        |                | ?      |
+#    | Internal Billing                   | IB      | G003704        | G013300        | true  |
+#    | Indirect Cost Adjustment           | ICA     | 1278003        | GACLOSE        | M     |
+#    | Journal Voucher                    | JV-1    | G003704        | G013300        | X     |
+#    | Journal Voucher                    | JV-2    | G013300        |                | ?     |
+#    | Journal Voucher                    | JV-3    | G003704        |                | ?     |
 #    | Non-Check Disbursement             | ND      | G013300        |                |       |
 #    | Pre-Encumbrance                    | PE      | G003704        |                | true  |
 #    | Service Billing                    | SB      | U243700        | G013300        |       |
-#    | Transfer Of Funds                  | TF      | A763306        | A763900        | X      |
+#    | Transfer Of Funds                  | TF      | A763306        | A763900        | true  |
