@@ -76,6 +76,13 @@ And /^I add balanced Accounting Lines to the (.*) document$/ do |document|
                                base_amount:      '125'
                              })
       when 'Advance Deposit'
+      when'Auxiliary Voucher'
+        new_source_line.merge!({
+                                 object: '6690',
+                                 debit:  '100',
+                                 credit: '100'
+                               })
+        new_source_line.delete(:amount)
       when 'General Error Correction'
         new_source_line.merge!({
                                reference_number:      '777001',
@@ -83,8 +90,8 @@ And /^I add balanced Accounting Lines to the (.*) document$/ do |document|
                              })
       when 'Pre-Encumbrance'
         new_source_line.merge!({
-                               object: '6100'
-                             })
+                                 object: '6100'
+                               })
       when 'Internal Billing'
         new_source_line.merge!({
                                  object: '4023'
@@ -100,7 +107,7 @@ And /^I add balanced Accounting Lines to the (.*) document$/ do |document|
     doc_object.add_source_line(new_source_line)
 
     # Some docs don't have a target line
-    unless (document == 'Advance Deposit') || (document == 'Pre-Encumbrance')
+    unless (document == 'Advance Deposit') || (document == 'Auxiliary Voucher') || (document == 'Pre-Encumbrance')
       new_target_line = {
           chart_code:     @accounts[1].chart_code,
           account_number: @accounts[1].number,
@@ -138,6 +145,6 @@ And /^I add balanced Accounting Lines to the (.*) document$/ do |document|
       doc_object.add_target_line(new_target_line)
     end
 
-    #pending 'Test test'
+    pending 'Test test'
   end
 end
