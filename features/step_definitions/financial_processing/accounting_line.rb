@@ -87,8 +87,10 @@ And /^I add balanced Accounting Lines to the (.*) document$/ do |document|
                              })
       when 'Internal Billing'
         new_source_line.merge!({
-                                   object: '4023'
+                                 object: '4023'
                                })
+      when 'Indirect Cost Adjustment'
+        new_source_line.delete(:object)
       when 'Transfer Of Funds'
         new_source_line.merge!({
                                  object: '8070'
@@ -126,6 +128,8 @@ And /^I add balanced Accounting Lines to the (.*) document$/ do |document|
           new_target_line.merge!({
                                    object: '4023'
                                  })
+        when 'Indirect Cost Adjustment'
+          new_target_line.delete(:object)
         when 'Transfer Of Funds'
           new_target_line.merge!({
                                    object: '7070'
