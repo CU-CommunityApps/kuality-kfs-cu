@@ -88,12 +88,17 @@ And /^I add balanced Accounting Lines to the (.*) document$/ do |document|
                                object: '6100',
                                amount:  '100'
                              })
+      when 'Transfer Of Funds'
+        new_source_line.merge!({
+                                 object: '8070',
+                                 amount:  '100'
+                               })
       else
     end
     doc_object.add_source_line(new_source_line)
 
     # Some docs don't have a target line
-    unless (document == 'Advance Deposit') || (document == 'Pre-Encumbrance')
+    unless (document == 'Advance Deposit') || (document == 'Pre-Encumbrance') #|| (document == 'Transfer Of Funds')
       new_target_line = {
           chart_code:     @accounts[1].chart_code,
           account_number: @accounts[1].number,
@@ -113,10 +118,15 @@ And /^I add balanced Accounting Lines to the (.*) document$/ do |document|
                                amount:         '100'
                              })
         when 'Pre-Encumbrance'
-          new_source_line.merge!({
+          new_target_line.merge!({
                                  object: '6100',
                                  amount:  '100'
                                })
+        when 'Transfer Of Funds'
+          new_target_line.merge!({
+                                   object: '7070',
+                                   amount:  '100'
+                                 })
       end
       doc_object.add_target_line(new_target_line)
     end

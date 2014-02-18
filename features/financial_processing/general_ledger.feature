@@ -44,4 +44,4 @@ Feature: General Ledger
 #    | Non-Check Disbursement             | ND      | G013300        |                |       |
 #    | Pre-Encumbrance                    | PE      | G003704        |                | true  |
 #    | Service Billing                    | SB      | U243700        | G013300        |       |
-    | Transfer Of Funds                  | TF      | A763306        | A763900        | X      |
+#    | Transfer Of Funds                  | TF      | A763306        | A763900        | true  |
