@@ -67,6 +67,8 @@ And /^I add balanced Accounting Lines to the (.*) document$/ do |document|
         object:         '4480',
         line_description: 'What a wonderful From line description!'
     }
+    new_source_line.merge!({ amount: '100' }) unless document == 'Budget Adjustment'
+
     case document
       when'Budget Adjustment'
         new_source_line.merge!({
@@ -74,37 +76,37 @@ And /^I add balanced Accounting Lines to the (.*) document$/ do |document|
                                base_amount:      '125'
                              })
       when 'Advance Deposit'
-        new_source_line.merge!({
-                               amount:         '100'
-                             })
       when 'General Error Correction'
         new_source_line.merge!({
                                reference_number:      '777001',
-                               reference_origin_code: '01',
-                               amount:         '100'
+                               reference_origin_code: '01'
                              })
       when 'Pre-Encumbrance'
         new_source_line.merge!({
-                               object: '6100',
-                               amount:  '100'
+                               object: '6100'
                              })
+      when 'Internal Billing'
+        new_source_line.merge!({
+                                   object: '4023'
+                               })
       when 'Transfer Of Funds'
         new_source_line.merge!({
-                                 object: '8070',
-                                 amount:  '100'
+                                 object: '8070'
                                })
       else
     end
     doc_object.add_source_line(new_source_line)
 
     # Some docs don't have a target line
-    unless (document == 'Advance Deposit') || (document == 'Pre-Encumbrance') #|| (document == 'Transfer Of Funds')
+    unless (document == 'Advance Deposit') || (document == 'Pre-Encumbrance')
       new_target_line = {
           chart_code:     @accounts[1].chart_code,
           account_number: @accounts[1].number,
           object:         '4480',
           line_description: 'What a wonderful To line description!'
       }
+      new_target_line.merge!({ amount: '100' }) unless document == 'Budget Adjustment'
+
       case document
         when'Budget Adjustment'
           new_target_line.merge!({
@@ -114,18 +116,19 @@ And /^I add balanced Accounting Lines to the (.*) document$/ do |document|
         when'General Error Correction'
           new_target_line.merge!({
                                reference_number:      '777002',
-                               reference_origin_code: '01',
-                               amount:         '100'
+                               reference_origin_code: '01'
                              })
         when 'Pre-Encumbrance'
           new_target_line.merge!({
-                                 object: '6100',
-                                 amount:  '100'
-                               })
+                                   object: '6100'
+                                 })
+        when 'Internal Billing'
+          new_target_line.merge!({
+                                   object: '4023'
+                                 })
         when 'Transfer Of Funds'
           new_target_line.merge!({
-                                   object: '7070',
-                                   amount:  '100'
+                                   object: '7070'
                                  })
       end
       doc_object.add_target_line(new_target_line)

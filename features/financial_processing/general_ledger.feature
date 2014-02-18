@@ -36,7 +36,7 @@ Feature: General Ledger
 #    | Disbursement Voucher               | DV      | 5193120        |                | X      |
 #    | Distribution Of Income And Expense | DI      | G003704        | G013300        | X      |
 #    | General Error Correction           | GEC     | G003704        | G013300        | true  |
-#    | Internal Billing                   | IB      | G003704        | G013300        | X      |
+    | Internal Billing                   | IB      | G003704        | G013300        | X      |
 #    | Indirect Cost Adjustment           | ICA     | 1278003        | Y404171        | X      |
 #    | Journal Voucher                    | JV-1    | G003704        | G013300        | X      |
 #    | Journal Voucher                    | JV-2    | G013300        |                | ?      |
