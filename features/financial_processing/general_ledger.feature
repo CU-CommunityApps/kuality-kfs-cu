@@ -30,7 +30,7 @@ Feature: General Ledger
   Examples:
     | eDoc                               | docType | source_account | target_account | done? |
 #    | Advance Deposit                    | AD      | 2003600        |                | true  |
-#    | Auxiliary Voucher                  | AV      | H853800        |                | false |
+#    | Auxiliary Voucher                  | AV      | H853800        |                | true  |
 #    | Budget Adjustment                  | BA      | G003704        | G013300        | M     |
 #    | Credit Card Receipt                | CCR     | G003704        |                | X     |
 #    | Disbursement Voucher               | DV      | 5193120        |                | X     |
