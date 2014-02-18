@@ -121,6 +121,6 @@ And /^I add balanced Accounting Lines to the (.*) document$/ do |document|
       doc_object.add_target_line(new_target_line)
     end
 
-    pending 'Test test'
+    #pending 'Test test'
   end
 end
