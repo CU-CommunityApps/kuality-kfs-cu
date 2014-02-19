@@ -18,12 +18,15 @@ Feature: General Ledger
       | Name                              | <eDoc> Test Account T |
       | Chart Code                        | IT                    |
       | Description                       | <eDoc> Test Account T |
-    #And   I am logged in as a KFS User for the <docType> document
-    Given I am logged in as a KFS Chart Administrator
+    And   I am logged in as a KFS User for the <docType> document
+    #Given I am logged in as a KFS Chart Administrator
     When  I start an empty <eDoc> document
     And   I add balanced Accounting Lines to the <eDoc> document
+    And   I save the <eDoc> document
     And   I submit the <eDoc> document
-    And   I blanket approve the <eDoc> document
+    Given I am logged in as a KFS Fiscal Officer
+    And   I view the <eDoc> document
+    And   I blanket approve the <eDoc> document if it is not already FINAL
     And   the <eDoc> document goes to one of the following statuses:
       | PROCESSED |
       | FINAL     |
@@ -37,15 +40,15 @@ Feature: General Ledger
 #    | Auxiliary Voucher                  | AV      | H853800        |                |                    |            |                  |            | true  |
 #    | Budget Adjustment                  | BA      | G003704        | G013300        |                    |            |                  |            | M     |
 #    | Credit Card Receipt                | CCR     | G003704        |                |                    |            |                  |            | S     |
-    | Disbursement Voucher               | DV      | 5193120        |                |                    |            |                  |            | false |
+#    | Disbursement Voucher               | DV      | 5193120        |                |                    |            |                  |            | false |
 #    | Distribution Of Income And Expense | DI      | G003704        | G013300        |                    |            |                  |            | true  |
 #    | General Error Correction           | GEC     | G003704        | G013300        |                    |            |                  |            | true  |
 #    | Internal Billing                   | IB      | G003704        | G013300        |                    |            |                  |            | true  |
 #    | Indirect Cost Adjustment           | ICA     | 1093600        | GACLOSE        | IT - Ithaca Campus | A463200    | 100              | set        | true  |
-#    | Journal Voucher                    | JV-1    | G003704        | G013300        |                    |            |                  |            | S     |
+    | Journal Voucher                    | JV-1    | G003704        | G013300        |                    |            |                  |            | S     |
 #    | Journal Voucher                    | JV-2    | G013300        |                |                    |            |                  |            | ?     |
 #    | Journal Voucher                    | JV-3    | G003704        |                |                    |            |                  |            | ?     |
-#    | Non-Check Disbursement             | ND      | G013300        |                |                    |            |                  |            | S     |
+#    | Non-Check Disbursement             | ND      | G013300        |                |                    |            |                  |            | true     |
 #    | Pre-Encumbrance                    | PE      | G003704        |                |                    |            |                  |            | true  |
-#    | Service Billing                    | SB      | U243700        | G013300        |                    |            |                  |            | S     |
+#    | Service Billing                    | SB      | U243700        | G013300        |                    |            |                  |            | M     |
 #    | Transfer Of Funds                  | TF      | A763306        | A763900        |                    |            |                  |            | true  |

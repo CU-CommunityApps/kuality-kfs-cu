@@ -45,7 +45,7 @@ end
 Given /^I am logged in as a KFS User for the (.*) document$/ do |eDoc|
   case eDoc
     when 'AD'
-      visit(BackdoorLoginPage).login_as('ccs1') #TODO get from role service
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
     when 'AV'
       visit(BackdoorLoginPage).login_as('scu1') #TODO get from role service
     when 'BA'
@@ -69,11 +69,11 @@ Given /^I am logged in as a KFS User for the (.*) document$/ do |eDoc|
     when 'JV-3'
       visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
     when 'ND'
-      visit(BackdoorLoginPage).login_as('rlc56') #TODO get from role service
+      visit(BackdoorLoginPage).login_as('kpg1') #TODO get from role service
     when 'PE'
-      visit(BackdoorLoginPage).login_as('sag3') #TODO get from role service
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
     when 'SB'
-      visit(BackdoorLoginPage).login_as('chl52') #TODO get from role service
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
     when 'TF'
       visit(BackdoorLoginPage).login_as('mdw84') #TODO get from role service
     else
