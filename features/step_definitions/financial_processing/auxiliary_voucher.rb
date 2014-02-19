@@ -8,7 +8,7 @@ When /^I create an AV document with that Object Code$/ do
     @auxiliary_voucher.add_source_line({
                                            account_number:   '1000819',
                                            object:           @lookup_object_code,
-                                           source_credit:    '100',
+                                           credit:           '100',
                                            line_description: 'AV sample line'
                                        })
   end
