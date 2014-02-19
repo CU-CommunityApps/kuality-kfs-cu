@@ -145,7 +145,7 @@ And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|
       doc_object.add_target_line(new_target_line)
     end
 
-    pending 'Test test'
+    #pending 'Test test'
   end
 end
 
