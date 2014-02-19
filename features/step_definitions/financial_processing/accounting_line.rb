@@ -54,7 +54,7 @@ end
 
 # This step is a little hairy and has potential to get much hairier. We may need to split it into
 # multiple steps on document type if it gets worse.
-And /^I add balanced Accounting Lines to the (.*) document$/ do |document|
+And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|Credit Card Receipt|Disbursement Voucher|Distribution Of Income And Expense|General Error Correction|Internal Billing|Indirect Cost Adjustment|Journal Voucher|Non-Check Disbursement|Pre-Encumbrance|Service Billing|Transfer Of Funds) document$/ do |document|
   doc_object = get(snake_case(document))
   page_klass = Kernel.const_get(doc_object.class.to_s.gsub(/(.*)Object$/,'\1Page'))
 
@@ -80,7 +80,7 @@ And /^I add balanced Accounting Lines to the (.*) document$/ do |document|
         new_source_line.merge!({
                                  object: '6690',
                                  debit:  '100',
-                                 credit: '100'
+                                 #credit: '100'
                                })
         new_source_line.delete(:amount)
       when 'General Error Correction'
@@ -146,5 +146,21 @@ And /^I add balanced Accounting Lines to the (.*) document$/ do |document|
     end
 
     pending 'Test test'
+  end
+end
+
+And /^I add balanced Accounting Lines to the Auxiliary Voucher document$/ do
+  on AuxiliaryVoucherPage do
+    new_source_line = {
+        chart_code:     @accounts[0].chart_code,
+        account_number: @accounts[0].number,
+        line_description: 'What a wonderful From line description!',
+        object: '6690',
+        debit:  '100'
+    }
+    @auxiliary_voucher.add_source_line(new_source_line)
+    new_source_line.delete(:debit)
+    new_source_line.merge!({credit: '100'})
+    @auxiliary_voucher.add_source_line(new_source_line)
   end
 end
