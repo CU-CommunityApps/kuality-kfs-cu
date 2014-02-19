@@ -103,6 +103,12 @@ And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|
                                })
       when 'Indirect Cost Adjustment'
         new_source_line.delete(:object)
+      when 'Journal Voucher'
+        new_source_line.merge!({
+                                 object: '6540',
+                                 debit:  '100',
+                               })
+        new_source_line.delete(:amount)
       when 'Transfer Of Funds'
         new_source_line.merge!({
                                  object: '8070'
@@ -116,7 +122,9 @@ And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|
     doc_object.add_source_line(new_source_line)
 
     # Some docs don't have a target line
-    unless (document == 'Advance Deposit') || (document == 'Auxiliary Voucher') || (document == 'Pre-Encumbrance') || (document == 'Non-Check Disbursement')
+    unless (document == 'Advance Deposit') || (document == 'Auxiliary Voucher') ||
+           (document == 'Pre-Encumbrance') || (document == 'Non-Check Disbursement') ||
+           (document == 'Journal Voucher')
       new_target_line = {
           chart_code:     @accounts[1].chart_code,
           account_number: @accounts[1].number,
