@@ -6,7 +6,7 @@ Feature: Financial Documents
   Scenario Outline: Accounting Line Defaults to Chart IT
     Given  I am logged in as a KFS Chart Manager
     And    I start an empty <eDoc> document
-    Then   The Chart of Accounts on the accounting line Should Default appropriately for the <eDoc> document
+    Then   The Chart of Accounts on the accounting line defaults appropriately for the <eDoc> document
   Examples:
     | eDoc                               |
     | Advance Deposit                    |
