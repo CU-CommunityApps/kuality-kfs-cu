@@ -36,16 +36,16 @@ Feature: General Ledger
 #    | Advance Deposit                    | AD      | 2003600        |                |                    |            |                  |            | true  |
 #    | Auxiliary Voucher                  | AV      | H853800        |                |                    |            |                  |            | true  |
 #    | Budget Adjustment                  | BA      | G003704        | G013300        |                    |            |                  |            | M     |
-#    | Credit Card Receipt                | CCR     | G003704        |                |                    |            |                  |            | X     |
+#    | Credit Card Receipt                | CCR     | G003704        |                |                    |            |                  |            | S     |
     | Disbursement Voucher               | DV      | 5193120        |                |                    |            |                  |            | false |
 #    | Distribution Of Income And Expense | DI      | G003704        | G013300        |                    |            |                  |            | true  |
 #    | General Error Correction           | GEC     | G003704        | G013300        |                    |            |                  |            | true  |
 #    | Internal Billing                   | IB      | G003704        | G013300        |                    |            |                  |            | true  |
 #    | Indirect Cost Adjustment           | ICA     | 1093600        | GACLOSE        | IT - Ithaca Campus | A463200    | 100              | set        | true  |
-#    | Journal Voucher                    | JV-1    | G003704        | G013300        |                    |            |                  |            | X     |
+#    | Journal Voucher                    | JV-1    | G003704        | G013300        |                    |            |                  |            | S     |
 #    | Journal Voucher                    | JV-2    | G013300        |                |                    |            |                  |            | ?     |
 #    | Journal Voucher                    | JV-3    | G003704        |                |                    |            |                  |            | ?     |
-#    | Non-Check Disbursement             | ND      | G013300        |                |                    |            |                  |            |       |
+#    | Non-Check Disbursement             | ND      | G013300        |                |                    |            |                  |            | S     |
 #    | Pre-Encumbrance                    | PE      | G003704        |                |                    |            |                  |            | true  |
-#    | Service Billing                    | SB      | U243700        | G013300        |                    |            |                  |            |       |
+#    | Service Billing                    | SB      | U243700        | G013300        |                    |            |                  |            | S     |
 #    | Transfer Of Funds                  | TF      | A763306        | A763900        |                    |            |                  |            | true  |
