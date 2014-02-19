@@ -2,7 +2,7 @@ Feature: General Ledger
 
   [KFSQA-649] Cornell University requires an Accounting Line Description input through an eDoc to be recorded in the General Ledger.
 
-  @KFSQA-649 @smoke @nightly-jobs @pending
+  @KFSQA-649 @smoke @nightly-jobs @wip
   Scenario Outline: Accounting Line Description from eDoc updates General Ledger
     Given I am logged in as a KFS Chart Manager
     #Given I am logged in as a KFS Chart Administrator
