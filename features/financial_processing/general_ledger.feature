@@ -51,5 +51,5 @@ Feature: General Ledger
 #    | Journal Voucher                    | JV-3    | G003704        |                |                    |            |                  |            | ?     |
 #    | Non-Check Disbursement             | ND      | G013300        |                |                    |            |                  |            | true  |
 #    | Pre-Encumbrance                    | PE      | G003704        |                |                    |            |                  |            | true  |
-    | Service Billing                    | SB      | 4263489        | G013300        |                    |            |                  |            | M     |
+    | Service Billing                    | SB      | R523875        | 1003702        |                    |            |                  |            | M     |
 #    | Transfer Of Funds                  | TF      | A763306        | A763900        |                    |            |                  |            | true  |

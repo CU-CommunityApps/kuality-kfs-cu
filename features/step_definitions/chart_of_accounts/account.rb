@@ -296,6 +296,7 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
       page.indirect_cost_recovery_account_line_percent.fit   @account.indirect_cost_recovery_account_line_percent unless @account.indirect_cost_recovery_account_line_percent.nil?
       page.indirect_cost_recovery_active_indicator.fit       @account.indirect_cost_recovery_active_indicator unless @account.indirect_cost_recovery_active_indicator.nil?
 
+      #pending 'Test' unless @accounts.nil?
       page.blanket_approve
     end
 
