@@ -2,7 +2,7 @@ Feature: Financial Documents
 
   [KFSQA-727] Cornell University requires Chart IT as the default for all FP eDoc Accounting Lines.
 
-  @KFSQA-727 @wip
+  @KFSQA-727
   Scenario Outline: Accounting Line Defaults to Chart IT
     Given  I am logged in as a KFS User for the <docType> document
     And    I start an empty <eDoc> document
