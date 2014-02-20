@@ -41,7 +41,7 @@ Feature: General Ledger
 #    | Auxiliary Voucher                  | AV      | H853800        |                |                    |            |                  |            | true  |
 #    | Budget Adjustment                  | BA      | G003704        | G013300        |                    |            |                  |            | M     |
 #    | Credit Card Receipt                | CCR     | G003704        |                |                    |            |                  |            | true  |
-#    | Disbursement Voucher               | DV      | 5193120        |                |                    |            |                  |            | false |
+    | Disbursement Voucher               | DV      | 5193120        |                |                    |            |                  |            | false |
 #    | Distribution Of Income And Expense | DI      | G003704        | G013300        |                    |            |                  |            | true  |
 #    | General Error Correction           | GEC     | G003704        | G013300        |                    |            |                  |            | true  |
 #    | Internal Billing                   | IB      | G003704        | G013300        |                    |            |                  |            | true  |
@@ -51,5 +51,5 @@ Feature: General Ledger
 #    | Journal Voucher                    | JV-3    | G003704        |                |                    |            |                  |            | ?     |
 #    | Non-Check Disbursement             | ND      | G013300        |                |                    |            |                  |            | true  |
 #    | Pre-Encumbrance                    | PE      | G003704        |                |                    |            |                  |            | true  |
-    | Service Billing                    | SB      | R523875        | 1003702        |                    |            |                  |            | M     |
+#    | Service Billing                    | SB      | R523875        | 1003702        |                    |            |                  |            | M     |
 #    | Transfer Of Funds                  | TF      | A763306        | A763900        |                    |            |                  |            | true  |
