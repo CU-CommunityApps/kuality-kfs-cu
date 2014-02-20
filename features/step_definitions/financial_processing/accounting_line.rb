@@ -100,7 +100,7 @@ And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|
         new_source_line.delete(:object)
       when 'Transfer Of Funds'
         new_source_line.merge!({
-                                 object: '8070'
+                                   object: '8070'
                                })
       else
     end
@@ -162,5 +162,106 @@ And /^I add balanced Accounting Lines to the Auxiliary Voucher document$/ do
     new_source_line.delete(:debit)
     new_source_line.merge!({credit: '100'})
     @auxiliary_voucher.add_source_line(new_source_line)
+  end
+end
+
+And /^I add a (source|target) Accounting Line to the (.*) document with the following:$/ do |line_type, document, table|
+  accounting_line_info = table.rows_hash
+  accounting_line_info.delete_if { |k,v| v.empty? }
+  unless accounting_line_info['Number'].nil?
+    doc_object = snake_case document
+    page_klass = Kernel.const_get(get(doc_object).class.to_s.gsub(/(.*)Object$/,'\1Page'))
+
+    on page_klass do
+      case line_type
+        when 'source'
+          new_source_line = {
+              chart_code:     accounting_line_info['Chart Code'],
+              account_number: accounting_line_info['Number'],
+              object:         accounting_line_info['Object Code'],
+              amount:         accounting_line_info['Amount']
+          }
+          case document
+            when'Budget Adjustment'
+              new_source_line.merge!({
+                                         current_amount:   accounting_line_info['Amount'],
+                                         base_amount:      accounting_line_info['Amount']
+                                     })
+              new_source_line.delete(:amount)
+            when 'Advance Deposit'
+            when'Auxiliary Voucher', 'Journal Voucher'
+              new_source_line.merge!({
+                                         object: '6690',
+                                         debit:  accounting_line_info['Amount']
+                                     })
+              new_source_line.delete(:amount)
+              get(doc_object).add_source_line(new_source_line)
+              new_source_line.merge!({
+                                         credit:  accounting_line_info['Amount']
+                                     })
+              new_source_line.delete(:debit)
+            when 'General Error Correction'
+              new_source_line.merge!({
+                                         reference_number:      '777001',
+                                         reference_origin_code: '01'
+                                     })
+            when 'Pre-Encumbrance'
+              new_source_line.merge!({
+                                         object: '6100'
+                                     })
+            when 'Internal Billing'
+              new_source_line.merge!({
+                                         object: '4023'
+                                     })
+            when 'Indirect Cost Adjustment'
+              new_source_line.delete(:object)
+            when 'Non-Check Disbursement'
+              new_source_line.merge!({
+                                         reference_number:      '777001'
+                                     })
+            when 'Transfer Of Funds'
+              new_source_line.merge!({
+                                         object: '8070'
+                                     })
+            else
+          end
+          get(doc_object).add_source_line(new_source_line)
+        when 'target'
+          new_target_line = {
+              chart_code:     accounting_line_info['Chart Code'],
+              account_number: accounting_line_info['Number'],
+              object:         accounting_line_info['Object Code'],
+              amount:         accounting_line_info['Amount']
+          }
+          case document
+            when'Budget Adjustment'
+              new_target_line.merge!({
+                                         current_amount:   accounting_line_info['Amount'],
+                                         base_amount:      accounting_line_info['Amount']
+                                     })
+              new_target_line.delete(:amount)
+            when'General Error Correction'
+              new_target_line.merge!({
+                                         reference_number:      '777002',
+                                         reference_origin_code: '01'
+                                     })
+            when 'Pre-Encumbrance'
+              new_target_line.merge!({
+                                         object: '6100'
+                                     })
+            when 'Internal Billing'
+              new_target_line.merge!({
+                                         object: '4023'
+                                     })
+            when 'Indirect Cost Adjustment'
+              new_target_line.delete(:object)
+            when 'Transfer Of Funds'
+              new_target_line.merge!({
+                                         object: '7070'
+                                     })
+          end
+          get(doc_object).add_target_line(new_target_line)
+      end
+    end
   end
 end

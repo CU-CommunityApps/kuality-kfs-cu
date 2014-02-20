@@ -72,6 +72,22 @@ And /^I (#{BasePage::available_buttons}) the document$/ do |button|
   on(YesOrNoPage).yes if button == 'cancel'
 end
 
+And /^I recall the financial document$/ do
+  on(KFSBasePage).send('recall_current_document')
+  on RecallPage do |page|
+    page.reason.fit 'Recall test'
+    page.recall
+  end
+end
+
+And /^I recall and cancel the financial document$/ do
+  on(KFSBasePage).send('recall_current_document')
+  on RecallPage do |page|
+    page.reason.set 'Recall and cancel test'
+    page.recall_and_cancel
+  end
+end
+
 Then /^the document status is (.*)/ do |doc_status|
   on(KFSBasePage) { $current_page.document_status.should == doc_status }
 end
