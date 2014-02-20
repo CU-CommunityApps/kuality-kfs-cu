@@ -4,7 +4,8 @@ Feature: General Ledger
 
   @KFSQA-649 @smoke @nightly-jobs @wip
   Scenario Outline: Accounting Line Description from eDoc updates General Ledger
-    Given I am logged in as a KFS Chart Manager
+    Given I am logged in as a KFS Manager for the <docType> document
+    #Given I am logged in as a KFS Chart Manager
     #Given I am logged in as a KFS Chart Administrator
     And   I clone Account <source_account> with the following changes:
       | Name                                          | <eDoc> Test Account S |
@@ -39,16 +40,16 @@ Feature: General Ledger
 #    | Advance Deposit                    | AD      | 2003600        |                |                    |            |                  |            | true  |
 #    | Auxiliary Voucher                  | AV      | H853800        |                |                    |            |                  |            | true  |
 #    | Budget Adjustment                  | BA      | G003704        | G013300        |                    |            |                  |            | M     |
-#    | Credit Card Receipt                | CCR     | G003704        |                |                    |            |                  |            | S     |
+    | Credit Card Receipt                | CCR     | G003704        |                |                    |            |                  |            | false     |
 #    | Disbursement Voucher               | DV      | 5193120        |                |                    |            |                  |            | false |
 #    | Distribution Of Income And Expense | DI      | G003704        | G013300        |                    |            |                  |            | true  |
 #    | General Error Correction           | GEC     | G003704        | G013300        |                    |            |                  |            | true  |
 #    | Internal Billing                   | IB      | G003704        | G013300        |                    |            |                  |            | true  |
 #    | Indirect Cost Adjustment           | ICA     | 1093600        | GACLOSE        | IT - Ithaca Campus | A463200    | 100              | set        | true  |
-    | Journal Voucher                    | JV-1    | G003704        | G013300        |                    |            |                  |            | S     |
+#    | Journal Voucher                    | JV-1    | G003704        | G013300        |                    |            |                  |            | true  |
 #    | Journal Voucher                    | JV-2    | G013300        |                |                    |            |                  |            | ?     |
 #    | Journal Voucher                    | JV-3    | G003704        |                |                    |            |                  |            | ?     |
-#    | Non-Check Disbursement             | ND      | G013300        |                |                    |            |                  |            | true     |
+#    | Non-Check Disbursement             | ND      | G013300        |                |                    |            |                  |            | true  |
 #    | Pre-Encumbrance                    | PE      | G003704        |                |                    |            |                  |            | true  |
-#    | Service Billing                    | SB      | U243700        | G013300        |                    |            |                  |            | M     |
+#    | Service Billing                    | SB      | 4263489        | G013300        |                    |            |                  |            | M     |
 #    | Transfer Of Funds                  | TF      | A763306        | A763900        |                    |            |                  |            | true  |

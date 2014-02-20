@@ -79,10 +79,13 @@ And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|
       when'Auxiliary Voucher'
         new_source_line.merge!({
                                  object: '6690',
-                                 debit:  '100',
-                                 #credit: '100'
+                                 debit:  '100'
                                })
         new_source_line.delete(:amount)
+      when'Credit Card Receipt'
+        new_source_line.merge!({
+                                 object:           '4010'
+                               })
       when 'General Error Correction'
         new_source_line.merge!({
                                reference_number:      '777001',
@@ -124,7 +127,7 @@ And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|
     # Some docs don't have a target line
     unless (document == 'Advance Deposit') || (document == 'Auxiliary Voucher') ||
            (document == 'Pre-Encumbrance') || (document == 'Non-Check Disbursement') ||
-           (document == 'Journal Voucher')
+           (document == 'Journal Voucher') || (document == 'Credit Card Receipt')
       new_target_line = {
           chart_code:     @accounts[1].chart_code,
           account_number: @accounts[1].number,
