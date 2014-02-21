@@ -25,7 +25,7 @@ Feature: General Ledger
     And   I add balanced Accounting Lines to the <eDoc> document
     And   I save the <eDoc> document
     And   I submit the <eDoc> document
-    Given I am logged in as a KFS Fiscal Officer
+    Given I am logged in as a KFS Manager for the <docType> document
     And   I view the <eDoc> document
     And   I blanket approve the <eDoc> document if it is not already FINAL
     And   the <eDoc> document goes to one of the following statuses:
@@ -39,9 +39,9 @@ Feature: General Ledger
     | eDoc                               | docType | source_account | target_account | ICR_COA_Code       | ICR_Number | ICR_Line_Percent | ICR_Active | done? |
 #    | Advance Deposit                    | AD      | 2003600        |                |                    |            |                  |            | true  |
 #    | Auxiliary Voucher                  | AV      | H853800        |                |                    |            |                  |            | true  |
-#    | Budget Adjustment                  | BA      | G003704        | G013300        |                    |            |                  |            | M     |
+#    | Budget Adjustment                  | BA      | G003704        | G003704        |                    |            |                  |            | Use a single account? |
 #    | Credit Card Receipt                | CCR     | G003704        |                |                    |            |                  |            | true  |
-#    | Disbursement Voucher               | DV      | 1490000        |                |                    |            |                  |            | M     |
+#    | Disbursement Voucher               | DV      | 1490000        |                |                    |            |                  |            | skip  |
 #    | Distribution Of Income And Expense | DI      | G003704        | G013300        |                    |            |                  |            | true  |
 #    | General Error Correction           | GEC     | G003704        | G013300        |                    |            |                  |            | true  |
 #    | Internal Billing                   | IB      | G003704        | G013300        |                    |            |                  |            | true  |
@@ -51,5 +51,5 @@ Feature: General Ledger
 #    | Journal Voucher                    | JV-3    | G003704        |                |                    |            |                  |            | true  |
 #    | Non-Check Disbursement             | ND      | G013300        |                |                    |            |                  |            | true  |
 #    | Pre-Encumbrance                    | PE      | G003704        |                |                    |            |                  |            | true  |
-#    | Service Billing                    | SB      | R523875        | 1003702        |                    |            |                  |            | M     |
+#    | Service Billing                    | SB      | R523875        | 1003702        |                    |            |                  |            | Must add cloned account to role during test     |
 #    | Transfer Of Funds                  | TF      | A763306        | A763900        |                    |            |                  |            | true  |

@@ -72,9 +72,10 @@ And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|
     case document
       when'Budget Adjustment'
         new_source_line.merge!({
-                               current_amount:   '250.11',
-                               base_amount:      '125'
-                             })
+                                 object:         '6510',
+                                 current_amount: '10.00',
+                                 base_amount:    ''
+                               })
       when 'Advance Deposit'
       when'Auxiliary Voucher'
         new_source_line.merge!({
@@ -144,9 +145,10 @@ And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|
       case document
         when'Budget Adjustment'
           new_target_line.merge!({
-                               current_amount:   '250.11',
-                               base_amount:      '125'
-                             })
+                                   object:         '6540',
+                                   current_amount: '10.00',
+                                   base_amount:    ''
+                                 })
         when'General Error Correction'
           new_target_line.merge!({
                                reference_number:      '777002',
