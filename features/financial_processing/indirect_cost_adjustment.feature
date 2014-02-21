@@ -2,7 +2,7 @@ Feature: Indirect Cost Adjustment
 
   [KFSQA-655] The ICA document is not populating the Indirect Cost Recovery chart specified on the account.
 
-  @KFSQA-655 @wip
+  @KFSQA-655
   Scenario: Populate an ICA document with the Indirect Cost Recovery chart specified on the account.
     Given   I am logged in as a KFS User
     And     I start an empty Indirect Cost Adjustment document
