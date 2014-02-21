@@ -47,8 +47,8 @@ Feature: General Ledger
 #    | Internal Billing                   | IB      | G003704        | G013300        |                    |            |                  |            | true  |
 #    | Indirect Cost Adjustment           | ICA     | 1093600        | GACLOSE        | IT - Ithaca Campus | A463200    | 100              | set        | true  |
 #    | Journal Voucher                    | JV-1    | G003704        | G013300        |                    |            |                  |            | true  |
-    | Journal Voucher                    | JV-2    | G003704        |                |                    |            |                  |            | ?     |
-#    | Journal Voucher                    | JV-3    | G003704        |                |                    |            |                  |            | ?     |
+#    | Journal Voucher                    | JV-2    | G003704        |                |                    |            |                  |            | true  |
+#    | Journal Voucher                    | JV-3    | G003704        |                |                    |            |                  |            | true  |
 #    | Non-Check Disbursement             | ND      | G013300        |                |                    |            |                  |            | true  |
 #    | Pre-Encumbrance                    | PE      | G003704        |                |                    |            |                  |            | true  |
 #    | Service Billing                    | SB      | R523875        | 1003702        |                    |            |                  |            | M     |
