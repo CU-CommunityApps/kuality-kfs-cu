@@ -1,6 +1,7 @@
 Feature: Financial Documents
 
   [KFSQA-652] Initiator or qualified document role to recall a routed document. New 5.x feature
+  [KFSQA-727] Cornell University requires Chart IT as the default for all FP eDoc Accounting Lines.
 
   @KFSQA-652 @wip
   Scenario Outline: Recall enroute Documents
@@ -34,3 +35,26 @@ Feature: Financial Documents
     | Non-Check Disbursement             | rlc56 | G013300        |                | 100           |               |
     | Pre-Encumbrance                    | ccs1  | G003704        |                | 100           |              |
     | Transfer Of Funds                  | ccs1  | A763306        | A763900        | 100           | 100           |
+
+  @KFSQA-727
+  Scenario Outline: Accounting Line Defaults to Chart IT
+    Given  I am logged in as a KFS User for the <docType> document
+    And    I start an empty <eDoc> document
+    Then   The Chart of Accounts on the accounting line defaults appropriately for the <eDoc> document
+  Examples:
+    | eDoc                               | docType |
+    | Advance Deposit                    | AD      |
+    | Auxiliary Voucher                  | AV      |
+    | Budget Adjustment                  | BA      |
+    | Credit Card Receipt                | CCR     |
+    | Disbursement Voucher               | DV      |
+    | Distribution Of Income And Expense | DI      |
+    | General Error Correction           | GEC     |
+#sourcename    | Internal Billing                   | IB      |
+    | Indirect Cost Adjustment           | ICA     |
+    | Journal Voucher                    | JV      |
+    | Non-Check Disbursement             | ND      |
+    | Pre-Encumbrance                    | PE      |
+    | Service Billing                    | SB      |
+    | Transfer Of Funds                  | TF      |
+
