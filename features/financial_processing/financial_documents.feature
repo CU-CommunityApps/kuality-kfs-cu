@@ -3,7 +3,7 @@ Feature: Financial Documents
   [KFSQA-652] Initiator or qualified document role to recall a routed document. New 5.x feature
   [KFSQA-727] Cornell University requires Chart IT as the default for all FP eDoc Accounting Lines.
 
-  @KFSQA-652 @wip
+  @KFSQA-652
   Scenario Outline: Recall enroute Documents
     Given  I am logged in as "<user>"
     #for all these eDocs
