@@ -73,7 +73,7 @@ And /^I (#{BasePage::available_buttons}) the document$/ do |button|
 end
 
 And /^I recall the financial document$/ do
-  on(KFSBasePage).send('recall_current_document')
+  on(KFSBasePage).recall_current_document
   on RecallPage do |page|
     page.reason.fit 'Recall test'
     page.recall
@@ -81,7 +81,7 @@ And /^I recall the financial document$/ do
 end
 
 And /^I recall and cancel the financial document$/ do
-  on(KFSBasePage).send('recall_current_document')
+  on(KFSBasePage).recall_current_document
   on RecallPage do |page|
     page.reason.set 'Recall and cancel test'
     page.recall_and_cancel

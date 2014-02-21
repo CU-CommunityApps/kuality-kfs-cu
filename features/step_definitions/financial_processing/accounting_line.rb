@@ -184,6 +184,7 @@ And /^I add a (source|target) Accounting Line to the (.*) document with the foll
           case document
             when'Budget Adjustment'
               new_source_line.merge!({
+                                         object: '4480',
                                          current_amount:   accounting_line_info['Amount'],
                                          base_amount:      accounting_line_info['Amount']
                                      })
@@ -236,6 +237,7 @@ And /^I add a (source|target) Accounting Line to the (.*) document with the foll
           case document
             when'Budget Adjustment'
               new_target_line.merge!({
+                                         object: '4480',
                                          current_amount:   accounting_line_info['Amount'],
                                          base_amount:      accounting_line_info['Amount']
                                      })
