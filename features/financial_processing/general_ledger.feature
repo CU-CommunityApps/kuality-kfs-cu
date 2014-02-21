@@ -2,7 +2,7 @@ Feature: General Ledger
 
   [KFSQA-649] Cornell University requires an Accounting Line Description input through an eDoc to be recorded in the General Ledger.
 
-  @KFSQA-649 @smoke @nightly-jobs @wip
+  @KFSQA-649 @smoke @nightly-jobs
   Scenario Outline: Accounting Line Description from eDoc updates General Ledger
     Given I am logged in as a KFS Manager for the <docType> document
     #Given I am logged in as a KFS Chart Manager
@@ -53,3 +53,26 @@ Feature: General Ledger
 #    | Pre-Encumbrance                    | PE      | G003704        |                |                    |            |                  |            | true  |
 #    | Service Billing                    | SB      | R523875        | 1003702        |                    |            |                  |            | Must add cloned account to role during test     |
 #    | Transfer Of Funds                  | TF      | A763306        | A763900        |                    |            |                  |            | true  |
+
+  @KFSQA-649 @smoke @nightly-jobs @wip
+  Scenario: Accounting Line Description from eDoc updates General Ledger
+    Given I am logged in as a KFS Manager for the SB document
+    And   I use these Accounts:
+      | R523875 |
+      | 1003702 |
+    # These accounts don't work, clw7 can't add the lines :(
+    And   I am logged in as a KFS User for the SB document
+    When  I start an empty Service Billing document
+    And   I add balanced Accounting Lines to the Service Billing document
+    And   I save the Service Billing document
+    And   I submit the Service Billing document
+    Given I am logged in as a KFS Manager for the SB document
+    And   I view the Service Billing document
+    And   I blanket approve the Service Billing document if it is not already FINAL
+    And   the Service Billing document goes to one of the following statuses:
+      | PROCESSED |
+      | FINAL     |
+    Given I am logged in as a KFS Chart Administrator
+    And   Nightly Batch Jobs run
+    When  I lookup the document ID for the Service Billing document from the General Ledger
+    Then  the Accounting Line Description for the Service Billing document equals the General Ledger Accounting Line Description
