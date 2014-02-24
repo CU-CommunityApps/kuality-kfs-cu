@@ -24,4 +24,3 @@ Feature: Account Close
 #    And   Nightly Batch Jobs run
 #    And   I close the Account by clicking submit
 #    Then  The document should have no errors
-# test purap commit

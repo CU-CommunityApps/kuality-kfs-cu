@@ -243,10 +243,8 @@ And /^I clone a random Account with the following changes:$/ do |table|
 
   visit(MainPage).account
   on AccountLookupPage do |page|
-   # sleep 30
     page.search
     page.copy_random
-
   end
   on AccountPage do |page|
     @document_id = page.document_id
