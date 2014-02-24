@@ -18,6 +18,7 @@ And /^I copy a random (.*) document with (.*) status/ do |document, doc_status|
   set(doc_object, make(object_klass, document_id: @document_id))
   get(doc_object).save
 #  get(doc_object).pull
+
 end
 
 When /^I view the (.*) document$/ do |document|
@@ -47,53 +48,22 @@ When /^I (#{BasePage::available_buttons}) the (.*) document and deny any questio
   end
 end
 
-Then /^the (.*) document goes to (.*)/ do |document, doc_status|
+Then /^the (.*) document goes to (PROCESSED|ENROUTE|FINAL|INITIATED|SAVED)$/ do |document, doc_status|
   doc_object = snake_case document
   page_klass = Kernel.const_get(get(doc_object).class.to_s.gsub(/(.*)Object$/,'\1Page'))
 
   sleep 10
   get(doc_object).view
   on(page_klass).document_status.should == doc_status
-  $current_page.document_status.should == doc_status
 end
 
-And /^I create a (.*) document$/ do |document|
+Then /^the (.*) document goes to one of the following statuses:$/ do |document, required_statuses|
   doc_object = snake_case document
-  doc_object_class = document.gsub(' ', '') + 'Object'
-  object_klass = Kernel.const_get(doc_object_class)
+  page_klass = Kernel.const_get(get(doc_object).class.to_s.gsub(/(.*)Object$/,'\1Page'))
 
-  #object_klass.skip_default_accounting_lines
-  set(doc_object, create(object_klass))
-  get(doc_object).save
-end
-
-And /^I create a (.*) document without accounting lines$/ do |document|
-  doc_object = snake_case document
-  doc_object_class = document.gsub(' ', '') + 'Object'
-  object_klass = Kernel.const_get(doc_object_class)
-
-  set(doc_object, create(object_klass, add_accounting_line: false,  press: :save))
-  get(doc_object).save
-
-end
-
-And /^I create a FP (.*) document without accounting lines$/ do |document|
-  doc_object = snake_case document
-  doc_object_class = document.gsub(' ', '') + 'Object'
-  object_klass = Kernel.const_get(doc_object_class)
-
-  #set(doc_object, create(object_klass, add_accounting_line: false,  press: :save))
-  #get(doc_object).save
-  @fp = create object_klass, add_accounting_line: false,  press: :save
-  #get(doc_object).save
-end
-
-
-When /^I (#{BasePage::available_buttons}|start) an empty (.*) document$/ do |button, document|
-  visit(MainPage).send(snake_case(document))
-  on(Kernel.const_get(page_class_for(document))) do
-    $current_page.send(snake_case(button)) unless button == 'start'
-  end
+  sleep 10
+  get(doc_object).view
+  on(page_klass) { |page| required_statuses.raw.flatten.should include page.document_status }
 end
 
 And /^I (#{BasePage::available_buttons}) the document$/ do |button|

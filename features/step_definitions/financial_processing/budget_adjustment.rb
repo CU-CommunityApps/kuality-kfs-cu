@@ -1,16 +1,24 @@
+When /^I start an empty Budget Adjustment document$/ do
+  visit(MainPage).budget_adjustment
+  @budget_adjustment = create BudgetAdjustmentObject, press: nil,
+                                                      initial_lines: []
+end
+
 And /^I start a Budget Adjustment document$/ do
   @budget_adjustment = create BudgetAdjustmentObject, press: nil
 end
 
-And /^I create a Budget Adjustment document for file import$/ do
-  @budget_adjustment = create BudgetAdjustmentObject, description:    random_alphanums(20, 'AFT Budget Adj '),
-                              from_chart_code: nil,
-                              from_account_number: nil,
-                              from_object_code: nil,
-                              from_current_amount: nil,
-                              from_file_name: 'BA_test_from.csv',
-                              to_file_name: 'BA_test_to.csv',
-                              press: nil
+And /^I create a Budget Adjustment document for file import$/ do  # ME!
+  @budget_adjustment = create BudgetAdjustmentObject, press: nil,
+                                                      description: random_alphanums(20, 'AFT Budget Adj '),
+                                                      initial_lines: [{
+                                                                        type: :source,
+                                                                        file_name: 'BA_test_from.csv'
+                                                                      },
+                                                                      {
+                                                                        type: :target,
+                                                                        file_name: 'BA_test_to.csv'
+                                                                      }]
 end
 
 And /^I (#{BudgetAdjustmentPage::available_buttons}) a Budget Adjustment document$/ do |button|
@@ -19,25 +27,26 @@ And /^I (#{BudgetAdjustmentPage::available_buttons}) a Budget Adjustment documen
   sleep 10 if (button == 'blanket_approve') || (button == 'approve')
 end
 
-And /^I add a From amount of "(.*)" for account "(.*)" with object code "(.*)" with a line description of "(.*)"$/  do |amount, account_number, object_code, line_desc|
+And /^I add a (from|to) amount of "(.*)" for account "(.*)" with object code "(.*)" with a line description of "(.*)"$/  do |target, amount, account_number, object_code, line_desc|
   on BudgetAdjustmentPage do |page|
-    page.from_current_amount.fit amount
-    page.from_account_number.fit account_number
-    page.from_object_code.fit object_code
-    page.from_line_description.fit line_desc
-    page.add_from_accounting_line
-  end
-end
-
-And /^I add a to amount of "(.*?)" for account "(.*?)" with object code "(.*?)" with a line description of "(.*?)"$/ do |amount, account_number, object_code, line_desc|
-  on BudgetAdjustmentPage do |page|
-      page.to_current_amount.fit amount
-      page.to_account_number.fit account_number
-      page.to_object_code.fit object_code
-      page.from_line_description.fit line_desc
-      page.add_to_accounting_line
+    case target
+      when 'from'
+        @budget_adjustment.add_source_line({
+                                              account_number:   account_number,
+                                              object:           object_code,
+                                              current_amount:   amount,
+                                              line_description: line_desc
+                                            })
+      when 'to'
+        @budget_adjustment.add_target_line({
+                                             account_number:   account_number,
+                                             object:           object_code,
+                                             current_amount:   amount,
+                                             line_description: line_desc
+                                           })
     end
   end
+end
 
 When /^I open the Budget Adjustment document page$/ do
   on(MainPage).budget_adjustment
@@ -45,8 +54,8 @@ end
 
 Then /^I verify that Chart Value defaults to IT$/ do
   on BudgetAdjustmentPage do |page|
-    page.from_chart_code.value.should == 'IT'
-    page.to_chart_code.value.should == 'IT'
+    page.source_chart_code.value.should == 'IT'
+    page.target_chart_code.value.should == 'IT'
   end
 end
 
@@ -54,18 +63,44 @@ And /^I (#{BudgetAdjustmentPage::available_buttons}) a balanced Budget Adjustmen
   button.gsub!(' ', '_')
   @budget_adjustment = create BudgetAdjustmentObject,
                               press: nil, # We should add the accounting lines before submitting, eh?
-                              add_accounting_line: false,
-                              from_account_number: 'G003704', from_object_code: '4480' ,from_chart_code: 'IT',
-                              to_object_code: '4480',
-                              from_current_amount: '250.11', from_line_description: random_alphanums(20, 'AFT FROM 1 '),
-                              from_base_amount: '125', to_account_number: 'G013300',
-                              to_current_amount: '250.11', to_line_description: random_alphanums(20, 'AFT TO 1 ')
+                              initial_lines: [
+                                  {
+                                      type:             :source,
+                                      account_number:   'G003704',
+                                      object:           '4480',
+                                      current_amount:   '250.11',
+                                      base_amount:      '125',
+                                      line_description: random_alphanums(20, 'AFT FROM 1 '),
+                                  },
+                                  {
+                                      type:             :target,
+                                      account_number:   'G013300',
+                                      object:           '4480',
+                                      current_amount:   '250.11',
+                                      base_amount:      '125',
+                                      line_description: random_alphanums(20, 'AFT TO 1 '),
+                                      chart_code:       'IT'
+                                  }
+                              ]
 
     on BudgetAdjustmentPage do |page|
-      @budget_adjustment.adding_a_from_accounting_line(page, 'G003704', '4480', '250.11', random_alphanums(20, 'AFT FROM 1 '), '125')
-      @budget_adjustment.adding_a_from_accounting_line(page, 'G003704', '6510', '250.11', random_alphanums(20, 'AFT FROM 2 '), '125')
-      @budget_adjustment.adding_a_to_accounting_line(page, 'G013300', '4480', '250.11', random_alphanums(20, 'AFT TO 1 '), '125')
-      @budget_adjustment.adding_a_to_accounting_line(page, 'G013300', '6510', '250.11', random_alphanums(20, 'AFT TO 2 '), '125')
+      #TODO:: Make data object for adding accounting lines (sounds like better solution)
+      #@budget_adjustment.adding_a_from_accounting_line(page, 'G003704', '6510', '250.11', random_alphanums(20, 'AFT FROM 2 '), '125')
+      @budget_adjustment.add_source_line({
+                                         account_number:   'G003704',
+                                         object:           '6510',
+                                         current_amount:   '250.11',
+                                         line_description: random_alphanums(20, 'AFT TO 2 '),
+                                         base_amount:      '125'
+                                        })
+      #@budget_adjustment.adding_a_to_accounting_line(page, 'G013300', '6510', '250.11', random_alphanums(20, 'AFT TO 2 '), '125')
+      @budget_adjustment.add_target_line({
+                                           account_number:   'G013300',
+                                           object:           '6510',
+                                           current_amount:   '250.11',
+                                           line_description: random_alphanums(20, 'AFT TO 2 '),
+                                           base_amount:      '125'
+                                     })
 
       page.send(button)
     end
@@ -74,70 +109,77 @@ end
 And /^I view the From Account on the General Ledger Balance with balance type code of (.*)$/ do |bal_type_code|
   visit(MainPage).general_ledger_balance
   on GeneralLedgerBalanceLookupPage do |page|
-    sleep 10
-    puts @budget_adjustment.from_chart_code.inspect
-    page.chart_code.fit @budget_adjustment.from_chart_code
-    page.account_number.fit @budget_adjustment.from_account_number
+    page.chart_code.fit        @budget_adjustment.accounting_lines[:source][0].chart_code
+    page.account_number.fit    @budget_adjustment.accounting_lines[:source][0].account_number
     page.balance_type_code.fit bal_type_code
     page.including_pending_ledger_entry_all.set
     page.search
-    page.select_monthly_item(@budget_adjustment.from_object_code, @budget_adjustment.converted_month_number)
-  end
-
-  puts @budget_adjustment.document_id.inspect
-  sleep 30
- on(GeneralLedgerEntryLookupPage).select_this_link_without_frm(@budget_adjustment.document_id)
+    page.select_monthly_item(@budget_adjustment.accounting_lines[:source][0].object, BudgetAdjustmentObject::fiscal_period_conversion(right_now[:MON]))
+ end
+ on(GeneralLedgerEntryLookupPage) do |page|
+   page.sort_results_by('Transaction Date')
+   page.sort_results_by('Transaction Date')
+   page.select_this_link_without_frm(@budget_adjustment.document_id)
+ end
 end
 
 When /^I view the To Account on the General Ledger Balance with balance type code of (.*)$/ do |bal_type_code|
   visit(MainPage).general_ledger_balance
   on GeneralLedgerBalanceLookupPage do |page|
-    page.chart_code.fit @budget_adjustment.to_chart_code
-    page.account_number.fit @budget_adjustment.to_account_number
+    page.chart_code.fit        @budget_adjustment.accounting_lines[:target][0].chart_code
+    page.account_number.fit    @budget_adjustment.accounting_lines[:target][0].account_number
     page.balance_type_code.fit bal_type_code
     page.including_pending_ledger_entry_all.set
     page.search
-    page.select_monthly_item(@budget_adjustment.to_object_code, @budget_adjustment.converted_month_number)
+    page.select_monthly_item(@budget_adjustment.accounting_lines[:target][0].object, BudgetAdjustmentObject::fiscal_period_conversion(right_now[:MON]))
   end
-  on(GeneralLedgerEntryLookupPage).select_this_link_without_frm(@budget_adjustment.document_id)
+  on(GeneralLedgerEntryLookupPage) do |page|
+    page.sort_results_by('Transaction Date')
+    page.sort_results_by('Transaction Date')
+    page.select_this_link_without_frm(@budget_adjustment.document_id)
+  end
 end
 
 Then /^The From Account Monthly Balance should match the From amount$/ do
   on BudgetAdjustmentPage do |page|
-    page.find_from_amount.should == @budget_adjustment.from_current_amount
-    page.find_to_amount.should == @budget_adjustment.to_current_amount
-
-    puts
-    page.find_from_line_description.should == @budget_adjustment.from_line_description
-    page.find_to_line_description.should == @budget_adjustment.to_line_description
+    page.find_source_amount.should == @budget_adjustment.accounting_lines[:source][0].current_amount
+    page.find_target_amount.should == @budget_adjustment.accounting_lines[:target][0].current_amount
+    page.find_source_line_description.should == @budget_adjustment.accounting_lines[:source][0].line_description
+    page.find_target_line_description.should == @budget_adjustment.accounting_lines[:target][0].line_description
   end
 end
 
 Then /^The To Account Monthly Balance should match the To amount$/ do
-  on(BudgetAdjustmentPage).find_to_amount.should == @budget_adjustment.to_current_amount
+  on(BudgetAdjustmentPage).find_target_amount.should == @budget_adjustment.accounting_lines[:target][0].current_amount
 end
 
-And /^The line description for the From Account should be displayed$/ do
-  on(BudgetAdjustmentPage).find_from_line_description.should == @budget_adjustment.from_line_description
+And(/^The line description for the From Account should be displayed$/) do
+  on(BudgetAdjustmentPage).find_source_line_description.should == @budget_adjustment.accounting_lines[:source][0].line_description
 end
 
-And /^The line description for the To Account should be displayed$/ do
-  on(BudgetAdjustmentPage).find_to_line_description.should == @budget_adjustment.to_line_description
+And(/^The line description for the To Account should be displayed$/) do
+  on(BudgetAdjustmentPage).find_target_line_description.should == @budget_adjustment.accounting_lines[:target][0].line_description
 end
 
-And /^I upload From Accounting Lines containing Base Budget amounts$/ do
+#And /^I upload From Accounting Lines containing Base Budget amounts$/ do
+#  on BudgetAdjustmentPage do |page|
+#    page.import_lines_source
+#    page.account_line_source_file_name.set($file_folder+@budget_adjustment.accounting_lines[:source][0].file_name)
+#    page.add_source_import
+#  end
+#end
+
+And /^I upload (To|From) Accounting Lines containing Base Budget amounts$/ do |type|
   on BudgetAdjustmentPage do |page|
-    page.import_lines_from
-    page.account_line_from_file_name.set($file_folder+@budget_adjustment.from_file_name)
-    page.add_from_import
-  end
-end
-
-And /^I upload To Accounting Lines containing Base Budget amounts$/ do
-  on BudgetAdjustmentPage do |page|
-    page.import_lines_to
-    page.account_line_to_file_name.set($file_folder+@budget_adjustment.to_file_name)
-    page.add_to_import
+    #page.import_lines_target
+    #page.account_line_target_file_name.set($file_folder+@budget_adjustment.accounting_lines[:target][0].file_name)
+    #page.add_target_import
+    case type
+      when 'To'
+        @budget_adjustment.accounting_lines[:target][0].import_lines
+      when 'From'
+        @budget_adjustment.accounting_lines[:source][0].import_lines
+    end
   end
 end
 
