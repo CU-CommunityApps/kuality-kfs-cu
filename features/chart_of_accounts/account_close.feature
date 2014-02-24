@@ -2,7 +2,7 @@ Feature: Account Close
 
   [KFSQA-551/KFSQA-587] As a KFS Chart Manager, the Account cannot be closed with open encumbrances.
 
-  @KFSQA-551 @KFSQA-587 @nightly-jobs
+  @KFSQA-551 @KFSQA-587 @nightly-jobs @wip
   Scenario: As a KFS Chart Manager, the Account cannot be closed with open encumbrances.
     Given I am logged in as a KFS Chart Manager
     And   I clone a random Account with the following changes:

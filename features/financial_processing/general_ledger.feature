@@ -54,12 +54,12 @@ Feature: General Ledger
 #    | Service Billing                    | SB      | R523875        | 1003702        |                    |            |                  |            | Must add cloned account to role during test     |
 #    | Transfer Of Funds                  | TF      | A763306        | A763900        |                    |            |                  |            | true  |
 
-  @KFSQA-649 @smoke @nightly-jobs @wip
+  @KFSQA-649 @smoke @nightly-jobs
   Scenario: Accounting Line Description from eDoc updates General Ledger
     Given I am logged in as a KFS Manager for the SB document
     And   I use these Accounts:
-      | R523875 |
-      | 1003702 |
+      | G003704 |
+      | G003704 |
     # These accounts don't work, clw7 can't add the lines :(
     And   I am logged in as a KFS User for the SB document
     When  I start an empty Service Billing document
