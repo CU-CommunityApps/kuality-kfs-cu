@@ -1,6 +1,7 @@
 Feature: General Ledger
 
   [KFSQA-649] Cornell University requires an Accounting Line Description input through an eDoc to be recorded in the General Ledger.
+  [KFSQA-647] Cornell needs a to ensure that all eight Main Menu->Balance Inquiries-->General Ledger are working.
 
   @KFSQA-649 @smoke @nightly-jobs @pending
   Scenario Outline: Accounting Line Description from eDoc updates General Ledger
@@ -49,3 +50,19 @@ Feature: General Ledger
 #    | Pre-Encumbrance                    | PE      | G003704        |                |                    |            |                  |            | true  |
 #    | Service Billing                    | SB      | U243700        | G013300        |                    |            |                  |            | S     |
 #    | Transfer Of Funds                  | TF      | A763306        | A763900        |                    |            |                  |            | true  |
+
+  @KFSQA-647 @smoke @wip
+  Scenario Outline: Obtain query results for Balance Inquiries to indicate KFS is running .
+    Given   I am logged in as a KFS User
+    When    I perform a <GL Balance Inquiry Lookup> Lookup using account number <account_number>
+    Then    the lookup should return results
+  Examples:
+    | GL Balance Inquiry Lookup      | account_number |
+    | Available Balances             | 1*             |
+    | Balances by Consolidation      | 1000710        |
+    | Cash Balances                  | 1*             |
+    | Current Fund Balance           | 1000710        |
+    | General Ledger Balance         | 1*             |
+    | General Ledger Entry           | 1*             |
+    | General Ledger Pending Entry   | 1*             |
+    | Open Encumbrances              | 1*             |
