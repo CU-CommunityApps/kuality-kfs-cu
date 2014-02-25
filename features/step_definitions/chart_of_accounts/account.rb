@@ -281,6 +281,7 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
                                      chart_code:  updates['Chart Code'],
                                      number:      random_alphanums(7),
                                      document_id: page.document_id,
+                                     subfund_program_code: updates['Sub-Fund Program Code'], # FIXME: This is a Cornell-specific extension
                                      indirect_cost_recovery_chart_of_accounts_code: updates['Indirect Cost Recovery Chart Of Accounts Code'],
                                      indirect_cost_recovery_account_number:         updates['Indirect Cost Recovery Account Number'],
                                      indirect_cost_recovery_account_line_percent:   updates['Indirect Cost Recovery Account Line Percent'],
@@ -291,6 +292,7 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
       page.chart_code.fit  @account.chart_code
       page.number.fit      @account.number
       page.supervisor_principal_name.fit @account.supervisor_principal_name
+      page.subfund_program_code.fit @account.subfund_program_code unless @account.subfund_program_code.nil?
       page.indirect_cost_recovery_chart_of_accounts_code.fit @account.indirect_cost_recovery_chart_of_accounts_code unless @account.indirect_cost_recovery_chart_of_accounts_code.nil?
       page.indirect_cost_recovery_account_number.fit         @account.indirect_cost_recovery_account_number unless @account.indirect_cost_recovery_account_number.nil?
       page.indirect_cost_recovery_account_line_percent.fit   @account.indirect_cost_recovery_account_line_percent unless @account.indirect_cost_recovery_account_line_percent.nil?

@@ -1,5 +1,5 @@
 Given /^I am logged in as a KFS Technical Administrator$/ do
-  visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+  visit(BackdoorLoginPage).login_as('cab379') #TODO get from role service
 end
 
 Given /^I am logged in as a KFS Fiscal Officer$/ do
@@ -73,7 +73,7 @@ Given /^I am logged in as a KFS User for the (.*) document$/ do |eDoc|
     when 'PE'
       visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
     when 'SB'
-      visit(BackdoorLoginPage).login_as('cjw7') #TODO get from role service
+      visit(BackdoorLoginPage).login_as('chl52') #TODO get from role service
     when 'TF'
       visit(BackdoorLoginPage).login_as('mdw84') #TODO get from role service
     else
