@@ -18,6 +18,7 @@ Feature: General Ledger
       | Name                              | <eDoc> Test Account T |
       | Chart Code                        | IT                    |
       | Description                       | <eDoc> Test Account T |
+      | Sub-Fund Program Code             | <SFPC>                |
     And   I am logged in as a KFS User for the <docType> document
     When  I start an empty <eDoc> document
     And   I add balanced Accounting Lines to the <eDoc> document
@@ -37,18 +38,18 @@ Feature: General Ledger
     | eDoc                               | docType | source_account | target_account | SFPC | ICR_COA_Code       | ICR_Number | ICR_Line_Percent | ICR_Active | done? |
     | Advance Deposit                    | AD      | 2003600        |                | DAVE |                    |            |                  |            | true  |
     | Auxiliary Voucher                  | AV      | H853800        |                |      |                    |            |                  |            | true  |
-    | Credit Card Receipt                | CCR     | G003704        |                |      |                    |            |                  |            | true  |
-    | Disbursement Voucher               | DV      | 1490000        |                |      |                    |            |                  |            | skip  |
-    | Distribution Of Income And Expense | DI      | G003704        | G013300        |      |                    |            |                  |            | true  |
-    | General Error Correction           | GEC     | G003704        | G013300        |      |                    |            |                  |            | true  |
-    | Internal Billing                   | IB      | G003704        | G013300        |      |                    |            |                  |            | true  |
-    | Indirect Cost Adjustment           | ICA     | 1093600        | GACLOSE        |      | IT - Ithaca Campus | A463200    | 100              | set        | true  |
-    | Journal Voucher                    | JV-1    | G003704        | G013300        |      |                    |            |                  |            | true  |
-    | Journal Voucher                    | JV-2    | G003704        |                |      |                    |            |                  |            | true  |
-    | Journal Voucher                    | JV-3    | G003704        |                |      |                    |            |                  |            | true  |
-    | Non-Check Disbursement             | ND      | G013300        |                |      |                    |            |                  |            | true  |
-    | Pre-Encumbrance                    | PE      | G003704        |                |      |                    |            |                  |            | true  |
-    | Transfer Of Funds                  | TF      | A763306        | A763900        |      |                    |            |                  |            | true  |
+    | Credit Card Receipt                | CCR     | G003704        |                | DAVE |                    |            |                  |            | true  |
+    | Distribution Of Income And Expense | DI      | G003704        | G013300        | DAVE |                    |            |                  |            | true  |
+    | General Error Correction           | GEC     | G003704        | G013300        | DAVE |                    |            |                  |            | true  |
+    | Internal Billing                   | IB      | G003704        | G013300        | DAVE |                    |            |                  |            | true  |
+    | Indirect Cost Adjustment           | ICA     | 1093600        | GACLOSE        | DAVE | IT - Ithaca Campus | A463200    | 100              | set        | true  |
+    | Journal Voucher                    | JV-1    | G003704        | G013300        | DAVE |                    |            |                  |            | true  |
+    | Journal Voucher                    | JV-2    | G003704        |                | DAVE |                    |            |                  |            | true  |
+    | Journal Voucher                    | JV-3    | G003704        |                | DAVE |                    |            |                  |            | true  |
+    | Non-Check Disbursement             | ND      | G013300        |                | DAVE |                    |            |                  |            | true  |
+    | Pre-Encumbrance                    | PE      | G003704        |                | DAVE |                    |            |                  |            | true  |
+    | Transfer Of Funds                  | TF      | A763306        | A763900        | DAVE |                    |            |                  |            | true  |
+#    | Disbursement Voucher               | DV      | 1490000        |                |      |                    |            |                  |            | skip  |
 
   @KFSQA-649 @smoke @nightly-jobs @wip
   Scenario Outline: Accounting Line Description from eDoc updates General Ledger. These eDocs' accounts don't clone nicely.
