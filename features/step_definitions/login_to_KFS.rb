@@ -91,3 +91,17 @@ Given /^I am logged in as a KFS Manager for the (.*) document$/ do |eDoc|
       visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
   end
 end
+
+Then /^I switch to the user with the next Pending Action in the Route Log$/ do
+  new_user = ''
+  on(FinancialProcessingPage) do |page|
+    page.expand_all
+    page.pnd_act_req_table[1][2].links[0].click
+    page.use_new_tab
+    new_user = page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].text
+    page.close_children
+  end
+
+  puts "Switching to \"#{new_user}\""
+  step "I am logged in as \"#{new_user}\""
+end

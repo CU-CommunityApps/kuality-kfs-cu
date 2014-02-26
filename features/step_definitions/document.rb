@@ -32,9 +32,14 @@ When /^I (#{BasePage::available_buttons}) the (.*) document$/ do |button, docume
   on(YesOrNoPage).yes if button == 'cancel'
 end
 
-When /^I blanket approve the (.*) document if it is not already FINAL/ do |document|
+When /^I (#{BasePage::available_buttons}) the (.*) document if it is not already FINAL/ do |button, document|
   doc_object = snake_case document
-  get(doc_object).blanket_approve unless on(KFSBasePage).document_status == 'FINAL'
+  button.gsub!(' ', '_')
+  unless on(KFSBasePage).document_status == 'FINAL'
+    get(doc_object).send(button)
+    on(YesOrNoPage).yes if button == 'cancel'
+    sleep 5 if (button == 'blanket approve' || button == 'approve')
+  end
 end
 
 When /^I (#{BasePage::available_buttons}) the (.*) document and confirm any questions$/ do |button, document|
