@@ -12,7 +12,9 @@ Feature: Vendor Create
     And     I submit the Vendor document
     And     the Vendor document goes to ENROUTE
     And     I am logged in as a Vendor Reviewer
+    And     I view the Vendor document
     And     I approve the Vendor document
     And     the Vendor document goes to FINAL
     When    I am logged in as a KFS User
+
     Then    the Vendor document should be in my action list
