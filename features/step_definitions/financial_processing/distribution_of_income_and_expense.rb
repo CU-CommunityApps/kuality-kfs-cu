@@ -10,7 +10,7 @@ And /^I change the DI from Account to one owned by the current user$/ do
   @distribution_of_income_and_expense.accounting_lines['source'.to_sym][0].edit account_number: "1753302"
 end
 
-And /^I add a (from|to) amount of "(.*)" for account "(.*)" with object code "(.*)" with a line description of "(.*)" to the DI document$/  do |target, amount, account_number, object_code, line_desc|
+And /^I add a (from|to) amount of "(.*)" for account "(.*)" with object code "(.*)" with a line description of "(.*)" to the DI Document$/  do |target, amount, account_number, object_code, line_desc|
   on DistributionOfIncomeAndExpensePage do |page|
     case target
       when 'from'

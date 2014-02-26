@@ -34,7 +34,8 @@ When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance Document t
 
 end
 
-When /^I start an empty Pre-Encumbrance document$/ do
+When /^I start an empty Pre-? ?Encumbrance document$/ do
+  #-? ? Because maybe you want a space or maybe a hyphen
   visit(MainPage).pre_encumbrance
   @pre_encumbrance = create PreEncumbranceObject
 end

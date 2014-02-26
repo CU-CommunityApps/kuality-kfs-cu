@@ -7,6 +7,23 @@ And /^I view my Budget Adjustment document$/ do
   end
 end
 
+And /^I start an empty "<document>" document$/ do |document|
+  doc_object = snake_case document
+  puts doc_object.inspect
+  puts 'and now the get doc objec tissss'
+  puts get(doc_object).inspect
+
+
+  doc_object_class = document.gsub(' ', '') + 'Object'
+
+  page_klass = Kernel.const_get(doc_page_class)
+
+  get(doc_object).to_s = create doc_object_class
+
+  #@non_check_disbursement = create NonCheckDisbursementObject
+end
+
+
 And /^On the Budget Adjustment I modify the From current amount line item (.*) to be (.*)$/ do |line_item, amount|
   on BudgetAdjustmentPage do |page|
     page.from_amount_line_item(line_item).fit amount
@@ -26,10 +43,10 @@ And(/^On the (.*) I modify the (From|To) Object Code line item (\d+) to be (.*)$
   on page_klass do |page|
     case from_or_to
       when 'From'
-        page.from_object_code_line_item(line_item).fit new_object_code
+        page.update_source_object_code(line_item).fit new_object_code
 
       when 'To'
-        page.to_object_code_line_item(line_item).fit new_object_code
+        page.update_target_object_code(line_item).fit new_object_code
     end
   end
 end
@@ -39,7 +56,7 @@ And(/^On the (.*) I modify the Object Code line item (\d+) to be (.*)$/) do |doc
   page_klass = Kernel.const_get(doc_page_class)
 
   on page_klass do |page|
-    page.object_code_line_item(line_item).fit new_object_code
+    page. (line_item).fit new_object_code
   end
 end
 
@@ -62,39 +79,40 @@ end
 And /^I add accounting lines to test the notes tab for the Budget Adjustment doc$/ do
 
   on BudgetAdjustmentPage do
-    @budget_adjustment.add_from_line({
-      from_account_number: 'G003704',
-      from_object_code: '4480',
-      from_current_amount: '250'
+
+    @budget_adjustment.add_source_line({
+      account_number: 'G003704',
+      object: '4480',
+      current_amount: '250'
     })
-    @budget_adjustment.add_from_line({
-      from_account_number: 'G003704',
-      from_object_code: '6510',
-      from_current_amount: '250'
+    @budget_adjustment.add_source_line({
+      account_number: 'G003704',
+      object: '6510',
+      current_amount: '250'
     })
-    @budget_adjustment.add_to_line({
-      to_account_number: 'G013300',
-      to_object_code: '4480',
-      to_current_amount: '250'
+    @budget_adjustment.add_target_line({
+      account_number: 'G013300',
+      object: '4480',
+      current_amount: '250'
     })
-    @budget_adjustment.add_to_line({
-      to_account_number: 'G013300',
-      to_object_code: '6510',
-      to_current_amount: '250'
+    @budget_adjustment.add_target_line({
+      account_number: 'G013300',
+      object: '6510',
+      current_amount: '250'
     })
   end
 end
 
 And /^I add accounting lines to test the notes tab for the Auxiliary Voucher doc$/   do
   on AuxiliaryVoucherPage do
-  @auxiliary_voucher.add_from_line({
-    from_account_number: 'H853800',
-    from_object_code: '6690',
+  @auxiliary_voucher.add_source_line({
+    account_number: 'H853800',
+    object: '6690',
     debit: '100'
   })
-  @auxiliary_voucher.add_from_line({
-    from_account_number: 'H853800',
-    from_object_code: '6690',
+  @auxiliary_voucher.add_source_line({
+    account_number: 'H853800',
+    object: '6690',
     credit: '100'
   })
   end
@@ -103,41 +121,41 @@ end
 And /^I add accounting lines to test the notes tab for the General Error Correction doc$/ do
   on GeneralErrorCorrectionPage do
 
-    @general_error_correction.add_from_line({
-      from_account_number: 'G003704',
-      from_object_code: '4480',
-      from_amount: '255.55',
-      from_reference_origin_code: '01',
-      from_reference_number: '777001'
+    @general_error_correction.add_source_line({
+      account_number: 'G003704',
+      object: '4480',
+      amount: '255.55',
+      reference_origin_code: '01',
+      reference_number: '777001'
     })
 
-    @general_error_correction.add_to_line({
-      to_account_number: 'G013300',
-      to_object_code: '4480',
-      to_amount: '255.55',
-      to_reference_origin_code: '01',
-      to_reference_number: '777002'
+    @general_error_correction.add_target_line({
+      account_number: 'G013300',
+      object: '4480',
+      amount: '255.55',
+      reference_origin_code: '01',
+      reference_number: '777002'
     })
   end
 end
 
 And /^I add accounting lines to test the notes tab for the Pre Encumbrance doc$/ do
   on PreEncumbrancePage do
-    @pre_encumbrance.add_from_line({
-      from_account_number: 'G003704',
-      from_object_code: '6540',
-      from_amount: '345000'
+    @pre_encumbrance.add_source_line({
+      account_number: 'G003704',
+      object: '6540',
+      amount: '345000'
     })
   end
 end
 
 And /^I add accounting lines to test the notes tab for the Non Check Disbursement doc$/ do
   on NonCheckDisbursementPage do
-    @non_check_disbursement.add_from_line({
-      from_account_number: 'G003704',
-      from_object_code: '6540',
-      from_amount: '200000.22',
-      from_reference_number: '1234'
+    @non_check_disbursement.add_source_line({
+      account_number: 'G003704',
+      object: '6540',
+      amount: '200000.22',
+      reference_number: '1234'
     })
   end
 end
@@ -152,19 +170,19 @@ And /^I add a (From|To) accounting line to the (.*) document with:$/ do |from_or
   case from_or_to
     when 'From'
       on page_klass do
-        get(doc_object).add_from_line({
-          from_account_number: updates['from account number'],
-          from_object_code: updates['from object code'],
-          from_amount: updates['from amount']
+        get(doc_object).add_source_line({
+          account_number: updates['from account number'],
+          object: updates['from object code'],
+          amount: updates['from amount']
         })
       end
 
     when 'To'
       on page_klass do
-        get(doc_object).add_to_line({
-          to_account_number: updates['to account number'],
-          to_object_code: updates['to object code'],
-          to_amount: updates['to amount']
+        get(doc_object).add_target_line({
+          account_number: updates['to account number'],
+          object: updates['to object code'],
+          amount: updates['to amount']
         })
       end
   end
