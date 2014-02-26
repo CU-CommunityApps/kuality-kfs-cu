@@ -12,7 +12,7 @@ Feature: KFS Fiscal Officer Account Copy
     When    I create an AV document with that Object Code
     Then    I should get an error that starts with "The Object Sub-Type Code"
 
-  @KFSQA-627 @wip
+  @KFSQA-627
   Scenario: Auxiliary Voucher allows Accounting Lines across Sub Fund Group Codes
     Given   I am logged in as a KFS User
     And     I start an empty Auxiliary Voucher document
