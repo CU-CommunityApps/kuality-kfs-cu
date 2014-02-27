@@ -2,7 +2,7 @@ Feature: General Ledger
 
   [KFSQA-649] Cornell University requires an Accounting Line Description input through an eDoc to be recorded in the General Ledger.
 
-  @KFSQA-649 @smoke @nightly-jobs
+  @KFSQA-649 @smoke @nightly-jobs @wip
   Scenario Outline: Accounting Line Description from eDoc updates General Ledger
     Given I am logged in as a KFS Manager for the <docType> document
     And   I clone Account <source_account> with the following changes:
@@ -50,7 +50,7 @@ Feature: General Ledger
     | Pre-Encumbrance                    | PE      | G003704        |                | DAVE |                    |            |                  |            |
     | Transfer Of Funds                  | TF      | A763306        | A763900        | DAVE |                    |            |                  |            |
 
-  @KFSQA-649 @smoke @nightly-jobs
+  @KFSQA-649 @smoke @nightly-jobs @wip
   Scenario Outline: Accounting Line Description from eDoc updates General Ledger. These eDocs' accounts don't clone nicely.
     Given I am logged in as a KFS Manager for the <docType> document
     And   I use these Accounts:
@@ -88,22 +88,7 @@ Feature: General Ledger
     And   I add balanced Accounting Lines to the Disbursement Voucher document
     And   I save the Disbursement Voucher document
     Then  I submit the Disbursement Voucher document
-    # sld8
-    When  I switch to the user with the next Pending Action in the Route Log
-    And   I view the Disbursement Voucher document
-    And   I approve the Disbursement Voucher document if it is not already FINAL
-    And   I view the Disbursement Voucher document
-#    # llk3
-#    When  I switch to the user with the next Pending Action in the Route Log
-#    And   I view the Disbursement Voucher document
-#    And   I approve the Disbursement Voucher document if it is not already FINAL
-#    And   I view the Disbursement Voucher document
-#    # rb244
-#    When  I switch to the user with the next Pending Action in the Route Log
-#    And   I view the Disbursement Voucher document
-#    And   I approve the Disbursement Voucher document if it is not already FINAL
-#    And   I view the Disbursement Voucher document
-# Let's do a repeating step, shall we...
+    When  I route the Disbursement Voucher document to FINAL by clicking approve for each request
     Given I am logged in as a KFS Manager for the DV document
     And   I view the Disbursement Voucher document
     And   I blanket approve the Disbursement Voucher document if it is not already FINAL

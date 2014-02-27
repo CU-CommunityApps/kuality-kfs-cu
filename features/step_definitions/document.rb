@@ -22,7 +22,6 @@ And /^I copy a random (.*) document with (.*) status/ do |document, doc_status|
 end
 
 When /^I view the (.*) document$/ do |document|
-  puts get(snake_case(document)).document_id
   get(snake_case(document)).view
 end
 
