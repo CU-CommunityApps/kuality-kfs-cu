@@ -3,7 +3,7 @@ Feature: Vendor Create
 [KFSQA-638]	Vendor Create e2e - Standard-Individual, Contract No, Insurance No, Cornell University pays vendors for
             good and services. The University captures legal, tax and procurement information based on ownership type as required by federal laws, state laws, and university policies.
 
-  @KFSQA-638 @wip
+  @KFSQA-638
   Scenario: I want to create a vendor with ownership type INDIVIDUAL
     Given   I am logged in as a KFS User
     When    I start an empty Vendor document
