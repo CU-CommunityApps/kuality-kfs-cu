@@ -153,11 +153,11 @@ Then /^The To Account Monthly Balance should match the To amount$/ do
   on(BudgetAdjustmentPage).find_target_amount.should == @budget_adjustment.accounting_lines[:target][0].current_amount
 end
 
-And(/^The line description for the From Account should be displayed$/) do
+And /^The line description for the From Account should be displayed$/ do
   on(BudgetAdjustmentPage).find_source_line_description.should == @budget_adjustment.accounting_lines[:source][0].line_description
 end
 
-And(/^The line description for the To Account should be displayed$/) do
+And /^The line description for the To Account should be displayed$/ do
   on(BudgetAdjustmentPage).find_target_line_description.should == @budget_adjustment.accounting_lines[:target][0].line_description
 end
 
@@ -194,5 +194,27 @@ Then /^The GLPE contains 4 Balance Type BB transactions$/ do
     page.item_row('LINE 2 FROM').should exist
     page.item_row('LINE 1 TO').should exist
     page.item_row('LINE 2 TO').should exist
+  end
+end
+
+Then /^the Route Log displays a (From|To) Fiscal Officer$/ do |fo_type|
+  pending
+  case fo_type
+    when 'From'
+      fiscal_officer = ''
+      @from_fiscal_officer = fiscal_officer
+    when 'To'
+      fiscal_officer = ''
+      @to_fiscal_officer = fiscal_officer
+  end
+  pending
+end
+
+When /^I am logged in as the (From|To) Fiscal Officer$/ do |fo_type|
+  case fo_type
+    when 'From'
+      step "I am logged in as \"#{@from_fiscal_officer}\""
+    when 'To'
+      step "I am logged in as \"#{@to_fiscal_officer}\""
   end
 end
