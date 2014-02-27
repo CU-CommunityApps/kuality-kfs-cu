@@ -51,7 +51,7 @@ Feature: General Ledger
 #    | Service Billing                    | SB      | U243700        | G013300        |                    |            |                  |            | S     |
 #    | Transfer Of Funds                  | TF      | A763306        | A763900        |                    |            |                  |            | true  |
 
-  @KFSQA-647 @smoke @wip
+  @KFSQA-647 @smoke
   Scenario Outline: Obtain query results for Balance Inquiries to indicate KFS is running .
     Given   I am logged in as a KFS User
     When    I perform a <GL Balance Inquiry Lookup> Lookup using account number <account_number>
