@@ -93,13 +93,17 @@ Feature: General Ledger
     And   I view the Disbursement Voucher document
     And   I approve the Disbursement Voucher document if it is not already FINAL
     And   I view the Disbursement Voucher document
-    # llk3
-    When  I switch to the user with the next Pending Action in the Route Log
-    And   I view the Disbursement Voucher document
-    And   I approve the Disbursement Voucher document if it is not already FINAL
-    And   I view the Disbursement Voucher document
-    # Next person will need to set some additional values...
-
+#    # llk3
+#    When  I switch to the user with the next Pending Action in the Route Log
+#    And   I view the Disbursement Voucher document
+#    And   I approve the Disbursement Voucher document if it is not already FINAL
+#    And   I view the Disbursement Voucher document
+#    # rb244
+#    When  I switch to the user with the next Pending Action in the Route Log
+#    And   I view the Disbursement Voucher document
+#    And   I approve the Disbursement Voucher document if it is not already FINAL
+#    And   I view the Disbursement Voucher document
+# Let's do a repeating step, shall we...
     Given I am logged in as a KFS Manager for the DV document
     And   I view the Disbursement Voucher document
     And   I blanket approve the Disbursement Voucher document if it is not already FINAL
