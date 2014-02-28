@@ -20,5 +20,5 @@ Feature: General Error Correction
     And     the General Error Correction document goes to FINAL
     And     I am logged in as a KFS Fiscal Officer
     And     I view the General Error Correction document
-    And     I error correction the General Error Correction document
-    Then    the error correction document goes to INITIATED
+    When    I error correction the General Error Correction document
+    Then    the document status is INITIATED
