@@ -22,11 +22,12 @@ Feature: Vendor Create
     Then    the Vendor document should be in my action list
 
   @KFSQA-635 @wip
-  Scenario: I want to create a vendor with ownership type CORPORATION that is FOREIGN
+  Scenario: I want to create a vendor with ownership type CORPORATION that is NON-FOREIGN
     Given   I am logged in as a KFS User
-    When    I start an empty Vendor document
+    When    I create a corporation and non-foreign Vendor with contract and insurance
     And     I save the Vendor document
     And     I add an Attachment to the Vendor document
+    And     I add a Contract to the Vendor document
     And     I submit the Vendor document
     And     the Vendor document goes to ENROUTE
     And     I am logged in as a Vendor Reviewer
