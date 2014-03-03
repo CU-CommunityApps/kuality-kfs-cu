@@ -24,7 +24,7 @@ Feature: Vendor Create
   @KFSQA-635 @wip
   Scenario: I want to create a vendor with ownership type CORPORATION that is NON-FOREIGN
     Given   I am logged in as a KFS User
-    When    I create a corporation and non-foreign Vendor with contract and insurance
+    When    I create a Corporation and Non-Foreign Vendor with Contract and Insurance
     And     I save the Vendor document
     And     I add an Attachment to the Vendor document
     And     I add a Contract to the Vendor document
