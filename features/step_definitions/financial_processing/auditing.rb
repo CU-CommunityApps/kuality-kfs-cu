@@ -7,21 +7,22 @@ And /^I view my Budget Adjustment document$/ do
   end
 end
 
-And /^I start an empty "<document>" document$/ do |document|
-  doc_object = snake_case document
-  puts doc_object.inspect
-  puts 'and now the get doc objec tissss'
-  puts get(doc_object).inspect
-
-
-  doc_object_class = document.gsub(' ', '') + 'Object'
-
-  page_klass = Kernel.const_get(doc_page_class)
-
-  get(doc_object).to_s = create doc_object_class
-
-  #@non_check_disbursement = create NonCheckDisbursementObject
-end
+#And /^I start an empty "<document>" document$/ do |document|
+#  doc_object = snake_case document
+#  puts 'and doc_object is'
+#  puts doc_object.inspect
+#  puts 'and now the get(doc object) is'
+#  puts get(doc_object).inspect
+#
+#
+#  doc_object_class = document.gsub(' ', '') + 'Object'
+#
+#  page_klass = Kernel.const_get(doc_page_class)
+#
+#  get(doc_object).to_s = create doc_object_class
+#
+#  #@non_check_disbursement = create NonCheckDisbursementObject
+#end
 
 
 And /^On the Budget Adjustment I modify the From current amount line item (.*) to be (.*)$/ do |line_item, amount|
@@ -56,7 +57,7 @@ And(/^On the (.*) I modify the Object Code line item (\d+) to be (.*)$/) do |doc
   page_klass = Kernel.const_get(doc_page_class)
 
   on page_klass do |page|
-    page. (line_item).fit new_object_code
+    page.update_source_object_code(line_item).fit new_object_code
   end
 end
 

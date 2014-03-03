@@ -4,12 +4,10 @@ Feature: FP Auditing
               These changes will be stored recorded in the eDdoc Notes and Attachment Tab.
 
 
-
   @KFSQA-631 @wip
   Scenario: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for Budget Adjustment
     Given   I am logged in as a KFS User
-    When     I start an empty Budget Adjustment document
-#    And     I create a Budget Adjustment document without accounting lines
+    When    I start an empty Budget Adjustment document
     And     I add accounting lines to test the notes tab for the Budget Adjustment doc
     And     I submit the Budget Adjustment document
     And     the Budget Adjustment document goes to ENROUTE
@@ -23,7 +21,6 @@ Feature: FP Auditing
   Scenario: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for Auxiliary Voucher
     Given   I am logged in as "scu1"
     And     I start an empty Auxiliary Voucher document
-#    And     I create a Auxiliary Voucher document without accounting lines
     And     I add accounting lines to test the notes tab for the Auxiliary Voucher doc
     And     I submit the Auxiliary Voucher document
     And     the Auxiliary Voucher document goes to ENROUTE
@@ -37,7 +34,6 @@ Feature: FP Auditing
   Scenario: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for General Error Correction
     Given   I am logged in as "sag3"
     And     I start an empty General Error Correction document
-#    And     I create a General Error Correction document without accounting lines
     And     I add accounting lines to test the notes tab for the General Error Correction doc
     And     I submit the General Error Correction document
     And     the General Error Correction document goes to ENROUTE
@@ -51,7 +47,6 @@ Feature: FP Auditing
   Scenario: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for Pre Encumbrance
     Given   I am logged in as "sag3"
     And     I start an empty Pre Encumbrance document
-#    And     I create a Pre Encumbrance document without accounting lines
     And     I add accounting lines to test the notes tab for the Pre Encumbrance doc
     And     I save the Pre Encumbrance document
     And     I submit the Pre Encumbrance document
@@ -66,7 +61,6 @@ Feature: FP Auditing
   Scenario: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for Non Check Disbursement
     Given   I am logged in as "rlc56"
     And     I start an empty Non Check Disbursement document
-#    And     I create a Non Check Disbursement document without accounting lines
     And     I add accounting lines to test the notes tab for the Non Check Disbursement doc
     And     I submit the Non Check Disbursement document
     And     the Non Check Disbursement document goes to ENROUTE
