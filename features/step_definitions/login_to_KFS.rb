@@ -1,5 +1,9 @@
 Given /^I am logged in as a KFS Technical Administrator$/ do
-  visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+  visit(BackdoorLoginPage).login_as('cab379') #TODO get from role service
+end
+
+Given /^I am logged in as a Vendor Reviewer$/ do
+  visit(BackdoorLoginPage).login_as('kme44') #TODO get from role service
 end
 
 Given /^I am logged in as a KFS Fiscal Officer$/ do
@@ -7,7 +11,7 @@ Given /^I am logged in as a KFS Fiscal Officer$/ do
 end
 
 Given /^I am logged in as a KFS User$/  do
-  visit(BackdoorLoginPage).login_as('Ccs1') #TODO get from role service
+  visit(BackdoorLoginPage).login_as('ccs1') #TODO get from role service
 end
 
 Given /^I am logged in as "([^"]*)"$/ do |user_id|

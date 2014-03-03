@@ -15,6 +15,7 @@ Feature: Account Close
       | PENDING   |
       | COMPLETED |
       | PROCESSED |
+      | FINAL     |
     Given Nightly Batch Jobs run
     And   I am logged in as a KFS Chart Manager
     When  I close the Account
