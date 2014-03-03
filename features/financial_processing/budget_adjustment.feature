@@ -10,7 +10,7 @@ Feature: KFS Fiscal Officer Account Copy
   Scenario: Budget Adjustment not allowed to cross Account Sub-Fund Group Codes
     Given   I am logged in as a KFS User
     And     I start a Budget Adjustment document
-    And     I add a From amount of "100.00" for account "1258322" with object code "4480" with a line description of "aft from1"
+    And     I add a from amount of "100.00" for account "1258322" with object code "4480" with a line description of "aft from1"
     And     I add a to amount of "100" for account "1258323" with object code "4480" with a line description of "aft to 1"
     When    I submit the Budget Adjustment document
     Then    I should get an error saying "The Budget Adjustment document is not balanced within the account."
@@ -31,7 +31,7 @@ Feature: KFS Fiscal Officer Account Copy
     When   I approve the Budget Adjustment document
     Then   the Budget Adjustment document goes to FINAL
 
-  @KFSQA-628
+  @KFSQA-628 @nightly-jobs
   Scenario: General ledger balance displays correctly for a Budget Adjustment after nightly batch is run
     Given  I am logged in as "sag3"
     And    I submit a balanced Budget Adjustment document
@@ -47,7 +47,7 @@ Feature: KFS Fiscal Officer Account Copy
     Then   The To Account Monthly Balance should match the To amount
     And    The line description for the To Account should be displayed
 
-  @wip @KFSQA-629
+  @KFSQA-629
   Scenario: Upload only Base Budget budget transactions using BA Import Template.
     Given    I am logged in as a KFS Technical Administrator
     And      I create a Budget Adjustment document for file import
