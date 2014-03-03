@@ -1,3 +1,4 @@
+
 include BatchUtilities
 
 And /^I (#{AdvanceDepositPage::available_buttons}) an Advance Deposit document$/ do |button|
