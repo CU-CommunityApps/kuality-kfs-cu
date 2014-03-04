@@ -6,13 +6,9 @@ Feature: General Ledger
   Scenario Outline: Accounting Line Description from eDoc updates General Ledger
     Given I am logged in as a KFS Manager for the <docType> document
     And   I clone Account <source_account> with the following changes:
-      | Name                                          | <eDoc> Test Account S |
-      | Chart Code                                    | IT                    |
-      | Description                                   | <eDoc> Test Account S |
-      | Indirect Cost Recovery Chart Of Accounts Code | <ICR_COA_Code>        |
-      | Indirect Cost Recovery Account Number         | <ICR_Number>          |
-      | Indirect Cost Recovery Account Line Percent   | <ICR_Line_Percent>    |
-      | Indirect Cost Recovery Active Indicator       | <ICR_Active>          |
+      | Name        | <eDoc> Test Account S |
+      | Chart Code  | IT                    |
+      | Description | <eDoc> Test Account S |
     And   I clone Account <target_account> with the following changes:
       | Name                              | <eDoc> Test Account T |
       | Chart Code                        | IT                    |
@@ -33,20 +29,19 @@ Feature: General Ledger
     When  I lookup the document ID for the <eDoc> document from the General Ledger
     Then  the Accounting Line Description for the <eDoc> document equals the General Ledger Accounting Line Description
   Examples:
-    | eDoc                               | docType | source_account | target_account | ICR_COA_Code       | ICR_Number | ICR_Line_Percent | ICR_Active |
-    | Advance Deposit                    | AD      | 2003600        |                |                    |            |                  |            |
-    | Auxiliary Voucher                  | AV      | H853800        |                |                    |            |                  |            |
-    | Credit Card Receipt                | CCR     | G003704        |                |                    |            |                  |            |
-    | Distribution Of Income And Expense | DI      | G003704        | G013300        |                    |            |                  |            |
-    | General Error Correction           | GEC     | G003704        | G013300        |                    |            |                  |            |
-    | Internal Billing                   | IB      | G003704        | G013300        |                    |            |                  |            |
-    | Indirect Cost Adjustment           | ICA     | 1093600        | GACLOSE        | IT - Ithaca Campus | A463200    | 100              | set        |
-    | Journal Voucher                    | JV-1    | G003704        | G013300        |                    |            |                  |            |
-    | Journal Voucher                    | JV-2    | G003704        |                |                    |            |                  |            |
-    | Journal Voucher                    | JV-3    | G003704        |                |                    |            |                  |            |
-    | Non-Check Disbursement             | ND      | G013300        |                |                    |            |                  |            |
-    | Pre-Encumbrance                    | PE      | G003704        |                |                    |            |                  |            |
-    | Transfer Of Funds                  | TF      | A763306        | A763900        |                    |            |                  |            |
+    | eDoc                               | docType | source_account | target_account |
+    | Advance Deposit                    | AD      | 2003600        |                |
+    | Auxiliary Voucher                  | AV      | H853800        |                |
+    | Credit Card Receipt                | CCR     | G003704        |                |
+    | Distribution Of Income And Expense | DI      | G003704        | G013300        |
+    | General Error Correction           | GEC     | G003704        | G013300        |
+    | Internal Billing                   | IB      | G003704        | G013300        |
+    | Journal Voucher                    | JV-1    | G003704        | G013300        |
+    | Journal Voucher                    | JV-2    | G003704        |                |
+    | Journal Voucher                    | JV-3    | G003704        |                |
+    | Non-Check Disbursement             | ND      | G013300        |                |
+    | Pre-Encumbrance                    | PE      | G003704        |                |
+    | Transfer Of Funds                  | TF      | A763306        | A763900        |
 
   @KFSQA-649 @smoke @nightly-jobs @wip
   Scenario Outline: Accounting Line Description from eDoc updates General Ledger. These eDocs' accounts don't clone nicely.
@@ -97,3 +92,34 @@ Feature: General Ledger
     And   I am logged in as a KFS Chart Administrator
     When  I lookup the document ID for the Disbursement Voucher document from the General Ledger
     Then  the Accounting Line Description for the Disbursement Voucher document equals the General Ledger Accounting Line Description
+
+  @KFSQA-649 @smoke @nightly-jobs @wip
+  Scenario: Accounting Line Description from eDoc updates General Ledger
+    Given I am logged in as a KFS Manager for the ICA document
+    And   I clone Account 1093600 with the following changes:
+      | Name                                          | Indirect Cost Adjustment Test Account S |
+      | Chart Code                                    | IT                                      |
+      | Description                                   | Indirect Cost Adjustment Test Account S |
+      | Indirect Cost Recovery Chart Of Accounts Code | IT - Ithaca Campus                      |
+      | Indirect Cost Recovery Account Number         | A463200                                 |
+      | Indirect Cost Recovery Account Line Percent   | 100                                     |
+      | Indirect Cost Recovery Active Indicator       | set                                     |
+    And   I clone Account GACLOSE with the following changes:
+      | Name                              | Indirect Cost Adjustment Test Account T |
+      | Chart Code                        | IT                                      |
+      | Description                       | Indirect Cost Adjustment Test Account T |
+    And   I am logged in as a KFS User for the ICA document
+    When  I start an empty Indirect Cost Adjustment document
+    And   I add balanced Accounting Lines to the Indirect Cost Adjustment document
+    And   I save the Indirect Cost Adjustment document
+    And   I submit the Indirect Cost Adjustment document
+    Given I am logged in as a KFS Manager for the ICA document
+    And   I view the Indirect Cost Adjustment document
+    And   I blanket approve the Indirect Cost Adjustment document if it is not already FINAL
+    And   the Indirect Cost Adjustment document goes to one of the following statuses:
+      | PROCESSED |
+      | FINAL     |
+    Given Nightly Batch Jobs run
+    And   I am logged in as a KFS Chart Administrator
+    When  I lookup the document ID for the Indirect Cost Adjustment document from the General Ledger
+    Then  the Accounting Line Description for the Indirect Cost Adjustment document equals the General Ledger Accounting Line Description
