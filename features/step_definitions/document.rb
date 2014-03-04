@@ -91,3 +91,7 @@ end
 Then /^the document status is (.*)/ do |doc_status|
   on(KFSBasePage) { $current_page.document_status.should == doc_status }
 end
+
+And /^the Object Code\(s\) for the (.*) document appear in the document's GLPE entry$/ do |document|
+  pending
+end

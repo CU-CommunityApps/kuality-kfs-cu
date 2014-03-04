@@ -10,6 +10,19 @@ When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance Document t
                                               }]
 end
 
+When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance Document that encumbers Account (.*)$/ do |button, account_number|
+  # Note: You must have captured the account number of the random account in a previous step to use this step.
+  @encumbrance = create PreEncumbranceObject, press: button.gsub(' ', '_'),
+                        initial_lines: [{
+                                            type:             :source,
+                                            account_number:   account_number,
+                                            chart_code:       'IT', #TODO grab this from config file
+                                            object:           '6540',
+                                            amount:           '200',
+                                            line_description: 'Test 753 Encumbrance'
+                                        }]
+end
+
 Then /^the Pre-Encumbrance posts a GL Entry with one of the following statuses$/ do |required_statuses|
   visit(MainPage).general_ledger_entry
   on(GeneralLedgerEntryLookupPage).find_encumbrance_doc(@encumbrance)

@@ -20,12 +20,12 @@ Feature: Pre-Encumbrance
   @KFSQA-753 @nightly-jobs @cornell @wip
   Scenario: Generate Proper Offsets Using a PE to generate an Encumbrance
     Given I am logged in as a KFS User
-    When  I start an empty Pre-Encumbrance document
-    And   The GLPE entries correctly generate
+    When  I submit a Pre-Encumbrance document that encumbers Account G003704
+    And   the Object Codes for the Pre-Encumbrance document appear in the document's GLPE entry
     And   I blanket approve the document
     Then  the Pre-Encumbrance document goes to FINAL
-    And   the Pre-Encumbrance document has matching GL and GLPE entries
+    And   the Pre-Encumbrance document has matching GL and GLPE offsets
     #And   The results from GL Entry Lookup equal the GLPE entries
     When  Nightly Batch Jobs run
-    Then  the Pre-Encumbrance document has matching GL and Posted entries
+    Then  the Pre-Encumbrance document has matching GL and Posted offsets
     #Then  The results From GL Entry Lookup equal the Posted Entries
