@@ -65,11 +65,15 @@ Feature: KFS Fiscal Officer Account Copy
   @KFSQA-729 @wip
   Scenario: "To" Fiscal Officer initiates Budget Adjustment; BA routes to "From" Fiscal Officer
     Given I am logged in as a KFS User
+    And   I use these Accounts:
+      | G003704 |
+      | G003704 |
     When  I start an empty Budget Adjustment document
     And   I add balanced Accounting Lines to the Budget Adjustment document
     And   I submit the Budget Adjustment document
     Then  the Route Log displays a From Fiscal Officer
     And   the Budget Adjustment document goes to ENROUTE
     When  I am logged in as the From Fiscal Officer
+    And   I view the Budget Adjustment document
     And   I approve the Budget Adjustment document
     Then  the Budget Adjustment document goes to FINAL

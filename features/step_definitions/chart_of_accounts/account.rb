@@ -330,3 +330,24 @@ And /^I find an expired Account$/ do
     @account.account_expiration_date = DateTime.strptime(page.results_table[account_row_index][page.column_index(:account_expiration_date)].text, '%m/%d/%Y')
   end
 end
+
+And /^I use these Accounts:$/ do |table|
+  existing_accounts = table.raw.flatten
+
+  visit(MainPage).account
+  on AccountLookupPage do |page|
+    existing_accounts.each do |account_number|
+      # FIXME: These values should be set by a service.
+      page.chart_code.fit 'IT'
+      page.account_number.fit account_number
+      page.search
+
+      # We're only really interested in these parts
+      @account = make AccountObject
+      @account.number = page.results_table[1][page.column_index(:account_number)].text
+      @account.chart_code = page.results_table[1][page.column_index(:chart_code)].text
+      @accounts = @accounts.nil? ? [@account] : @accounts + [@account]
+    end
+  end
+
+end

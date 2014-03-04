@@ -198,16 +198,30 @@ Then /^The GLPE contains 4 Balance Type BB transactions$/ do
 end
 
 Then /^the Route Log displays a (From|To) Fiscal Officer$/ do |fo_type|
-  pending
-  case fo_type
-    when 'From'
-      fiscal_officer = ''
-      @from_fiscal_officer = fiscal_officer
-    when 'To'
-      fiscal_officer = ''
-      @to_fiscal_officer = fiscal_officer
+  on(KFSBasePage) do |page|
+    page.expand_all
+
+    annotation_col = page.pnd_act_req_table.keyed_column_index(:annotation)
+    ro_col = page.pnd_act_req_table.keyed_column_index(:requested_of)
+    first_fo_row = page.pnd_act_req_table
+                       .column(annotation_col)
+                       .index{ |c| c.exists? && c.visible? && c.text.match(/Fiscal Officer/) }
+    page.pnd_act_req_table[first_fo_row][ro_col].should exist
+    found_fo_cell = page.pnd_act_req_table[first_fo_row][ro_col]
+
+    # We need to find the netid by following the link in the FO cell.
+    found_fo_cell.links.first.click
+    page.use_new_tab
+    fiscal_officer = on(PersonPage).get_user
+    page.close_children
+
+    case fo_type
+      when 'From'
+        @from_fiscal_officer = fiscal_officer
+      when 'To'
+        @to_fiscal_officer = fiscal_officer
+    end
   end
-  pending
 end
 
 When /^I am logged in as the (From|To) Fiscal Officer$/ do |fo_type|
