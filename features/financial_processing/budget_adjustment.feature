@@ -62,7 +62,7 @@ Feature: KFS Fiscal Officer Account Copy
     And      I blanket approve the Budget Adjustment document
     Then     the Budget Adjustment document goes to PROCESSED
 
-  @KFSQA-729 @wip
+  @KFSQA-729
   Scenario: "To" Fiscal Officer initiates Budget Adjustment; BA routes to "From" Fiscal Officer
     Given I am logged in as a KFS User
     And   I use these Accounts:
