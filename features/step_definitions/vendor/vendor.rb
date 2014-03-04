@@ -9,7 +9,7 @@ When /^I create a Corporation and Non-Foreign Vendor with Contract and Insurance
       vendor_name:                'M Hart Drums',
       foreign:                    'No',
       tax_number_type_ssn:        nil,
-      tax_number_type_fein:        :set,
+      tax_number_type_fein:       :set,
       ownership:                  'CORPORATION',
       w9_received:                'Yes',
       w9_received_date:           '02/01/2014',
@@ -45,6 +45,8 @@ And /^I add an Attachment to the Vendor document$/ do
     page.note_text.fit @vendor.note_text
     page.attach_notes_file.set($file_folder+@vendor.attachment_file_name)
     page.add_note
+    page.attach_notes_file_1.should exist #verify that note is indeed added
+
   end
 end
 And /^I add a Contract to the Vendor document$/ do
@@ -61,6 +63,7 @@ And /^I add a Contract to the Vendor document$/ do
     page.vendor_pmt_terms_code.fit @vendor.vendor_pmt_terms_code
 
     page.add_vendor_contract
+    page.contract_name_1.should exist #verify that contract is indeed added
   end
 end
 
