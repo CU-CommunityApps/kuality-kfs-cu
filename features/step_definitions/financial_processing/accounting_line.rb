@@ -73,8 +73,7 @@ And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|
       when'Budget Adjustment'
         new_source_line.merge!({
                                  object:         '6510',
-                                 current_amount: '10.00',
-                                 base_amount:    ''
+                                 current_amount: '10.00'
                                })
       when 'Advance Deposit'
       when'Auxiliary Voucher'
@@ -146,8 +145,7 @@ And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|
         when'Budget Adjustment'
           new_target_line.merge!({
                                    object:         '6540',
-                                   current_amount: '10.00',
-                                   base_amount:    ''
+                                   current_amount: '10.00'
                                  })
         when'General Error Correction'
           new_target_line.merge!({
