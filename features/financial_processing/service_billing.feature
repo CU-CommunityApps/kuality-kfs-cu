@@ -2,7 +2,7 @@ Feature: Service Billing
 
   [KFSQA-668] IB e2e Test Business Process (Basic)
 
-  @KFSQA-668 @nightly-jobs @wip
+  @KFSQA-668 @nightly-jobs
   Scenario: SB Authorization Error and E2E
     Given   I am logged in as "sml65"
     And     I attempt to start an empty Service Billing document
@@ -19,7 +19,6 @@ Feature: Service Billing
       | Number       | G013300 |
       | Object Code  | 4023  |
       | Amount       | 100 |
-
     And     I save the Service Billing document
     And     the Service Billing document accounting lines equal the General Ledger Pending entries
     And     I submit the Service Billing document
