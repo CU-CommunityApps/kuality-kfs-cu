@@ -342,9 +342,9 @@ Then /^the (.*) document accounting lines equal the General Ledger entries$/ do 
 
       page.results_table.rows.each do |row|
         if row[account_number_col].text == accounting_line.account_number && row[amount_col].text.groom == accounting_line.amount.groom
-          if row[description_col].text == accounting_line.line_description
+          if row[description_col].text.strip == accounting_line.line_description.strip
             found_original = true
-          else if row[description_col].text == 'TP Generated Offset'
+          else if row[description_col].text.strip == 'TP Generated Offset'
                  found_offset = true
                end
           end
@@ -353,7 +353,43 @@ Then /^the (.*) document accounting lines equal the General Ledger entries$/ do 
       found_original.should be true
       found_offset.should be true
       end
-
   end
+end
 
+Then /^the (.*) document accounting lines equal the General Ledger Pending entries$/ do |document|
+  # view the document?
+  # open up pending entries
+  # match accounts with GLPEs
+  doc_object = get(snake_case(document))
+  page_klass = Kernel.const_get(doc_object.class.to_s.gsub(/(.*)Object$/,'\1Page'))
+
+  on page_klass do |page|
+    page.expand_all
+
+    # verify number of resuls is twice the number of accounting lines
+    (page.glpe_results_table.rows.length-1).should == (doc_object.accounting_lines[:source].length + doc_object.accounting_lines[:target].length) * 2
+
+    all_accounting_lines = doc_object.accounting_lines[:source] + doc_object.accounting_lines[:target]
+    all_accounting_lines.each do |accounting_line|
+      found_d = false
+      found_c = false
+
+      account_number_col = page.glpe_results_table.keyed_column_index(:account_number)
+      amount_col = page.glpe_results_table.keyed_column_index(:amount)
+      dc_col = page.glpe_results_table.keyed_column_index(:d_c)
+
+      page.glpe_results_table.rest.each do |row|
+        if row[account_number_col].text == accounting_line.account_number && row[amount_col].text.groom == accounting_line.amount.to_s.groom
+          if row[dc_col].text.strip == 'D'
+            found_d = true
+          else if row[dc_col].text.strip == 'C'
+                 found_c = true
+               end
+          end
+        end
+      end
+      found_d.should be true
+      found_c.should be true
+    end
+  end
 end

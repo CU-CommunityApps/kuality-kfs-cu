@@ -28,3 +28,7 @@ end
 Then /^I should get an error that starts with "([^"]*)"$/ do |error_msg|
   $current_page.errors.any? { |s| s.include?(error_msg) }
 end
+
+And /^I should get an Authorization Exception Report error$/ do
+  @browser.frm.div(id: 'headerarea').h1.text.rstrip.should == 'Authorization Exception Report'
+end
