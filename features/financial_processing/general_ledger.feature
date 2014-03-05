@@ -2,7 +2,7 @@ Feature: General Ledger
 
   [KFSQA-649] Cornell University requires an Accounting Line Description input through an eDoc to be recorded in the General Ledger.
 
-  @KFSQA-649 @smoke @nightly-jobs @wip
+  @KFSQA-649 @smoke @nightly-jobs
   Scenario Outline: Accounting Line Description from eDoc updates General Ledger
     Given I am logged in as a KFS Manager for the <docType> document
     And   I clone Account <source_account> with the following changes:
@@ -43,7 +43,7 @@ Feature: General Ledger
     | Pre-Encumbrance                    | PE      | G003704        |                |
     | Transfer Of Funds                  | TF      | A763306        | A763900        |
 
-  @KFSQA-649 @smoke @nightly-jobs @wip
+  @KFSQA-649 @smoke @nightly-jobs
   Scenario Outline: Accounting Line Description from eDoc updates General Ledger. These eDocs' accounts don't clone nicely.
     Given I am logged in as a KFS Manager for the <docType> document
     And   I use these Accounts:
@@ -69,7 +69,7 @@ Feature: General Ledger
       | Budget Adjustment | BA      | G003704        | G003704        |
       | Service Billing   | SB      | U243700        | G013300        |
 
-  @KFSQA-649 @smoke @nightly-jobs @wip
+  @KFSQA-649 @smoke @nightly-jobs
   Scenario: Accounting Line Description from eDoc updates General Ledger
     Given I am logged in as a KFS Manager for the DV document
     And   I clone Account 1490000 with the following changes:
@@ -93,7 +93,7 @@ Feature: General Ledger
     When  I lookup the document ID for the Disbursement Voucher document from the General Ledger
     Then  the Accounting Line Description for the Disbursement Voucher document equals the General Ledger Accounting Line Description
 
-  @KFSQA-649 @smoke @nightly-jobs @wip
+  @KFSQA-649 @smoke @nightly-jobs
   Scenario: Accounting Line Description from eDoc updates General Ledger
     Given I am logged in as a KFS Manager for the ICA document
     And   I clone Account 1093600 with the following changes:
