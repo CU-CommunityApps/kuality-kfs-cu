@@ -12,6 +12,9 @@ Feature: Vendor Create
   [KFSQA-634] Vendor Create VN E2E-1b - Foreign vendor,
   Cornell University pays vendors for goods and services. The University captures legal, tax and procurement information based on ownership type as required by federal laws, state laws, and university policies.
 
+  [KFSQA-636] Vendor Create e2e - Standard, ContractYes, InsuranceN0,
+  Cornell University pays vendors for goods and services. The University captures legal, tax and procurement information based on ownership type as required by federal laws, state laws, and university policies.
+
   @KFSQA-638
   Scenario: I want to create a vendor with ownership type INDIVIDUAL
     Given   I am logged in as a KFS User
@@ -58,7 +61,7 @@ Feature: Vendor Create
     When    I am logged in as a KFS User
     Then    the Vendor document should be in my action list
 
-  @KFSQA-634 @wip
+  @KFSQA-634
   Scenario: I want to create a vendor with ownership type CORPORATION that is Foreign
     Given   I am logged in as a KFS User
     When    I create a Corporation and Foreign Vendor
@@ -73,3 +76,17 @@ Feature: Vendor Create
     When    I am logged in as a KFS User
     Then    the Vendor document should be in my action list
 
+  @KFSQA-636 @wip
+  Scenario: I want to create a vendor with ownership type CORPORATION that is Non-Foreign
+    Given   I am logged in as a KFS User
+    When    I create a Corporation and Non-Foreign Vendor with Contract
+    And     I save the Vendor document
+    And     I add an Attachment to the Vendor document
+    And     I submit the Vendor document
+    And     the Vendor document goes to ENROUTE
+    And     I am logged in as a Vendor Reviewer
+    And     I view the Vendor document
+    And     I approve the Vendor document
+    Then    the Vendor document goes to FINAL
+    When    I am logged in as a KFS User
+    Then    the Vendor document should be in my action list

@@ -63,6 +63,37 @@ When /^I create a (Corporation|Individual) and (Foreign|Non-Foreign|eShop) Vendo
                       insurance_requirements_complete:      'Yes',
                       cornell_additional_ins_ind:           'Yes'
                   }
+            when 'Contract' #KFSQA-636
+              default_fields = {
+                  vendor_type:                'PO - PURCHASE ORDER',
+                  vendor_name:                'Phil Lesh Bass',
+                  foreign:                    'No',
+                  tax_number_type_ssn:        nil,
+                  tax_number_type_fein:       :set,
+                  ownership:                  'CORPORATION',
+                  w9_received:                'Yes',
+                  w9_received_date:           '02/01/2014',
+                  address_type:               'PO - PURCHASE ORDER',
+                  address_1:                  'PO Box 54777',
+                  address_2:                  '25 Boylston St.',
+                  city:                       'Boston',
+                  state:                      'MA',
+                  zipcode:                    '02359',
+                  country:                    'United States',
+                  method_of_po_transmission:  'US MAIL',
+                  supplier_diversity:         'VETERAN OWNED',
+                  supplier_diversity_expiration_date: '09/10/2015',
+                  attachment_file_name:       'vendor_attachment_test.png',
+                  contract_name:              'Lesh Bass Agreement',
+                  contract_description:       'Lesh Bass Agreement, 8 String Bass',
+                  contract_begin_date:        '02/05/2014',
+                  contract_end_date:          '02/05/2016',
+                  contract_campus_code:       'IT - Ithaca',
+                  contract_manager_code:      'Scott Otey',
+                  po_cost_source_code:        'Pricing Agreement',
+                  b2b_contract_indicator:     'No',
+                  vendor_pmt_terms_code:      'Net 5 Days',
+              }
 
           end
         when 'eShop'  # KFSQA-633
