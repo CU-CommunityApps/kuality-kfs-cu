@@ -34,7 +34,19 @@ When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance Document t
 
 end
 
-When /^I start an empty Pre-Encumbrance document$/ do
+When /^I start an empty Pre-? ?Encumbrance document$/ do
+  #-? ? Because maybe you want a space or maybe a hyphen
   visit(MainPage).pre_encumbrance
   @pre_encumbrance = create PreEncumbranceObject
+end
+
+And /^I do an Open Encumbrances lookup for the Pre-Encumbrance document with Balance Type (.*) and Include All Pending Entries$/ do |balance_type|
+  visit(MainPage).open_encumbrances
+  on OpenEncumbranceLookupPage do |page|
+    page.doc_number.set @encumbrance.document_id
+    page.balance_type_code.set balance_type
+    page.active_indicator_all.set
+    page.search
+  end
+
 end
