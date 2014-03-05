@@ -341,14 +341,8 @@ Then /^the (.*) document accounting lines equal the General Ledger entries$/ do 
       description_col = page.column_index(:transaction_ledger_entry_description)
 
       page.results_table.rows.each do |row|
-        puts row[account_number_col].text
-        puts row[amount_col].text
-        puts row[description_col].text
-        puts row[amount_col].to_f
-        puts Float(accounting_line.amount)
-        puts Float(row[amount_col] == Float(accounting_line.amount.to_f)
-        if row[account_number_col].text == accounting_line.account_number && (Float(row[amount_col]) == Float(accounting_line.amount))
-          if row[description_col].text == accounting_line.description
+        if row[account_number_col].text == accounting_line.account_number && row[amount_col].text.groom == accounting_line.amount.groom
+          if row[description_col].text == accounting_line.line_description
             found_original = true
           else if row[description_col].text == 'TP Generated Offset'
                  found_offset = true
@@ -361,13 +355,5 @@ Then /^the (.*) document accounting lines equal the General Ledger entries$/ do 
       end
 
   end
-
-  #doc_object.accounting_lines.each do |accounting_line|
-  #  # find results row with account number and original object code and correct amount
-  #  page.results_table.
-  #  @account.number = page.results_table[account_row_index][page.column_index(:account_number)].text
-  #  @account.chart_code = page.results_table[account_row_index][page.column_index(:chart_code)].text
-  #  # find results row with account number and 'TP Generated Offset' along with correct amount
-  #end
 
 end
