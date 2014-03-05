@@ -3,7 +3,7 @@ When /^I start an empty Vendor document$/ do
 
 end
 
-When /^I create a (Corporation|Individual) and (Foreign|Non-Foreign|eShop) Vendor( with )?(.*)?$/ do |ownership_type, sub_type, with_1, tab_1|
+When /^I create (a|an) (Corporation|Individual) and (Foreign|Non-Foreign|eShop) Vendor( with )?(.*)?$/ do |a_1, ownership_type, sub_type, with_1, tab_1|
   case ownership_type
     when 'Corporation'
       case sub_type
@@ -117,6 +117,31 @@ When /^I create a (Corporation|Individual) and (Foreign|Non-Foreign|eShop) Vendo
                               supplier_diversity_expiration_date: '09/10/2015',
                               attachment_file_name:       'vendor_attachment_test.png',
                           }
+      end
+    when 'Individual'
+      case sub_type
+        when 'Non-Foreign'
+          case tab_1
+            when 'Insurance' # KFSQA-637
+              default_fields = {
+                  vendor_type:                'PO - PURCHASE ORDER',
+                  vendor_name:                'Ron McKernan Enterprises',
+                  foreign:                    'No',
+                  address_type:               'PO - PURCHASE ORDER',
+                  address_1:                  '66 Sunset Blvd',
+                  address_2:                  '(127 Walkway)',
+                  city:                       'Hollywood',
+                  state:                      'CA',
+                  zipcode:                    '91190',
+                  country:                    'United States',
+                  method_of_po_transmission:  'US MAIL',
+                  supplier_diversity:         'HUBZONE',
+                  supplier_diversity_expiration_date: '09/10/2015',
+                  attachment_file_name:       'vendor_attachment_test.png',
+                  insurance_requirements_complete:      'Yes',
+                  cornell_additional_ins_ind:           'Yes'
+              }
+          end
       end
   end
   @vendor = create VendorObject, default_fields
