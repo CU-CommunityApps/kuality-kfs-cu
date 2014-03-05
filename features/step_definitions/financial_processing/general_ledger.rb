@@ -16,3 +16,11 @@ When /^I perform a (.*) Lookup using account number (.*)$/ do |gl_balance_inquir
     end
   end
 end
+
+Then /^the (.*) document GL Entry Lookup matches the document's GL entry$/ do |document|
+  pending
+end
+
+And /^the (.*) document has matching GL and GLPE offsets$/ do |document|
+  pending
+end

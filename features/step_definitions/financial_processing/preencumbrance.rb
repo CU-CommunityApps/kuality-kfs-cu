@@ -1,4 +1,4 @@
-When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance Document that encumbers the random Account$/ do |button|
+When /^I (#{PreEncumbrancePage::available_buttons}) a Pre\-Encumbrance Document that encumbers the random Account$/ do |button|
   # Note: You must have captured the account number of the random account in a previous step to use this step.
   @encumbrance = create PreEncumbranceObject, press: button.gsub(' ', '_'),
                                               initial_lines: [{
@@ -10,7 +10,7 @@ When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance Document t
                                               }]
 end
 
-When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance Document that encumbers Account (.*)$/ do |button, account_number|
+When /^I (#{PreEncumbrancePage::available_buttons}) a Pre\-Encumbrance Document that encumbers Account (.*)$/ do |button, account_number|
   # Note: You must have captured the account number of the random account in a previous step to use this step.
   @encumbrance = create PreEncumbranceObject, press: button.gsub(' ', '_'),
                         initial_lines: [{

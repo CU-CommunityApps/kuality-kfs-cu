@@ -25,7 +25,5 @@ Feature: Pre-Encumbrance
     And   I blanket approve the document
     Then  the Pre-Encumbrance document goes to FINAL
     And   the Pre-Encumbrance document has matching GL and GLPE offsets
-    #And   The results from GL Entry Lookup equal the GLPE entries
     When  Nightly Batch Jobs run
-    Then  the Pre-Encumbrance document has matching GL and Posted offsets
-    #Then  The results From GL Entry Lookup equal the Posted Entries
+    Then  the Pre-Encumbrance document GL Entry Lookup matches the document's GL entry
