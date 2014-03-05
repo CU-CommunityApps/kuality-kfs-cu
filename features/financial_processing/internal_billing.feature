@@ -12,25 +12,20 @@ Feature: Internal Billing
       | Chart Code   | IT |
       | Number       | G003704 |
       | Object Code  | 4020  |
-      | Amount       | 300 |
+      | Amount       | 200 |
 #    And     I enter Two Expense Lines
     And     I add a target Accounting Line to the Internal Billing document with the following:
       | Chart Code   | IT |
       | Number       | G013300 |
       | Object Code  | 4020  |
-      | Amount       | 100 |
-    And     I add a target Accounting Line to the Internal Billing document with the following:
-      | Chart Code   | IT |
-      | Number       | G013300 |
-      | Object Code  | 4020  |
-      | Amount       | 100 |
+      | Amount       | 50 |
     And     I submit the Internal Billing document
     And     I should get an error saying "The document is out of balance."
     And     I add a target Accounting Line to the Internal Billing document with the following:
       | Chart Code   | IT |
       | Number       | G013300 |
       | Object Code  | 4020  |
-      | Amount       | 100 |
+      | Amount       | 150 |
     And     I submit the Internal Billing document
     And     the Internal Billing document goes to ENROUTE
     And     I am logged in as a KFS Fiscal Officer
@@ -39,8 +34,9 @@ Feature: Internal Billing
     And     the Internal Billing document goes to FINAL
     And     I am logged in as a KFS Technical Administrator
     And     Nightly Batch Jobs run
-    And     I am logged in as a KFS Chart Manager
-    When    I lookup the document ID for the Internal Billing document from the General Ledger
-    Then    the Accounting Line Description for the Internal Billing document equals the General Ledger Accounting Line Description
+    When    I am logged in as a KFS Chart Manager
+    Then    the Internal Billing document accounting lines equal the General Ledger entries
+
+#    When    I lookup the document ID for the Internal Billing document from the General Ledger
 #    When    I lookup the Document ID from the General Ledger
 #    Then    The Accounting Lines entered equals the General Ledger Accounting Line

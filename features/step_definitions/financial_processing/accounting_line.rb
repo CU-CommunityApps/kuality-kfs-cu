@@ -277,4 +277,67 @@ And /^I add a source Accounting Line to the (.*) document with a bad object code
       amount:         '300'
   }
   get(doc_object).add_source_line(new_source_line)
+  get(doc_object).accounting_lines[:source].clear
+end
+
+
+Then /^the (.*) document accounting lines equal the General Ledger entries$/ do |document|
+  # do a search for GL entries
+  # go through each IB accounting line
+  # match it with it's two entries in the gl
+  doc_object = get(snake_case(document))
+
+  visit(MainPage).general_ledger_entry
+  on GeneralLedgerEntryLookupPage do |page|
+    # We're assuming that Fiscal Year and Fiscal Period default to today's values
+    page.doc_number.fit        doc_object.document_id
+    page.balance_type_code.fit ''
+    page.pending_entry_approved_indicator_all
+    page.search
+
+    # verify number of resuls is twice the number of accounting lines
+    (page.results_table.rows.length-1).should == (doc_object.accounting_lines[:source].length + doc_object.accounting_lines[:target].length) * 2
+
+    page.results_table.rows.each do |row|
+    end
+
+    all_accounting_lines = doc_object.accounting_lines[:source] + doc_object.accounting_lines[:target]
+    all_accounting_lines.each do |accounting_line|
+      found_original = false
+      found_offset = false
+
+      account_number_col = page.column_index(:account_number)
+      amount_col = page.column_index(:transaction_ledger_entry_amount)
+      description_col = page.column_index(:transaction_ledger_entry_description)
+
+      page.results_table.rows.each do |row|
+        puts row[account_number_col].text
+        puts row[amount_col].text
+        puts row[description_col].text
+        puts row[amount_col].to_f
+        puts Float(accounting_line.amount)
+        puts Float(row[amount_col] == Float(accounting_line.amount.to_f)
+        if row[account_number_col].text == accounting_line.account_number && (Float(row[amount_col]) == Float(accounting_line.amount))
+          if row[description_col].text == accounting_line.description
+            found_original = true
+          else if row[description_col].text == 'TP Generated Offset'
+                 found_offset = true
+               end
+          end
+        end
+      end
+      found_original.should be true
+      found_offset.should be true
+      end
+
+  end
+
+  #doc_object.accounting_lines.each do |accounting_line|
+  #  # find results row with account number and original object code and correct amount
+  #  page.results_table.
+  #  @account.number = page.results_table[account_row_index][page.column_index(:account_number)].text
+  #  @account.chart_code = page.results_table[account_row_index][page.column_index(:chart_code)].text
+  #  # find results row with account number and 'TP Generated Offset' along with correct amount
+  #end
+
 end
