@@ -2,7 +2,7 @@ Feature: Internal Billing
 
   [KFSQA-667] IB e2e Test Business Process (Basic)
 
-  @KFSQA-667 @wip
+  @KFSQA-667 @nightly-jobs @wip
   Scenario: Ensure IB e2e Test Business Process (Basic) works
     Given   I am logged in as a KFS User for the Internal Billing document
     And     I start an empty Internal Billing document
@@ -36,7 +36,3 @@ Feature: Internal Billing
     And     Nightly Batch Jobs run
     When    I am logged in as a KFS Chart Manager
     Then    the Internal Billing document accounting lines equal the General Ledger entries
-
-#    When    I lookup the document ID for the Internal Billing document from the General Ledger
-#    When    I lookup the Document ID from the General Ledger
-#    Then    The Accounting Lines entered equals the General Ledger Accounting Line
