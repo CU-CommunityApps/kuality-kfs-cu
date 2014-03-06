@@ -35,6 +35,5 @@ Feature: Pre-Encumbrance
     And     the Pre-Encumbrance document goes to one of the following statuses:
       | PROCESSED |
       | FINAL     |
-    And     I am logged in as a KFS Technical Administrator
     When    I am logged in as a KFS Chart Manager
     Then    the Pre-Encumbrance document accounting lines equal the General Ledger entries
