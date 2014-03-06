@@ -62,9 +62,9 @@ And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|
 
     # Everybody has a source line at least
     new_source_line = {
-        chart_code: @accounts[0].chart_code,
+        chart_code:     @accounts[0].chart_code,
         account_number: @accounts[0].number,
-        object: '4480',
+        object:         '4480',
         line_description: 'What a wonderful From line description!'
     }
     new_source_line.merge!({ amount: '100' }) unless document == 'Budget Adjustment'
@@ -72,54 +72,53 @@ And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|
     case document
       when'Budget Adjustment'
         new_source_line.merge!({
-                                   object: '6510',
-                                   current_amount: '10.00',
-                                   #base_amount: ''
+                                 object:         '6510',
+                                 current_amount: '10.00'
                                })
       when 'Advance Deposit'
       when'Auxiliary Voucher'
         new_source_line.merge!({
-                                   object: '6690',
-                                   debit: '100'
+                                 object: '6690',
+                                 debit:  '100'
                                })
         new_source_line.delete(:amount)
       when'Credit Card Receipt'
         new_source_line.merge!({
-                                   object: '4010'
+                                 object: '4010'
                                })
       when'Disbursement Voucher'
         new_source_line.merge!({
-                                   object: '6430'
+                                 object: '6430'
                                })
       when 'General Error Correction'
         new_source_line.merge!({
-                                   reference_number: '777001',
-                                   reference_origin_code: '01'
-                               })
+                               reference_number:      '777001',
+                               reference_origin_code: '01'
+                             })
       when 'Non-Check Disbursement'
         new_source_line.merge!({
                                    reference_number: '1234',
-                                   object: '6540'
+                                   object:           '6540'
                                })
       when 'Pre-Encumbrance'
         new_source_line.merge!({
-                                   object: '6540'
+                                 object: '6540'
                                })
       when 'Internal Billing'
         new_source_line.merge!({
-                                   object: '4023'
+                                 object: '4023'
                                })
       when 'Indirect Cost Adjustment'
         new_source_line.delete(:object)
       when 'Journal Voucher'
         new_source_line.merge!({
-                                   object: '6540',
-                                   debit: '100',
+                                 object: '6540',
+                                 debit:  '100',
                                })
         new_source_line.delete(:amount)
       when 'Transfer Of Funds'
         new_source_line.merge!({
-                                   object: '8070'
+                                 object: '8070'
                                })
       when 'Service Billing'
         new_source_line.merge!({
@@ -131,13 +130,13 @@ And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|
 
     # Some docs don't have a target line
     unless (document == 'Advance Deposit') || (document == 'Auxiliary Voucher') ||
-        (document == 'Pre-Encumbrance') || (document == 'Non-Check Disbursement') ||
-        (document == 'Journal Voucher') || (document == 'Credit Card Receipt') ||
-        (document == 'Disbursement Voucher')
+           (document == 'Pre-Encumbrance') || (document == 'Non-Check Disbursement') ||
+           (document == 'Journal Voucher') || (document == 'Credit Card Receipt') ||
+           (document == 'Disbursement Voucher')
       new_target_line = {
-          chart_code: @accounts[1].chart_code,
+          chart_code:     @accounts[1].chart_code,
           account_number: @accounts[1].number,
-          object: '4480',
+          object:         '4480',
           line_description: 'What a wonderful To line description!'
       }
       new_target_line.merge!({ amount: '100' }) unless document == 'Budget Adjustment'
@@ -145,28 +144,27 @@ And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|
       case document
         when'Budget Adjustment'
           new_target_line.merge!({
-                                     object: '6540',
-                                     current_amount: '10.00',
-                                     #base_amount: ''
+                                   object:         '6540',
+                                   current_amount: '10.00'
                                  })
         when'General Error Correction'
           new_target_line.merge!({
-                                     reference_number: '777002',
-                                     reference_origin_code: '01'
-                                 })
+                               reference_number:      '777002',
+                               reference_origin_code: '01'
+                             })
         when 'Pre-Encumbrance'
           new_target_line.merge!({
-                                     object: '6510'
+                                   object: '6510'
                                  })
         when 'Internal Billing'
           new_target_line.merge!({
-                                     object: '4023'
+                                   object: '4023'
                                  })
         when 'Indirect Cost Adjustment'
           new_target_line.delete(:object)
         when 'Transfer Of Funds'
           new_target_line.merge!({
-                                     object: '7070'
+                                   object: '7070'
                                  })
         when 'Service Billing'
           new_target_line.merge!({
