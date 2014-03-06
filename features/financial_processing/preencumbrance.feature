@@ -17,7 +17,7 @@ Feature: Pre-Encumbrance
     And   I do an Open Encumbrances lookup for the Pre-Encumbrance document with Balance Type PE and Include All Pending Entries
     Then  the lookup should return results
 
-  @KFSQA-739 @nightly-jobs @wip
+  @KFSQA-739 @wip
   Scenario: E2E - PE Created, Approved and Accounting Line persists and updates GL
     Given   I am logged in as a KFS User for the PE document
     And     I start an empty Pre-Encumbrance document
@@ -36,6 +36,5 @@ Feature: Pre-Encumbrance
       | PROCESSED |
       | FINAL     |
     And     I am logged in as a KFS Technical Administrator
-#    And     Nightly Batch Jobs run
     When    I am logged in as a KFS Chart Manager
     Then    the Pre-Encumbrance document accounting lines equal the General Ledger entries
