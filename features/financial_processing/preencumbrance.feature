@@ -17,7 +17,7 @@ Feature: Pre-Encumbrance
     And   I do an Open Encumbrances lookup for the Pre-Encumbrance document with Balance Type PE and Include All Pending Entries
     Then  the lookup should return results
 
-  @KFSQA-739 @wip
+  @KFSQA-739
   Scenario: E2E - PE Created, Approved and Accounting Line persists and updates GL
     Given   I am logged in as a KFS User for the PE document
     And     I start an empty Pre-Encumbrance document
