@@ -47,12 +47,16 @@ Feature: KFS Fiscal Officer Account Copy
     Then   The To Account Monthly Balance should match the To amount
     And    The line description for the To Account should be displayed
 
-  @KFSQA-629
+  @KFSQA-629  @pending
   Scenario: Upload only Base Budget budget transactions using BA Import Template.
-    Given    I am logged in as a KFS Technical Administrator
+# GETTING ERROR FOR NOT ALLOWING ADJUSTMENT FOR YEARS 2014 and 2015 (only available)
+#    Given    I am logged in as a KFS Fiscal Officer
+#    Given    I am logged in as a KFS Technical Administrator  #This user changed should be dh273 for this test
+    Given  I am logged in as "dh273"
     And      I create a Budget Adjustment document for file import
     And      I upload From Accounting Lines containing Base Budget amounts
     And      I upload To Accounting Lines containing Base Budget amounts
+    And I sleep for 30
     When     I submit the Budget Adjustment document
     Then     The GLPE contains 4 Balance Type BB transactions
     When     I view the Budget Adjustment document
