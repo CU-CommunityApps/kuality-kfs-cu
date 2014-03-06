@@ -42,12 +42,13 @@ Feature: Pre-Encumbrance
   Scenario: E2E - PE Created, Approved and Accounting Line persists and updates GL
     Given   I am logged in as a KFS User for the PE document
     And     I start an empty Pre-Encumbrance document
-    And     I add a target Accounting Line to the Pre-Encumbrance document with the following:
+    And     I add a source Accounting Line to the Pre-Encumbrance document with the following:
       | Chart Code   | IT |
-      | Number       | U243700 |
-      | Object Code  | 4023  |
-      | Amount       | 100 |
+      | Number       | G003704 |
+      | Object Code  | 6100  |
+      | Amount       | 1000 |
     And     I save the Pre-Encumbrance document
+    And     I remember the Pre-Encumbrance document number
     And     the Pre-Encumbrance document accounting lines equal the General Ledger Pending entries
     And     I submit the Pre-Encumbrance document
     And     I am logged in as a KFS Chart Administrator
@@ -61,11 +62,11 @@ Feature: Pre-Encumbrance
 
     And     I am logged in as a KFS User for the PE document
     And     I start an empty Pre-Encumbrance document
-    And     I add a source Accounting Line to the Pre-Encumbrance document with the following:
+    And     I add a target Accounting Line to the Pre-Encumbrance document with the following:
       | Chart Code   | IT |
-      | Number       | U243700 |
-      | Object Code  | 4023  |
-      | Amount       | 100 |
+      | Number       | G003704 |
+      | Object Code  | 6100  |
+      | Amount       | 200 |
     And     I save the Pre-Encumbrance document
     And     the Pre-Encumbrance document accounting lines equal the General Ledger Pending entries
     And     I submit the Pre-Encumbrance document
@@ -75,5 +76,6 @@ Feature: Pre-Encumbrance
     And     the Pre-Encumbrance document goes to one of the following statuses:
       | PROCESSED |
       | FINAL     |
-    And     I am logged in as a KFS Chart Manager
-    And     the Pre-Encumbrance document accounting lines equal the General Ledger entries
+    When    I am logged in as a KFS Chart Manager
+    Then    The oustanding encumbrance for account G003704 and object code 6100 is 800
+    # do an encumbrance lookup for account number U243700 and object code 6540 and outstanding encumbrance should be 800

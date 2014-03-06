@@ -279,6 +279,11 @@ And /^I add a (source|target|from|to) Accounting Line to the (.*) document with 
               new_target_line.merge!({
                                          object: '6100'
                                      })
+              unless @remembered_document_id.nil?
+                new_target_line.merge!({
+                                         reference_number:      @remembered_document_id,
+                                       })
+              end
             when 'Internal Billing', 'Service Billing'
               new_target_line.merge!({
                                          object: '4023'
