@@ -2,7 +2,7 @@ Feature: Pre-Encumbrance
 
   [KFSQA-654] Open Encumbrances Lookup not displaying pending entries generated from the PE eDoc.
 
-  @KFSQA-654
+  @KFSQA-654 @sloth
   Scenario: Open Encumbrances Lookup will display pending entries from PE eDoc
     Given I am logged in as a KFS Chart Manager
     And   I clone a random Account with the following changes:

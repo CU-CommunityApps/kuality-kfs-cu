@@ -4,9 +4,8 @@ end
 
 When /^I add a (source|target) Accounting Line for the (.*) document$/ do |line_type, document|
   doc_object = snake_case document
-  page_klass = Kernel.const_get(get(doc_object).class.to_s.gsub(/(.*)Object$/,'\1Page'))
 
-  on page_klass do
+  on page_class_for(document) do
     case line_type
       when 'source'
         get(doc_object).
@@ -56,9 +55,8 @@ end
 # multiple steps on document type if it gets worse.
 And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|Credit Card Receipt|Disbursement Voucher|Distribution Of Income And Expense|General Error Correction|Internal Billing|Indirect Cost Adjustment|Journal Voucher|Non-Check Disbursement|Pre-Encumbrance|Service Billing|Transfer Of Funds) document$/ do |document|
   doc_object = get(snake_case(document))
-  page_klass = Kernel.const_get(doc_object.class.to_s.gsub(/(.*)Object$/,'\1Page'))
 
-  on page_klass do
+  on page_class_for(document) do
 
     # Everybody has a source line at least
     new_source_line = {
@@ -198,9 +196,8 @@ And /^I add a (source|target|from|to) Accounting Line to the (.*) document with 
   accounting_line_info.delete_if { |k,v| v.empty? }
   unless accounting_line_info['Number'].nil?
     doc_object = snake_case document
-    page_klass = Kernel.const_get(get(doc_object).class.to_s.gsub(/(.*)Object$/,'\1Page'))
 
-    on page_klass do
+    on page_class_for(document) do
       case line_type
         when 'source', 'from'
           new_source_line = {
@@ -212,9 +209,8 @@ And /^I add a (source|target|from|to) Accounting Line to the (.*) document with 
           case document
             when'Budget Adjustment'
               new_source_line.merge!({
-                                         object: '6510',
-                                         current_amount:   accounting_line_info['Amount'],
-                                         base_amount:      accounting_line_info['Amount']
+                                         object:         '6510',
+                                         current_amount: accounting_line_info['Amount']
                                      })
               new_source_line.delete(:amount)
             when 'Advance Deposit'
@@ -265,9 +261,8 @@ And /^I add a (source|target|from|to) Accounting Line to the (.*) document with 
           case document
             when'Budget Adjustment'
               new_target_line.merge!({
-                                         object: '6540',
-                                         current_amount:   accounting_line_info['Amount'],
-                                         base_amount:      accounting_line_info['Amount']
+                                         object:         '6540',
+                                         current_amount: accounting_line_info['Amount']
                                      })
               new_target_line.delete(:amount)
             when'General Error Correction'

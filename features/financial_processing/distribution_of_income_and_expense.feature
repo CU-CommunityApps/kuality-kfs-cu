@@ -2,7 +2,7 @@ Feature: Distribution of Income and Expense
 
   [KFAQA-648] I want to create a DI with an Accounting Line Change by an FO
 
-  @KFAQA-648 @smoke
+  @KFAQA-648 @smoke @sloth
   Scenario: Reject Approver Account changes unless they are the Fiscal Officer
     Given   I am logged in as a KFS User
     And     I start an empty Distribution Of Income And Expense document
@@ -14,7 +14,9 @@ Feature: Distribution of Income and Expense
     And     I view the Distribution Of Income And Expense document
     And     I change the DI from Account to one not owned by the current user
     And     I approve the Distribution of Income And Expense document
-    And     I should get an error saying "Existing accounting lines may not be updated to use Account Number IT-A763900 by user djj1."
+    And     I should get these error messages:
+      | Existing accounting lines may not be updated to use Chart Code IT by user djj1.          |
+      | Existing accounting lines may not be updated to use Account Number A763900 by user djj1. |
     And     I view the Distribution Of Income And Expense document
     And     I change the DI from Account to one owned by the current user
     And     I approve the Distribution Of Income And Expense document
