@@ -1,5 +1,18 @@
-default: -r features --format pretty
-debug: -r features --format pretty DEBUG=true
-master: --tags ~@draft --tags ~@wip --tags ~@pending -r features --format pretty
-headless: HEADLESS=true --tags ~@draft --tags ~@wip --tags ~@pending -r features --format pretty
-headless_json: HEADLESS=true --tags ~@draft --tags ~@wip --tags ~@pending -r features --format pretty --format json -o ../kuality-kfs-cu-output.json
+<%
+  default = '-r features --format pretty --color'
+  debug = "#{default} DEBUG=true"
+  clean_tags = '--tags ~@draft --tags ~@wip --tags ~@pending'
+  clean_default = "#{default} #{clean_tags}"
+%>
+
+default: <%= default %>
+debug: <%= debug %>
+hare: <%= default %> <%= clean_tags %> --tags @hare
+tortoise: <%= clean_default %> --tags @tortoise
+tortoise_and_hare: <%= clean_default %> --tags @hare --tags @tortoise
+slug: <%= clean_default %> --tags @slug
+coral: <%= clean_default %> --tags @coral
+master_no_nightly: <%= clean_default %> --tags ~@nightly-jobs
+master: <%= clean_default %>
+headless: HEADLESS=true <%= clean_default %>
+headless_json: HEADLESS=true <%= clean_default %> --format json -o ../kuality-kfs-cu-output.json
