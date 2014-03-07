@@ -12,7 +12,7 @@ Feature: Vendor Create
   [KFSQA-634] Vendor Create VN E2E-1b - Foreign vendor,
   Cornell University pays vendors for goods and services. The University captures legal, tax and procurement information based on ownership type as required by federal laws, state laws, and university policies.
 
-  [KFSQA-636] Vendor Create e2e - Standard, ContractYes, InsuranceN0,
+  [KFSQA-637] Vendor Create e2e - Standard, ContractYes, InsuranceN0,
   Cornell University pays vendors for goods and services. The University captures legal, tax and procurement information based on ownership type as required by federal laws, state laws, and university policies.
 
   [KFSQA-636] Vendor Create e2e - Standard-Individual, ContractNo, InsuranceYes,
