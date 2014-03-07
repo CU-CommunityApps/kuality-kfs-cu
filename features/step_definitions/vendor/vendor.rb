@@ -3,7 +3,7 @@ When /^I start an empty Vendor document$/ do
 
 end
 
-When /^I create a (Corporation|Individual) and (Foreign|Non-Foreign|eShop) Vendor( with )?(.*)?$/ do |ownership_type, sub_type, with_1, tab_1|
+When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|eShop) Vendor( with )?(.*)?$/ do |ownership_type, sub_type, with_1, tab_1|
   case ownership_type
     when 'Corporation'
       case sub_type
