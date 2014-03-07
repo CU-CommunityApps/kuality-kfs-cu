@@ -49,7 +49,7 @@ end
 Given /^I am logged in as a KFS User for the (.*) document$/ do |eDoc|
   case eDoc
     when 'AD'
-      visit(BackdoorLoginPage).login_as('ccs1') #TODO get from role service
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
     when 'AV'
       visit(BackdoorLoginPage).login_as('scu1') #TODO get from role service
     when 'BA'
@@ -73,9 +73,9 @@ Given /^I am logged in as a KFS User for the (.*) document$/ do |eDoc|
     when 'JV-3'
       visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
     when 'ND'
-      visit(BackdoorLoginPage).login_as('rlc56') #TODO get from role service
+      visit(BackdoorLoginPage).login_as('kpg1') #TODO get from role service
     when 'PE'
-      visit(BackdoorLoginPage).login_as('sag3') #TODO get from role service
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
     when 'SB'
       visit(BackdoorLoginPage).login_as('chl52') #TODO get from role service
     when 'TF'
@@ -83,4 +83,30 @@ Given /^I am logged in as a KFS User for the (.*) document$/ do |eDoc|
     else
       visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
   end
+end
+
+Given /^I am logged in as a KFS Manager for the (.*) document$/ do |eDoc|
+  case eDoc
+    when 'CCR'
+      visit(BackdoorLoginPage).login_as('ccs1') #TODO get from role service
+    when 'SB'
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+    else
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+  end
+end
+
+Then /^I switch to the user with the next Pending Action in the Route Log$/ do
+  new_user = ''
+  on(FinancialProcessingPage) do |page|
+    page.expand_all
+    page.pnd_act_req_table[1][2].links[0].click
+    page.use_new_tab
+    page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].should exist
+    page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].text.empty?.should_not
+    new_user = page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].text
+    page.close_children
+  end
+
+  step "I am logged in as \"#{new_user}\""
 end
