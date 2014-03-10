@@ -1,14 +1,7 @@
 When /^I start an empty Disbursement Voucher document$/ do
   default_fields = {
-      payment_default: {
-          auto_populate:               false, # not populating payment info when 'initialize'
-      },
-      account_default: {
-          auto_populate:               false, # not populating acct when 'initialize'
-      },
-      dv_default: {
-          press: :save
-      }
+      payee_id:        nil, # not populating payment info when 'initialize'
+      press:           :save
   }
   @disbursement_voucher = create DisbursementVoucherObject, default_fields
 end
