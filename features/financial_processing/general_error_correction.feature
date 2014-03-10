@@ -6,12 +6,12 @@ Feature: General Error Correction
   Scenario: Reject Approver Account changes unless they are the Fiscal Officer
     Given   I am logged in as a KFS Fiscal Officer
     And     I start a General Error Correction document
-    And     I add a from Accounting Line to the General Error Correction document with the following:
+    And     I add a From Accounting Line to the General Error Correction document with the following:
       | Chart Code   | IT      |
       | Number       | G003704 |
       | Object Code  | 1210    |
       | Amount       | 100     |
-    And     I add a to Accounting Line to the General Error Correction document with the following:
+    And     I add a To Accounting Line to the General Error Correction document with the following:
       | Chart Code   | IT      |
       | Number       | G254700 |
       | Object Code  | 1210    |

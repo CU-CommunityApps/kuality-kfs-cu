@@ -8,20 +8,20 @@ Feature: Internal Billing
     And     I start an empty Internal Billing document
     And     I add a source Accounting Line to the Internal Billing document with a bad object code
     And     I should get an error that starts with "The Object Sub-Type Code"
-    And     I add a source Accounting Line to the Internal Billing document with the following:
+    And     I add a Source Accounting Line to the Internal Billing document with the following:
       | Chart Code   | IT      |
       | Number       | G003704 |
       | Object Code  | 4020    |
       | Amount       | 200     |
 #    And     I enter Two Expense Lines
-    And     I add a target Accounting Line to the Internal Billing document with the following:
+    And     I add a Target Accounting Line to the Internal Billing document with the following:
       | Chart Code   | IT      |
       | Number       | G013300 |
       | Object Code  | 4020    |
       | Amount       | 50      |
     And     I submit the Internal Billing document
     And     I should get an error saying "The document is out of balance."
-    And     I add a target Accounting Line to the Internal Billing document with the following:
+    And     I add a Target Accounting Line to the Internal Billing document with the following:
       | Chart Code   | IT      |
       | Number       | G013300 |
       | Object Code  | 4020    |

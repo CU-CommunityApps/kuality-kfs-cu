@@ -8,12 +8,12 @@ Feature: Financial Documents
     Given  I am logged in as "<user>"
     #for all these eDocs
     And    I start an empty <eDoc> document
-    And I add a source Accounting Line to the <eDoc> document with the following:
+    And I add a Source Accounting Line to the <eDoc> document with the following:
       | Chart Code   | IT |
       | Number       | <source_account> |
       | Object Code  | 6690 |
       | Amount       | <source_amount> |
-    And I add a target Accounting Line to the <eDoc> document with the following:
+    And I add a Target Accounting Line to the <eDoc> document with the following:
       | Chart Code   | IT |
       | Number       | <target_account> |
       | Object Code  | 6690 |

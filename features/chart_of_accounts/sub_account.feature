@@ -37,5 +37,7 @@ Feature: Sub Account
     When  I view the Sub-Account document
     And   I blanket approve the Sub-Account document
     And   I view the Sub-Account document
-    Then  the Sub-Account document goes to PROCESSED
+    Then  the Sub-Account document goes to one of the following statuses:
+      | PROCESSED |
+      | FINAL     |
 

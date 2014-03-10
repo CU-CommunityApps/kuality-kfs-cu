@@ -191,7 +191,7 @@ And /^I add balanced Accounting Lines to the Auxiliary Voucher document$/ do
   end
 end
 
-And /^I add a (source|target|from|to) Accounting Line to the (.*) document with the following:$/ do |line_type, document, table|
+And /^I add a (Source|Target|From|To) Accounting Line to the (.*) document with the following:$/ do |line_type, document, table|
   accounting_line_info = table.rows_hash
   accounting_line_info.delete_if { |k,v| v.empty? }
   unless accounting_line_info['Number'].nil?
@@ -199,7 +199,7 @@ And /^I add a (source|target|from|to) Accounting Line to the (.*) document with 
 
     on page_class_for(document) do
       case line_type
-        when 'source', 'from'
+        when 'Source', 'From'
           new_source_line = {
               chart_code:     accounting_line_info['Chart Code'],
               account_number: accounting_line_info['Number'],
@@ -251,7 +251,7 @@ And /^I add a (source|target|from|to) Accounting Line to the (.*) document with 
             else
           end
           get(doc_object).add_source_line(new_source_line)
-        when 'target', 'to'
+        when 'Target', 'To'
           new_target_line = {
               chart_code:     accounting_line_info['Chart Code'],
               account_number: accounting_line_info['Number'],

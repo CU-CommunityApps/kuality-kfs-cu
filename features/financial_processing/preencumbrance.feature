@@ -8,9 +8,9 @@ Feature: Pre-Encumbrance
     And   I clone a random Account with the following changes:
       | Name        | Test Account             |
       | Chart Code  | IT                       |
-      | Description | [KFSQA-551] Test Account |
+      | Description | [KFSQA-654] Test Account |
     Given I am logged in as a KFS Chart Administrator
     When  I blanket approve a Pre-Encumbrance Document that encumbers the random Account
-    And   the Encumbrance document goes to FINAL
+    And   the Pre-Encumbrance document goes to FINAL
     And   I do an Open Encumbrances lookup for the Pre-Encumbrance document with Balance Type PE and Include All Pending Entries
-    Then  the lookup should return results
+    Then  the Lookup should return results
