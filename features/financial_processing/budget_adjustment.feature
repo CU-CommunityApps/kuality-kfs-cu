@@ -56,7 +56,6 @@ Feature: KFS Fiscal Officer Account Copy
     And      I create a Budget Adjustment document for file import
     And      I upload From Accounting Lines containing Base Budget amounts
     And      I upload To Accounting Lines containing Base Budget amounts
-    And I sleep for 30
     When     I submit the Budget Adjustment document
     Then     The GLPE contains 4 Balance Type BB transactions
     When     I view the Budget Adjustment document

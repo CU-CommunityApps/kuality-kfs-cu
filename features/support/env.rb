@@ -2,6 +2,7 @@ require 'rubygems'
 require 'yaml'
 require 'cucumber'
 require 'headless'
+#require 'csv'
 
 @config = YAML.load_file("#{File.dirname(__FILE__)}/config.yml")[:basic]
 
