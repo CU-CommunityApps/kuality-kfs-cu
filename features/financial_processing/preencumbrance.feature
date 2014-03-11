@@ -38,7 +38,7 @@ Feature: Pre-Encumbrance
     When    I am logged in as a KFS Chart Manager
     Then    the Pre-Encumbrance document accounting lines equal the General Ledger entries
 
-  @KFSQA-740 @wip
+  @KFSQA-740
   Scenario: E2E - PE Created, Approved and Accounting Line persists and updates GL
     Given   I am logged in as a KFS User for the PE document
     And     I start an empty Pre-Encumbrance document
@@ -59,7 +59,6 @@ Feature: Pre-Encumbrance
       | FINAL     |
     And     I am logged in as a KFS Chart Manager
     And     the Pre-Encumbrance document accounting lines equal the General Ledger entries
-
     And     I am logged in as a KFS User for the PE document
     And     I start an empty Pre-Encumbrance document
     And     I add a target Accounting Line to the Pre-Encumbrance document with the following:
@@ -78,4 +77,3 @@ Feature: Pre-Encumbrance
       | FINAL     |
     When    I am logged in as a KFS Chart Manager
     Then    The oustanding encumbrance for account G003704 and object code 6100 is 800
-    # do an encumbrance lookup for account number U243700 and object code 6540 and outstanding encumbrance should be 800
