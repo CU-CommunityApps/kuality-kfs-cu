@@ -18,7 +18,31 @@ When /^I perform a (.*) Lookup using account number (.*)$/ do |gl_balance_inquir
 end
 
 Then /^the (.*) document GL Entry Lookup matches the document's GL entry$/ do |document|
-  pending
+  step "I look up the #{document} document in the GL"
+
+  on GeneralLedgerEntryLookupPage do |page|
+    tled_col = page.results_table.keyed_column_index(:transaction_ledger_entry_description)
+    tlea_col = page.results_table.keyed_column_index(:transaction_ledger_entry_amount)
+    oc_col = page.results_table.keyed_column_index(:object_code)
+    peai_col = page.results_table.keyed_column_index(:pending_entry_approved_indicator)
+    rdn_col = page.results_table.keyed_column_index(:reference_document_number)
+
+    page.results_table
+        .column(tled_col)
+        .rest
+        .map(&:text)
+        .should include 'TP Generated Offset' # This verifies that the offset was actually generated.
+
+    document_object_for(document).accounting_lines.each_value do |als|
+      als.each do |al|
+        page.item_row(al.object)[oc_col].text.should == al.object
+        page.item_row(al.object)[tled_col].text.should == al.line_description
+        page.item_row(al.object)[tlea_col].text.to_f.should == al.amount.to_f
+        page.item_row(al.object)[peai_col].text.should == ''
+        page.item_row(al.object)[rdn_col].text.should == document_object_for(document).document_id
+      end
+    end
+  end
 end
 
 And /^the (.*) document has matching GL and GLPE offsets$/ do |document|

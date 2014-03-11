@@ -26,5 +26,6 @@ Feature: Pre-Encumbrance
     And   I blanket approve the Pre-Encumbrance document
     Then  the Pre-Encumbrance document goes to FINAL
     And   the Pre-Encumbrance document has matching GL and GLPE offsets
-    When  Nightly Batch Jobs run
+    Given Nightly Batch Jobs run
+    And   I am logged in as a KFS User
     Then  the Pre-Encumbrance document GL Entry Lookup matches the document's GL entry
