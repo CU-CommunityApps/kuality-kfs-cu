@@ -2,6 +2,7 @@ Tags
 ====
 
 * General Purpose
+
 | Tag      | Description |
 | -------- | ----------- |
 | @wip     | Work in progress. There should be no @wip tags on the master branch! |
