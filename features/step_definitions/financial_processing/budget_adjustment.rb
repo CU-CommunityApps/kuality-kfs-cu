@@ -114,7 +114,7 @@ And /^I view the From Account on the General Ledger Balance with balance type co
     page.balance_type_code.fit bal_type_code
     page.including_pending_ledger_entry_all.set
     page.search
-    page.select_monthly_item(@budget_adjustment.accounting_lines[:source][0].object, BudgetAdjustmentObject::fiscal_period_conversion(right_now[:MON]))
+    page.select_monthly_item(@budget_adjustment.accounting_lines[:source][0].object, fiscal_period_conversion(right_now[:MON]))
  end
  on(GeneralLedgerEntryLookupPage) do |page|
    page.sort_results_by('Transaction Date')
@@ -131,7 +131,7 @@ When /^I view the To Account on the General Ledger Balance with balance type cod
     page.balance_type_code.fit bal_type_code
     page.including_pending_ledger_entry_all.set
     page.search
-    page.select_monthly_item(@budget_adjustment.accounting_lines[:target][0].object, BudgetAdjustmentObject::fiscal_period_conversion(right_now[:MON]))
+    page.select_monthly_item(@budget_adjustment.accounting_lines[:target][0].object, fiscal_period_conversion(right_now[:MON]))
   end
   on(GeneralLedgerEntryLookupPage) do |page|
     page.sort_results_by('Transaction Date')

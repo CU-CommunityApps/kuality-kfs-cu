@@ -22,6 +22,7 @@ Feature: Pre-Encumbrance
     Given I am logged in as a KFS User
     When  I submit a Pre-Encumbrance document that encumbers Account G003704
     And   the Object Codes for the Pre-Encumbrance document appear in the document's GLPE entry
+    And   I view the Pre-Encumbrance document
     And   I blanket approve the Pre-Encumbrance document
     Then  the Pre-Encumbrance document goes to FINAL
     And   the Pre-Encumbrance document has matching GL and GLPE offsets

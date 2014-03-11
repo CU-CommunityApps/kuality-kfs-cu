@@ -12,7 +12,7 @@ end
 
 When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance document that encumbers Account (.*)$/ do |button, account_number|
   # Note: You must have captured the account number of the random account in a previous step to use this step.
-  @pre_encumbrance = create PreEncumbranceObject, press: button.gsub(' ', '_'),
+  @pre_encumbrance = create PreEncumbranceObject, press: :save,
                                                   initial_lines: [{
                                                                       type:             :source,
                                                                       account_number:   account_number,
@@ -21,6 +21,8 @@ When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance document t
                                                                       amount:           '200',
                                                                       line_description: 'Test 753 Encumbrance'
                                                                   }]
+  on(PreEncumbrancePage).send(button.gsub(' ', '_'))
+  sleep 10
 end
 
 Then /^the Pre-Encumbrance posts a GL Entry with one of the following statuses$/ do |required_statuses|
