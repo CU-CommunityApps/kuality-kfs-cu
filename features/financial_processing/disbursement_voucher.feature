@@ -9,7 +9,7 @@ Feature: Disbursement Voucher Creation
     And   I add the only payee with Retiree map3 and Reason Code B to the Disbursement Voucher
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | G003704 |
-      | Object Code  | 6100  |
-      | Amount       | 23 |
+      | Object Code  | 6100    |
+      | Amount       | 23      |
     And   I submit the Disbursement Voucher document
     And   the Disbursement Voucher document goes to ENROUTE

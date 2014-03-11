@@ -1,5 +1,5 @@
 When /^I start an empty Disbursement Voucher document$/ do
-  @disbursement_voucher = create DisbursementVoucherObject, payee_id: nil
+  @disbursement_voucher = create DisbursementVoucherObject
 end
 
 And /^I add the only payee with Retiree (\w+) and Reason Code (\w+) to the Disbursement Voucher$/ do |net_id, reason_code|
