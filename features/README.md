@@ -2,13 +2,16 @@ Tags
 ====
 
 * General Purpose
-
+| Tag      | Description |
+| -------- | ----------- |
 | @wip     | Work in progress. There should be no @wip tags on the master branch! |
 | @smoke   | Smoke test. Generally tests functionality that should never ever be broken. |
 | @cornell | This is a Cornell University-specific test. Your mileage may vary. |
 
 * Known Problems
 
+| Tag                  | Description |
+| -------------------- | ----------- |
 | @test-highlights-bug | This Scenario *should* fail. If it doesn't, you win! |
 | @pending             | Pending. Probably added to master accidentally along with a different JIRA. Should be remediated someday. |
 | @broken!             | Should be working, but definitely isn't. Someone should fix this ASAP. |
@@ -17,11 +20,15 @@ Tags
 
 * Warnings
 
+| Tag           | Description |
+| ------------- | ----------- |
 | @nightly-jobs | Scenario runs the Nightly Jobs processes, which requires the Quartz scheduler in Rice. |
 
 
 * Approximate Speed
 
+| Tag       | Description |
+| --------- | ----------- |
 | @hare     | ~ 30 seconds (or less) |
 | @sloth    | > 30 seconds |
 | @tortoise | > 1.5 minutes |
