@@ -38,3 +38,5 @@ Tags
 
 Consider these more as "relative" speeds. Assuming Rice is cooperating, this
 should be more-or-less accurate, though (within +/- 5 seconds, hopefully).
+
+See http://en.wikipedia.org/wiki/Slowest_animals for inspiration.
