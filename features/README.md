@@ -1,7 +1,7 @@
 Tags
 ====
 
-# General Purpose
+### General Purpose
 
 | Tag      | Description |
 | -------- | ----------- |
@@ -9,7 +9,7 @@ Tags
 | @smoke   | Smoke test. Generally tests functionality that should never ever be broken. |
 | @cornell | This is a Cornell University-specific test. Your mileage may vary. |
 
-# Known Problems
+### Known Problems
 
 | Tag                  | Description |
 | -------------------- | ----------- |
@@ -19,14 +19,14 @@ Tags
 | @permissions-issue   | Paired with @broken!, this indicates that the problem is due to the permissions of the user(s) in the Scenario. |
 | @needs-clean-up      | This test is technically correct, but has some style issues to fix (e.g. comments in feature). |
 
-# Warnings
+### Warnings
 
 | Tag           | Description |
 | ------------- | ----------- |
 | @nightly-jobs | Scenario runs the Nightly Jobs processes, which requires the Quartz scheduler in Rice. |
 
 
-# Approximate Speed
+### Approximate Speed
 
 | Tag       | Description |
 | --------- | ----------- |
