@@ -24,7 +24,7 @@ Feature: KFS Fiscal Officer Account Copy
     When  I open the Budget Adjustment document page
     Then  I verify that Chart Value defaults to IT
 
-  @KFSQA-628 @hare @broken! @permissions-issue
+  @KFSQA-628 @cornell @hare @broken! @permissions-issue
   Scenario: Budget Adjustment routing and approval by From and To FO
     Given  I am logged in as "sag3"
     And    I submit a balanced Budget Adjustment document
@@ -34,7 +34,7 @@ Feature: KFS Fiscal Officer Account Copy
     When   I approve the Budget Adjustment document
     Then   the Budget Adjustment document goes to FINAL
 
-  @KFSQA-628 @nightly-jobs @broken! @permissions-issue
+  @KFSQA-628 @cornell @nightly-jobs @broken! @permissions-issue
   Scenario: General ledger balance displays correctly for a Budget Adjustment after nightly batch is run
     Given  I am logged in as "sag3"
     And    I submit a balanced Budget Adjustment document
