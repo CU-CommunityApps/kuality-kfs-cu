@@ -2,7 +2,7 @@ When /^I start an empty Disbursement Voucher document$/ do
   @disbursement_voucher = create DisbursementVoucherObject
 end
 
-When /^I start an empty Disbursement Voucher document with Vendor (.*)$/ do |vendor_number|
+When /^I start an empty Disbursement Voucher document with Payment to Vendor (.*)$/ do |vendor_number|
   @disbursement_voucher = create DisbursementVoucherObject, payee_id: vendor_number
 end
 

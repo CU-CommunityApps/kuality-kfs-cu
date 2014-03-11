@@ -70,7 +70,7 @@ Feature: General Ledger
       | Budget Adjustment | BA      | G003704        | G003704        |
       | Service Billing   | SB      | U243700        | G013300        |
 
-  @KFSQA-649 @smoke @nightly-jobs
+  @KFSQA-649 @smoke @nightly-jobs @wip
   Scenario: Accounting Line Description from eDoc updates General Ledger
     Given I am logged in as a KFS Manager for the DV document
     And   I clone Account 1490000 with the following changes:
@@ -78,7 +78,7 @@ Feature: General Ledger
       | Chart Code  | IT                                  |
       | Description | Disbursement Voucher Test Account S |
     And   I am logged in as a KFS User for the DV document
-    When  I start an empty Disbursement Voucher document with Vendor 12076-0
+    When  I start an empty Disbursement Voucher document with Payment to Vendor 12076-0
     And   I add balanced Accounting Lines to the Disbursement Voucher document
     And   I save the Disbursement Voucher document
     Then  I submit the Disbursement Voucher document
