@@ -2,7 +2,7 @@ Feature: Disbursement Voucher Creation
 
   [KFSQA-681] Retiree should get a DV; People with Multiple Affiliations in PeopleSoft should only return one row.
 
-  @KFSQA-681 @wip
+  @KFSQA-681
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User
     When  I start an empty Disbursement Voucher document
