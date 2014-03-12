@@ -3,7 +3,7 @@ And /^I find a value for a parameter named (.*) for the (.*) document$/ do |para
   @parameter_values = on(ParameterPage).parameter_value.value.split(";")
 end
 
-And /^I update Parameter KFS-FP Pre-Encumbrance KFS OBJECT_TYPES with the following values:$/ do |table|
+And /^I update the (.*) Parameter for the (.*) component in the (.*) namespace with the following values:$/ do |parameter_name, component, namespace_code, table|
   # table is a table.hashes.keys # => [:Parameter Value, :EX]
   pending
 end
