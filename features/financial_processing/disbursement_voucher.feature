@@ -5,7 +5,7 @@ Feature: Disbursement Voucher Creation
   [KFSQA-709] Because it saves time, I as a KFS User should be able to
   initiate a Disbursement Voucher document with just the description.
 
-  @KFSQA-681
+  @KFSQA-681 @smoke
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User
     When  I start an empty Disbursement Voucher document

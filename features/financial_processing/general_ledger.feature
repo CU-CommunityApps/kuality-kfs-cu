@@ -78,7 +78,7 @@ Feature: General Ledger
       | Chart Code  | IT                                  |
       | Description | Disbursement Voucher Test Account S |
     And   I am logged in as a KFS User for the DV document
-    When  I start an empty Disbursement Voucher document
+    When  I start an empty Disbursement Voucher document with Vendor 12076-0
     And   I add balanced Accounting Lines to the Disbursement Voucher document
     And   I save the Disbursement Voucher document
     Then  I submit the Disbursement Voucher document

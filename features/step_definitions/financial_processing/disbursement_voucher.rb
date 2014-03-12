@@ -2,6 +2,11 @@ When /^I start an empty Disbursement Voucher document$/ do
   @disbursement_voucher = create DisbursementVoucherObject
 end
 
+When /^I start an empty Disbursement Voucher document with Vendor (.*)$/ do |vendor_number|
+  @disbursement_voucher = create DisbursementVoucherObject, payee_id: vendor_number
+end
+
+
 And /^I add the only payee with Retiree (\w+) and Reason Code (\w+) to the Disbursement Voucher$/ do |net_id, reason_code|
   case reason_code
     when 'B'
