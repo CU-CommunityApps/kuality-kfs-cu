@@ -20,4 +20,4 @@ Feature: Disbursement Voucher Creation
   Scenario: KFS User Initiates a Disbursement Voucher document and Payee search should return no result with Terminated Employee
     Given I am logged in as a KFS User
     When  I start an empty Disbursement Voucher document
-    And   I search the payee with Terminated Employee msw13 and Reason Code B for Disbursement Voucher document with no result found
+    And   I search for the payee with Terminated Employee msw13 and Reason Code B for Disbursement Voucher document with no result found
