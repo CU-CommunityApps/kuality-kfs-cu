@@ -11,5 +11,5 @@ test.feature
 *.gem
 *.log
 *test_spec.rb
-*.png
+*screenshot*.png
 Gemfile.lock

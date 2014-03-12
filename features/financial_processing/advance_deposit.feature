@@ -4,21 +4,21 @@ Feature: Advance Deposit
               have run and be able to continue working on the Document because sometimes and
               AD can not be completed in one session.
 
-  [KFSQA-608] I need to be able to Copy an existing AD and Save the new Document because this
+  [KFSQA-609] I need to be able to Copy an existing AD and Save the new Document because this
               will allow more efficient creation of multiple documents that are similar.
 
   [KFSQA-645] Strange Display on when AD is created.
 
   [KFSQA-728] As a KFS User I should be able to Copy a Final AD.
 
-  @KFSQA-608
+  @KFSQA-608 @nightly-jobs
   Scenario: AD Create Save and continue after batch processes
     Given I am logged in as a KFS User
-    And   I save an AD document
+    And   I save an Advance Deposit document
     And   Nightly Batch Jobs run
-    And   I am logged in as a KFS User
     And   I view the Advance Deposit document
-    When  I submit the Advance Deposit document
+    When  I blanket approve the Advance Deposit document
+    And   I view the Advance Deposit document
     Then  the AD document submits with no errors
 
   @KFSQA-609

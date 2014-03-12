@@ -5,7 +5,7 @@ Feature: Organization
   [KFSQA-582] As a KFS Chart Manager I want to be able to inactivate an Organization Code when all Accounts
               associated to it are closed because this conforms to a policy at Cornell.
 
-  @KFSQA-581
+  @KFSQA-581 @nightly-jobs
   Scenario: Unselecting actives indicator on a new copy of an existing Organization should go to final.
     Given I am logged in as a KFS Chart Administrator
     And   I copy an Organization
@@ -14,7 +14,7 @@ Feature: Organization
     And   Nightly Batch Jobs run
     Then  the Organization document goes to PROCESSED
 
-  @KFSQA-582
+  @KFSQA-582 @nightly-jobs
   Scenario: Inactivate an Organization Code having all closed accounts.
     Given I am logged in as a KFS Chart Manager
     When  I inactivate an Organization Code with closed accounts

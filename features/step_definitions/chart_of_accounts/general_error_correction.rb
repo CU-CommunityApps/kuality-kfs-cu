@@ -1,17 +1,23 @@
-And /^I (#{GeneralErrorCorrectionPage::available_buttons}) a GEC document$/ do |button|
+And /^I (#{GeneralErrorCorrectionPage::available_buttons}) a General Error Correction document$/ do |button|
   button.gsub!(' ', '_')
-  @gec = create GeneralErrorCorrectionObject, press: button
+  @general_error_correction = create GeneralErrorCorrectionObject, press: button
   sleep 10 if (button == 'blanket_approve') || (button == 'approve')
 end
 
-When /^I start a GEC document$/ do
+When /^I start a General Error Correction document$/ do
   visit(MainPage).general_error_correction
-  @gec = create GeneralErrorCorrectionObject
+  @general_error_correction = create GeneralErrorCorrectionObject
 end
 
-And /^I add an Accounting Line to the GEC document with "Account Expired Override" selected$/ do
+When /^I start an empty General Error Correction document$/ do
+  visit(MainPage).general_error_correction
+  @general_error_correction = create GeneralErrorCorrectionObject
+end
+
+
+And /^I add an Accounting Line to the General Error Correction document with "Account Expired Override" selected$/ do
   on GeneralErrorCorrectionPage do
-    @gec.add_from_line({
+    @general_error_correction.add_source_line({
         chart_code:               @account.chart_code,
         account_number:           @account.number,
         object:                   '4480',
@@ -20,7 +26,7 @@ And /^I add an Accounting Line to the GEC document with "Account Expired Overrid
         amount:                   '25000.11',
         account_expired_override: :set
     })
-    @gec.add_to_line({
+    @general_error_correction.add_target_line({
         chart_code:               @account.chart_code,
         account_number:           @account.number,
         object:                   '4480',

@@ -48,7 +48,7 @@ Feature: Account Edit
 
   @KFSQA-610
   Scenario: Edit an Account as KFS Chart Admin
-    Given I am am logged in as a KFS Chart Administrator
+    Given I am logged in as a KFS Chart Administrator
     And   I edit an Account
     When  I blanket approve the Account document
     Then  the Account document goes to PROCESSED
@@ -95,15 +95,15 @@ Feature: Account Edit
     When  I blanket approve the Account document
     Then  an empty error should appear
 
-  @KFSQA-569
+  @KFSQA-569 @nightly-jobs @pending
   Scenario: Extension of Account expiration dates, while an eDoc is enroute,
             should not prevent eDocs with this Account from going to final status
     Given I am logged in as a KFS User
     And   I find an expired Account
-    When  I start a GEC document
-    And   I add an Accounting Line to the GEC document with "Account Expired Override" selected
-    And   I submit the GEC document
-    Then  the GEC document goes to ENROUTE
+    When  I start a General Error Correction document
+    And   I add an Accounting Line to the General Error Correction document with "Account Expired Override" selected
+    And   I submit the General Error Correction document
+    Then  the General Error Correction document goes to ENROUTE
     Given I am logged in as a KFS Chart Administrator
     When  I edit the Account
     And   I extend the Expiration Date of the Account document 365 days
@@ -111,7 +111,7 @@ Feature: Account Edit
     And   Nightly Batch Jobs run
     Then  the Account document goes to PROCESSED
     And   I am logged in as a KFS User
-    When  I view the GEC document
+    When  I view the General Error Correction document
     And   I blanket approve the GEC document
     And   Nightly Batch Jobs run
     Then  the Account document goes to PROCESSED

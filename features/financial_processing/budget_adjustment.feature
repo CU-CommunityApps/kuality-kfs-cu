@@ -4,13 +4,16 @@ Feature: KFS Fiscal Officer Account Copy
               I want to create a Budget Adjustment but preclude entries from crossing Accounts because of Cornell budget policies.
   [KFSQA-628] Budget Adjustment edoc going FINAL without FO approval. As a KFS Fiscal Officer (FO)
               I want to approve all Budget Adjustments within my Account because this is Cornell SOP.
-  [KFSQA-629] Bug: Budget Adjustment Import Template incorrectly importing Base Budgets (BB), As a KFS User I want to import only BA Base Budget amounts using templates to make the budgeting process more efficient.
+  [KFSQA-629] Bug: Budget Adjustment Import Template incorrectly importing Base Budgets (BB),
+              As a KFS User I want to import only BA Base Budget amounts using templates to
+              make the budgeting process more efficient.
+  [KFSQA-729] Cornell University requires that a Budget Adjustment must route to all Fiscal Officers.
 
   @KFSQA-623
   Scenario: Budget Adjustment not allowed to cross Account Sub-Fund Group Codes
     Given   I am logged in as a KFS User
     And     I start a Budget Adjustment document
-    And     I add a From amount of "100.00" for account "1258322" with object code "4480" with a line description of "aft from1"
+    And     I add a from amount of "100.00" for account "1258322" with object code "4480" with a line description of "aft from1"
     And     I add a to amount of "100" for account "1258323" with object code "4480" with a line description of "aft to 1"
     When    I submit the Budget Adjustment document
     Then    I should get an error saying "The Budget Adjustment document is not balanced within the account."
@@ -31,7 +34,7 @@ Feature: KFS Fiscal Officer Account Copy
     When   I approve the Budget Adjustment document
     Then   the Budget Adjustment document goes to FINAL
 
-  @KFSQA-628
+  @KFSQA-628 @nightly-jobs
   Scenario: General ledger balance displays correctly for a Budget Adjustment after nightly batch is run
     Given  I am logged in as "sag3"
     And    I submit a balanced Budget Adjustment document
@@ -58,3 +61,19 @@ Feature: KFS Fiscal Officer Account Copy
     When     I view the Budget Adjustment document
     And      I blanket approve the Budget Adjustment document
     Then     the Budget Adjustment document goes to PROCESSED
+
+  @KFSQA-729
+  Scenario: "To" Fiscal Officer initiates Budget Adjustment; BA routes to "From" Fiscal Officer
+    Given I am logged in as a KFS User
+    And   I use these Accounts:
+      | G003704 |
+      | G003704 |
+    When  I start an empty Budget Adjustment document
+    And   I add balanced Accounting Lines to the Budget Adjustment document
+    And   I submit the Budget Adjustment document
+    Then  the Route Log displays a From Fiscal Officer
+    And   the Budget Adjustment document goes to ENROUTE
+    When  I am logged in as the From Fiscal Officer
+    And   I view the Budget Adjustment document
+    And   I approve the Budget Adjustment document
+    Then  the Budget Adjustment document goes to FINAL
