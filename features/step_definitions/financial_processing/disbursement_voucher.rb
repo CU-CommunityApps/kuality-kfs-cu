@@ -30,3 +30,16 @@ And /^I add an Accounting Line to the Disbursement Voucher with the following fi
 
 end
 
+And /^I search for the payee with Terminated Employee (\w+) and Reason Code (\w+) for Disbursement Voucher document with no result found$/ do |net_id, reason_code|
+  case reason_code
+    when 'B'
+      @disbursement_voucher.payment_reason_code = 'B - Reimbursement for Out-of-Pocket Expenses'
+  end
+  on(PaymentInformationTab).payee_search
+  on PayeeLookup do |plookup|
+    plookup.payment_reason_code.fit @disbursement_voucher.payment_reason_code
+    plookup.netid.fit               net_id
+    plookup.search
+    plookup.frm.divs(id: 'lookup')[0].parent.text.include?('No values match this search').should == true
+  end
+end
