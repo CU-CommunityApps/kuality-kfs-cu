@@ -2,6 +2,10 @@ Given /^I am logged in as a KFS Technical Administrator$/ do
   visit(BackdoorLoginPage).login_as('cab379') #TODO get from role service
 end
 
+Given /^I am logged in as a KFS System Administrator$/ do
+  visit(BackdoorLoginPage).login_as('ccs1') #TODO get from role service
+end
+
 Given /^I am logged in as a Vendor Reviewer$/ do
   visit(BackdoorLoginPage).login_as('kme44') #TODO get from role service
 end
