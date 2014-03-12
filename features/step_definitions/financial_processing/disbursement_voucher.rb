@@ -30,3 +30,12 @@ And /^I add an Accounting Line to the Disbursement Voucher with the following fi
 
 end
 
+And /^I search the payee with Terminated Employee (\w+) and Reason Code (\w+) for Disbursement Voucher document with no result found$/ do |net_id, reason_code|
+  case reason_code
+    when 'B'
+      @disbursement_voucher.payment_reason_code = 'B - Reimbursement for Out-of-Pocket Expenses'
+  end
+  @disbursement_voucher.payee_id = net_id
+  @disbursement_voucher.vendor_payee = false
+  @disbursement_voucher.choose_payee
+end
