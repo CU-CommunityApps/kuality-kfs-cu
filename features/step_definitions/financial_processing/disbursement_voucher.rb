@@ -35,7 +35,11 @@ And /^I search the payee with Terminated Employee (\w+) and Reason Code (\w+) fo
     when 'B'
       @disbursement_voucher.payment_reason_code = 'B - Reimbursement for Out-of-Pocket Expenses'
   end
-  @disbursement_voucher.payee_id = net_id
-  @disbursement_voucher.vendor_payee = false
-  @disbursement_voucher.choose_payee
+  on(PaymentInformationTab).payee_search
+  on PayeeLookup do |plookup|
+    plookup.payment_reason_code.fit @disbursement_voucher.payment_reason_code
+    plookup.netid.fit               net_id
+    plookup.search
+    plookup.frm.divs(id: 'lookup')[0].parent.text.include?('No values match this search').should == true
+  end
 end
