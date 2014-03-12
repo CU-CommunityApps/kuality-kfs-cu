@@ -36,6 +36,13 @@ Before do
   $users.clear
   # Add the admin user to the Users...
   $users << UserObject.new(@browser)
+
+  if ENV['DRAGONSTYLE']
+    # This will (hopefully) provide more aggressive modal-dialog punching.
+    # It overrides the related JavaScript method to always click true. Since
+    # KFS doesn't rely on modal dialogs, this *should* be safe...
+    @browser.execute_script('window.confirm = function() {return true}')
+  end
 end
 
 After do |scenario|
@@ -49,6 +56,6 @@ After do |scenario|
 
 end
 
-if !ENV['DEBUG']
+unless ENV['DEBUG']
   at_exit { kuality.browser.close }
 end
