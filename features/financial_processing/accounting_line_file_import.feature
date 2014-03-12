@@ -1,8 +1,9 @@
 Feature: import csv for accounting lines on multiple documents
 
-[KFSQA-643] 14-Accounting Line Description from Import Template updates General Ledger. Cornell University requires an Accounting Line Description uploaded through an Import Template to be recorded in the General Ledger.
+[KFSQA-643] Accounting Line Description from Import Template updates General Ledger.
+            Cornell University requires an Accounting Line Description uploaded through an Import Template to be recorded in the General Ledger.
 
-@wip @KFSQA-643 @cornell @nightly-jobs
+@KFSQA-643 @cornell @nightly-jobs
 Scenario Outline: Checking General Ledger for Accounting Line Description using from Import Template with blanket approval
   Given   I am logged in as a KFS User for the <type code> document
   And     I start a <document> document for "<file name>" file import
@@ -12,6 +13,7 @@ Scenario Outline: Checking General Ledger for Accounting Line Description using 
   When    I view the <document> document
   When    I blanket approve the <document> document
   And     Nightly Batch Jobs run
+  And     I am logged in as a KFS User for the <type code> document
   And     I am logged in as "dh273"
   When    I view the <document> document on the General Ledger Entry
   Then    The Template Accounting Line Description for <document> equal the General Ledger
@@ -21,14 +23,14 @@ Examples:
   | Non Check Disbursement | ND      | ND_import.csv                    |
   | Journal Voucher        | JV-1    | JV-1_offset_bal_type_import.csv  |
 
-@wip @KFSQA-643 @cornell @nightly-jobs
+@KFSQA-643 @cornell @nightly-jobs
 Scenario Outline: Checking General Ledger for Accounting Line Description using Import Template without blanket approve
   Given   I am logged in as a KFS User for the <type code> document
   And     I start a <document> document for "<file name>" file import
   And     On the <document> I import the From Accounting Lines from a csv file
   And     I submit the <document> document
   And     Nightly Batch Jobs run
-  And     I am logged in as "dh273"
+  And     I am logged in as a KFS User for the <type code> document
   When    I view the <document> document on the General Ledger Entry
   Then    The Template Accounting Line Description for <document> equal the General Ledger
   Examples:
@@ -36,7 +38,7 @@ Scenario Outline: Checking General Ledger for Accounting Line Description using 
     | Advance Deposit        | AD      | AD_import.csv                    |
     | Credit Card Receipt    | CCR     | CCR_import.csv                   |
 
-@wip @KFSQA-643 @cornell @nightly-jobs
+@KFSQA-643 @cornell @nightly-jobs
 Scenario Outline: Checking General Ledger for Accounting Line Description using from and to Import Templates with blanket approval
   Given   I am logged in as a KFS User for the <type code> document
   And     I start a <document> document for from "<From file name>" file import and to "<To file name>" file import
@@ -47,7 +49,7 @@ Scenario Outline: Checking General Ledger for Accounting Line Description using 
   When    I view the <document> document
   When    I blanket approve the <document> document
   And     Nightly Batch Jobs run
-  And     I am logged in as "dh273"
+  And     I am logged in as a KFS User for the <type code> document
   When    I view the <document> document on the General Ledger Entry
   Then    The Template Accounting Line Description for <document> equal the General Ledger
 Examples:
@@ -57,7 +59,7 @@ Examples:
   | Transfer of Funds                    | TF        | TF_import_from.csv            | TF_import_to.csv           |
   | Budget Adjustment                    | BA        | BA_import_from.csv            | BA_import_to.csv           |
 
-@wip @KFSQA-643 @cornell @nightly-jobs
+@KFSQA-643 @cornell @nightly-jobs
 Scenario Outline: Checking General Ledger for Accounting Line Description using from and to Import Templates without blanket approval
   Given   I am logged in as a KFS User for the <type code> document
   And     I start a <document> document for from "<From file name>" file import and to "<To file name>" file import
@@ -65,7 +67,7 @@ Scenario Outline: Checking General Ledger for Accounting Line Description using 
   And     On the <document> I import the To Accounting Lines from a csv file
   And     I submit the <document> document
   And     Nightly Batch Jobs run
-  And     I am logged in as "dh273"
+  And     I am logged in as a KFS User for the <type code> document
   When    I view the <document> document on the General Ledger Entry
   Then    The Template Accounting Line Description for <document> equal the General Ledger
 Examples:

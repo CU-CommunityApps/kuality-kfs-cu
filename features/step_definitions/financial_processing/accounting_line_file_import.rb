@@ -1,33 +1,9 @@
-#And(/^I start a blank '(.*)' document$/) do   |document|
-#  doc_object = snake_case document
-#  object_klass = Kernel.const_get(object_class_for(document))
-#  set(doc_object, create(object_klass, press: nil))
-#end
-
 And /^I start a (.*) document for "(.*)" file import$/ do  |document, file_name|
   doc_object = snake_case document
   object_klass = Kernel.const_get(object_class_for(document))
 
-  @import_file_array = []
+  step "I take the csv file \"#{file_name}\" and make into an array for the #{document} document"
 
-  File.open($file_folder+file_name) do |file|
-    while line = file.gets
-      @import_file_array << line
-    end
-
-    @import_file_array.each do |comm|
-      @import_split = comm.split(',')
-    end
-
-  case
-     when document == 'Non Check Disbursement'
-       @line_item =  @import_split[8].upcase
-    when document == 'General Error Correction'
-      @line_item =  @import_split[9].upcase
-    else
-       @line_item =  @import_split[7].upcase
-   end
-  end
 
   set(doc_object, create(object_klass, press: nil,
                          description: random_alphanums(20, 'AFT AV '),
@@ -41,26 +17,7 @@ And /^I start a (.*) document for from "(.*)" file import and to "(.*)" file imp
   doc_object = snake_case document
   object_klass = Kernel.const_get(object_class_for(document))
 
-  @import_file_array = []
-
-  File.open($file_folder+file_name) do |file|
-    while line = file.gets
-      @import_file_array << line
-    end
-
-    @import_file_array.each do |comm|
-      @import_split = comm.split(',')
-    end
-
-    case
-      when document == 'Non Check Disbursement'
-        @line_item =  @import_split[8].upcase
-      when document == 'General Error Correction'
-        @line_item =  @import_split[9].upcase
-      else
-        @line_item =  @import_split[7].upcase
-    end
-  end
+  step "I take the csv file \"#{file_name}\" and make into an array for the #{document} document"
 
   set(doc_object, create(object_klass, press: nil,
                          description: random_alphanums(20, 'AFT AV '),
@@ -99,14 +56,13 @@ And /^I view the (.*) document on the General Ledger Entry$/ do |document|
 end
 
 And /^The Template Accounting Line Description for (.*) equal the General Ledger$/ do |document|
+  # This step requires that the CSV file content is placed into an array
   page_klass = Kernel.const_get(page_class_for(document))
-
-  #requires the @import_file_array
   on(page_klass).source_line_description_value.should == @line_item
 end
 
-And /^I take the csv file "(.*)" and make into an array$/ do |file_name|
-
+And /^I take the csv file "(.*)" and make into an array for the (.*) document$/ do |file_name, document|
+#Leaving as a step def for now. If we get more tests that use reading a CSV import to test data then we should pull this into a method.
   @import_file_array = []
 
   File.open($file_folder+file_name) do |file|

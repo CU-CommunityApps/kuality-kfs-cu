@@ -30,6 +30,7 @@ When /^I (#{BasePage::available_buttons}) the (.*) document$/ do |button, docume
   button.gsub!(' ', '_')
   get(doc_object).send(button)
   on(YesOrNoPage).yes if button == 'cancel'
+  sleep 10 if button == 'blanket_approve' || 'submit'
 end
 
 When /^I (#{BasePage::available_buttons}) the (.*) document and confirm any questions$/ do |button, document|
