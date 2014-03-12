@@ -72,25 +72,37 @@ And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|
     case document
       when'Budget Adjustment'
         new_source_line.merge!({
-                               current_amount:   '250.11',
-                               base_amount:      '125'
-                             })
+                                 object:         '6510',
+                                 current_amount: '10.00'
+                               })
       when 'Advance Deposit'
       when'Auxiliary Voucher'
         new_source_line.merge!({
                                  object: '6690',
-                                 debit:  '100',
-                                 #credit: '100'
+                                 debit:  '100'
                                })
         new_source_line.delete(:amount)
+      when'Credit Card Receipt'
+        new_source_line.merge!({
+                                 object: '4010'
+                               })
+      when'Disbursement Voucher'
+        new_source_line.merge!({
+                                 object: '6430'
+                               })
       when 'General Error Correction'
         new_source_line.merge!({
                                reference_number:      '777001',
                                reference_origin_code: '01'
                              })
+      when 'Non-Check Disbursement'
+        new_source_line.merge!({
+                                   reference_number: '1234',
+                                   object:           '6540'
+                               })
       when 'Pre-Encumbrance'
         new_source_line.merge!({
-                                 object: '6100'
+                                 object: '6540'
                                })
       when 'Internal Billing'
         new_source_line.merge!({
@@ -98,16 +110,29 @@ And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|
                                })
       when 'Indirect Cost Adjustment'
         new_source_line.delete(:object)
+      when 'Journal Voucher'
+        new_source_line.merge!({
+                                 object: '6540',
+                                 debit:  '100',
+                               })
+        new_source_line.delete(:amount)
       when 'Transfer Of Funds'
         new_source_line.merge!({
-                                   object: '8070'
+                                 object: '8070'
+                               })
+      when 'Service Billing'
+        new_source_line.merge!({
+                                   object: '4023'
                                })
       else
     end
     doc_object.add_source_line(new_source_line)
 
     # Some docs don't have a target line
-    unless (document == 'Advance Deposit') || (document == 'Auxiliary Voucher') || (document == 'Pre-Encumbrance')
+    unless (document == 'Advance Deposit') || (document == 'Auxiliary Voucher') ||
+           (document == 'Pre-Encumbrance') || (document == 'Non-Check Disbursement') ||
+           (document == 'Journal Voucher') || (document == 'Credit Card Receipt') ||
+           (document == 'Disbursement Voucher')
       new_target_line = {
           chart_code:     @accounts[1].chart_code,
           account_number: @accounts[1].number,
@@ -119,9 +144,9 @@ And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|
       case document
         when'Budget Adjustment'
           new_target_line.merge!({
-                               current_amount:   '250.11',
-                               base_amount:      '125'
-                             })
+                                   object:         '6540',
+                                   current_amount: '10.00'
+                                 })
         when'General Error Correction'
           new_target_line.merge!({
                                reference_number:      '777002',
@@ -129,7 +154,7 @@ And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|
                              })
         when 'Pre-Encumbrance'
           new_target_line.merge!({
-                                   object: '6100'
+                                   object: '6510'
                                  })
         when 'Internal Billing'
           new_target_line.merge!({
@@ -141,11 +166,14 @@ And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|
           new_target_line.merge!({
                                    object: '7070'
                                  })
+        when 'Service Billing'
+          new_target_line.merge!({
+                                     object: '4023'
+                                 })
       end
       doc_object.add_target_line(new_target_line)
     end
 
-    pending 'Test test'
   end
 end
 
@@ -165,7 +193,7 @@ And /^I add balanced Accounting Lines to the Auxiliary Voucher document$/ do
   end
 end
 
-And /^I add a (source|target) Accounting Line to the (.*) document with the following:$/ do |line_type, document, table|
+And /^I add a (source|target|from|to) Accounting Line to the (.*) document with the following:$/ do |line_type, document, table|
   accounting_line_info = table.rows_hash
   accounting_line_info.delete_if { |k,v| v.empty? }
   unless accounting_line_info['Number'].nil?
@@ -174,7 +202,7 @@ And /^I add a (source|target) Accounting Line to the (.*) document with the foll
 
     on page_klass do
       case line_type
-        when 'source'
+        when 'source', 'from'
           new_source_line = {
               chart_code:     accounting_line_info['Chart Code'],
               account_number: accounting_line_info['Number'],
@@ -227,7 +255,7 @@ And /^I add a (source|target) Accounting Line to the (.*) document with the foll
             else
           end
           get(doc_object).add_source_line(new_source_line)
-        when 'target'
+        when 'target', 'to'
           new_target_line = {
               chart_code:     accounting_line_info['Chart Code'],
               account_number: accounting_line_info['Number'],
@@ -251,6 +279,11 @@ And /^I add a (source|target) Accounting Line to the (.*) document with the foll
               new_target_line.merge!({
                                          object: '6100'
                                      })
+              unless @remembered_document_id.nil?
+                new_target_line.merge!({
+                                         reference_number:      @remembered_document_id,
+                                       })
+              end
             when 'Internal Billing', 'Service Billing'
               new_target_line.merge!({
                                          object: '4023'
@@ -264,6 +297,102 @@ And /^I add a (source|target) Accounting Line to the (.*) document with the foll
           end
           get(doc_object).add_target_line(new_target_line)
       end
+    end
+  end
+end
+
+And /^I add a source Accounting Line to the (.*) document with a bad object code$/ do |document|
+  doc_object = snake_case document
+  new_source_line = {
+      chart_code:     'IT',
+      account_number: 'G003704',
+      object:         '4010',
+      amount:         '300'
+  }
+  get(doc_object).add_source_line(new_source_line)
+  get(doc_object).accounting_lines[:source].clear
+end
+
+
+Then /^the (.*) document accounting lines equal the General Ledger entries$/ do |document|
+  # do a search for GL entries
+  # go through each IB accounting line
+  # match it with it's two entries in the gl
+  doc_object = get(snake_case(document))
+
+  visit(MainPage).general_ledger_entry
+  on GeneralLedgerEntryLookupPage do |page|
+    # We're assuming that Fiscal Year and Fiscal Period default to today's values
+    page.doc_number.fit        doc_object.document_id
+    page.balance_type_code.fit ''
+    page.pending_entry_approved_indicator_all
+    page.search
+
+    # verify number of resuls is twice the number of accounting lines
+    (page.results_table.rows.length-1).should == (doc_object.accounting_lines[:source].length + doc_object.accounting_lines[:target].length) * 2
+
+    page.results_table.rows.each do |row|
+    end
+
+    all_accounting_lines = doc_object.accounting_lines[:source] + doc_object.accounting_lines[:target]
+    all_accounting_lines.each do |accounting_line|
+      found_original = false
+      found_offset = false
+
+      account_number_col = page.column_index(:account_number)
+      amount_col = page.column_index(:transaction_ledger_entry_amount)
+      description_col = page.column_index(:transaction_ledger_entry_description)
+
+      page.results_table.rows.each do |row|
+        if row[account_number_col].text == accounting_line.account_number && row[amount_col].text.groom == accounting_line.amount.groom
+          if row[description_col].text.strip == accounting_line.line_description.strip
+            found_original = true
+          else if row[description_col].text.strip == 'TP Generated Offset'
+                 found_offset = true
+               end
+          end
+        end
+      end
+      found_original.should be true
+      found_offset.should be true
+      end
+  end
+end
+
+Then /^the (.*) document accounting lines equal the General Ledger Pending entries$/ do |document|
+  # view the document?
+  # open up pending entries
+  # match accounts with GLPEs
+  doc_object = get(snake_case(document))
+  page_klass = Kernel.const_get(doc_object.class.to_s.gsub(/(.*)Object$/,'\1Page'))
+
+  on page_klass do |page|
+    page.expand_all
+
+    # verify number of resuls is twice the number of accounting lines
+    (page.glpe_results_table.rows.length-1).should == (doc_object.accounting_lines[:source].length + doc_object.accounting_lines[:target].length) * 2
+
+    all_accounting_lines = doc_object.accounting_lines[:source] + doc_object.accounting_lines[:target]
+    all_accounting_lines.each do |accounting_line|
+      found_d = false
+      found_c = false
+
+      account_number_col = page.glpe_results_table.keyed_column_index(:account_number)
+      amount_col = page.glpe_results_table.keyed_column_index(:amount)
+      dc_col = page.glpe_results_table.keyed_column_index(:d_c)
+
+      page.glpe_results_table.rest.each do |row|
+        if row[account_number_col].text == accounting_line.account_number && row[amount_col].text.groom == accounting_line.amount.to_s.groom
+          if row[dc_col].text.strip == 'D'
+            found_d = true
+          else if row[dc_col].text.strip == 'C'
+                 found_c = true
+               end
+          end
+        end
+      end
+      found_d.should be true
+      found_c.should be true
     end
   end
 end

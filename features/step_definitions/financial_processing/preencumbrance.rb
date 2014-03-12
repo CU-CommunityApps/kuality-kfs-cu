@@ -48,5 +48,21 @@ And /^I do an Open Encumbrances lookup for the Pre-Encumbrance document with Bal
     page.active_indicator_all.set
     page.search
   end
+end
 
+Then /^The oustanding encumbrance for account (.*) and object code (.*) is (.*)$/ do |account_number, object_code, amount|
+  visit(MainPage).open_encumbrances
+  on OpenEncumbranceLookupPage do |page|
+    page.account_number.set account_number
+    page.chart_code.set 'IT' #TODO get from config
+    page.object_code.set object_code
+    page.including_pending_ledger_entry_approved.set
+    page.doc_number.set @remembered_document_id
+    page.balance_type_code.set 'PE'
+    page.search
+
+    outstanding_amount_col = page.column_index(:outstanding_amount)
+    page.results_table.rest[0][outstanding_amount_col].text.groom.should == amount.groom
+
+  end
 end

@@ -33,6 +33,16 @@ When /^I (#{BasePage::available_buttons}) the (.*) document$/ do |button, docume
   sleep 10 if button == 'blanket_approve' || 'submit'
 end
 
+When /^I (#{BasePage::available_buttons}) the (.*) document if it is not already FINAL/ do |button, document|
+  doc_object = snake_case document
+  button.gsub!(' ', '_')
+  unless on(KFSBasePage).document_status == 'FINAL'
+    get(doc_object).send(button)
+    on(YesOrNoPage).yes if button == 'cancel'
+    sleep 5 if (button == 'blanket approve' || button == 'approve')
+  end
+end
+
 When /^I (#{BasePage::available_buttons}) the (.*) document and confirm any questions$/ do |button, document|
   step "I #{button} the #{document} document"
   on YesOrNoPage do |page|
@@ -91,4 +101,13 @@ end
 
 Then /^the document status is (.*)/ do |doc_status|
   on(KFSBasePage) { $current_page.document_status.should == doc_status }
+end
+
+And /^I remember the (.*) document number$/ do |document|
+  doc_object = snake_case document
+  page_klass = Kernel.const_get(get(doc_object).class.to_s.gsub(/(.*)Object$/,'\1Page'))
+
+  on page_klass do |page|
+    @remembered_document_id = page.document_id
+  end
 end
