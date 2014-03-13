@@ -70,7 +70,7 @@ Feature: General Ledger
       | Budget Adjustment | BA      | G003704        | G003704        |
       | Service Billing   | SB      | U243700        | G013300        |
 
-  @KFSQA-649 @smoke @nightly-jobs @tortoise
+  @KFSQA-649 @smoke @nightly-jobs @tortoise @broken! @permissions-issue
   Scenario: Accounting Line Description from eDoc updates General Ledger
     Given I am logged in as a KFS Manager for the DV document
     And   I clone Account 1490000 with the following changes:

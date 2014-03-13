@@ -27,7 +27,7 @@ Feature: Sub Account
     And     I approve the Sub-Account document
     Then    the Sub-Account document goes to FINAL
 
-  @KFSQA-589 @hare @cornell
+  @KFSQA-589 @hare @cornell @pending @causes-modal?
   Scenario: Create a Sub-Account with Sub-Account Type CS and ad-hoc approval route it to a member of the Contracts & Grants Processor Role (jis45)
     Given I am logged in as "rlc56"
     And   I submit a Sub-Account through action list routing with adhoc approver user "jis45"
