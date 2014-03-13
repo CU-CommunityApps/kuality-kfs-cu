@@ -25,7 +25,7 @@ Feature: Disbursement Voucher Creation
     When  I start an empty Disbursement Voucher document
     And   I search for the payee with Terminated Employee msw13 and Reason Code B for Disbursement Voucher document with no result found
 
-  @KFSQA-683 @smoke @wip
+  @KFSQA-683 @smoke
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Active employee and alumnus and former student
     Given I am logged in as a KFS User
     When  I start an empty Disbursement Voucher document
