@@ -41,12 +41,11 @@ Before do
 end
 
 After do |scenario|
+
   # If there are any extant modal dialogs,
   # hopefully this will save the run, at least.
-  if @browser.alert.exists?
-    puts "WELL SHIT. It looks like #{scenario} failed due to modal dialogues. Here's some extra info:\n#{scenario.pretty_print_inspect}\n Let's try to rescue it..."
-    @browser.alert.close
-  end
+  @browser.alert.close if @browser.alert.exists?
+
 end
 
 After do |scenario|

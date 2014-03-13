@@ -19,11 +19,11 @@ Feature: Pre-Encumbrance
     And   I do an Open Encumbrances lookup for the Pre-Encumbrance document with Balance Type PE and Include All Pending Entries
     Then  the Lookup should return results
 
-  @KFSQA-739 @wip
+  @KFSQA-739 @sloth
   Scenario: E2E - PE Created, Approved and Accounting Line persists and updates GL
     Given   I am logged in as a KFS User for the PE document
     And     I start an empty Pre-Encumbrance document
-    And     I add a source Accounting Line to the Pre-Encumbrance document with the following:
+    And     I add a Source Accounting Line to the Pre-Encumbrance document with the following:
       | Chart Code   | IT      |
       | Number       | U243700 |
       | Object Code  | 4023    |
@@ -40,11 +40,11 @@ Feature: Pre-Encumbrance
     When    I am logged in as a KFS Chart Manager
     Then    the Pre-Encumbrance document accounting lines equal the General Ledger entries
 
-  @KFSQA-740 @wip
+  @KFSQA-740 @sloth
   Scenario: E2E - PE Created, Approved and Accounting Line persists and updates GL
     Given   I am logged in as a KFS User for the PE document
     And     I start an empty Pre-Encumbrance document
-    And     I add a source Accounting Line to the Pre-Encumbrance document with the following:
+    And     I add a Source Accounting Line to the Pre-Encumbrance document with the following:
       | Chart Code   | IT      |
       | Number       | G003704 |
       | Object Code  | 6100    |
@@ -63,7 +63,7 @@ Feature: Pre-Encumbrance
     And     the Pre-Encumbrance document accounting lines equal the General Ledger entries
     And     I am logged in as a KFS User for the PE document
     And     I start an empty Pre-Encumbrance document
-    And     I add a target Accounting Line to the Pre-Encumbrance document with the following:
+    And     I add a Target Accounting Line to the Pre-Encumbrance document with the following:
       | Chart Code   | IT      |
       | Number       | G003704 |
       | Object Code  | 6100    |
@@ -80,7 +80,7 @@ Feature: Pre-Encumbrance
     When    I am logged in as a KFS Chart Manager
     Then    The oustanding encumbrance for account G003704 and object code 6100 is 800
 
-  @KFSQA-753 @nightly-jobs @cornell @wip
+  @KFSQA-753 @nightly-jobs @cornell @tortoise
   Scenario: Generate Proper Offsets Using a PE to generate an Encumbrance
     Given I am logged in as a KFS User
     When  I submit a Pre-Encumbrance document that encumbers Account G003704
