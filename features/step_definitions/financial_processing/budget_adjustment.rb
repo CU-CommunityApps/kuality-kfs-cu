@@ -27,17 +27,17 @@ And /^I (#{BudgetAdjustmentPage::available_buttons}) a Budget Adjustment documen
   sleep 10 if (button == 'blanket_approve') || (button == 'approve')
 end
 
-And /^I add a (from|to) amount of "(.*)" for account "(.*)" with object code "(.*)" with a line description of "(.*)"$/  do |target, amount, account_number, object_code, line_desc|
+And /^I add a (From|To) amount of "(.*)" for account "(.*)" with object code "(.*)" with a line description of "(.*)"$/  do |target, amount, account_number, object_code, line_desc|
   on BudgetAdjustmentPage do |page|
     case target
-      when 'from'
+      when 'From'
         @budget_adjustment.add_source_line({
                                               account_number:   account_number,
                                               object:           object_code,
                                               current_amount:   amount,
                                               line_description: line_desc
                                             })
-      when 'to'
+      when 'To'
         @budget_adjustment.add_target_line({
                                              account_number:   account_number,
                                              object:           object_code,

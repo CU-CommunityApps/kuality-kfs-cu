@@ -8,19 +8,22 @@ Feature: KFS Fiscal Officer Account Creation
               to enter data into Sub Fund Program field regardless of case
               because custom fields should behave similarly to base fields.
   
-  @smoke @pending
+  @smoke @sloth
   Scenario: Create an Account
     Given I am logged in as a KFS Fiscal Officer
     When  I blanket approve an Account document
-    Then  the Account document goes to PROCESSED
+    And   I view the Account document
+    Then  the Account document goes to one of the following statuses:
+      | PROCESSED |
+      | FINAL     |
 
-  @KFSQA-554
+  @KFSQA-554 @hare
   Scenario: KFS User Initiates an Account document with only a description field
     Given I am logged in as a KFS User
     When  I save an Account document with only the Description field populated
     Then  the Account document goes to SAVED
     
-  @KFSQA-606
+  @KFSQA-606 @hare
   Scenario: Account Edit Sub Fund Program case sensitive test on Submit
     Given I am logged in as a KFS Chart User
     When  I save an Account with a lower case Sub Fund Program

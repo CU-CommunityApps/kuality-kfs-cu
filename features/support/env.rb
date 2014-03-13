@@ -41,6 +41,15 @@ Before do
 end
 
 After do |scenario|
+  # If there are any extant modal dialogs,
+  # hopefully this will save the run, at least.
+  if @browser.alert.exists?
+    puts "WELL SHIT. It looks like #{scenario} failed due to modal dialogues. Here's some extra info:\n#{scenario.pretty_print_inspect}\n Let's try to rescue it..."
+    @browser.alert.close
+  end
+end
+
+After do |scenario|
 
   if scenario.failed?
     @browser.screenshot.save 'screenshot.png'
@@ -48,6 +57,13 @@ After do |scenario|
   end
 
   $users.current_user.sign_out unless $users.current_user.nil?
+
+  if ENV['DEBUG']
+    # Tell Cucumber to quit after this scenario is done - if it failed.
+    # This will kill a Scenario Outline on the first failed step for the first
+    # failing Example.
+    Cucumber.wants_to_quit = scenario.failed?
+  end
 
 end
 
