@@ -52,3 +52,8 @@ And /^I search for the payee with Terminated Employee (\w+) and Reason Code (\w+
     plookup.frm.divs(id: 'lookup')[0].parent.text.should include 'No values match this search'
   end
 end
+
+
+Then /^The eMail Address shows up in the Contact Information Tab$/ do
+  on(DisbursementVoucherPage).email_address.value.should_not == ''
+end

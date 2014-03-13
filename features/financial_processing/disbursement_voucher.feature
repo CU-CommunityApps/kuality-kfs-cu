@@ -6,6 +6,8 @@ Feature: Disbursement Voucher Creation
 
   [KFSQA-683] Active employee and former student should get a DV; People with Multiple Affiliations in PepleSoft should only return one row.
 
+  [KFSQA-708]
+
   @KFSQA-681 @smoke
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User
@@ -38,3 +40,8 @@ Feature: Disbursement Voucher Creation
     And   I submit the Disbursement Voucher document
     And   the Disbursement Voucher document goes to ENROUTE
 
+  @KFSQA-708 @wip
+  Scenario: Email Not defaulting in Contact Information Tab
+    Given   I am logged in as a KFS User for the DV document
+    When    I start an empty Disbursement Voucher document
+    Then    The eMail Address shows up in the Contact Information Tab
