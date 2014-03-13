@@ -32,10 +32,12 @@ kuality = KualityKFS.new @config[:browser]
 $users = Users.instance
 
 Before do
+
   @browser = kuality.browser
   $users.clear
   # Add the admin user to the Users...
   $users << UserObject.new(@browser)
+
 end
 
 After do |scenario|
@@ -49,6 +51,6 @@ After do |scenario|
 
 end
 
-if !ENV['DEBUG']
+unless ENV['DEBUG']
   at_exit { kuality.browser.close }
 end

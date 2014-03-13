@@ -49,6 +49,6 @@ And /^I search for the payee with Terminated Employee (\w+) and Reason Code (\w+
     plookup.payment_reason_code.fit @disbursement_voucher.payment_reason_code
     plookup.netid.fit               net_id
     plookup.search
-    plookup.frm.divs(id: 'lookup')[0].parent.text.include?('No values match this search').should == true
+    plookup.frm.divs(id: 'lookup')[0].parent.text.should include 'No values match this search'
   end
 end
