@@ -7,14 +7,22 @@ When /^I start an empty Disbursement Voucher document with Payment to Vendor (.*
 end
 
 
-And /^I add the only payee with Retiree (\w+) and Reason Code (\w+) to the Disbursement Voucher$/ do |net_id, reason_code|
+And /^I add the only payee with Payee Id (\w+) and Reason Code (\w+) to the Disbursement Voucher$/ do |net_id, reason_code|
   case reason_code
     when 'B'
       @disbursement_voucher.payment_reason_code = 'B - Reimbursement for Out-of-Pocket Expenses'
   end
-  @disbursement_voucher.payee_id = net_id
-  @disbursement_voucher.vendor_payee = false
-  on (PaymentInformationTab) {|tab| @disbursement_voucher.fill_in_payment_info(tab)}
+  on (PaymentInformationTab) do |tab|
+    on(PaymentInformationTab).payee_search
+    on PayeeLookup do |plookup|
+      plookup.payment_reason_code.fit @disbursement_voucher.payment_reason_code
+      plookup.netid.fit               net_id
+      plookup.search
+      plookup.results_table.rows.length.should == 2 # header and value
+      plookup.return_value(net_id)
+    end
+    @disbursement_voucher.fill_in_payment_info(tab)
+  end
 end
 
 And /^I add an Accounting Line to the Disbursement Voucher with the following fields:$/ do |table|
@@ -25,7 +33,8 @@ And /^I add an Accounting Line to the Disbursement Voucher with the following fi
   @disbursement_voucher.add_source_line({
                                             account_number: accounting_line_info['Number'],
                                             object: accounting_line_info['Object Code'],
-                                            amount: accounting_line_info['Amount']
+                                            amount: accounting_line_info['Amount'],
+                                            line_description: accounting_line_info['Description']
                                         })
 
 end
