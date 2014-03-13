@@ -44,7 +44,12 @@ After do |scenario|
 
   # If there are any extant modal dialogs,
   # hopefully this will save the run, at least.
-  @browser.alert.close if @browser.alert.exists?
+  if @browser.alert.exists?
+    @browser.alert.close
+    kuality.browser.close
+    kuality = KualityKFS.new @config[:browser]
+    $users = Users.instance
+  end
 
 end
 
