@@ -5,7 +5,6 @@ Feature: Disbursement Voucher Creation
   [KFSQA-682] Terminated Employees should not be searchable for a DV.
 
   [KFSQA-683] Active employee and former student should get a DV; People with Multiple Affiliations in PepleSoft should only return one row.
-  .
 
   @KFSQA-681 @smoke
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
