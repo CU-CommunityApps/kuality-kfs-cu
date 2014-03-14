@@ -6,6 +6,8 @@ Feature: Disbursement Voucher Creation
 
   [KFSQA-683] Active employee and former student should get a DV; People with Multiple Affiliations in PepleSoft should only return one row.
 
+  [KFSQA-684] DV business rule should not compare Payee's EmplID to DV Initiator's Entity/Principal ID.
+
   @KFSQA-681 @smoke
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User
@@ -34,6 +36,19 @@ Feature: Disbursement Voucher Creation
       | Number       | G003704            |
       | Object Code  | 6100               |
       | Amount       | 23                 |
+      | Description  | Line Test Number 1 |
+    And   I submit the Disbursement Voucher document
+    And   the Disbursement Voucher document goes to ENROUTE
+
+  @KFSQA-684 @smoke @wip
+  Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payee's EmplID is the same as Initiator's Entity/Principal ID
+  # '1009867' is lk26's principanId/entityId, and arm2's employee_id.
+    Given I am logged in as "LK26"
+    When  I start an empty Disbursement Voucher document with Payment to Employee arm2
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G003704            |
+      | Object Code  | 6540               |
+      | Amount       | 22341.11           |
       | Description  | Line Test Number 1 |
     And   I submit the Disbursement Voucher document
     And   the Disbursement Voucher document goes to ENROUTE
