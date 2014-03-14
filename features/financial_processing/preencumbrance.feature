@@ -76,4 +76,4 @@ Feature: Pre-Encumbrance
       | PROCESSED |
       | FINAL     |
     When    I am logged in as a KFS Chart Manager
-    Then    The oustanding encumbrance for account G003704 and object code 6100 is 800
+    Then    The outstanding encumbrance for account G003704 and object code 6100 is 800

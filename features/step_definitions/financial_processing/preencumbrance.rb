@@ -50,7 +50,7 @@ And /^I do an Open Encumbrances lookup for the Pre-Encumbrance document with Bal
   end
 end
 
-Then /^The oustanding encumbrance for account (.*) and object code (.*) is (.*)$/ do |account_number, object_code, amount|
+Then /^The outstanding encumbrance for account (.*) and object code (.*) is (.*)$/ do |account_number, object_code, amount|
   visit(MainPage).open_encumbrances
   on OpenEncumbranceLookupPage do |page|
     page.account_number.set account_number

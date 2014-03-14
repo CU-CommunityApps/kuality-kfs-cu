@@ -14,7 +14,6 @@ Scenario Outline: Checking General Ledger for Accounting Line Description using 
   When    I blanket approve the <document> document
   And     Nightly Batch Jobs run
   And     I am logged in as a KFS User for the <type code> document
-  And     I am logged in as "dh273"
   When    I view the <document> document on the General Ledger Entry
   Then    The Template Accounting Line Description for <document> equal the General Ledger
 Examples:

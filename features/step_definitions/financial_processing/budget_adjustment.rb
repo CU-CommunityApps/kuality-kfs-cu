@@ -228,7 +228,48 @@ When /^I am logged in as the (From|To) Fiscal Officer$/ do |fo_type|
   case fo_type
     when 'From'
       step "I am logged in as \"#{@from_fiscal_officer}\""
+
     when 'To'
       step "I am logged in as \"#{@to_fiscal_officer}\""
   end
+end
+
+And /^I capture the (CB|BB) balance amount on the GLB for:$/ do  |balance_type_code, table|
+  updates = table.rows_hash
+
+  visit(MainPage).general_ledger_balance
+
+  on GeneralLedgerBalanceLookupPage do |page|
+    page.chart_code.fit updates['chart code']
+    page.account_number.fit updates['account number']
+    page.object_code.fit updates['object code']
+    page.balance_type_code.fit updates['balance type code']
+    page.search
+    #now to store the Account Line Annual Balance Amount
+
+    # get row number in results table header for 'Account Line Annual Balance Amount'
+    # use row number to grab balance *note balance is like (100.10) may need to chop parentheses
+
+    case balance_type_code
+      when 'CB'
+
+        @cb_start_amount = page.get_cell_value_by_index(10)
+        puts @cb_start_amount.inspect
+
+      when 'BB'
+        @bb_start_amount = page.get_cell_value_by_index(10)
+        puts @cb_start_amount.inspect
+#puts 'this is BB var'
+        #balance_type_code_col = page.column_index('Account Line Annual Balance Amount')
+        #@bb_start_amount page.results_table.rest[0][balance_type_code_col].text.groom =
+        #
+        #puts 'this is the BB Amount var'
+        #puts @bb_start_amount.inspect
+
+      else
+        puts 'This is not a handled Balance Type Code'
+    end
+
+  end
+
 end

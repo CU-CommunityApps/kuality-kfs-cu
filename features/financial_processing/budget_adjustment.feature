@@ -7,6 +7,8 @@ Feature: KFS Fiscal Officer Account Copy
   [KFSQA-629] Bug: Budget Adjustment Import Template incorrectly importing Base Budgets (BB),
               As a KFS User I want to import only BA Base Budget amounts using templates to
               make the budgeting process more efficient.
+  [KFSQA-670] BA Import Template CB and BB Uploads, Cornell University requires CB and BB Balances uploaded through an Import Template to be recorded in the General Ledger.
+
   [KFSQA-729] Cornell University requires that a Budget Adjustment must route to all Fiscal Officers.
 
   @KFSQA-623
@@ -64,6 +66,43 @@ Feature: KFS Fiscal Officer Account Copy
     When     I view the Budget Adjustment document
     And      I blanket approve the Budget Adjustment document
     Then     the Budget Adjustment document goes to PROCESSED
+
+  @wip @KFSQA-670 @cornell @nightly-jobs
+  Scenario Outline: CB and BB Balances from BA Import Template updates General Ledger
+    Given   I am logged in as a KFS User for the <type code> document
+    And     I capture the CB balance amount on the GLB for:
+      | balance type code | CB      |
+      | object code       | 4480    |
+      | account number    | G013300 |
+      | chart code        | IT      |
+    And     I capture the BB balance amount on the GLB for:
+      | balance type code | BB      |
+      | object code       | 4480    |
+      | account number    | G013300 |
+      | chart code        | IT      |
+#    And     I capture the CB for the <account number>
+    And  I fail the test
+    And     I start a <document> document for from "<From file name>" file import and to "<To file name>" file import
+    And     On the <document> I import the From Accounting Lines from a csv file
+    And     On the <document> I import the To Accounting Lines from a csv file
+    And     I submit the <document> document
+    And I sleep for 15
+#    And     I upload BA Template with Current Amount and Base Amount
+    And     I am logged in as "dh273"
+    When    I view the <document> document
+    And     I blanket approve the Budget Adjustment document
+    And     the Budget Adjustment document goes to FINAL
+#    And     Nightly Batch Jobs run
+    And     I am logged in as a KFS User for the <type code> document
+    When    I view the <document> document on the General Ledger Entry
+    Then    The BA Template Current Amount equals the General Ledger CB Balance
+    Then    The BA Template Base Amount equals the General Ledger BB Balance
+     Examples:
+    | document          | type code | From file name      | To file name      |
+    | Budget Adjustment | BA        | BA_test_from.csv    | BA_test_to.csv    |
+    #This for when BA doesn't allow
+#    | Budget Adjustment | BA        | BA_import_from.csv  | BA_import_to.csv  |
+
 
   @KFSQA-729
   Scenario: "To" Fiscal Officer initiates Budget Adjustment; BA routes to "From" Fiscal Officer
