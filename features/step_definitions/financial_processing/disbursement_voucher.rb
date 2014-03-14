@@ -52,3 +52,23 @@ And /^I search for the payee with Terminated Employee (\w+) and Reason Code (\w+
     plookup.frm.divs(id: 'lookup')[0].parent.text.should include 'No values match this search'
   end
 end
+
+And /^I copy a Disbursement Voucher document with Tax Address to persist$/ do
+  # save original address for comparison.  The address fields are readonly
+  @old_address_1 = on(PaymentInformationTab).address_1_value
+  @old_address_2 = on(PaymentInformationTab).address_2_value
+  @old_city = on(PaymentInformationTab).city_value
+  @old_state = on(PaymentInformationTab).state_value
+  @old_country = on(PaymentInformationTab).country_value
+  @old_postal_code = on(PaymentInformationTab).postal_code_value
+
+  get("disbursement_voucher").send("copy_current_document")
+
+  # validate the Tax Address is copied over
+  @old_address_1.should == on(PaymentInformationTab).address_1.value
+  @old_address_2.strip.should == on(PaymentInformationTab).address_2.value.strip # 'strip' in case address_2 is empty which will result in " "
+  @old_city.should == on(PaymentInformationTab).city.value
+  @old_state.should == on(PaymentInformationTab).state.value
+  @old_country.should == on(PaymentInformationTab).country.selected_options.first.text
+  @old_postal_code.should == on(PaymentInformationTab).postal_code.value
+end

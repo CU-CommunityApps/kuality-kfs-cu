@@ -1,4 +1,4 @@
-Feature: Disbursement Voucher Creation
+Feature: Disbursement Voucher
 
   [KFSQA-681] Retiree should get a DV; People with Multiple Affiliations in PeopleSoft should only return one row.
 
@@ -7,6 +7,8 @@ Feature: Disbursement Voucher Creation
   [KFSQA-683] Active employee and former student should get a DV; People with Multiple Affiliations in PepleSoft should only return one row.
 
   [KFSQA-685] Active Staff, Former Student, and Alumnus should get a DV; People with Multiple Affiliations in PepleSoft should only return one row.
+
+  [KFSQA-697] Disbursement Voucher Address Types to persist when copied to a new Disbursement Voucher.
 
   @KFSQA-681 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
@@ -53,3 +55,22 @@ Feature: Disbursement Voucher Creation
     And   I submit the Disbursement Voucher document
     And   the Disbursement Voucher document goes to ENROUTE
 
+  @KFSQA-697 @tortoise @wip
+  Scenario: Disbursement Voucher Address Types to persist when copied to a new Disbursement Voucher
+    Given I am logged in as a KFS User
+    When  I start an empty Disbursement Voucher document with Payment to Vendor 4362-0
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G003704        |
+      | Object Code  | 6540           |
+      | Amount       | 25,000         |
+      | Description  | DV03 Test....  |
+    And   I submit the Disbursement Voucher document
+    And   I am logged in as "djj1"
+    And   I view the Disbursement Voucher document
+    And   I approve the Disbursement Voucher document
+    And   I am logged in as a Disbursement Manager
+    And   I view the Disbursement Voucher document
+    And   I approve the Disbursement Voucher document
+    And   I am logged in as a KFS User
+    And   I view the Disbursement Voucher document
+    And   I copy a Disbursement Voucher document with Tax Address to persist
