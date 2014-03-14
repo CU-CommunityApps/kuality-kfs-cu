@@ -17,7 +17,7 @@ Feature: Pre-Encumbrance
     And   I do an Open Encumbrances lookup for the Pre-Encumbrance document with Balance Type PE and Include All Pending Entries
     Then  the lookup should return results
 
-  @KFSQA-753 @nightly-jobs @cornell
+  @KFSQA-753 @nightly-jobs @cornell @tortoise
   Scenario: Generate Proper Offsets Using a PE to generate an Encumbrance
     Given I am logged in as a KFS User
     When  I submit a Pre-Encumbrance document that encumbers Account G003704
