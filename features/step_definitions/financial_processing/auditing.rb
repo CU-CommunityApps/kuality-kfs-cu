@@ -140,7 +140,7 @@ And /^I add accounting lines to test the notes tab for the General Error Correct
   end
 end
 
-And /^I add accounting lines to test the notes tab for the Pre Encumbrance doc$/ do
+And /^I add accounting lines to test the notes tab for the Pre-Encumbrance doc$/ do
   on PreEncumbrancePage do
     @pre_encumbrance.add_source_line({
       account_number: 'G003704',

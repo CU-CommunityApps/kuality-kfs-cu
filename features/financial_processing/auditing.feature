@@ -47,7 +47,7 @@ Feature: FP Auditing
   Scenario: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for Pre-Encumbrance
     Given   I am logged in as "sag3"
     And     I start an empty Pre-Encumbrance document
-    And     I add accounting lines to test the notes tab for the Pre Encumbrance doc
+    And     I add accounting lines to test the notes tab for the Pre-Encumbrance doc
     And     I save the Pre-Encumbrance document
     And     I submit the Pre-Encumbrance document
     And     the Pre-Encumbrance document goes to ENROUTE

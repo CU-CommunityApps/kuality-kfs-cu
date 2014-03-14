@@ -84,11 +84,9 @@ Feature: Pre-Encumbrance
     Given   I am logged in as a KFS System Administrator
     And     I update the OBJECT_TYPES Parameter for the Pre-Encumbrance component in the KFS-FP namespace with the following values:
       | Parameter Value | IC |
-    And     I finalize the Parameter document
+    And     I blanket approve the Parameter document
     And     I am logged in as a KFS User
-    And     I start a Pre-Encumbrance document for the current Month
-    And     I add an Encumbrance Accounting Line to the Pre-Encumbrance document
-    And     I save the Pre-Encumbrance document
+    And     I save a Pre-Encumbrance document with an Encumbrance Accounting Line for the current Month
     And     the Encumbrance Accounting Line appears in the document's GLPE entry
     And     I submit the Pre-Encumbrance document
     And     the Pre-Encumbrance document goes to ENROUTE
