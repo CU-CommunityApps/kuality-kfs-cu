@@ -19,8 +19,7 @@ Feature: Advance Deposit
     And   I am logged in as a KFS User
     And   I view the Advance Deposit document
     When  I blanket approve the Advance Deposit document
-    And   I view the Advance Deposit document
-    Then  the AD document submits with no errors
+    Then  the Advance Deposit document goes to FINAL
 
   @KFSQA-609 @sloth
   Scenario: AD Copy and Save

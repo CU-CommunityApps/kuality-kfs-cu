@@ -2,7 +2,7 @@ Feature: Distribution of Income and Expense
 
   [KFAQA-648] I want to create a DI with an Accounting Line Change by an FO
 
-  @KFAQA-648 @smoke @sloth @needs-clean-up
+  @KFAQA-648 @smoke @sloth @needs-clean-up @broken!
   Scenario: Reject Approver Account changes unless they are the Fiscal Officer
     Given   I am logged in as a KFS User
     And     I start an empty Distribution Of Income And Expense document
@@ -21,4 +21,4 @@ Feature: Distribution of Income and Expense
     And     I change the DI from Account to one owned by the current user
     And     I approve the Distribution Of Income And Expense document
     When    I view the Distribution Of Income And Expense document
-    Then    The Notes and Attachment Tab includes "Accounting Line changed from"
+    Then    the Notes and Attachment Tab says "Accounting Line changed from"
