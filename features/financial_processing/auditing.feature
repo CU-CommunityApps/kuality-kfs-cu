@@ -4,7 +4,7 @@ Feature: FP Auditing
               These changes will be stored recorded in the eDoc Notes and Attachment Tab.
 
 
-  @KFSQA-631 @cornell
+  @KFSQA-631 @cornell @sloth
   Scenario: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for Budget Adjustment
     Given   I am logged in as a KFS User
     When    I start an empty Budget Adjustment document
@@ -13,11 +13,11 @@ Feature: FP Auditing
     And     the Budget Adjustment document goes to ENROUTE
     And     I am logged in as "djj1"
     And     I view my Budget Adjustment document
-    And     On the Budget Adjustment I modify the From Object Code line item 0 to be 4486
+    And     on the Budget Adjustment document I modify the From Object Code line item 0 to be 4486
     And     I save the Budget Adjustment document
     Then    The Notes and Attachment Tab displays "Accounting Line changed from"
 
-  @KFSQA-631 @cornell
+  @KFSQA-631 @cornell @sloth
   Scenario: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for Auxiliary Voucher
     Given   I am logged in as "scu1"
     And     I start an empty Auxiliary Voucher document
@@ -26,11 +26,11 @@ Feature: FP Auditing
     And     the Auxiliary Voucher document goes to ENROUTE
     And     I am logged in as "lrz8"
     And     I view the Auxiliary Voucher document
-    And     On the Auxiliary Voucher I modify the From Object Code line item 0 to be 6641
+    And     on the Auxiliary Voucher document I modify the From Object Code line item 0 to be 6641
     And     I save the Auxiliary Voucher document
     Then    The Notes and Attachment Tab displays "Accounting Line changed from"
 
-  @KFSQA-631 @cornell
+  @KFSQA-631 @cornell @sloth
   Scenario: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for General Error Correction
     Given   I am logged in as "sag3"
     And     I start an empty General Error Correction document
@@ -39,11 +39,11 @@ Feature: FP Auditing
     And     the General Error Correction document goes to ENROUTE
     And     I am logged in as "djj1"
     And     I view the General Error Correction document
-    And     On the General Error Correction I modify the From Object Code line item 0 to be 4486
+    And     on the General Error Correction document I modify the From Object Code line item 0 to be 4486
     And     I save the General Error Correction document
     Then    The Notes and Attachment Tab displays "Accounting Line changed from"
 
-  @KFSQA-631 @cornell
+  @KFSQA-631 @cornell @hare
   Scenario: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for Pre-Encumbrance
     Given   I am logged in as "sag3"
     And     I start an empty Pre-Encumbrance document
@@ -53,11 +53,11 @@ Feature: FP Auditing
     And     the Pre-Encumbrance document goes to ENROUTE
     And     I am logged in as "djj1"
     And     I view the Pre-Encumbrance document
-    And     On the Pre-Encumbrance I modify the From Object Code line item 0 to be 6510
+    And     on the Pre-Encumbrance document I modify the From Object Code line item 0 to be 6510
     And     I save the Pre-Encumbrance document
     Then    The Notes and Attachment Tab displays "Accounting Line changed from"
 
-  @KFSQA-631 @cornell
+  @KFSQA-631 @cornell @hare
   Scenario: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for Non-Check Disbursement
     Given   I am logged in as "rlc56"
     And     I start an empty Non-Check Disbursement document
@@ -66,11 +66,11 @@ Feature: FP Auditing
     And     the Non-Check Disbursement document goes to ENROUTE
     And     I am logged in as "djj1"
     And     I view the Non-Check Disbursement document
-    And     On the Non-Check Disbursement I modify the Object Code line item 0 to be 6510
+    And     on the Non-Check Disbursement document I modify the Object Code line item 0 to be 6510
     And     I save the Non-Check Disbursement document
     Then    The Notes and Attachment Tab displays "Accounting Line changed from"
 
-  @KFSQA-631 @cornell
+  @KFSQA-631 @cornell @tortoise
   Scenario Outline: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for All with basic from and to accounting lines
     Given   I am logged in as "<initiator>"
     And     I start an empty <document> document
@@ -86,7 +86,7 @@ Feature: FP Auditing
     And     the <document> document goes to ENROUTE
     And     I am logged in as "<approver>"
     And     I view the <document> document
-    And     On the <document> I modify the <From or To> Object Code line item <line item> to be <modify object code>
+    And     on the <document> document I modify the <From or To> Object Code line item <line item> to be <modify object code>
     And     I save the <document> document
     Then    The Notes and Attachment Tab displays "Accounting Line changed from"
   Examples:

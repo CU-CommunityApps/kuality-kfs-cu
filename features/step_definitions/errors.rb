@@ -22,7 +22,7 @@ Then /^I should get an error saying "([^"]*)"$/ do |error_msg|
 end
 
 Then /^I should get these error messages:$/ do |error_msgs|
-  $current_page.errors.should include error_msgs.raw.flatten
+  $current_page.errors.should include *(error_msgs.raw.flatten)
 end
 
 Then /^I should get an error that starts with "([^"]*)"$/ do |error_msg|

@@ -1,4 +1,4 @@
-When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance Document that encumbers the random Account$/ do |button|
+When /^I (#{PreEncumbrancePage::available_buttons}) a Pre\-Encumbrance Document that encumbers the random Account$/ do |button|
   # Note: You must have captured the account number of the random account in a previous step to use this step.
   @pre_encumbrance = create PreEncumbranceObject, press: button.gsub(' ', '_'),
                                               initial_lines: [{
@@ -9,6 +9,21 @@ When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance Document t
                                                   amount:         '0.01'
                                               }]
   step 'I add the encumbrance to the stack'
+end
+
+When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance document that encumbers Account (.*)$/ do |button, account_number|
+  # Note: You must have captured the account number of the random account in a previous step to use this step.
+  @pre_encumbrance = create PreEncumbranceObject, press: :save,
+                                                  initial_lines: [{
+                                                                      type:             :source,
+                                                                      account_number:   account_number,
+                                                                      chart_code:       'IT', #TODO grab this from config file
+                                                                      object:           '6540',
+                                                                      amount:           '200',
+                                                                      line_description: 'Test 753 Encumbrance'
+                                                                  }]
+  on(PreEncumbrancePage).send(button.gsub(' ', '_'))
+  sleep 10
 end
 
 Then /^the Pre-Encumbrance posts a GL Entry with one of the following statuses$/ do |required_statuses|
@@ -49,7 +64,7 @@ end
 And /^I do an Open Encumbrances lookup for the Pre-Encumbrance document with Balance Type (.*) and Include All Pending Entries$/ do |balance_type|
   visit(MainPage).open_encumbrances
   on OpenEncumbranceLookupPage do |page|
-    page.doc_number.set @encumbrance.document_id
+    page.doc_number.set @pre_encumbrance.document_id
     page.balance_type_code.set balance_type
     page.active_indicator_all.set
     page.search

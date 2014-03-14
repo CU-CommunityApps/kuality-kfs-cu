@@ -9,22 +9,22 @@ Feature: KFS Fiscal Officer Account Copy
               make the budgeting process more efficient.
   [KFSQA-729] Cornell University requires that a Budget Adjustment must route to all Fiscal Officers.
 
-  @KFSQA-623
+  @KFSQA-623 @hare
   Scenario: Budget Adjustment not allowed to cross Account Sub-Fund Group Codes
     Given   I am logged in as a KFS User
     And     I start a Budget Adjustment document
-    And     I add a from amount of "100.00" for account "1258322" with object code "4480" with a line description of "aft from1"
-    And     I add a to amount of "100" for account "1258323" with object code "4480" with a line description of "aft to 1"
+    And     I add a From amount of "100.00" for account "1258322" with object code "4480" with a line description of "aft from1"
+    And     I add a To amount of "100" for account "1258323" with object code "4480" with a line description of "aft to 1"
     When    I submit the Budget Adjustment document
     Then    I should get an error saying "The Budget Adjustment document is not balanced within the account."
 
-  @KFSQA-628
+  @KFSQA-628 @hare
   Scenario: IT is the default value for Budget Adjustment Chart Values
     Given  I am logged in as a KFS Fiscal Officer
     When  I open the Budget Adjustment document page
     Then  I verify that Chart Value defaults to IT
 
-  @KFSQA-628
+  @KFSQA-628 @cornell @hare @broken! @permissions-issue
   Scenario: Budget Adjustment routing and approval by From and To FO
     Given  I am logged in as "sag3"
     And    I submit a balanced Budget Adjustment document
@@ -34,7 +34,7 @@ Feature: KFS Fiscal Officer Account Copy
     When   I approve the Budget Adjustment document
     Then   the Budget Adjustment document goes to FINAL
 
-  @KFSQA-628 @nightly-jobs
+  @KFSQA-628 @cornell @nightly-jobs @broken! @permissions-issue
   Scenario: General ledger balance displays correctly for a Budget Adjustment after nightly batch is run
     Given  I am logged in as "sag3"
     And    I submit a balanced Budget Adjustment document
@@ -50,9 +50,12 @@ Feature: KFS Fiscal Officer Account Copy
     Then   The To Account Monthly Balance should match the To amount
     And    The line description for the To Account should be displayed
 
-  @KFSQA-629
+  @KFSQA-629 @broken! @permissions-issue
   Scenario: Upload only Base Budget budget transactions using BA Import Template.
-    Given    I am logged in as a KFS Technical Administrator
+# GETTING ERROR FOR NOT ALLOWING ADJUSTMENT FOR YEARS 2014 and 2015 (only available)
+#    Given    I am logged in as a KFS Fiscal Officer
+#    Given    I am logged in as a KFS Technical Administrator  #This user changed should be dh273 for this test
+    Given  I am logged in as "dh273"
     And      I create a Budget Adjustment document for file import
     And      I upload From Accounting Lines containing Base Budget amounts
     And      I upload To Accounting Lines containing Base Budget amounts
@@ -62,7 +65,7 @@ Feature: KFS Fiscal Officer Account Copy
     And      I blanket approve the Budget Adjustment document
     Then     the Budget Adjustment document goes to PROCESSED
 
-  @KFSQA-729
+  @KFSQA-729 @tortoise
   Scenario: "To" Fiscal Officer initiates Budget Adjustment; BA routes to "From" Fiscal Officer
     Given I am logged in as a KFS User
     And   I use these Accounts:
