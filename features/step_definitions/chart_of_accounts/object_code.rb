@@ -7,6 +7,11 @@ Then /^I should see the Object Code document in the object code search results$/
   on ObjectCodeLookupPage do |page|
     page.object_code.fit @object_code.object_code
     page.search
+    if page.frm.divs(id: 'lookup')[0].parent.text.include?('No values match this search.')
+      # Double-check, for timing issues.
+      sleep 5
+      page.search
+    end
     page.find_item_in_table(@object_code.object_code.upcase).should exist
   end
 end
@@ -15,9 +20,9 @@ And /^I edit an Object Code document with object code (.*)$/ do |the_object_code
   @object_code = make ObjectCodeObject, object_code: the_object_code
 
   visit(MainPage).object_code
-
   on ObjectCodeLookupPage do |page|
-    page.object_code.set @object_code.object_code
+    page.object_code.fit      @object_code.object_code
+    page.chart_code.fit       @object_code.new_chart_code
     page.search
     page.edit_item(the_object_code)
   end

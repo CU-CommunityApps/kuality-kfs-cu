@@ -1,7 +1,6 @@
 And /^I copy a random (.*) document with (.*) status/ do |document, doc_status|
   doc_object = snake_case document
-  object_klass = Kernel.const_get(object_class_for(document))
-  page_klass = Kernel.const_get(page_class_for(document))
+  object_klass = object_class_for(document)
 
   on DocumentSearch do |search|
     search.document_type.set object_klass::DOC_INFO[:type_code]
@@ -10,7 +9,7 @@ And /^I copy a random (.*) document with (.*) status/ do |document, doc_status|
     search.open_doc @document_id
   end
 
-  on page_klass do |page|
+  on page_class_for(document) do |page|
     page.copy_current_document
     @document_id = page.document_id
   end
@@ -39,7 +38,7 @@ When /^I (#{BasePage::available_buttons}) the (.*) document if it is not already
   unless on(KFSBasePage).document_status == 'FINAL'
     get(doc_object).send(button)
     on(YesOrNoPage).yes if button == 'cancel'
-    sleep 5 if (button == 'blanket approve' || button == 'approve')
+    sleep 10 if (button == 'blanket approve' || button == 'approve')
   end
 end
 
@@ -61,20 +60,16 @@ end
 
 Then /^the (.*) document goes to (PROCESSED|ENROUTE|FINAL|INITIATED|SAVED)$/ do |document, doc_status|
   doc_object = snake_case document
-  page_klass = Kernel.const_get(get(doc_object).class.to_s.gsub(/(.*)Object$/,'\1Page'))
-
   sleep 10
   get(doc_object).view
-  on(page_klass).document_status.should == doc_status
+  on(page_class_for(document)).document_status.should == doc_status
 end
 
 Then /^the (.*) document goes to one of the following statuses:$/ do |document, required_statuses|
   doc_object = snake_case document
-  page_klass = Kernel.const_get(get(doc_object).class.to_s.gsub(/(.*)Object$/,'\1Page'))
-
   sleep 10
   get(doc_object).view
-  on(page_klass) { |page| required_statuses.raw.flatten.should include page.document_status }
+  on(page_class_for(document)) { |page| required_statuses.raw.flatten.should include page.document_status }
 end
 
 And /^I (#{BasePage::available_buttons}) the document$/ do |button|
