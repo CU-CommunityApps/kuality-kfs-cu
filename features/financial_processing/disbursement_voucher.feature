@@ -8,6 +8,8 @@ Feature: Disbursement Voucher Creation
 
   [KFSQA-685] Active Staff, Former Student, and Alumnus should get a DV; People with Multiple Affiliations in PepleSoft should only return one row.
 
+  [KFSQA-700] Allow usage of Revolving Fund (Petty Cash) DV Payment Types.
+
   @KFSQA-681 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User
@@ -52,4 +54,23 @@ Feature: Disbursement Voucher Creation
       | Description  | Line Test Number 1 |
     And   I submit the Disbursement Voucher document
     And   the Disbursement Voucher document goes to ENROUTE
+
+  @KFSQA-700 @tortoise @wip
+  Scenario: Disbursement Voucher document allow usage of Revolving Fund (Petty Cash) Payment Types
+    Given I am logged in as "rlc56"
+    When  I start an empty Disbursement Voucher document with Payment to Vendor 21541-0 with Single Address and Reason Code K
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G003704        |
+      | Object Code  | 6540           |
+      | Amount       | 10             |
+      | Description  | DV12 Test....  |
+    And   I save the Disbursement Voucher document
+    And   I view the Disbursement Voucher document
+    And   I change the Check Amount for the Disbursement Voucher document to 22.22
+    And   I submit the Disbursement Voucher document
+    And   the Disbursement Voucher document goes to ENROUTE
+    And   I am logged in as "djj1"
+    And   I view the Disbursement Voucher document
+    And   I approve the Disbursement Voucher document
+    And   the Disbursement Voucher document goes to FINAL
 
