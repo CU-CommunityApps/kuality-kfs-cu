@@ -27,15 +27,7 @@ Given /^I am logged in as a KFS Chart Administrator$/ do
 end
 
 Given /^I am logged in as a KFS Chart Manager$/ do
-  
-  ksb_client = KSBServiceClient.new("/Users/srb55/client-sign.properties", "cynergy-dev", "https://cynergy-updev.kuali.cornell.edu/cynergy")
-  role_svc = ksb_client.getRoleService()
-  identity_svc = ksb_client.getIdentityService()
-  
-  ids = role_svc.getRoleMemberPrincipalIds('KFS-SYS', 'Chart Manager', StringMapEntryListType.new).getPrincipalId()
-  et = identity_svc.getEntityByPrincipalId(ids.get(0))
-  
-  visit(BackdoorLoginPage).login_as(et.getPrincipals().getPrincipal().get(0).getPrincipalName()) #TODO get from role service
+  visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
 end
 
 Given /^I am am logged in as a KFS Chart Administrator$/ do
@@ -117,8 +109,4 @@ Then /^I switch to the user with the next Pending Action in the Route Log$/ do
   end
 
   step "I am logged in as \"#{new_user}\""
-end
-
-Given /^I am logged in as a Disbursement Manager$/ do
-      visit(BackdoorLoginPage).login_as('jas9') #TODO get from role service
 end
