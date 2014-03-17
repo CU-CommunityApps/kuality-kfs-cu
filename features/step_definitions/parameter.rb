@@ -6,6 +6,25 @@ end
 And /^I update the (.*) Parameter for the (.*) component in the (.*) namespace with the following values:$/ do |parameter_name, component, namespace_code, table|
   update_values = table.rows_hash
 
+  step "I lookup the #{parameter_name} Parameter for the #{component} component in the #{namespace_code} namespace"
+  on ParameterPage do |page|
+    @parameter = make ParameterObject, namespace_code:                    page.old_namespace_code,
+                                       component:                         page.old_component,
+                                       application_id:                    page.old_application_id,
+                                       parameter_name:                    page.old_parameter_name,
+                                       parameter_value:                   page.old_parameter_value,
+                                       parameter_description:             page.old_parameter_description,
+                                       parameter_type_code:               page.old_parameter_type_code,
+                                       parameter_constraint_code_allowed: page.old_parameter_constraint_code == 'Allowed' ? :set : :clear,
+                                       parameter_constraint_code_denied:  page.old_parameter_constraint_code == 'Denied' ? :set : :clear
+
+    @parameter.edit description: 'Temporary change to add in IC value.',
+                    parameter_value: "#{@parameter.parameter_value};#{update_values['Parameter Value']}",
+                    press: :submit
+  end
+end
+
+And /^I lookup the (.*) Parameter for the (.*) component in the (.*) namespace$/ do |parameter_name, component, namespace_code|
   visit(AdministrationPage).parameter
   on ParameterLookup do |lookup|
     lookup.namespace_code.select_value(/#{namespace_code}/m)
@@ -14,11 +33,4 @@ And /^I update the (.*) Parameter for the (.*) component in the (.*) namespace w
     lookup.search
     lookup.edit_random # There can only be one!
   end
-
-  on ParameterPage do |page|
-    page.description.fit 'Temporary change to add in IC value.'
-    page.parameter_value.fit "#{page.parameter_value.text};#{update_values['Parameter Value']}"
-    page.submit
-  end
-
 end
