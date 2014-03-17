@@ -55,7 +55,7 @@ Feature: Disbursement Voucher
     And   I submit the Disbursement Voucher document
     And   the Disbursement Voucher document goes to ENROUTE
 
-  @KFSQA-697 @tortoise @wip
+  @KFSQA-697 @tortoise
   Scenario: Disbursement Voucher Address Types to persist when copied to a new Disbursement Voucher
     Given I am logged in as a KFS User
     When  I start an empty Disbursement Voucher document with Payment to Vendor 4362-0
