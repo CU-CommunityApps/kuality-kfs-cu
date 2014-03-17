@@ -55,20 +55,18 @@ end
 
 And /^I copy a Disbursement Voucher document with Tax Address to persist$/ do
   # save original address for comparison.  The address fields are readonly
-  @old_address_1 = on(PaymentInformationTab).address_1_value
-  @old_address_2 = on(PaymentInformationTab).address_2_value
-  @old_city = on(PaymentInformationTab).city_value
-  @old_state = on(PaymentInformationTab).state_value
-  @old_country = on(PaymentInformationTab).country_value
-  @old_postal_code = on(PaymentInformationTab).postal_code_value
+  old_address = []
+  on (PaymentInformationTab) { |tab|
+    old_address = [tab.address_1_value, tab.address_2_value.strip, tab.city_value, tab.state_value, tab.country_value, tab.postal_code_value]
+  }
 
   get("disbursement_voucher").send("copy_current_document")
 
   # validate the Tax Address is copied over
-  @old_address_1.should == on(PaymentInformationTab).address_1.value
-  @old_address_2.strip.should == on(PaymentInformationTab).address_2.value.strip # 'strip' in case address_2 is empty which will result in " "
-  @old_city.should == on(PaymentInformationTab).city.value
-  @old_state.should == on(PaymentInformationTab).state.value
-  @old_country.should == on(PaymentInformationTab).country.selected_options.first.text
-  @old_postal_code.should == on(PaymentInformationTab).postal_code.value
+  copied_address = []
+  on (PaymentInformationTab) { |tab|
+    copied_address = [tab.address_1.value, tab.address_2.value.strip, tab.city.value, tab.state.value, tab.country.selected_options.first.text, tab.postal_code.value]
+  }
+
+  old_address.should == copied_address
 end
