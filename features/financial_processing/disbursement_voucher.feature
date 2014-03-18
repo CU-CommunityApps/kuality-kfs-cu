@@ -17,6 +17,8 @@ Feature: Disbursement Voucher
   [KFSQA-709] Because it saves time, I as a KFS User should be able to
   initiate a Disbursement Voucher document with just the description.
 
+  [KFSQA-710] Verify using current mileage rate based on dates.
+
   @KFSQA-681 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User
@@ -65,7 +67,7 @@ Feature: Disbursement Voucher
   @KFSQA-697 @tortoise
   Scenario: Disbursement Voucher Address Types to persist when copied to a new Disbursement Voucher
     Given I am logged in as a KFS User
-    When  I start an empty Disbursement Voucher document with Payment to Vendor 4362-0
+    When  I start an empty Disbursement Voucher document with Payment to Vendor 4362-0 with Tax Address and Reason Code N
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | G003704        |
       | Object Code  | 6540           |
@@ -107,3 +109,17 @@ Feature: Disbursement Voucher
     When  I start an empty Disbursement Voucher document with only the Description field populated
     And   I save the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to SAVED
+
+  @KFSQA-710 @sloth @wip
+  Scenario: Verify using current mileage rate based on dates
+    Given I am logged in as a KFS User
+    When  I start an empty Disbursement Voucher document with Payment to Vendor 5238-0 with Tax Address and Reason Code N
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G003704        |
+      | Object Code  | 6370           |
+      | Amount       | 10             |
+      | Description  | DV27 Test....  |
+    And   I add Total Mileage of 245 to Disbursement Voucher document
+    And   the Calculated Amount with Start Date 01/01/2013 should equal 138.43
+
+

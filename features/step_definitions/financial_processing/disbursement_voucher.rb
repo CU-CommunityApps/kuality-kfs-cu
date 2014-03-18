@@ -2,8 +2,25 @@ When /^I start an empty Disbursement Voucher document$/ do
   @disbursement_voucher = create DisbursementVoucherObject
 end
 
-When /^I start an empty Disbursement Voucher document with Payment to Vendor (.*)$/ do |vendor_number|
-  @disbursement_voucher = create DisbursementVoucherObject, payee_id: vendor_number
+When /^I start an empty Disbursement Voucher document with Payment to Vendor (\d+-\d+) with (\w+) Address and Reason Code (\w+)$/ do |vendor_number, address_type, reason_code|
+  case reason_code
+    when 'B'
+      payment_reason = 'B - Reimbursement for Out-of-Pocket Expenses'
+    when 'K'
+      payment_reason = 'K - Univ PettyCash Custodian Replenishment'
+    when 'N'
+      payment_reason = 'N - Travel Payment for a Non-employee'
+
+  end
+  case address_type
+    when 'Single' # will not do address lookup after payee look
+      address_type_description =  nil
+    when 'Tax'
+      address_type_description = 'TX - TAX'
+    when 'Remit'
+      address_type_description = 'RM - REMIT'
+  end
+  @disbursement_voucher = create DisbursementVoucherObject, payee_id: vendor_number, payment_reason_code: payment_reason, address_type_description: address_type_description
 end
 
 When /^I start an empty Disbursement Voucher document with Payment to Employee (.*)$/ do |net_id|
@@ -83,3 +100,16 @@ end
 Then /^The eMail Address shows up in the Contact Information Tab$/ do
   on(DisbursementVoucherPage).email_address.value.should_not == ''
 end
+
+And /^I add Total Mileage of (\d+\.?\d*) to Disbursement Voucher document$/ do |mileage|
+  on (DisbursementVoucherPage) {|page| page.car_mileage.fit mileage}
+end
+
+And /^the Calculated Amount with Start Date (\d{2}\/\d{2}\/\d{4}) should equal (\d+\.?\d*)$/ do |start_date, total_amount|
+  on (DisbursementVoucherPage) do |page|
+    page.per_diem_start_date.fit start_date
+    page.calc_mileage_amount
+    page.car_mileage_reimb_amt.value.should == total_amount
+  end
+end
+
