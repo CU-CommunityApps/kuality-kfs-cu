@@ -113,3 +113,14 @@ And /^the Calculated Amount with Start Date (\d{2}\/\d{2}\/\d{4}) should equal (
   end
 end
 
+And /^the Mileage calculation should match following Start Date and Total Amount fields:$/ do |table|
+
+  mileage_date_amount = table.raw.flatten
+  mileage_date_amount.each_slice(2).to_a.each do |start_date, total_amount|
+    on (DisbursementVoucherPage) do |page|
+      page.per_diem_start_date.fit start_date
+      page.calc_mileage_amount
+      page.car_mileage_reimb_amt.value.should == total_amount
+    end
+  end
+end

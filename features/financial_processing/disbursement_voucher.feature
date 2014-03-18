@@ -120,6 +120,10 @@ Feature: Disbursement Voucher
       | Amount       | 10             |
       | Description  | DV27 Test....  |
     And   I add Total Mileage of 245 to Disbursement Voucher document
-    And   the Calculated Amount with Start Date 01/01/2013 should equal 138.43
-
-
+#    And   the Calculated Amount with Start Date 01/01/2013 should equal 138.43
+     And  the Mileage calculation should match following Start Date and Total Amount fields:
+       | 02/04/2013        | 138.43            |
+       | 05/06/2012        | 135.98            |
+       | 08/06/2011        | 135.98            |
+       | 03/01/2011        | 124.95            |
+       | 04/05/2010        | 122.50            |
