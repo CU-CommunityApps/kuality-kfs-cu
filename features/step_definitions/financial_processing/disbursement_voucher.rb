@@ -6,6 +6,9 @@ When /^I start an empty Disbursement Voucher document with Payment to Vendor (.*
   @disbursement_voucher = create DisbursementVoucherObject, payee_id: vendor_number
 end
 
+When /^I start an empty Disbursement Voucher document with Payment to Employee (.*)$/ do |net_id|
+  @disbursement_voucher = create DisbursementVoucherObject, payee_id: net_id, vendor_payee: false
+end
 
 And /^I add the only payee with Payee Id (\w+) and Reason Code (\w+) to the Disbursement Voucher$/ do |net_id, reason_code|
   case reason_code
@@ -51,6 +54,24 @@ And /^I search for the payee with Terminated Employee (\w+) and Reason Code (\w+
     plookup.search
     plookup.frm.divs(id: 'lookup')[0].parent.text.should include 'No values match this search'
   end
+end
+
+And /^I copy a Disbursement Voucher document with Tax Address to persist$/ do
+  # save original address for comparison.  The address fields are readonly
+  old_address = []
+  on (PaymentInformationTab) { |tab|
+    old_address = [tab.address_1_value, tab.address_2_value.strip, tab.city_value, tab.state_value, tab.country_value, tab.postal_code_value]
+  }
+
+  get("disbursement_voucher").send("copy_current_document")
+
+  # validate the Tax Address is copied over
+  copied_address = []
+  on (PaymentInformationTab) { |tab|
+    copied_address = [tab.address_1.value, tab.address_2.value.strip, tab.city.value, tab.state.value, tab.country.selected_options.first.text, tab.postal_code.value]
+  }
+
+  old_address.should == copied_address
 end
 
 

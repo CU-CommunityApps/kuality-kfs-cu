@@ -1,3 +1,6 @@
-Then /^The Notes and Attachment Tab includes "(.*)"$/ do |message|
-  on(DistributionOfIncomeAndExpensePage).notes_tab.text.should include message
+Then /^the Notes and Attachment Tab says "(.*)"$/ do |message|
+  on DistributionOfIncomeAndExpensePage do |page|
+    page.expand_all
+    page.notes_tab.text.should include message
+  end
 end
