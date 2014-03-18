@@ -101,7 +101,7 @@ Feature: Disbursement Voucher
     When    I start an empty Disbursement Voucher document
     Then    The eMail Address shows up in the Contact Information Tab
 
-  @KFSQA-709 @hare @wip
+  @KFSQA-709 @hare
   Scenario: KFS User Initiates a Disbursement Voucher document with only a description field
     Given I am logged in as a KFS User
     When  I start an empty Disbursement Voucher document with only the Description field populated
