@@ -58,7 +58,7 @@ Feature: Disbursement Voucher Creation
   @KFSQA-700 @tortoise @wip
   Scenario: Disbursement Voucher document allow usage of Revolving Fund (Petty Cash) Payment Types
     Given I am logged in as "rlc56"
-    When  I start an empty Disbursement Voucher document with Payment to Vendor 21541-0 with Single Address and Reason Code K
+    When  I start an empty Disbursement Voucher document with Payment to Vendor 41473-0 with Single Address and Reason Code K
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | G003704        |
       | Object Code  | 6540           |
