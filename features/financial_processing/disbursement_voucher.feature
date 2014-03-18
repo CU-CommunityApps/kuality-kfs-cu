@@ -14,6 +14,8 @@ Feature: Disbursement Voucher
 
   [KFSQA-708]
 
+  [KFSQA-699] Retrieve DV payee with NetID
+
   @KFSQA-681 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User
@@ -97,3 +99,10 @@ Feature: Disbursement Voucher
     Given   I am logged in as a KFS User for the DV document
     When    I start an empty Disbursement Voucher document
     Then    The eMail Address shows up in the Contact Information Tab
+
+  @KFSQA-699 @hare @wip
+  Scenario: Retrieve a DV Payee with their NetID (Cornell Modification)
+    Given I am logged in as a KFS User for the DV document
+    And   I start an empty Disbursement Voucher document
+    When  I add the only payee with Payee Id as57 and Reason Code B to the Disbursement Voucher
+    Then  The Payee Name shows as "Shapiro, Anne"
