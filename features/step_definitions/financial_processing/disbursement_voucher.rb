@@ -2,26 +2,6 @@ When /^I start an empty Disbursement Voucher document$/ do
   @disbursement_voucher = create DisbursementVoucherObject
 end
 
-When /^I start an empty Disbursement Voucher document with Payment to Vendor (\d+-\d+) with (\w+) Address and Reason Code (\w+)$/ do |vendor_number, address_type, reason_code|
-  case reason_code
-    when 'B'
-      payment_reason = 'B - Reimbursement for Out-of-Pocket Expenses'
-    when 'K'
-      payment_reason = 'K - Univ PettyCash Custodian Replenishment'
-
-  end
-  case address_type
-    when 'Single' # will not do address lookup after payee look
-      address_type_description =  nil
-    when 'Tax'
-      address_type_description = 'TX - TAX'
-    when 'Remit'
-      address_type_description = 'RM - REMIT'
-  end
-  @disbursement_voucher = create DisbursementVoucherObject, payee_id: vendor_number, payment_reason_code: payment_reason, address_type_description: address_type_description
-end
-
-
 And /^I add the only payee with Payee Id (\w+) and Reason Code (\w+) to the Disbursement Voucher$/ do |net_id, reason_code|
   case reason_code
     when 'B'
@@ -70,4 +50,10 @@ end
 And /^I change the Check Amount for the Disbursement Voucher document to (.*)$/ do |amount|
   on (PaymentInformationTab) {|tab| tab.check_amount.fit amount}
   on (AccountingLine) {|line| line.update_source_amount(0).fit amount}
+end
+
+
+When /^I start an empty Disbursement Voucher document with Payment to a Petty Cash Vendor$/ do
+  #TODO : vendor number '41473-0' should be retrieved from service
+  @disbursement_voucher = create DisbursementVoucherObject, payee_id: '41473-0', payment_reason_code: 'K - Univ PettyCash Custodian Replenishment', address_type_description: nil
 end
