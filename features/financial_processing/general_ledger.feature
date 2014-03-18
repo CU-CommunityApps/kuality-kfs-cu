@@ -44,7 +44,7 @@ Feature: General Ledger
     | Pre-Encumbrance                    | PE      | G003704        |                |
     | Transfer Of Funds                  | TF      | A763306        | A763900        |
 
-  @KFSQA-649 @smoke @nightly-jobs
+  @KFSQA-649 @smoke @nightly-jobs @tortoise
   Scenario Outline: Accounting Line Description from eDoc updates General Ledger. These eDocs' accounts don't clone nicely.
     Given I am logged in as a KFS Manager for the <docType> document
     And   I use these Accounts:
@@ -70,7 +70,7 @@ Feature: General Ledger
       | Budget Adjustment | BA      | G003704        | G003704        |
       | Service Billing   | SB      | U243700        | G013300        |
 
-  @KFSQA-649 @smoke @nightly-jobs
+  @KFSQA-649 @smoke @nightly-jobs @tortoise @broken! @permissions-issue
   Scenario: Accounting Line Description from eDoc updates General Ledger
     Given I am logged in as a KFS Manager for the DV document
     And   I clone Account 1490000 with the following changes:
@@ -78,7 +78,7 @@ Feature: General Ledger
       | Chart Code  | IT                                  |
       | Description | Disbursement Voucher Test Account S |
     And   I am logged in as a KFS User for the DV document
-    When  I start an empty Disbursement Voucher document
+    When  I start an empty Disbursement Voucher document with Payment to Vendor 12076-0
     And   I add balanced Accounting Lines to the Disbursement Voucher document
     And   I save the Disbursement Voucher document
     Then  I submit the Disbursement Voucher document
@@ -94,7 +94,7 @@ Feature: General Ledger
     When  I lookup the document ID for the Disbursement Voucher document from the General Ledger
     Then  the Accounting Line Description for the Disbursement Voucher document equals the General Ledger Accounting Line Description
 
-  @KFSQA-649 @smoke @nightly-jobs
+  @KFSQA-649 @smoke @nightly-jobs @tortoise
   Scenario: Accounting Line Description from eDoc updates General Ledger
     Given I am logged in as a KFS Manager for the ICA document
     And   I clone Account 1093600 with the following changes:
