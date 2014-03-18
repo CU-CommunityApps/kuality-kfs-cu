@@ -74,7 +74,18 @@ And /^I copy a Disbursement Voucher document with Tax Address to persist$/ do
   old_address.should == copied_address
 end
 
-
 Then /^The eMail Address shows up in the Contact Information Tab$/ do
   on(DisbursementVoucherPage).email_address.value.should_not == ''
+end
+
+
+And(/^I add a random payee the Disbursement Voucher$/) do
+  on (PaymentInformationTab) do |tab|
+    on(PaymentInformationTab).payee_search
+    on PayeeLookup do |plookup|
+      plookup.search
+      plookup.return_random
+    end
+    @disbursement_voucher.fill_in_payment_info(tab)
+  end
 end
