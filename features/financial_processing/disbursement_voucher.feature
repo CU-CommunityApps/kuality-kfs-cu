@@ -40,7 +40,7 @@ Feature: Disbursement Voucher Creation
     And   I submit the Disbursement Voucher document
     And   the Disbursement Voucher document goes to ENROUTE
 
-  @KFSQA-708 @wip
+  @KFSQA-708 @hare
   Scenario: Email Not defaulting in Contact Information Tab
     Given   I am logged in as a KFS User for the DV document
     When    I start an empty Disbursement Voucher document
