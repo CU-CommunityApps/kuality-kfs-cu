@@ -14,6 +14,9 @@ Feature: Disbursement Voucher
 
   [KFSQA-708]
 
+  [KFSQA-709] Because it saves time, I as a KFS User should be able to
+  initiate a Disbursement Voucher document with just the description.
+
   @KFSQA-681 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User
@@ -97,3 +100,10 @@ Feature: Disbursement Voucher
     Given   I am logged in as a KFS User for the DV document
     When    I start an empty Disbursement Voucher document
     Then    The eMail Address shows up in the Contact Information Tab
+
+  @KFSQA-709 @hare @wip
+  Scenario: KFS User Initiates a Disbursement Voucher document with only a description field
+    Given I am logged in as a KFS User
+    When  I start an empty Disbursement Voucher document with only the Description field populated
+    And   I save the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to SAVED

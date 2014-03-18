@@ -42,6 +42,11 @@ And /^I add an Accounting Line to the Disbursement Voucher with the following fi
 
 end
 
+When /^I start an empty Disbursement Voucher document with only the Description field populated$/ do
+  # Currently 'description' is included in dataobject's default, so this step is just in case 'description' is not in default.
+  @disbursement_voucher = create DisbursementVoucherObject, description: random_alphanums(40, 'AFT')
+end
+
 And /^I search for the payee with Terminated Employee (\w+) and Reason Code (\w+) for Disbursement Voucher document with no result found$/ do |net_id, reason_code|
   case reason_code
     when 'B'
