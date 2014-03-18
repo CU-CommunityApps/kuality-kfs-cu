@@ -79,5 +79,5 @@ Then /^The eMail Address shows up in the Contact Information Tab$/ do
 end
 
 Then /^The Payee Name shows as "(.*)"$/ do |payee_name|
-  on(DisbursementVoucherPage).payee_name.should == payee_name
+  on(PaymentInformationTab).payee_name.should == payee_name
 end
