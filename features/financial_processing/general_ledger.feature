@@ -3,7 +3,7 @@ Feature: General Ledger
   [KFSQA-649] Cornell University requires an Accounting Line Description input through an eDoc to be recorded in the General Ledger.
   [KFSQA-647] Cornell needs a to ensure that all eight Main Menu->Balance Inquiries-->General Ledger are working.
 
-  @KFSQA-649 @smoke @nightly-jobs
+  @KFSQA-649 @smoke @nightly-jobs @coral
   Scenario Outline: Accounting Line Description from eDoc updates General Ledger
     Given I am logged in as a KFS Manager for the <docType> document
     And   I clone Account <source_account> with the following changes:
@@ -78,7 +78,7 @@ Feature: General Ledger
       | Chart Code  | IT                                  |
       | Description | Disbursement Voucher Test Account S |
     And   I am logged in as a KFS User for the DV document
-    When  I start an empty Disbursement Voucher document with Vendor 12076-0
+    When  I start an empty Disbursement Voucher document
     And   I add balanced Accounting Lines to the Disbursement Voucher document
     And   I save the Disbursement Voucher document
     Then  I submit the Disbursement Voucher document

@@ -17,28 +17,28 @@ Feature: Account Edit
   [KFSQA-569] As a KFS Chart Manager I want to change the account expiration date
               because I still want any enroute documents to be approved.
 
-  @KFSQA-593
+  @KFSQA-593 @hare
   Scenario: Edit an Account with an invalid Sub-Fund Program Code
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account with a Sub-Fund Group Code of PLCAPT
     When  I enter a Sub-Fund Program Code of XXXX
     Then  an error in the Account Maintenance tab should say "Sub-Fund Program Code XXXX is not associated with Sub-Fund Group Code PLCAPT."
 
-  @KFSQA-593
+  @KFSQA-593 @hare
   Scenario: Edit an Account with an invalid Sub-Fund Program Code
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account with a Sub-Fund Group Code of PLCAPT
     When  I enter XXXXXXX as an invalid Major Reporting Category Code
     Then  an error in the Account Maintenance tab should say "Major Reporting Category Code (XXXXXXX) does not exist."
 
-  @KFSQA-593
+  @KFSQA-593 @hare
   Scenario: Edit an Account with an invalid Sub-Fund Program Code
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account with a Sub-Fund Group Code of PLCAPT
     When  I enter XXXXXXX as an invalid Appropriation Account Number
     Then  an error in the Account Maintenance tab should say "Appropriation Account Number XXXXXXX is not associated with Sub-Fund Group Code PLCAPT."
 
-  @KFSQA-593
+  @KFSQA-593 @hare
   Scenario: Edit an Account with an invalid Sub-Fund Program Code
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account with a Sub-Fund Group Code of PLCAPT
@@ -46,22 +46,26 @@ Feature: Account Edit
     Then  an error in the Account Maintenance tab should say "Invalid Labor Benefit Rate Code"
     Then  an error in the Account Maintenance tab should say "The specified Labor Benefit Rate Category Code XX does not exist."
 
-  @KFSQA-610
+  @KFSQA-610 @hare
   Scenario: Edit an Account as KFS Chart Admin
     Given I am logged in as a KFS Chart Administrator
     And   I edit an Account
     When  I blanket approve the Account document
-    Then  the Account document goes to PROCESSED
+    Then  the Account document goes to one of the following statuses:
+      | PROCESSED |
+      | FINAL     |
 
-  @KFSQA-632
+  @KFSQA-632 @hare
   Scenario: KFS Chart Manager edits an Account with Major Reporting Category Code
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account
     When  I input a lowercase Major Reporting Category Code value
     When  I blanket approve the Account document
-    Then  the Account document goes to PROCESSED
+    Then  the Account document goes to one of the following statuses:
+      | PROCESSED |
+      | FINAL     |
 
-  @KFSQA-619
+  @KFSQA-619 @sloth
   Scenario: Create an Account that matches Sub-Fund Group Code and Sub-Fund Program Code with an Appropriation Account Number
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account
@@ -69,9 +73,11 @@ Feature: Account Edit
     And   I enter Sub Fund Program Code of CENTER
     And   I enter Appropriation Account Number of LTIP
     When  I blanket approve the Account document
-    Then  the Account document goes to PROCESSED
+    Then  the Account document goes to one of the following statuses:
+      | PROCESSED |
+      | FINAL     |
 
-  @KFSQA-619
+  @KFSQA-619 @hare
   Scenario: Create an Account that does not match Sub-Fund Group Code and Sub-Fund Program Code with an Appropriation Account Number
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account
@@ -81,7 +87,7 @@ Feature: Account Edit
     When  I submit the Account document
     Then  an error in the Account Maintenance tab should say "Appropriation Account Number C771503 is not associated with Sub-Fund Group Code INFHFO."
 
-  @KFSQA-586
+  @KFSQA-586 @sloth
   Scenario: Try to continue an Account to itself
     Given I am logged in as a KFS Chart Manager
     And   I access Account Lookup
@@ -95,7 +101,7 @@ Feature: Account Edit
     When  I blanket approve the Account document
     Then  an empty error should appear
 
-  @KFSQA-569 @nightly-jobs @pending
+  @KFSQA-569 @nightly-jobs @pending @broken!
   Scenario: Extension of Account expiration dates, while an eDoc is enroute,
             should not prevent eDocs with this Account from going to final status
     Given I am logged in as a KFS User

@@ -3,17 +3,17 @@ Feature: Financial Documents
   [KFSQA-652] Initiator or qualified document role to recall a routed document. New 5.x feature
   [KFSQA-727] Cornell University requires Chart IT as the default for all FP eDoc Accounting Lines.
 
-  @KFSQA-652
+  @KFSQA-652 @coral
   Scenario Outline: Recall enroute Documents
     Given  I am logged in as "<user>"
     #for all these eDocs
     And    I start an empty <eDoc> document
-    And I add a source Accounting Line to the <eDoc> document with the following:
+    And I add a Source Accounting Line to the <eDoc> document with the following:
       | Chart Code   | IT |
       | Number       | <source_account> |
       | Object Code  | 6690 |
       | Amount       | <source_amount> |
-    And I add a target Accounting Line to the <eDoc> document with the following:
+    And I add a Target Accounting Line to the <eDoc> document with the following:
       | Chart Code   | IT |
       | Number       | <target_account> |
       | Object Code  | 6690 |
@@ -33,10 +33,10 @@ Feature: Financial Documents
     | Indirect Cost Adjustment           | ccs1  | 1093600        | GACLOSE        | 100           | 100           |
     | Journal Voucher                    | dh273 | G003704        |                | 100           |               |
     | Non-Check Disbursement             | rlc56 | G013300        |                | 100           |               |
-    | Pre-Encumbrance                    | ccs1  | G003704        |                | 100           |              |
+    | Pre-Encumbrance                    | ccs1  | G003704        |                | 100           |               |
     | Transfer Of Funds                  | ccs1  | A763306        | A763900        | 100           | 100           |
 
-  @KFSQA-727
+  @KFSQA-727 @tortoise @needs-clean-up
   Scenario Outline: Accounting Line Defaults to Chart IT
     Given  I am logged in as a KFS User for the <docType> document
     And    I start an empty <eDoc> document
