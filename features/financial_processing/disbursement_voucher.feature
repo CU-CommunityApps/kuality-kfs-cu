@@ -66,7 +66,7 @@ Feature: Disbursement Voucher
     And   I submit the Disbursement Voucher document
     And   the Disbursement Voucher document goes to ENROUTE
 
-  @KFSQA-697 @tortoise
+  @KFSQA-697 @tortoise @wip
   Scenario: Disbursement Voucher Address Types to persist when copied to a new Disbursement Voucher
     Given I am logged in as a KFS User
     When  I start an empty Disbursement Voucher document with Payment to Vendor 4362-0 and Reason Code B
@@ -112,7 +112,7 @@ Feature: Disbursement Voucher
     And   I save the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to SAVED
 
-  @KFSQA-700 @tortoise
+  @KFSQA-700 @tortoise @wip
   Scenario: Disbursement Voucher document allow usage of Revolving Fund (Petty Cash) Payment Types
     Given I am logged in as a KFS User
     When  I start an empty Disbursement Voucher document with Payment to a Petty Cash Vendor

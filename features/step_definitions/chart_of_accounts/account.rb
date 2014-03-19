@@ -338,7 +338,7 @@ And /^I use these Accounts:$/ do |table|
   on AccountLookupPage do |page|
     existing_accounts.each do |account_number|
       # FIXME: These values should be set by a service.
-      page.chart_code.fit     'IT'
+      page.chart_code.fit 'IT'
       page.account_number.fit account_number
       page.search
 
