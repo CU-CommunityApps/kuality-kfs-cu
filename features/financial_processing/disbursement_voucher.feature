@@ -110,7 +110,7 @@ Feature: Disbursement Voucher
     And   I save the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to SAVED
 
-  @KFSQA-700 @tortoise @wip
+  @KFSQA-700 @tortoise
   Scenario: Disbursement Voucher document allow usage of Revolving Fund (Petty Cash) Payment Types
     Given I am logged in as a KFS User
     When  I start an empty Disbursement Voucher document with Payment to a Petty Cash Vendor
