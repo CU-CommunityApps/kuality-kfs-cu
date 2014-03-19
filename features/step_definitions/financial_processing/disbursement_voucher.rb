@@ -101,22 +101,15 @@ Then /^The eMail Address shows up in the Contact Information Tab$/ do
   on(DisbursementVoucherPage).email_address.value.should_not == ''
 end
 
-And /^I add Total Mileage of (\d+\.?\d*) to Disbursement Voucher document$/ do |mileage|
+And /^I enter the Total Mileage of (\d+\.?\d*) in Travel Tab$/ do |mileage|
   on (DisbursementVoucherPage) {|page| page.car_mileage.fit mileage}
 end
 
-And /^the Calculated Amount with Start Date (\d{2}\/\d{2}\/\d{4}) should equal (\d+\.?\d*)$/ do |start_date, total_amount|
-  on (DisbursementVoucherPage) do |page|
-    page.per_diem_start_date.fit start_date
-    page.calc_mileage_amount
-    page.car_mileage_reimb_amt.value.should == total_amount
-  end
-end
+And /^the calculated Amount in the Travel Tab should match following Total Amount for each specified Start Date:$/ do |table|
 
-And /^the Mileage calculation should match following Start Date and Total Amount fields:$/ do |table|
-
-  mileage_date_amount = table.raw.flatten
-  mileage_date_amount.each_slice(2).to_a.each do |start_date, total_amount|
+  mileage_date_amount = table.raw.flatten.each_slice(2).to_a
+  mileage_date_amount.shift # skip header row
+  mileage_date_amount.each do |start_date, total_amount|
     on (DisbursementVoucherPage) do |page|
       page.per_diem_start_date.fit start_date
       page.calc_mileage_amount

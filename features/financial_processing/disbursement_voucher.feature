@@ -114,14 +114,9 @@ Feature: Disbursement Voucher
   Scenario: Verify using current mileage rate based on dates
     Given I am logged in as a KFS User
     When  I start an empty Disbursement Voucher document with Payment to Vendor 5238-0 with Tax Address and Reason Code N
-    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
-      | Number       | G003704        |
-      | Object Code  | 6370           |
-      | Amount       | 10             |
-      | Description  | DV27 Test....  |
-    And   I add Total Mileage of 245 to Disbursement Voucher document
-#    And   the Calculated Amount with Start Date 01/01/2013 should equal 138.43
-     And  the Mileage calculation should match following Start Date and Total Amount fields:
+    And   I enter the Total Mileage of 245 in Travel Tab
+    And   the calculated Amount in the Travel Tab should match following Total Amount for each specified Start Date:
+       | Start Date        | Total Amount      |
        | 02/04/2013        | 138.43            |
        | 05/06/2012        | 135.98            |
        | 08/06/2011        | 135.98            |
