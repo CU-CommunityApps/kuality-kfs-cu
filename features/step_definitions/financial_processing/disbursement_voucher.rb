@@ -89,7 +89,40 @@ And /^I copy a Disbursement Voucher document with Tax Address to persist$/ do
   old_address.should == copied_address
 end
 
-
 Then /^The eMail Address shows up in the Contact Information Tab$/ do
   on(DisbursementVoucherPage).email_address.value.should_not == ''
+end
+
+And /^I add a random payee the Disbursement Voucher$/ do
+  on (PaymentInformationTab) do |tab|
+    tab.payee_search
+    on PayeeLookup do |plookup|
+      plookup.payment_reason_code.fit 'B - Reimbursement for Out-of-Pocket Expenses'
+      plookup.netid.fit               'aa*'
+      plookup.search
+      plookup.return_random
+    end
+    @disbursement_voucher.fill_in_payment_info(tab)
+  end
+end
+
+And /^I change the Payee address$/ do
+  on (PaymentInformationTab) do |tab|
+    tab.address_1.fit 'address_1'
+    tab.address_2.fit 'address_2'
+    tab.city.fit 'city'
+    tab.state.fit 'ST'
+    tab.postal_code.fit '12345'
+    @disbursement_voucher.fill_in_payment_info(tab)
+  end
+end
+
+Then(/^The Payment Information address equals the overwritten address information$/) do
+  on (PaymentInformationTab) do |tab|
+    tab.address_1_value.should == @disbursement_voucher.address_1
+    tab.address_2_value.should == @disbursement_voucher.address_2
+    tab.city_value.should == @disbursement_voucher.city
+    tab.state_value.should == @disbursement_voucher.state
+    tab.postal_code_value.should == @disbursement_voucher.postal_code
+  end
 end

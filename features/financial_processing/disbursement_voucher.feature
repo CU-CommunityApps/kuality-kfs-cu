@@ -135,7 +135,8 @@ Feature: Disbursement Voucher
   Scenario: Disbursement Voucher document allow usage of Revolving Fund (Petty Cash) Payment Types
     Given I am logged in as a KFS User
     When  I start an empty Disbursement Voucher document
-    And   I add a random payee with Reason Code B to the Disbursement Voucher
+    And   I add a random payee the Disbursement Voucher
+    And   I change the Payee address
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | G003704        |
       | Object Code  | 6540           |
@@ -143,7 +144,6 @@ Feature: Disbursement Voucher
       | Description  | DV12 Test....  |
     And   I change the Check Amount for the Disbursement Voucher document to 100
     And   I submit the Disbursement Voucher document
-    And   the Disbursement Voucher document goes to ENROUTE
-    When  I view the Disbursement Voucher document
-#    Then  The Address Information equals the Retrieved Address Information
+    When  the Disbursement Voucher document goes to ENROUTE
+    Then  The Payment Information address equals the overwritten address information
 
