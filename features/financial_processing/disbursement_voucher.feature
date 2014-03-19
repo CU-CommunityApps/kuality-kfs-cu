@@ -141,6 +141,7 @@ Feature: Disbursement Voucher
       | Amount       | 10             |
       | Description  | DV12 Test....  |
     And   I change the Check Amount for the Disbursement Voucher document to 100
+
     And   I submit the Disbursement Voucher document
     And   the Disbursement Voucher document goes to ENROUTE
     And   I am logged in as "djj1"
