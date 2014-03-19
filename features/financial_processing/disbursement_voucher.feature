@@ -107,8 +107,6 @@ Feature: Disbursement Voucher
       | Object Code  | 6540               |
       | Amount       | 100                |
       | Description  | Line Test Number 1 |
-
-#    And     I Select Remit Address
     And   I add a Pre-Paid Travel Expense
     And   I submit the Disbursement Voucher document
     And   the Disbursement Voucher document goes to ENROUTE
