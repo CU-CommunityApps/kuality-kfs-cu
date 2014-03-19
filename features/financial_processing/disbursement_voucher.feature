@@ -17,6 +17,8 @@ Feature: Disbursement Voucher
   [KFSQA-709] Because it saves time, I as a KFS User should be able to
   initiate a Disbursement Voucher document with just the description.
 
+  [KFSQA-700] Allow usage of Revolving Fund (Petty Cash) DV Payment Types.
+
   [KFSQA-710] Verify using current mileage rate based on dates.
 
   @KFSQA-681 @smoke @sloth
@@ -67,7 +69,7 @@ Feature: Disbursement Voucher
   @KFSQA-697 @tortoise
   Scenario: Disbursement Voucher Address Types to persist when copied to a new Disbursement Voucher
     Given I am logged in as a KFS User
-    When  I start an empty Disbursement Voucher document with Payment to Vendor 4362-0 with Tax Address and Reason Code N
+    When  I start an empty Disbursement Voucher document with Payment to Vendor 4362-0 and Reason Code B
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | G003704        |
       | Object Code  | 6540           |
@@ -110,10 +112,30 @@ Feature: Disbursement Voucher
     And   I save the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to SAVED
 
+  @KFSQA-700 @tortoise
+  Scenario: Disbursement Voucher document allow usage of Revolving Fund (Petty Cash) Payment Types
+    Given I am logged in as a KFS User
+    When  I start an empty Disbursement Voucher document with Payment to a Petty Cash Vendor
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G003704        |
+      | Object Code  | 6540           |
+      | Amount       | 10             |
+      | Description  | DV12 Test....  |
+    And   I save the Disbursement Voucher document
+    And   I view the Disbursement Voucher document
+    And   I change the Check Amount for the Disbursement Voucher document to 22.22
+    And   I submit the Disbursement Voucher document
+    And   the Disbursement Voucher document goes to ENROUTE
+    And   I am logged in as "djj1"
+    And   I view the Disbursement Voucher document
+    And   I approve the Disbursement Voucher document
+    And   the Disbursement Voucher document goes to FINAL
+
+
   @KFSQA-710 @sloth @wip
   Scenario: Verify using current mileage rate based on dates
     Given I am logged in as a KFS User
-    When  I start an empty Disbursement Voucher document with Payment to Vendor 5238-0 with Tax Address and Reason Code N
+    When  I start an empty Disbursement Voucher document with Payment to Vendor 5238-0 and Reason Code N
     And   I enter the Total Mileage of 245 in Travel Tab
     And   the calculated Amount in the Travel Tab should match following Total Amount for each specified Start Date:
        | Start Date        | Total Amount      |

@@ -2,25 +2,15 @@ When /^I start an empty Disbursement Voucher document$/ do
   @disbursement_voucher = create DisbursementVoucherObject
 end
 
-When /^I start an empty Disbursement Voucher document with Payment to Vendor (\d+-\d+) with (\w+) Address and Reason Code (\w+)$/ do |vendor_number, address_type, reason_code|
+When /^I start an empty Disbursement Voucher document with Payment to Vendor (\d+-\d+) and Reason Code (\w+)$/ do |vendor_number, reason_code|
   case reason_code
     when 'B'
       payment_reason = 'B - Reimbursement for Out-of-Pocket Expenses'
-    when 'K'
-      payment_reason = 'K - Univ PettyCash Custodian Replenishment'
     when 'N'
       payment_reason = 'N - Travel Payment for a Non-employee'
 
   end
-  case address_type
-    when 'Single' # will not do address lookup after payee look
-      address_type_description =  nil
-    when 'Tax'
-      address_type_description = 'TX - TAX'
-    when 'Remit'
-      address_type_description = 'RM - REMIT'
-  end
-  @disbursement_voucher = create DisbursementVoucherObject, payee_id: vendor_number, payment_reason_code: payment_reason, address_type_description: address_type_description
+  @disbursement_voucher = create DisbursementVoucherObject, payee_id: vendor_number, payment_reason_code: payment_reason
 end
 
 When /^I start an empty Disbursement Voucher document with Payment to Employee (.*)$/ do |net_id|
@@ -48,8 +38,7 @@ end
 And /^I add an Accounting Line to the Disbursement Voucher with the following fields:$/ do |table|
   accounting_line_info = table.rows_hash
   accounting_line_info.delete_if { |k,v| v.empty? }
-  @disbursement_voucher.check_amount = accounting_line_info['Amount']
-  @disbursement_voucher.change_default_check_amount
+  on (PaymentInformationTab) {|tab| tab.check_amount.fit accounting_line_info['Amount']}
   @disbursement_voucher.add_source_line({
                                             account_number: accounting_line_info['Number'],
                                             object: accounting_line_info['Object Code'],
@@ -76,6 +65,17 @@ And /^I search for the payee with Terminated Employee (\w+) and Reason Code (\w+
     plookup.search
     plookup.frm.divs(id: 'lookup')[0].parent.text.should include 'No values match this search'
   end
+end
+
+And /^I change the Check Amount for the Disbursement Voucher document to (.*)$/ do |amount|
+  on (PaymentInformationTab) {|tab| tab.check_amount.fit amount}
+  on (AccountingLine) {|line| line.update_source_amount(0).fit amount}
+end
+
+
+When /^I start an empty Disbursement Voucher document with Payment to a Petty Cash Vendor$/ do
+  #TODO : vendor number '41473-0' should be retrieved from service
+  @disbursement_voucher = create DisbursementVoucherObject, payee_id: '41473-0', payment_reason_code: 'K - Univ PettyCash Custodian Replenishment'
 end
 
 And /^I copy a Disbursement Voucher document with Tax Address to persist$/ do
