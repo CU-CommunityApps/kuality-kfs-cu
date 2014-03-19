@@ -23,6 +23,7 @@ When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance document t
                                                                       line_description: 'Test 753 Encumbrance'
                                                                   }]
   on(PreEncumbrancePage).send(button.gsub(' ', '_'))
+  step 'I add the encumbrance to the stack'
   sleep 10
 end
 
@@ -57,8 +58,7 @@ When /^I start an empty Pre\-Encumbrance document$/ do
 end
 
 When /^I (.*) a Pre-Encumbrance document with an Encumbrance Accounting Line for the current Month$/ do |button|
-  @account = make AccountObject, number: 'G003704' # TODO: Pick an appropriate account from the service
-  step "I #{button} a Pre-Encumbrance Document that encumbers the random Account" # This works because the default is the current month
+  step "I #{button} a Pre-Encumbrance document that encumbers Account G003704" # This works because the default is the current month
 end
 
 And /^I do an Open Encumbrances lookup for the Pre-Encumbrance document with Balance Type (.*) and Include All Pending Entries$/ do |balance_type|

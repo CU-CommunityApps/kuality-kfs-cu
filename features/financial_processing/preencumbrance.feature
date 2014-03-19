@@ -81,30 +81,34 @@ Feature: Pre-Encumbrance
     When    I am logged in as a KFS Chart Manager
     Then    The oustanding encumbrance for account G003704 and object code 6100 is 800
 
-  @KFSQA-664 @cornell @wip
+  @KFSQA-664 @nightly-jobs @cornell @wip
   Scenario: Process a Pre-Encumbrance using a revenue object code.
     Given   I am logged in as a KFS System Administrator
-    And     I update the OBJECT_TYPES Parameter for the Pre-Encumbrance component in the KFS-FP namespace with the following values:
-      | Parameter Value | IC |
-    And     I blanket approve the Parameter document
-    And     I am logged in as a KFS User
-    And     I save a Pre-Encumbrance document with an Encumbrance Accounting Line for the current Month
-    And     the Encumbrance Accounting Line appears in the document's GLPE entry
-    And     I submit the Pre-Encumbrance document
-    And     the Pre-Encumbrance document goes to ENROUTE
-    And     I approve the Pre-Encumbrance document
-    And     the Pre-Encumbrance document goes to FINAL
-    And     I lookup the Accounting Line using Available Balances Lookup
-    And     I select Include Pending Entries
-    And     I select the Current Month from the General Ledger Balance Lookup
-    And     The General Ledger Balance Lookup displays the Encumbrance Document ID
-    And     The Encumbrance Accounting Line equals the displayed amounts
-    Given   Nightly Batch Jobs run
+    When    I update the OBJECT_TYPES Parameter for the Pre-Encumbrance component in the KFS-FP namespace with the following values:
+      | Parameter Value | EX;IC |
+    And     I finalize the Parameter document
+
+    Given   I am logged in as a KFS User
+    When    I save a Pre-Encumbrance document with an Encumbrance Accounting Line for the current Month
+    Then    the Encumbrance Accounting Line appears in the Pre-Encumbrance document's GLPE entry
+    When    I view the Pre-Encumbrance document
+    And     I blanket approve the Pre-Encumbrance document
+    Then    the Pre-Encumbrance document goes to FINAL
+
+    When    I lookup the Encumbrance Accounting Line for the Pre-Encumbrance document via Available Balances with these options selected:
+      | Include Pending Ledger Entry | All |
+    And     I open the Encumbrance Amount General Ledger Balance Lookup in the Available Balances lookup that matches the one submitted for Encumbrance Accounting Line on the Pre-Encumbrance document
+    And     I lookup all entries for the current month in the General Ledger Balance lookup entry
+    Then    the General Ledger Balance lookup displays the document ID for the Pre-Encumbrance document
+    And     the Encumbrance Accounting Line on the General Ledger Balance lookup for the Pre-Encumbrance document equals the displayed amounts
+
+    When    Nightly Batch Jobs run
     And     I am logged in as a KFS System Administrator
-    When    I lookup the Pre-Encumbrance document in the General Ledger
-    Then    the Encumbrance Accounting Line appears in the document's GL entry
+    Then    the Encumbrance Accounting Line appears in the Pre-Encumbrance document's GL entry
     And     I update the OBJECT_TYPES Parameter for the Pre-Encumbrance component in the KFS-FP namespace with the following values:
       | Parameter Value | EX |
+    And     I finalize the Parameter document
+
   @KFSQA-753 @nightly-jobs @cornell @tortoise
   Scenario: Generate Proper Offsets Using a PE to generate an Encumbrance
     Given I am logged in as a KFS User

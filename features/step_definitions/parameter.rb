@@ -19,7 +19,7 @@ And /^I update the (.*) Parameter for the (.*) component in the (.*) namespace w
                                        parameter_constraint_code_denied:  page.old_parameter_constraint_code == 'Denied' ? :set : :clear
 
     @parameter.edit description: 'Temporary change to add in IC value.',
-                    parameter_value: "#{@parameter.parameter_value};#{update_values['Parameter Value']}",
+                    parameter_value: update_values['Parameter Value'],
                     press: :submit
   end
 end
@@ -33,4 +33,13 @@ And /^I lookup the (.*) Parameter for the (.*) component in the (.*) namespace$/
     lookup.search
     lookup.edit_random # There can only be one!
   end
+end
+
+And /^I finalize the Parameter document$/ do
+  # Note: this means you'll change users before the end of this step.
+  step 'the Parameter document goes to ENROUTE'
+  step 'I am logged in as a KFS Parameter Change Administrator'
+  step 'I view the Parameter document'
+  step 'I approve the Parameter document'
+  step 'the Parameter document goes to FINAL'
 end
