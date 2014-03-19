@@ -14,6 +14,11 @@ Feature: Disbursement Voucher
 
   [KFSQA-708]
 
+  [KFSQA-709] Because it saves time, I as a KFS User should be able to
+  initiate a Disbursement Voucher document with just the description.
+
+  [KFSQA-700] Allow usage of Revolving Fund (Petty Cash) DV Payment Types.
+
   @KFSQA-681 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User
@@ -96,6 +101,34 @@ Feature: Disbursement Voucher
   Scenario: Email Not defaulting in Contact Information Tab
     Given   I am logged in as a KFS User for the DV document
     When    I start an empty Disbursement Voucher document
+    Then    The eMail Address shows up in the Contact Information Tab
+
+  @KFSQA-709 @hare
+  Scenario: KFS User Initiates a Disbursement Voucher document with only a description field
+    Given I am logged in as a KFS User
+    When  I start an empty Disbursement Voucher document with only the Description field populated
+    And   I save the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to SAVED
+
+  @KFSQA-700 @tortoise
+  Scenario: Disbursement Voucher document allow usage of Revolving Fund (Petty Cash) Payment Types
+    Given I am logged in as a KFS User
+    When  I start an empty Disbursement Voucher document with Payment to a Petty Cash Vendor
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G003704        |
+      | Object Code  | 6540           |
+      | Amount       | 10             |
+      | Description  | DV12 Test....  |
+    And   I save the Disbursement Voucher document
+    And   I view the Disbursement Voucher document
+    And   I change the Check Amount for the Disbursement Voucher document to 22.22
+    And   I submit the Disbursement Voucher document
+    And   the Disbursement Voucher document goes to ENROUTE
+    And   I am logged in as "djj1"
+    And   I view the Disbursement Voucher document
+    And   I approve the Disbursement Voucher document
+    And   the Disbursement Voucher document goes to FINAL
+
     Then    The eMail Address shows up in the Contact Information Tab
 
   @KFSQA-713 @sloth
