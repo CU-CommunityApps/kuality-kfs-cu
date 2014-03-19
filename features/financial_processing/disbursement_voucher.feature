@@ -98,15 +98,21 @@ Feature: Disbursement Voucher
     When    I start an empty Disbursement Voucher document
     Then    The eMail Address shows up in the Contact Information Tab
 
-  @KFSQA-713 @sloth
+  @KFSQA-713 @sloth @wip
   Scenario: Disbursement Voucher, Check, Wildcard payee search, Non Employee PP Travel Expenses
     Given   I am logged in as a KFS User for the DV document
-    When    I start an empty Disbursement Voucher document
-    And     I add a random payee the Disbursement Voucher
+    When  I start an empty Disbursement Voucher document with Payment to Employee arm2
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G003704            |
+      | Object Code  | 6540               |
+      | Amount       | 100                |
+      | Description  | Line Test Number 1 |
 
-    And     I search and retrieve a DV Payee ID using a wildcard
-    And     I Select Remit Address
-    And     I Complete the Pre-Paid Travel Expenses Tab and Select Add
-    And     I submit the document and it becomes ENROUTE
-    When    I Login in as Fiscal Officer
-    Then    I Approve the document and it becomes FINAL
+#    And     I Select Remit Address
+    And   I add a Pre-Paid Travel Expense
+    And   I submit the Disbursement Voucher document
+    And   the Disbursement Voucher document goes to ENROUTE
+    And   I am logged in as "djj1"
+    And   I view the Disbursement Voucher document
+    And   I approve the Disbursement Voucher document
+    And   the Disbursement Voucher document goes to FINAL
