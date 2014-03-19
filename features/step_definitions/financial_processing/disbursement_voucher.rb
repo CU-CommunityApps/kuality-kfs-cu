@@ -98,7 +98,7 @@ And /^I add a random employee payee to the Disbursement Voucher$/ do
   on (PaymentInformationTab) do |tab|
     tab.payee_search
     on PayeeLookup do |plookup|
-      plookup.payment_reason_code.fit 'B'
+      plookup.payment_reason_code.fit 'B - Reimbursement for Out-of-Pocket Expenses'
       plookup.netid.fit               'aa*'
       plookup.search
       plookup.return_random
@@ -118,21 +118,34 @@ And /^I add a Pre-Paid Travel Expense$/ do
   end
 end
 
-
 And /^I add a random vendor payee to the Disbursement Voucher$/ do
   on (PaymentInformationTab) do |tab|
     tab.payee_search
     on PayeeLookup do |plookup|
-      plookup.payment_reason_code.fit 'E'
-      plookup.netid.fit               '*****'
+      plookup.payment_reason_code.fit 'B - Reimbursement for Out-of-Pocket Expenses'
+      plookup.vendor_name.fit         '*****'
       plookup.search
       plookup.return_random
-      plookup.return_random
+      sleep 1
+      plookup.return_random if plookup.results_table.exists?
     end
     @disbursement_voucher.fill_in_payment_info(tab)
   end
 end
 
 Then /^the copied DV payment address equals the selected address$/ do
-  pending
+  on (PaymentInformationTab) do |tab|
+    tab.address_1.value.should == @disbursement_voucher.address_1
+    tab.address_2.value.should == @disbursement_voucher.address_2
+    tab.city.value.should == @disbursement_voucher.city
+    tab.state.value.should == @disbursement_voucher.state
+    tab.postal_code.value.should == @disbursement_voucher.postal_code
+  end
+end
+
+When /^I copy the Disbursement Voucher document$/ do
+  on(KFSBasePage) do |document_page|
+    document_page.copy_current_document
+    @document_id = document_page.document_id
+  end
 end
