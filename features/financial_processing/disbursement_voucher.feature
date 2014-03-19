@@ -86,7 +86,7 @@ Feature: Disbursement Voucher
     And   I view the Disbursement Voucher document
     And   I copy a Disbursement Voucher document with Tax Address to persist
 
-  @KFSQA-684 @smoke  @sloth
+  @KFSQA-684 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payee's EmplID is the same as Initiator's Entity/Principal ID
 # '1009867' is lk26's principanId/entityId, and arm2's employee_id.
     Given I am logged in as "LK26"
@@ -112,7 +112,7 @@ Feature: Disbursement Voucher
     And   I save the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to SAVED
 
-  @KFSQA-700 @tortoise @wip
+  @KFSQA-700 @tortoise
   Scenario: Disbursement Voucher document allow usage of Revolving Fund (Petty Cash) Payment Types
     Given I am logged in as a KFS User
     When  I start an empty Disbursement Voucher document with Payment to a Petty Cash Vendor
@@ -131,6 +131,22 @@ Feature: Disbursement Voucher
     And   I approve the Disbursement Voucher document
     And   the Disbursement Voucher document goes to FINAL
 
+  @KFSQA-713 @sloth
+  Scenario: Disbursement Voucher, Check, Wildcard payee search, Non Employee PP Travel Expenses
+    Given I am logged in as a KFS User for the DV document
+    When  I start an empty Disbursement Voucher document with Payment to Employee arm2
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G003704            |
+      | Object Code  | 6540               |
+      | Amount       | 100                |
+      | Description  | Line Test Number 1 |
+    And   I add a Pre-Paid Travel Expense
+    And   I submit the Disbursement Voucher document
+    And   the Disbursement Voucher document goes to ENROUTE
+    And   I am logged in as "djj1"
+    And   I view the Disbursement Voucher document
+    And   I approve the Disbursement Voucher document
+    And   the Disbursement Voucher document goes to FINAL
 
   @KFSQA-710 @sloth @wip
   Scenario: Verify using current mileage rate based on dates
