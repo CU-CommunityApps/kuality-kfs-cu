@@ -98,9 +98,9 @@ Feature: Disbursement Voucher
     When    I start an empty Disbursement Voucher document
     Then    The eMail Address shows up in the Contact Information Tab
 
-  @KFSQA-713 @sloth @wip
+  @KFSQA-713 @sloth
   Scenario: Disbursement Voucher, Check, Wildcard payee search, Non Employee PP Travel Expenses
-    Given   I am logged in as a KFS User for the DV document
+    Given I am logged in as a KFS User for the DV document
     When  I start an empty Disbursement Voucher document with Payment to Employee arm2
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | G003704            |
