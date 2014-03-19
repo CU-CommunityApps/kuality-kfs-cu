@@ -84,7 +84,7 @@ Feature: Disbursement Voucher
     And   I view the Disbursement Voucher document
     And   I copy a Disbursement Voucher document with Tax Address to persist
 
-  @KFSQA-684 @smoke  @sloth
+  @KFSQA-684 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payee's EmplID is the same as Initiator's Entity/Principal ID
 # '1009867' is lk26's principanId/entityId, and arm2's employee_id.
     Given I am logged in as "LK26"
