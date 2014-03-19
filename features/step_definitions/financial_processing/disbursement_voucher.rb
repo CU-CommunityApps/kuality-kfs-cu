@@ -94,9 +94,9 @@ Then /^The eMail Address shows up in the Contact Information Tab$/ do
   on(DisbursementVoucherPage).email_address.value.should_not == ''
 end
 
-And /^I add a random payee the Disbursement Voucher$/ do
+And /^I add a random employee payee to the Disbursement Voucher$/ do
   on (PaymentInformationTab) do |tab|
-    on(PaymentInformationTab).payee_search
+    tab.payee_search
     on PayeeLookup do |plookup|
       plookup.payment_reason_code.fit 'B'
       plookup.netid.fit               'aa*'
@@ -116,4 +116,23 @@ And /^I add a Pre-Paid Travel Expense$/ do
     tab.amount.fit          '100'
     tab.add_pre_paid_expense
   end
+end
+
+
+And /^I add a random vendor payee to the Disbursement Voucher$/ do
+  on (PaymentInformationTab) do |tab|
+    tab.payee_search
+    on PayeeLookup do |plookup|
+      plookup.payment_reason_code.fit 'E'
+      plookup.netid.fit               '*****'
+      plookup.search
+      plookup.return_random
+      plookup.return_random
+    end
+    @disbursement_voucher.fill_in_payment_info(tab)
+  end
+end
+
+Then /^the copied DV payment address equals the selected address$/ do
+  pending
 end

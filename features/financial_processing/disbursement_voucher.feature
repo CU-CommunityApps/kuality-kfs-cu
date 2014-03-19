@@ -147,3 +147,18 @@ Feature: Disbursement Voucher
     And   I view the Disbursement Voucher document
     And   I approve the Disbursement Voucher document
     And   the Disbursement Voucher document goes to FINAL
+
+  @KFSQA-719 @sloth
+  Scenario: Disbursement Voucher, Check, Wildcard payee search, Non Employee PP Travel Expenses
+    Given I am logged in as a KFS User for the DV document
+    When  I start an empty Disbursement Voucher document
+    And   I add a random vendor payee to the Disbursement Voucher
+    And   I change the Check Amount for the Disbursement Voucher document to 100
+    And   I submit the Disbursement Voucher document
+    And   the Disbursement Voucher document goes to ENROUTE
+    And   I am logged in as "djj1"
+    And   I view the Disbursement Voucher document
+    And   I blanket approve the Disbursement Voucher document
+    And   the Disbursement Voucher document goes to FINAL
+    When  I copy the Disbursement Voucher document
+    Then  the copied DV payment address equals the selected address
