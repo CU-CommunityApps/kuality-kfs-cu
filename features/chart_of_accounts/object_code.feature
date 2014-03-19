@@ -22,13 +22,13 @@ Feature: Object Code
     When    I blanket approve the Object Code document
     Then    The object code should show an error that says "CG Reporting Code (ZZZZ) for Chart Code (IT) does not exist."
 
-  @KFSQA-580 @broken!
+  @KFSQA-580
   Scenario: Verify Object Code updates Reports to Object Code
     Given   I am logged in as a KFS Chart Manager
-    And     I edit an Object Code document with object code 1111
+    And     I edit an Object Code document with object code 1110
     And     I enter a valid Reports to Object Code
     And     I submit the Object Code document
-    When    I Lookup the Object Code 1111
+    When    I Lookup the Object Code 1110
     Then    The Lookup should display the Reports to Object Code
 
   @KFSQA-596 @hare
