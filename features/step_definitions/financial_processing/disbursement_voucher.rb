@@ -55,5 +55,5 @@ end
 
 When /^I start an empty Disbursement Voucher document with Payment to a Petty Cash Vendor$/ do
   #TODO : vendor number '41473-0' should be retrieved from service
-  @disbursement_voucher = create DisbursementVoucherObject, payee_id: '41473-0', payment_reason_code: 'K - Univ PettyCash Custodian Replenishment', address_type_description: nil
+  @disbursement_voucher = create DisbursementVoucherObject, payee_id: '41473-0', payment_reason_code: 'K - Univ PettyCash Custodian Replenishment'
 end
