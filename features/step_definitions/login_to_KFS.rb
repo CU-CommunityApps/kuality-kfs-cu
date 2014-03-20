@@ -28,14 +28,10 @@ end
 
 Given /^I am logged in as a KFS Chart Manager$/ do
   
-  ksb_client = KSBServiceClient.new("/Users/srb55/client-sign.properties", "cynergy-dev", "https://cynergy-updev.kuali.cornell.edu/cynergy")
-  role_svc = ksb_client.getRoleService()
-  identity_svc = ksb_client.getIdentityService()
+  #ids = role_service.getRoleMemberPrincipalIds('KFS-SYS', 'Chart Manager', StringMapEntryListType.new).getPrincipalId()
+  #et = identity_service.getEntityByPrincipalId(get_first_principal_for_role('KFS-SYS', 'Chart Manager'))
   
-  ids = role_svc.getRoleMemberPrincipalIds('KFS-SYS', 'Chart Manager', StringMapEntryListType.new).getPrincipalId()
-  et = identity_svc.getEntityByPrincipalId(ids.get(0))
-  
-  visit(BackdoorLoginPage).login_as(et.getPrincipals().getPrincipal().get(0).getPrincipalName()) #TODO get from role service
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Chart Manager')) #TODO get from role service
 end
 
 Given /^I am am logged in as a KFS Chart Administrator$/ do
