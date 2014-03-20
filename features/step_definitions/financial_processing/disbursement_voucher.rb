@@ -2,8 +2,15 @@ When /^I start an empty Disbursement Voucher document$/ do
   @disbursement_voucher = create DisbursementVoucherObject
 end
 
-When /^I start an empty Disbursement Voucher document with Payment to Vendor (.*)$/ do |vendor_number|
-  @disbursement_voucher = create DisbursementVoucherObject, payee_id: vendor_number
+When /^I start an empty Disbursement Voucher document with Payment to Vendor (\d+-\d+) and Reason Code (\w+)$/ do |vendor_number, reason_code|
+  case reason_code
+    when 'B'
+      payment_reason = 'B - Reimbursement for Out-of-Pocket Expenses'
+    when 'N'
+      payment_reason = 'N - Travel Payment for a Non-employee'
+
+  end
+  @disbursement_voucher = create DisbursementVoucherObject, payee_id: vendor_number, payment_reason_code: payment_reason
 end
 
 When /^I start an empty Disbursement Voucher document with Payment to Employee (.*)$/ do |net_id|
@@ -115,6 +122,23 @@ And /^I add a Pre-Paid Travel Expense$/ do
     tab.req_instate.fit     'test'
     tab.amount.fit          '100'
     tab.add_pre_paid_expense
+  end
+end
+
+And /^I enter the Total Mileage of (\d+\.?\d*) in Travel Tab$/ do |mileage|
+  on (DisbursementVoucherPage) {|page| page.car_mileage.fit mileage}
+end
+
+And /^the calculated Amount in the Travel Tab should match following Total Amount for each specified Start Date:$/ do |table|
+
+  mileage_date_amount = table.raw.flatten.each_slice(2).to_a
+  mileage_date_amount.shift # skip header row
+  mileage_date_amount.each do |start_date, total_amount|
+    on (DisbursementVoucherPage) do |page|
+      page.per_diem_start_date.fit start_date
+      page.calc_mileage_amount
+      page.car_mileage_reimb_amt.value.should == total_amount
+    end
   end
 end
 

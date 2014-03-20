@@ -19,6 +19,8 @@ Feature: Disbursement Voucher
 
   [KFSQA-700] Allow usage of Revolving Fund (Petty Cash) DV Payment Types.
 
+  [KFSQA-710] Verify using current mileage rate based on dates.
+
   @KFSQA-681 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User
@@ -67,7 +69,7 @@ Feature: Disbursement Voucher
   @KFSQA-697 @tortoise
   Scenario: Disbursement Voucher Address Types to persist when copied to a new Disbursement Voucher
     Given I am logged in as a KFS User
-    When  I start an empty Disbursement Voucher document with Payment to Vendor 4362-0
+    When  I start an empty Disbursement Voucher document with Payment to Vendor 4362-0 and Reason Code B
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | G003704        |
       | Object Code  | 6540           |
@@ -129,8 +131,6 @@ Feature: Disbursement Voucher
     And   I approve the Disbursement Voucher document
     And   the Disbursement Voucher document goes to FINAL
 
-    Then    The eMail Address shows up in the Contact Information Tab
-
   @KFSQA-713 @sloth
   Scenario: Disbursement Voucher, Check, Wildcard payee search, Non Employee PP Travel Expenses
     Given I am logged in as a KFS User for the DV document
@@ -167,3 +167,16 @@ Feature: Disbursement Voucher
     And   the Disbursement Voucher document goes to FINAL
     When  I copy the Disbursement Voucher document
     Then  the copied DV payment address equals the selected address
+
+  @KFSQA-710 @sloth
+  Scenario: Verify using current mileage rate based on dates
+    Given I am logged in as a KFS User
+    When  I start an empty Disbursement Voucher document with Payment to Vendor 5238-0 and Reason Code N
+    And   I enter the Total Mileage of 245 in Travel Tab
+    And   the calculated Amount in the Travel Tab should match following Total Amount for each specified Start Date:
+       | Start Date        | Total Amount      |
+       | 02/04/2013        | 138.43            |
+       | 05/06/2012        | 135.98            |
+       | 08/06/2011        | 135.98            |
+       | 03/01/2011        | 124.95            |
+       | 04/05/2010        | 122.50            |
