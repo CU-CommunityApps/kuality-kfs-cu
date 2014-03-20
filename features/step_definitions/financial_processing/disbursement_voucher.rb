@@ -123,11 +123,11 @@ And /^I add a random vendor payee to the Disbursement Voucher$/ do
     tab.payee_search
     on PayeeLookup do |plookup|
       plookup.payment_reason_code.fit 'B - Reimbursement for Out-of-Pocket Expenses'
-      plookup.vendor_name.fit         '*****'
+      plookup.vendor_name.fit         'Academy of Management'
       plookup.search
       plookup.return_random
       sleep 1
-      plookup.return_random if plookup.results_table.exists?
+      plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
     end
     @disbursement_voucher.fill_in_payment_info(tab)
   end
