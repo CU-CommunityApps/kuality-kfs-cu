@@ -24,52 +24,52 @@ Feature: Disbursement Voucher
   @KFSQA-681 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User
-    When  I start an empty Disbursement Voucher document
+    And   I start an empty Disbursement Voucher document
     And   I add the only payee with Payee Id map3 and Reason Code B to the Disbursement Voucher
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | G003704            |
       | Object Code  | 6100               |
       | Amount       | 23                 |
       | Description  | Line Test Number 1 |
-    And   I submit the Disbursement Voucher document
-    And   the Disbursement Voucher document goes to ENROUTE
+    When  I submit the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
 
   @KFSQA-682 @smoke @hare
   Scenario: KFS User Initiates a Disbursement Voucher document and Payee search should return no result with Terminated Employee
     Given I am logged in as a KFS User
     When  I start an empty Disbursement Voucher document
-    And   I search for the payee with Terminated Employee msw13 and Reason Code B for Disbursement Voucher document with no result found
+    Then  I search for the payee with Terminated Employee msw13 and Reason Code B for Disbursement Voucher document with no result found
 
   @KFSQA-683 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Active employee and alumnus and former student
     Given I am logged in as a KFS User
-    When  I start an empty Disbursement Voucher document
+    And   I start an empty Disbursement Voucher document
     And   I add the only payee with Payee Id vk76 and Reason Code B to the Disbursement Voucher
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | G003704            |
       | Object Code  | 6100               |
       | Amount       | 23                 |
       | Description  | Line Test Number 1 |
-    And   I submit the Disbursement Voucher document
-    And   the Disbursement Voucher document goes to ENROUTE
+    When  I submit the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
 
   @KFSQA-685 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Active Staff, Former Student, and Alumnus
     Given I am logged in as a KFS User
-    When  I start an empty Disbursement Voucher document
+    And   I start an empty Disbursement Voucher document
     And   I add the only payee with Payee Id nms32 and Reason Code B to the Disbursement Voucher
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | G003704            |
       | Object Code  | 6100               |
       | Amount       | 23                 |
       | Description  | Line Test Number 1 |
-    And   I submit the Disbursement Voucher document
-    And   the Disbursement Voucher document goes to ENROUTE
+    When  I submit the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
 
   @KFSQA-697 @tortoise
   Scenario: Disbursement Voucher Address Types to persist when copied to a new Disbursement Voucher
     Given I am logged in as a KFS User
-    When  I start an empty Disbursement Voucher document with Payment to Vendor 4362-0 and Reason Code B
+    And   I start an empty Disbursement Voucher document with Payment to Vendor 4362-0 and Reason Code B
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | G003704        |
       | Object Code  | 6540           |
@@ -83,21 +83,21 @@ Feature: Disbursement Voucher
     And   I view the Disbursement Voucher document
     And   I approve the Disbursement Voucher document
     And   I am logged in as a KFS User
-    And   I view the Disbursement Voucher document
-    And   I copy a Disbursement Voucher document with Tax Address to persist
+    When  I view the Disbursement Voucher document
+    Then  I copy a Disbursement Voucher document with Tax Address to persist
 
   @KFSQA-684 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payee's EmplID is the same as Initiator's Entity/Principal ID
 # '1009867' is lk26's principanId/entityId, and arm2's employee_id.
     Given I am logged in as "LK26"
-    When  I start an empty Disbursement Voucher document with Payment to Employee arm2
+    And   I start an empty Disbursement Voucher document with Payment to Employee arm2
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | G003704            |
       | Object Code  | 6540               |
       | Amount       | 22341.11           |
       | Description  | Line Test Number 1 |
-    And   I submit the Disbursement Voucher document
-    And   the Disbursement Voucher document goes to ENROUTE
+    When  I submit the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
 
   @KFSQA-708 @hare
   Scenario: Email Not defaulting in Contact Information Tab
@@ -108,14 +108,14 @@ Feature: Disbursement Voucher
   @KFSQA-709 @hare
   Scenario: KFS User Initiates a Disbursement Voucher document with only a description field
     Given I am logged in as a KFS User
-    When  I start an empty Disbursement Voucher document with only the Description field populated
-    And   I save the Disbursement Voucher document
+    And   I start an empty Disbursement Voucher document with only the Description field populated
+    When  I save the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to SAVED
 
   @KFSQA-700 @tortoise
   Scenario: Disbursement Voucher document allow usage of Revolving Fund (Petty Cash) Payment Types
     Given I am logged in as a KFS User
-    When  I start an empty Disbursement Voucher document with Payment to a Petty Cash Vendor
+    And   I start an empty Disbursement Voucher document with Payment to a Petty Cash Vendor
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | G003704        |
       | Object Code  | 6540           |
@@ -128,8 +128,8 @@ Feature: Disbursement Voucher
     And   the Disbursement Voucher document goes to ENROUTE
     And   I am logged in as "djj1"
     And   I view the Disbursement Voucher document
-    And   I approve the Disbursement Voucher document
-    And   the Disbursement Voucher document goes to FINAL
+    When  I approve the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to FINAL
 
   @KFSQA-713 @sloth
   Scenario: Disbursement Voucher, Check, Wildcard payee search, Non Employee PP Travel Expenses
@@ -171,9 +171,9 @@ Feature: Disbursement Voucher
   @KFSQA-710 @sloth
   Scenario: Verify using current mileage rate based on dates
     Given I am logged in as a KFS User
-    When  I start an empty Disbursement Voucher document with Payment to Vendor 5238-0 and Reason Code N
-    And   I enter the Total Mileage of 245 in Travel Tab
-    And   the calculated Amount in the Travel Tab should match following Total Amount for each specified Start Date:
+    And   I start an empty Disbursement Voucher document with Payment to Vendor 5238-0 and Reason Code N
+    When  I enter the Total Mileage of 245 in Travel Tab
+    Then  the calculated Amount in the Travel Tab should match following Total Amount for each specified Start Date:
        | Start Date        | Total Amount      |
        | 02/04/2013        | 138.43            |
        | 05/06/2012        | 135.98            |
