@@ -191,7 +191,6 @@ And /^I edit a Vendor with Vendor Number (.*)$/ do |vendor_number|
     page.vendor_number.fit vendor_number
     page.search
     page.edit_item(vendor_number)
-    #page.edit_random
   end
   on VendorPage do |page|
     page.description.fit random_alphanums(40, 'AFT')
@@ -199,54 +198,58 @@ And /^I edit a Vendor with Vendor Number (.*)$/ do |vendor_number|
     @vendor.document_id = page.document_id
     @document_id = page.document_id
   end
-  end
+end
 
 And /^the Tax Number and Notes are Not Visible on Vendor page$/ do
   on VendorPage do |page|
     page.notes_table.rows.length.should == 2 # no notes displayed
-    # can't locate this table with id/name/summary, so do this ugly ? # tax number is masked
+    # can't locate this table with id/name/summary, so do this ugly way? # tax number is masked
     page.ownership.parent.parent.parent.parent[11][3].text == '*********'
   end
 end
 
-And /^I change the Address (\w+) ?(\w)? and Phone (\w+)$/ do |address_field_1, address_field_2, phone_field|
+And /^I change the Phone (\w+) on Vendor Phone tab$/ do |phone_field|
   on VendorPage do |page|
-    page.expand_all
     @changed_addr_phone = {} unless !@changed_addr_phone.nil?
-
-    @changed_addr_phone.merge!(added_address_2: page.added_address_2.value, added_phone_number: page.added_phone_number.value)
-    case address_field_1
-      when 'Line'
-        case address_field_2
-          when '1'
-            page.added_address_1.fit random_alphanums(30, 'AFT')
-            @changed_addr_phone.merge!(added_address_1: page.added_address_1.value)
-          when '2'
-            page.added_address_2.fit random_alphanums(30, 'AFT')
-            @changed_addr_phone.merge!(added_address_2: page.added_address_2.value)
-        end
-      when 'Attention'
-        page.added_attention.fit random_alphanums(20, 'AFT')
-        @changed_addr_phone.merge!(added_attention: page.added_attention.value)
-    end
-    #@vendor.added_address_2 = page.added_address_2.value
-    if page.added_phone_number.exists?
+    page.expand_all
+    if page.updated_phone_number.exists?
       case phone_field
         when 'Number'
-          page.added_phone_number.fit "607-#{rand(100..999)}-#{rand(1000..9999)}"
-          @changed_addr_phone.merge!(added_phone_number: page.added_phone_number.value)
+          page.updated_phone_number.fit "607-#{rand(100..999)}-#{rand(1000..9999)}"
+          @changed_addr_phone.merge!(updated_phone_number: page.updated_phone_number.value)
         when 'Extension'
-          page.added_phone_ext.fit rand(100..999)
-          @changed_addr_phone.merge!(added_phone_ext: page.added_phone_ext.value)
+          page.updated_phone_ext.fit rand(100..999)
+          @changed_addr_phone.merge!(updated_phone_ext: page.updated_phone_ext.value)
         when 'Type'
-          page.added_phone_type.fit 'MOBILE'
-          @changed_addr_phone.merge!(added_phone_type: page.added_phone_type.value)
+          page.updated_phone_type.fit 'MOBILE'
+          @changed_addr_phone.merge!(updated_phone_type: page.updated_phone_type.value)
       end
     else
       page.phone_number.fit "607-#{rand(100..999)}-#{rand(1000..9999)}"
       page.phone_type.fit 'SALES'
       page.add_phone_number
-      @changed_addr_phone.merge!(added_phone_type: page.added_phone_type.value, added_phone_number: page.added_phone_number.value)
+      @changed_addr_phone.merge!(updated_phone_type: page.updated_phone_type.value, updated_phone_number: page.updated_phone_number.value)
+    end
+  end
+end
+
+And /^I change the Address (\w+) ?(\w)? on Vendor Address tab$/ do |address_field_1, address_field_2|
+  on VendorPage do |page|
+    @changed_addr_phone = {} unless !@changed_addr_phone.nil?
+
+    case address_field_1
+      when 'Line'
+        case address_field_2
+          when '1'
+            page.updated_address_1.fit random_alphanums(30, 'AFT')
+            @changed_addr_phone.merge!(updated_address_1: page.updated_address_1.value)
+          when '2'
+            page.updated_address_2.fit random_alphanums(30, 'AFT')
+            @changed_addr_phone.merge!(updated_address_2: page.updated_address_2.value)
+        end
+      when 'Attention'
+        page.updated_address_attention.fit random_alphanums(20, 'AFT')
+        @changed_addr_phone.merge!(updated_address_attention: page.updated_address_attention.value)
     end
   end
 end
@@ -260,12 +263,12 @@ end
 And /^the Address and Phone Number changes persist$/ do
   on VendorPage do |page|
     page.expand_all
-    page.added_address_1.value.should == @changed_addr_phone[:added_address_1]
-    page.added_phone_type.value.should == @changed_addr_phone[:added_phone_type]
-    page.added_address_2.value.should == @changed_addr_phone[:added_address_2]
-    page.added_phone_number.value.should == @changed_addr_phone[:added_phone_number]
-    page.added_attention.value.should == @changed_addr_phone[:added_attention]
-    page.added_phone_ext.value.should == @changed_addr_phone[:added_phone_ext]
+    page.updated_address_1.value.should == @changed_addr_phone[:updated_address_1]
+    page.updated_phone_type.value.should == @changed_addr_phone[:updated_phone_type]
+    page.updated_address_2.value.should == @changed_addr_phone[:updated_address_2]
+    page.updated_phone_number.value.should == @changed_addr_phone[:updated_phone_number]
+    page.updated_address_attention.value.should == @changed_addr_phone[:updated_address_attention]
+    page.updated_phone_ext.value.should == @changed_addr_phone[:updated_phone_ext]
   end
 end
 
