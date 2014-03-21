@@ -173,3 +173,54 @@ When /^I copy the Disbursement Voucher document$/ do
     @document_id = document_page.document_id
   end
 end
+
+And /^I add Vendor (\d+-\d+) with REMIT address as Payee to the Disbursement Voucher document$/ do |vendor_number|
+  on (PaymentInformationTab) do |tab|
+    tab.payee_search
+    on PayeeLookup do |plookup|
+      plookup.payment_reason_code.fit 'B - Reimbursement for Out-of-Pocket Expenses'
+      plookup.vendor_number.fit         vendor_number
+      plookup.search
+      plookup.return_value(vendor_number)
+      on VendorAddressLookup do |valookup|
+        valookup.address_type.fit 'RM - REMIT'
+        valookup.search
+        valookup.return_value_links.first.click
+      end
+    end
+    @disbursement_voucher.fill_in_payment_info(tab)
+    tab.check_stub_text.fit 'Check pick-up at Department'
+  end
+end
+
+And /^I check Special Handling and enter Name and Address on Special Handling tab$/ do
+  on (PaymentInformationTab) do |tab|
+    tab.other_considerations_special_handling.set
+    tab.alert.ok if tab.alert.exists? # click 'special handling' will have a pop up
+    on(SpecialHandlingTab) do |tab|
+      tab.person_name.fit 'Joe Lewis'
+      tab.address_1.fit 'Pick Up at Dept'
+    end
+  end
+end
+
+And /^I add note '(.*)' to the Disbursement Voucher document$/ do |note_text|
+  on DisbursementVoucherPage do |page|
+    page.note_text.fit note_text
+    page.add_note
+  end
+end
+
+And /^I uncheck Special Handling on Payment Information tab$/ do
+  on (PaymentInformationTab) do |tab|
+    tab.other_considerations_special_handling.clear
+    on(SpecialHandlingTab) do |tab|
+      tab.person_name.value.should == ''
+      tab.address_1.value.should == ''
+    end
+  end
+end
+
+And /^the Special Handling is still unchecked on Payment Information tab$/ do
+  on (PaymentInformationTab) {|tab| tab.other_considerations_special_handling.set?.should == false}
+end
