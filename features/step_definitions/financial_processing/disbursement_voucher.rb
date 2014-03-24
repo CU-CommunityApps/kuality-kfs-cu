@@ -173,3 +173,21 @@ When /^I copy the Disbursement Voucher document$/ do
     @document_id = document_page.document_id
   end
 end
+
+And /^I search and retrieve a DV Payee ID (\w+) with Reason Code (\w)$/ do |net_id, reason_code|
+  case reason_code
+    when 'B'
+      @disbursement_voucher.payment_reason_code = 'B - Reimbursement for Out-of-Pocket Expenses'
+  end
+  on (PaymentInformationTab) do |tab|
+    tab.payee_search
+    on PayeeLookup do |plookup|
+      plookup.payment_reason_code.fit @disbursement_voucher.payment_reason_code
+      plookup.netid.fit         net_id
+      plookup.search
+      plookup.return_value(net_id)
+    end
+    @disbursement_voucher.fill_in_payment_info(tab)
+  end
+end
+

@@ -21,6 +21,8 @@ Feature: Disbursement Voucher
 
   [KFSQA-710] Verify using current mileage rate based on dates.
 
+  [KFSQA-716] DV is holding on to the first payee ID for validations.
+
   @KFSQA-681 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User
@@ -180,3 +182,25 @@ Feature: Disbursement Voucher
        | 08/06/2011        | 135.98            |
        | 03/01/2011        | 124.95            |
        | 04/05/2010        | 122.50            |
+
+  @KFSQA-716 @cornell @tortoise @wip
+  Scenario: DV payee can not be the same as initiator.
+    Given I am logged in as "rlc56"
+    And   I start an empty Disbursement Voucher document
+    And   I search and retrieve a DV Payee ID rlc56 with Reason Code B
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G003704            |
+      | Object Code  | 6540               |
+      | Amount       | 100                |
+      | Description  | Line Test Number 1 |
+    And   I submit the Disbursement Voucher document
+    Then  I should get an error saying "Payee cannot be same as initiator."
+    And   I should get an error saying "Payee ID 1774744 cannot be used when Originator has the same ID or name has been entered."
+    And   I search and retrieve a DV Payee ID ccs1 with Reason Code B
+    And   I search and retrieve a DV Payee ID rlc56 with Reason Code B
+    And   I submit the Disbursement Voucher document
+    Then  I should get an error saying "Payee cannot be same as initiator."
+    And   I should get an error saying "Payee ID 1774744 cannot be used when Originator has the same ID or name has been entered."
+    And   I search and retrieve a DV Payee ID ccs1 with Reason Code B
+    And   I submit the Disbursement Voucher document
+    And   the Disbursement Voucher document goes to ENROUTE
