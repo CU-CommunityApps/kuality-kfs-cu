@@ -173,3 +173,75 @@ When /^I copy the Disbursement Voucher document$/ do
     @document_id = document_page.document_id
   end
 end
+
+And /^I add a DV foreign vendor (\d+-\d+) with Reason Code (\w)$/ do |vendor_number, reason_code|
+  case reason_code
+    when 'B'
+      @disbursement_voucher.payment_reason_code = 'B - Reimbursement for Out-of-Pocket Expenses'
+  end
+  on (PaymentInformationTab) do |tab|
+    tab.payee_search
+    on PayeeLookup do |plookup|
+      plookup.payment_reason_code.fit @disbursement_voucher.payment_reason_code
+      plookup.vendor_number.fit         vendor_number
+      plookup.search
+      plookup.return_value(vendor_number)
+    end
+    @disbursement_voucher.fill_in_payment_info(tab)
+    tab.payment_method.fit  'F - Foreign Draft'
+    tab.alert.ok if tab.alert.exists? # popup after select 'Foreign draft'
+  end
+end
+
+And /^I complete the Foreign Draft Tab$/ do
+  on (DisbursementVoucherPage) do |page|
+    page.expand_all
+    page.foreign_draft_in_foreign_currency.set
+    page.currency_type.fit 'Canadian $'
+  end
+end
+
+And /^I change the Check Amount on the Payment Information tab to (.*)$/ do |amount|
+  on (PaymentInformationTab) {|tab| tab.check_amount.fit amount}
+end
+
+And /^I change the Account (\w+) ?(\w+)? for Accounting Line (\d+) to (.*)$/ do |account_field, account_field_1, line_number, new_value|
+  line_idx = line_number.to_i - 1
+  case account_field
+    when 'Number'
+      on (AccountingLine) {|line| line.update_source_account_number(line_idx).fit new_value}
+    when 'Amount'
+      on (AccountingLine) {|line| line.update_source_amount(line_idx).fit new_value}
+    when 'Object'
+      on (AccountingLine) {|line| line.update_source_object_code(line_idx).fit new_value}
+  end
+
+end
+
+Then /^I complete the Nonresident Alien Tax Tab and generate accounting line for Tax$/ do
+  on (DisbursementVoucherPage) {|page| page.expand_all}
+
+    on (NonresidentAlienTaxTab) do |tab|
+    tab.income_class_code.fit       'R - Royalty'
+    tab.federal_income_tax_pct.fit  '30'
+    tab.state_income_tax_pct.fit    '0'
+    tab.postal_country_code.fit     'Canada'
+    tab.generate_line
+  end
+end
+
+When /^I select Disbursement Voucher document from my Action List$/ do
+  visit(MainPage).action_list
+  on(ActionList).last if on(ActionList).last_link.exists?
+  on(ActionList).open_item(@disbursement_voucher.document_id)
+end
+
+And /^I update a random Bank Account to Disbursement Voucher Document$/ do
+  on (DisbursementVoucherPage) do |page|
+    page.bank_search
+    on BankLookupPage do |blookup|
+      blookup.search
+      blookup.return_random
+    end
+  end
+end

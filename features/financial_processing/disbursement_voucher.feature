@@ -21,6 +21,8 @@ Feature: Disbursement Voucher
 
   [KFSQA-710] Verify using current mileage rate based on dates.
 
+  [KFSQA-715] Disbursement Voucher foreign draft with non resident tax and workflow changes for Account, Object Code, and Amount.
+
   @KFSQA-681 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User
@@ -180,3 +182,58 @@ Feature: Disbursement Voucher
        | 08/06/2011        | 135.98            |
        | 03/01/2011        | 124.95            |
        | 04/05/2010        | 122.50            |
+
+
+  @KFSQA-715 @cornell @slug @wip
+  Scenario: Disbursement Voucher foreign draft with non resident tax and workflow changes for Account, Object Code, and Amount.
+    Given I am logged in as a KFS User for the DV document
+    And   I start an empty Disbursement Voucher document
+    And   I add a DV foreign vendor 5328-1 with Reason Code B
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | 5193120            |
+      | Object Code  | 6100               |
+      | Amount       | 65000              |
+      | Description  | Line Test Number 1 |
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | 5193125            |
+      | Object Code  | 6100               |
+      | Amount       | 35000              |
+      | Description  | Line Test Number 2 |
+    And   I change the Check Amount on the Payment Information tab to 100000
+    And   I complete the Foreign Draft Tab
+    And   I submit the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
+    When  I am logged in as "lc88"
+    And   I view the Disbursement Voucher document
+          # change to account not belong to 'lc88'
+    And   I change the Account Number for Accounting Line 1 to G003704
+    And   I approve the Disbursement Voucher document
+    Then  I should get an error saying "Existing accounting lines may not be updated to use Chart Code IT by user lc88."
+    And   I should get an error saying "Existing accounting lines may not be updated to use Account Number G003704 by user lc88."
+    # after the error, the acct line is not editable, so need to reload.  this seems an existing bug in 3.0.1 ? so, need to reload.
+    And   I reload the Disbursement Voucher document
+    And   I change the Account Amount for Accounting Line 1 to 60000
+    And   I change the Account Amount for Accounting Line 2 to 40000
+    And   I change the Account Object Code for Accounting Line 2 to 6540
+    And   I approve the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
+    When  I am logged in as a Tax Manager
+    And   I select Disbursement Voucher document from my Action List
+    And   I change the Account Amount for Accounting Line 1 to 55000
+    And   I change the Account Amount for Accounting Line 2 to 45000
+    And   I complete the Nonresident Alien Tax Tab and generate accounting line for Tax
+          # the tax will generate an accounting line of (30,000)
+    And   I approve the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
+    And   I am logged in as a Disbursement Manager
+    And   I select Disbursement Voucher document from my Action List
+    And   I change the Account Object Code for Accounting Line 1 to 6430
+    And   I approve the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
+    And   I am logged in as a Disbursement Method Reviewer
+    And   I select Disbursement Voucher document from my Action List
+    And   I update a random Bank Account to Disbursement Voucher Document
+    And   I change the Account Amount for Accounting Line 1 to 56000
+    And   I change the Check Amount on the Payment Information tab to 71000
+    And   I approve the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to FINAL
