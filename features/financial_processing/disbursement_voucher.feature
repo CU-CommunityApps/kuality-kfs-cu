@@ -183,7 +183,7 @@ Feature: Disbursement Voucher
        | 03/01/2011        | 124.95            |
        | 04/05/2010        | 122.50            |
 
-  @KFSQA-701 @cornell @tortoise @wip
+  @KFSQA-701 @cornell @tortoise
   Scenario: FO to Uncheck Special Handling and Approve the DV without getting error
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
