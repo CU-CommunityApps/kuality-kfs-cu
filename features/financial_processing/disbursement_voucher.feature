@@ -232,7 +232,7 @@ Feature: Disbursement Voucher
     And   the Disbursement Voucher document goes to ENROUTE
 
 
-  @KFSQA-715 @cornell @slug @wip
+  @KFSQA-715 @cornell @slug
   Scenario: Disbursement Voucher foreign draft with non resident tax and workflow changes for Account, Object Code, and Amount.
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
