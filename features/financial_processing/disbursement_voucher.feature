@@ -21,6 +21,10 @@ Feature: Disbursement Voucher
 
   [KFSQA-710] Verify using current mileage rate based on dates.
 
+  [KFSQA-701] FO to Uncheck Special Handling and Approve the DV without getting error.
+
+  [KFSQA-716] DV is holding on to the first payee ID for validations.
+
   [KFSQA-715] Disbursement Voucher foreign draft with non resident tax and workflow changes for Account, Object Code, and Amount.
 
   @KFSQA-681 @smoke @sloth
@@ -182,6 +186,50 @@ Feature: Disbursement Voucher
        | 08/06/2011        | 135.98            |
        | 03/01/2011        | 124.95            |
        | 04/05/2010        | 122.50            |
+
+  @KFSQA-701 @cornell @tortoise
+  Scenario: FO to Uncheck Special Handling and Approve the DV without getting error
+    Given I am logged in as a KFS User for the DV document
+    And   I start an empty Disbursement Voucher document
+    And   I add Vendor 12587-1 to the Disbursement Voucher document as the Payee using the vendor's REMIT address
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G003704            |
+      | Object Code  | 6540               |
+      | Amount       | 25000              |
+      | Description  | Line Test Number 1 |
+    And   I fill out the Special Handling tab
+    And   I add note 'This needs to be picked up in Person' to the Disbursement Voucher document
+    And   I submit the Disbursement Voucher document
+    And   the Disbursement Voucher document goes to ENROUTE
+    And   I am logged in as "djj1"
+    And   I view the Disbursement Voucher document
+    And   I uncheck Special Handling on Payment Information tab
+    And   I add note 'Check no longer needs to be picked up in person' to the Disbursement Voucher document
+    When  the Special Handling is still unchecked on Payment Information tab
+    And   I approve the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
+
+  @KFSQA-716 @cornell @tortoise
+  Scenario: DV payee can not be the same as initiator.
+    Given I am logged in as "rlc56"
+    And   I start an empty Disbursement Voucher document
+    And   I search and retrieve a DV Payee ID rlc56 with Reason Code B
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G003704            |
+      | Object Code  | 6540               |
+      | Amount       | 100                |
+      | Description  | Line Test Number 1 |
+    And   I submit the Disbursement Voucher document
+    Then  I should get an error saying "Payee cannot be same as initiator."
+    And   I should get an error saying "Payee ID 1774744 cannot be used when Originator has the same ID or name has been entered."
+    And   I search and retrieve a DV Payee ID ccs1 with Reason Code B
+    And   I search and retrieve a DV Payee ID rlc56 with Reason Code B
+    And   I submit the Disbursement Voucher document
+    Then  I should get an error saying "Payee cannot be same as initiator."
+    And   I should get an error saying "Payee ID 1774744 cannot be used when Originator has the same ID or name has been entered."
+    And   I search and retrieve a DV Payee ID ccs1 with Reason Code B
+    And   I submit the Disbursement Voucher document
+    And   the Disbursement Voucher document goes to ENROUTE
 
 
   @KFSQA-715 @cornell @slug @wip
