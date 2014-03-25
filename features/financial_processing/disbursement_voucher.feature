@@ -187,13 +187,13 @@ Feature: Disbursement Voucher
   Scenario: FO to Uncheck Special Handling and Approve the DV without getting error
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
-    And   I add Vendor 12587-1 with REMIT address as Payee to the Disbursement Voucher document
+    And   I add Vendor 12587-1 to the Disbursement Voucher document as the Payee using the vendor's REMIT address
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | G003704            |
       | Object Code  | 6540               |
       | Amount       | 25000              |
       | Description  | Line Test Number 1 |
-    And   I check Special Handling and enter Name and Address on Special Handling tab
+    And   I fill out the Special Handling tab
     And   I add note 'This needs to be picked up in Person' to the Disbursement Voucher document
     And   I submit the Disbursement Voucher document
     And   the Disbursement Voucher document goes to ENROUTE

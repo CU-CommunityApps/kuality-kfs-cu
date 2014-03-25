@@ -173,8 +173,11 @@ When /^I copy the Disbursement Voucher document$/ do
     @document_id = document_page.document_id
   end
 end
-
-And /^I add Vendor (\d+-\d+) with REMIT address as Payee to the Disbursement Voucher document$/ do |vendor_number|
+And /^I add Vendor (\d+-\d+) to the Disbursement Voucher document as the Payee using the vendor's (\w+) address$/ do |vendor_number, address_type|
+  case address_type
+    when 'REMIT'
+      @disbursement_voucher.address_type_description = 'RM - REMIT'
+  end
   on (PaymentInformationTab) do |tab|
     tab.payee_search
     on PayeeLookup do |plookup|
@@ -183,7 +186,7 @@ And /^I add Vendor (\d+-\d+) with REMIT address as Payee to the Disbursement Vou
       plookup.search
       plookup.return_value(vendor_number)
       on VendorAddressLookup do |valookup|
-        valookup.address_type.fit 'RM - REMIT'
+        valookup.address_type.fit @disbursement_voucher.address_type_description
         valookup.search
         valookup.return_value_links.first.click
       end
@@ -193,7 +196,7 @@ And /^I add Vendor (\d+-\d+) with REMIT address as Payee to the Disbursement Vou
   end
 end
 
-And /^I check Special Handling and enter Name and Address on Special Handling tab$/ do
+And /^I fill out the Special Handling tab$/ do
   on (PaymentInformationTab) do |tab|
     tab.other_considerations_special_handling.set
     tab.alert.ok if tab.alert.exists? # click 'special handling' will have a pop up
