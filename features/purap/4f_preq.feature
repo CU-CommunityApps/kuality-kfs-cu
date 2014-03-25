@@ -2,10 +2,10 @@ Feature: Purap Preq Building Blocks
 
   [purap-4f] purap test manual entry, >$500, <$25000, external vendor and no wire
 
- @wip @purap
+@pending @wip @purap
+  #PURAP TEST IN PROGRESS JUST UPLOADING TO ADD FILES
   Scenario: Purap Preq building block 4f
    Given I login as a KFS user to create an REQS
-# der9
    And I create the Requisition document with:
 #   | payment request     | :clear   |
    | vendor number       | 4471-0   |
@@ -19,7 +19,6 @@ Feature: Purap Preq Building Blocks
    And I submit the Requisition document
    And the requisition document goes to ENROUTE
    And I am logged in as "jaf54"
-#   And I am logged in as "der9"
    And I view the Requisition document on my action list
    And I approve the Requisition document
    And the Requisition document goes to FINAL
