@@ -34,7 +34,7 @@ Feature: KFS Fiscal Officer Account Copy
     When   I approve the Budget Adjustment document
     Then   the Budget Adjustment document goes to FINAL
 
-  @KFSQA-628 @cornell @nightly-jobs
+  @KFSQA-628 @cornell @nightly-jobs @tortoise
   Scenario: General ledger balance displays correctly for a Budget Adjustment after nightly batch is run
     Given   I am logged in as a KFS User for the BA document
     And    I submit a balanced Budget Adjustment document
@@ -50,15 +50,17 @@ Feature: KFS Fiscal Officer Account Copy
     Then   The To Account Monthly Balance should match the To amount
     And    The line description for the To Account should be displayed
 
-  @KFSQA-629
+  @KFSQA-629 @tortoise
   Scenario Outline: Upload only Base Budget budget transactions using BA Import Template.
-# GETTING ERROR FOR NOT ALLOWING ADJUSTMENT FOR YEARS 2014 and 2015 (only available)
+# GETTING ERROR FOR NOT ALLOWING BASE ADJUSTMENT FOR YEARS 2014 and 2015 (only available)
     Given   I am logged in as a KFS User for the <type code> document
     And     I start a <document> document for from "<From file name>" file import and to "<To file name>" file import
     And     On the <document> I import the From Accounting Lines from a csv file
     And     On the <document> I import the To Accounting Lines from a csv file
     And     I submit the <document> document
-    And     I am logged in as "dh273"
+    And     I am logged in as a KFS Fiscal Officer
+    # Not sure if FO is the correct user required to blanket approve a BA but 'dh273' is
+#    And     I am logged in as "dh273"
     Then    The GLPE contains 4 Balance Type CB transactions for the <document> document
     When    I view the Budget Adjustment document
     And     I blanket approve the Budget Adjustment document
