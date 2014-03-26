@@ -7,7 +7,7 @@ Feature: Vendor Edit
     # "rlc56" can't view notes
     Given   I am logged in as "rlc56"
     When    I edit a Vendor with Vendor Number 35495-0
-    And     the Tax Number and Notes are Not Visible on Vendor page
+    Then    the Tax Number and Notes are Not Visible on Vendor page
     And     I change the Address Line 1 on Vendor Address tab
     And     I change the Phone Number on Vendor Phone tab
     And     I submit the Vendor document
@@ -20,7 +20,7 @@ Feature: Vendor Edit
     And     the Vendor document goes to FINAL
     Given   I am logged in as "rlc56"
     When    I edit a Vendor with Vendor Number 35495-0
-    And     the Tax Number and Notes are Not Visible on Vendor page
+    Then    the Tax Number and Notes are Not Visible on Vendor page
     And     I change the Address Line 2 on Vendor Address tab
     And     I change the Phone Extension on Vendor Phone tab
     And     I submit the Vendor document
@@ -33,6 +33,6 @@ Feature: Vendor Edit
     And     the Vendor document goes to FINAL
     Given   I am logged in as "rlc56"
     When    I edit a Vendor with Vendor Number 35495-0
-    And     the Tax Number and Notes are Not Visible on Vendor page
+    Then    the Tax Number and Notes are Not Visible on Vendor page
     And     the Address and Phone Number changes persist
 
