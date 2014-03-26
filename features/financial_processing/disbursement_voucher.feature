@@ -27,6 +27,11 @@ Feature: Disbursement Voucher
 
   [KFSQA-715] Disbursement Voucher foreign draft with non resident tax and workflow changes for Account, Object Code, and Amount.
 
+  [KFSQA-711] Foreign Check and NRA Tax GLPE
+     As a KFS User I will pay vendors in foreign monies if requested , because Cornell does business
+     outside the United States. I also want to change the document during workflow. as reviewers may
+     need to change the document. Object Code, and Amount.
+
   @KFSQA-681 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User
@@ -283,5 +288,47 @@ Feature: Disbursement Voucher
     And   I update a random Bank Account to Disbursement Voucher Document
     And   I change the Account Amount for Accounting Line 1 to 56000 on a Disbursement Voucher
     And   I change the Check Amount on the Payment Information tab to 71000
+    And   I approve the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to FINAL
+
+  @KFSQA-711 @cornell @slug @wip
+  Scenario: Disbursement Voucher foreign draft with non resident tax and workflow changes for Account, Object Code, and Amount.
+    Given I am logged in as a KFS User
+    When  I edit a Vendor with Vendor Number 5328-1
+    And   I add a Remit Address to a Vendor
+    And   I submit the Vendor document
+    And   the Vendor document goes to ENROUTE
+    And   I am logged in as a Vendor Reviewer
+    And   I select Vendor document from my Action List
+    And   I approve the Vendor document
+    And   the Vendor document goes to FINAL
+    Given I am logged in as a KFS User for the DV document
+    And   I start an empty Disbursement Voucher document
+    And   I search and retrieve DV foreign vendor 5328-1 with Reason Code B
+    And   I select the added Remit Address
+    And   I complete the Foreign Draft Tab
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G003704            |
+      | Object Code  | 6540               |
+      | Amount       | 61000              |
+      | Description  | Line Test Number 1 |
+    And   I submit the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
+    When  I am logged in as "djj1"
+    And   I view the Disbursement Voucher document
+    And   I approve the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
+    When  I am logged in as a Tax Manager
+    And   I view the Disbursement Voucher document
+    And   I complete the Nonresident Alien Tax Tab and generate accounting line for Tax
+    And   I approve the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
+    And   I am logged in as a Disbursement Manager
+    And   I view the Disbursement Voucher document
+    Then  the GLPE contains Taxes withheld amount of 18300.00
+    And   I approve the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
+    When  I am logged in as a Disbursement Method Reviewer
+    And   I view the Disbursement Voucher document
     And   I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to FINAL

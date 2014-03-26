@@ -316,3 +316,38 @@ And /^I update a random Bank Account to Disbursement Voucher Document$/ do
     end
   end
 end
+
+And /^I search and retrieve DV foreign vendor (\d+-\d+) with Reason Code (\w)$/ do |vendor_number, reason_code|
+  case reason_code
+    when 'B'
+      @disbursement_voucher.payment_reason_code = 'B - Reimbursement for Out-of-Pocket Expenses'
+  end
+  on (PaymentInformationTab) do |tab|
+    tab.payee_search
+    on PayeeLookup do |plookup|
+      plookup.payment_reason_code.fit @disbursement_voucher.payment_reason_code
+      plookup.vendor_number.fit         vendor_number
+      plookup.search
+      plookup.return_value(vendor_number)
+    end
+  end
+end
+
+And /^I select the added Remit Address$/ do
+  on VendorAddressLookup do |valookup|
+    valookup.return_value(@vendor.address_2)
+  end
+  on (PaymentInformationTab) do |tab|
+    @disbursement_voucher.fill_in_payment_info(tab)
+    tab.payment_method.fit  'F - Foreign Draft'
+    tab.alert.ok if tab.alert.exists? # popup after select 'Foreign draft'
+  end
+
+end
+
+And /^the GLPE contains Taxes withheld amount of (.*)$/ do |tax_amount|
+  on (DisbursementVoucherPage) {|page| page.expand_all}
+  on (GeneralLedgerPendingEntryTab) do |tab|
+    tab.amount_array.should include(tax_amount)
+  end
+  end

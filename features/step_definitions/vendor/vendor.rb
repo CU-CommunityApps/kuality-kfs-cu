@@ -272,3 +272,21 @@ And /^the Address and Phone Number changes persist$/ do
   end
 end
 
+And /^I add a (\w+) Address to a Vendor$/ do |address_type|
+  case address_type
+    when 'Remit'
+      @vendor.address_type = 'RM - REMIT'
+  end
+  on VendorPage do |page|
+    page.expand_all
+    page.address_type.fit @vendor.address_type
+    page.address_1.fit '3430 McTavish St'
+    page.address_2.fit random_alphanums(30, 'Grntd')
+    @vendor.address_2 = page.address_2.value
+    page.default_address.fit 'No'
+    page.city.fit 'Montreal, Quebec'
+    page.zipcode.fit 'H3A_1X9'
+    page.country.fit 'Canada'
+    page.add_address
+  end
+end
