@@ -2,7 +2,7 @@ Feature: Vendor Edit
 
   [KFSQA-755] I want to edit a vendor with ownership type INDIVIDUAL.
 
-  @KFSQA-755 @cornell @slug @wip
+  @KFSQA-755 @cornell @slug
   Scenario: I want to edit a vendor with ownership type INDIVIDUAL
     # "rlc56" can't view notes
     Given   I am logged in as "rlc56"
