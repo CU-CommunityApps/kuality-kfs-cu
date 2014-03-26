@@ -27,6 +27,8 @@ Feature: Disbursement Voucher
 
   [KFSQA-715] Disbursement Voucher foreign draft with non resident tax and workflow changes for Account, Object Code, and Amount.
 
+  [KFSQA-702] FO can do a search on the account and verify the payee id still displays on the DV. Approve it to final.
+
   @KFSQA-681 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User
@@ -285,3 +287,26 @@ Feature: Disbursement Voucher
     And   I change the Check Amount on the Payment Information tab to 71000
     And   I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to FINAL
+
+  @KFSQA-702 @cornell @tortoise @wip
+  Scenario:  FO can do a search on the account and verify the payee id still displays on the DV. Approve it to final.
+    Given I am logged in as a KFS User for the DV document
+    # 21541-0 is slow to change doc status to 'final' so use '41473'
+    And   I start an empty Disbursement Voucher document with Payment to Vendor 41473-0 and Reason Code K
+    And   I save the Disbursement Voucher document
+    And   I view the Disbursement Voucher document
+    And   I change the Check Amount on the Payment Information tab to 22.22
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G003704        |
+      | Object Code  | 6540           |
+      | Amount       | 22.22          |
+      | Description  | DV13 Test....  |
+    And   I submit the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
+    And   I am logged in as "djj1"
+    And   I view the Disbursement Voucher document
+    When  I search Account and cancel on Account Lookup
+    Then  the Payee Id still displays on Disbursement Voucher
+    When  I approve the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to FINAL
+
