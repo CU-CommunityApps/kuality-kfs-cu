@@ -391,3 +391,84 @@ Then /^the (.*) document accounting lines equal the General Ledger Pending entri
     end
   end
 end
+
+And /^I lookup the (Encumbrance|Disencumbrance|Source|Target|From|To) Accounting Line for the (.*) document via Available Balances with these options selected:$/ do |al_type, document, table|
+  doc_object = document_object_for(document)
+  alt = AccountingLineObject::get_type_conversion(al_type)
+
+  visit(MainPage).available_balances
+  on AvailableBalancesLookupPage do |lookup|
+    lookup.fiscal_year.fit                  right_now[:year]
+    lookup.chart_code.fit                   doc_object.accounting_lines[alt].first.chart_code # We're assuming this exists, of course.
+    lookup.account_number.fit               doc_object.accounting_lines[alt].first.account_number
+    lookup.send("consolidation_option_#{snake_case(table.rows_hash['Consolidation Option']).to_s}") unless table.rows_hash['Consolidation Option'].nil?
+    lookup.send("include_pending_entry_approved_indicator_#{table.rows_hash['Include Pending Ledger Entry'].downcase}") unless table.rows_hash['Include Pending Ledger Entry'].nil?
+    lookup.search
+  end
+end
+
+And /^these fields in the Available Balances lookup match the ones submitted in the (.*) document:$/ do |document, table|
+  # Note: This assumes you're already on the Available Balances lookup page and have run the lookup
+  doc_object = document_object_for(document)
+  lookup_cols = table.raw.flatten.collect { |f| on(AvailableBalancesLookupPage).column_index(snake_case(f)) }
+
+  lookup_cols.each do |col|
+    case col
+      when :encumbrance_amount
+        on(AvailableBalancesLookupPage).column(col).any? { |cell| cell.text == doc_object.accounting_lines[:source].first.amount }
+      else
+        # Do nothing
+    end
+  end
+end
+
+And /^I open the (.*) General Ledger Balance Lookup in the Available Balances lookup that matches the one submitted for (Encumbrance|Disencumbrance|Source|Target|From|To) Accounting Line on the (.*) document$/ do |column, al_type, document|
+  # Note: This assumes you're already on the Available Balances lookup page and have run the lookup
+  doc_object = document_object_for(document)
+  alt = AccountingLineObject::get_type_conversion(al_type)
+  col = on(AvailableBalancesLookupPage).column_index(snake_case(column))
+
+  case snake_case(column)
+    when :encumbrance_amount
+      on(AvailableBalancesLookupPage) do |p|
+        p.item_row(doc_object.accounting_lines[alt].first.object)[col]
+         .link
+         .click
+        p.use_new_tab
+        p.close_parents
+      end
+    else
+      # Do nothing
+  end
+end
+
+And /^the (Encumbrance|Disencumbrance|Source|Target|From|To) Accounting Line on the General Ledger Balance lookup for the (.*) document equals the displayed amounts$/ do |al_type, document|
+  doc_object = document_object_for(document)
+  alt = AccountingLineObject::get_type_conversion(al_type)
+  col = on(GeneralLedgerBalanceLookupPage).column_index(snake_case('Transaction Ledger Entry Amount'))
+
+  on GeneralLedgerBalanceLookupPage do |p|
+    p.item_row(document_object_for(document).document_id)[col].text.to_f.should == doc_object.accounting_lines[alt].first.amount.to_f
+  end
+end
+
+And /^the (Encumbrance|Disencumbrance|Source|Target|From|To) Accounting Line entry matches the (.*) document's entry$/ do |al_type, document|
+  doc_object = document_object_for(document)
+  alt = AccountingLineObject::get_type_conversion(al_type)
+  on AccountingLine do |entry_page|
+    # We're going to just compare against the first submitted line
+    ((entry_page.send("result_#{alt.to_s}_chart_code")).should == doc_object.accounting_lines[alt].first.chart_code) unless doc_object.accounting_lines[alt].first.chart_code.nil?
+    ((entry_page.send("result_#{alt.to_s}_account_number")).should == doc_object.accounting_lines[alt].first.account_number) unless doc_object.accounting_lines[alt].first.account_number.nil?
+    ((entry_page.send("result_#{alt.to_s}_sub_account_code")).should == doc_object.accounting_lines[alt].first.sub_account) unless doc_object.accounting_lines[alt].first.sub_account.nil?
+    ((entry_page.send("result_#{alt.to_s}_object_code")).should == doc_object.accounting_lines[alt].first.object) unless doc_object.accounting_lines[alt].first.object.nil?
+    ((entry_page.send("result_#{alt.to_s}_sub_object_code")).should == doc_object.accounting_lines[alt].first.sub_object) unless doc_object.accounting_lines[alt].first.sub_object.nil?
+    ((entry_page.send("result_#{alt.to_s}_project_code")).should == doc_object.accounting_lines[alt].first.project) unless doc_object.accounting_lines[alt].first.project.nil?
+    ((entry_page.send("result_#{alt.to_s}_organization_reference_id")).should == doc_object.accounting_lines[alt].first.org_ref_id) unless doc_object.accounting_lines[alt].first.org_ref_id.nil?
+    ((entry_page.send("result_#{alt.to_s}_line_description")).should == doc_object.accounting_lines[alt].first.line_description) unless doc_object.accounting_lines[alt].first.line_description.nil?
+    ((entry_page.send("result_#{alt.to_s}_reference_origin_code")).should == doc_object.accounting_lines[alt].first.reference_origin_code) unless doc_object.accounting_lines[alt].first.reference_origin_code.nil?
+    ((entry_page.send("result_#{alt.to_s}_reference_number")).should == doc_object.accounting_lines[alt].first.reference_number) unless doc_object.accounting_lines[alt].first.reference_number.nil?
+    ((entry_page.send("result_#{alt.to_s}_amount")).to_f.should == doc_object.accounting_lines[alt].first.amount.to_f) unless doc_object.accounting_lines[alt].first.amount.nil?
+    ((entry_page.send("result_#{alt.to_s}_base_amount")).to_f.should == doc_object.accounting_lines[alt].first.base_amount.to_f) unless doc_object.accounting_lines[alt].first.base_amount.nil?
+    ((entry_page.send("result_#{alt.to_s}_current_amount")).to_f.should == doc_object.accounting_lines[alt].first.current_amount.to_f) unless doc_object.accounting_lines[alt].first.current_amount.nil?
+  end
+end
