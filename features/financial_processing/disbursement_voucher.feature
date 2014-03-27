@@ -27,7 +27,7 @@ Feature: Disbursement Voucher
 
   [KFSQA-715] Disbursement Voucher foreign draft with non resident tax and workflow changes for Account, Object Code, and Amount.
 
-  [KFSQA-689] Terminated employee but Alumnus should get a DV; People with Multiple Affiliations in PepleSoft should only return one row.
+  [KFSQA-689] Terminated employee but Alumnus should get a DV; People with Multiple Affiliations in PeopleSoft should only return one row.
 
   @KFSQA-681 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
@@ -289,7 +289,7 @@ Feature: Disbursement Voucher
     Then  the Disbursement Voucher document goes to FINAL
 
   @KFSQA-689 @smoke @cornell @sloth @wip
-  Scenario: Terminated employee but Alumnus should get a DV; People with Multiple Affiliations in PepleSoft should only return one row
+  Scenario: Terminated employee but Alumnus should get a DV; People with Multiple Affiliations in PeopleSoft should only return one row
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
     And   I add the only payee with Payee Id rlg3 and Reason Code B to the Disbursement Voucher
