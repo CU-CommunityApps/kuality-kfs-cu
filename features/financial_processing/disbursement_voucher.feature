@@ -237,7 +237,7 @@ Feature: Disbursement Voucher
     And   the Disbursement Voucher document goes to ENROUTE
 
 
-  @KFSQA-715 @cornell @slug
+  @KFSQA-715 @cornell @coral
   Scenario: Disbursement Voucher foreign draft with non resident tax and workflow changes for Account, Object Code, and Amount.
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
@@ -291,11 +291,16 @@ Feature: Disbursement Voucher
     And   I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to FINAL
 
-  @KFSQA-711 @cornell @slug @wip
+  @KFSQA-711 @cornell @coral @wip
   Scenario: Disbursement Voucher foreign draft with non resident tax and workflow changes for Account, Object Code, and Amount.
     Given I am logged in as a KFS User
     When  I edit a Vendor with Vendor Number 5328-1
-    And   I add a Remit Address to a Vendor
+    And   I add an Address to a Vendor with following fields:
+      | Address Type   | RM - REMIT        |
+      | Address 1      | 3430 McTavish St  |
+      | City           | Montreal, Quebec  |
+      | Zip Code       | H3A_1X9           |
+      | Country        | Canada            |
     And   I submit the Vendor document
     And   the Vendor document goes to ENROUTE
     And   I am logged in as a Vendor Reviewer
