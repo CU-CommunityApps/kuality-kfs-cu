@@ -27,6 +27,8 @@ Feature: Disbursement Voucher
 
   [KFSQA-715] Disbursement Voucher foreign draft with non resident tax and workflow changes for Account, Object Code, and Amount.
 
+  [KFSQA-689] Terminated employee but Alumnus should get a DV; People with Multiple Affiliations in PepleSoft should only return one row.
+
   @KFSQA-681 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User
@@ -285,3 +287,17 @@ Feature: Disbursement Voucher
     And   I change the Check Amount on the Payment Information tab to 71000
     And   I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to FINAL
+
+  @KFSQA-689 @smoke @cornell @sloth @wip
+  Scenario: Terminated employee but Alumnus should get a DV; People with Multiple Affiliations in PepleSoft should only return one row
+    Given I am logged in as a KFS User for the DV document
+    And   I start an empty Disbursement Voucher document
+    And   I add the only payee with Payee Id rlg3 and Reason Code B to the Disbursement Voucher
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G003704            |
+      | Object Code  | 6100               |
+      | Amount       | 23                 |
+      | Description  | Line Test Number 1 |
+    When  I submit the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
+
