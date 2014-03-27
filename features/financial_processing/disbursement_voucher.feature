@@ -296,7 +296,7 @@ Feature: Disbursement Voucher
   Scenario: Disbursement Voucher foreign draft with non resident tax, special handling, and workflow changes for Account, Object Code, and Amount.
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
-    And   I add a DV foreign vendor 5328-1 with Reason Code B
+    And   I search and retrieve Payee 'McGill queens university press*' with Reason Code B
     And   I can NOT update the W-9/W-8BEN Completed field on the Payment Information tab
     And   I update the Postal Code on the Payment Information tab to H2X 2C6
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:

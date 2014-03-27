@@ -268,12 +268,14 @@ And /^I add a DV foreign vendor (\d+-\d+) with Reason Code (\w)$/ do |vendor_num
       plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
     end
     @disbursement_voucher.fill_in_payment_info(tab)
-    tab.payment_method.fit  'F - Foreign Draft'
-    tab.alert.ok if tab.alert.exists? # popup after select 'Foreign draft'
   end
 end
 
 And /^I complete the Foreign Draft Tab$/ do
+  on (PaymentInformationTab) do |tab|
+    tab.payment_method.fit  'F - Foreign Draft'
+    tab.alert.ok if tab.alert.exists? # popup after select 'Foreign draft'
+  end
   on (DisbursementVoucherPage) do |page|
     page.expand_all
     page.foreign_draft_in_foreign_currency.set
@@ -337,3 +339,23 @@ end
 And /^the Special Handling tab is open$/ do
   on (SpecialHandlingTab) {|tab| tab.close_special_handling.exist?.should == true}
 end
+
+And /^I search and retrieve Payee '(.*)' with Reason Code (\w)$/ do |vendor_name, reason_code|
+  case reason_code
+    when 'B'
+      @disbursement_voucher.payment_reason_code = 'B - Reimbursement for Out-of-Pocket Expenses'
+  end
+  on (PaymentInformationTab) do |tab|
+    tab.payee_search
+    on PayeeLookup do |plookup|
+      plookup.payment_reason_code.fit @disbursement_voucher.payment_reason_code
+      plookup.vendor_name.fit         vendor_name
+      plookup.search
+      plookup.return_value_links.first.click
+      sleep 1
+      plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
+    end
+    @disbursement_voucher.fill_in_payment_info(tab)
+  end
+end
+
