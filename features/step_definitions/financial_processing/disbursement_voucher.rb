@@ -327,16 +327,11 @@ And /^I update a random Bank Account to Disbursement Voucher Document$/ do
 end
 
 And /^I can NOT update the W-9\/W-8BEN Completed field on the Payment Information tab$/ do
-  on (PaymentInformationTab) do |tab|
-     tab.other_considerations_w9_completed.enabled?.should == false
-  end
+  on (PaymentInformationTab) {|tab| tab.other_considerations_w9_completed.enabled?.should == false}
 end
 
 And /^I update the Postal Code on the Payment Information tab to (.*)$/ do |postal_code|
-  on (PaymentInformationTab) do |tab|
-    tab.postal_code.fit  postal_code
-  end
-
+  on (PaymentInformationTab) {|tab| tab.postal_code.fit  postal_code}
 end
 
 And /^the Special Handling tab is open$/ do

@@ -236,7 +236,7 @@ Feature: Disbursement Voucher
     And   the Disbursement Voucher document goes to ENROUTE
 
 
-  @KFSQA-715 @cornell @slug
+  @KFSQA-715 @cornell @coral
   Scenario: Disbursement Voucher foreign draft with non resident tax and workflow changes for Account, Object Code, and Amount.
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
@@ -260,11 +260,9 @@ Feature: Disbursement Voucher
           # change to account not belong to 'lc88'
     And   I change the Account Number for Accounting Line 1 to G003704 on a Disbursement Voucher
     And   I approve the Disbursement Voucher document
-    And     I should get these error messages:
-      | Existing accounting lines may not be updated to use Chart Code IT by user djj1.          |
-      | Existing accounting lines may not be updated to use Account Number A763900 by user djj1. |
-    Then  I should get an error saying "Existing accounting lines may not be updated to use Chart Code IT by user lc88."
-    And   I should get an error saying "Existing accounting lines may not be updated to use Account Number G003704 by user lc88."
+    Then  I should get these error messages:
+      | Existing accounting lines may not be updated to use Chart Code IT by user lc88.          |
+      | Existing accounting lines may not be updated to use Account Number G003704 by user lc88. |
     # after the error, the acct line is not editable, so need to reload.  this seems an existing bug in 3.0.1 ? so, need to reload.
     And   I reload the Disbursement Voucher document
     And   I change the Account Amount for Accounting Line 1 to 60000 on a Disbursement Voucher
