@@ -288,7 +288,7 @@ Feature: Disbursement Voucher
     And   I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to FINAL
 
-  @KFSQA-689 @smoke @cornell @sloth @wip
+  @KFSQA-689 @smoke @cornell @sloth
   Scenario: Terminated employee but Alumnus should get a DV; People with Multiple Affiliations in PeopleSoft should only return one row
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
