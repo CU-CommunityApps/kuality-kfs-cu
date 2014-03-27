@@ -27,6 +27,8 @@ Feature: Disbursement Voucher
 
   [KFSQA-715] Disbursement Voucher foreign draft with non resident tax and workflow changes for Account, Object Code, and Amount.
 
+  [KFSQA-677] Disbursement Voucher foreign draft with non resident tax, special handling, and workflow changes for Account, Object Code, and Amount.
+
   @KFSQA-681 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User
@@ -197,7 +199,9 @@ Feature: Disbursement Voucher
       | Object Code  | 6540               |
       | Amount       | 25000              |
       | Description  | Line Test Number 1 |
-    And   I fill out the Special Handling tab
+    And   I fill out the Special Handling tab with following fields:
+      | Name         | Joe Lewis          |
+      | Address 1    | Pick Up at Dept    |
     And   I add note 'This needs to be picked up in Person' to the Disbursement Voucher document
     And   I submit the Disbursement Voucher document
     And   the Disbursement Voucher document goes to ENROUTE
@@ -256,6 +260,9 @@ Feature: Disbursement Voucher
           # change to account not belong to 'lc88'
     And   I change the Account Number for Accounting Line 1 to G003704 on a Disbursement Voucher
     And   I approve the Disbursement Voucher document
+    And     I should get these error messages:
+      | Existing accounting lines may not be updated to use Chart Code IT by user djj1.          |
+      | Existing accounting lines may not be updated to use Account Number A763900 by user djj1. |
     Then  I should get an error saying "Existing accounting lines may not be updated to use Chart Code IT by user lc88."
     And   I should get an error saying "Existing accounting lines may not be updated to use Account Number G003704 by user lc88."
     # after the error, the acct line is not editable, so need to reload.  this seems an existing bug in 3.0.1 ? so, need to reload.
@@ -281,6 +288,69 @@ Feature: Disbursement Voucher
     And   I am logged in as a Disbursement Method Reviewer
     And   I select Disbursement Voucher document from my Action List
     And   I update a random Bank Account to Disbursement Voucher Document
+    And   I change the Account Amount for Accounting Line 1 to 56000 on a Disbursement Voucher
+    And   I change the Check Amount on the Payment Information tab to 71000
+    And   I approve the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to FINAL
+
+
+  @KFSQA-677 @smoke @cornell @coral @wip
+  Scenario: Disbursement Voucher foreign draft with non resident tax, special handling, and workflow changes for Account, Object Code, and Amount.
+    Given I am logged in as a KFS User for the DV document
+    And   I start an empty Disbursement Voucher document
+    And   I add a DV foreign vendor 5328-1 with Reason Code B
+    And   I can NOT update the W-9/W-8BEN Completed field on the Payment Information tab
+    And   I update the Postal Code on the Payment Information tab to H2X 2C6
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | 5193120            |
+      | Object Code  | 6100               |
+      | Amount       | 65000              |
+      | Description  | Line Test Number 1 |
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | 5193125            |
+      | Object Code  | 6100               |
+      | Amount       | 35000              |
+      | Description  | Line Test Number 2 |
+    And   I change the Check Amount on the Payment Information tab to 100000
+    And   I complete the Foreign Draft Tab
+    And   I submit the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
+    When  I am logged in as "lc88"
+    And   I view the Disbursement Voucher document
+          # change to account not belong to 'lc88'
+    And   I change the Account Number for Accounting Line 1 to 1278003 on a Disbursement Voucher
+    And   I save the Disbursement Voucher document
+    Then  I should get these error messages:
+      | Existing accounting lines may not be updated to use Chart Code IT by user lc88.          |
+      | Existing accounting lines may not be updated to use Account Number 1278003 by user lc88. |
+    # after the error, the acct line is not editable, so need to reload.  this seems an existing bug in 3.0.1 ? so, need to reload.
+    And   I reload the Disbursement Voucher document
+    And   I approve the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
+    When  I am logged in as a Tax Manager
+    And   I view the Disbursement Voucher document
+    And   I change the Account Amount for Accounting Line 1 to 55000 on a Disbursement Voucher
+    And   I change the Account Amount for Accounting Line 2 to 45000 on a Disbursement Voucher
+    And   I fill out the Special Handling tab with following fields:
+      | Name         | Patrick Roy            |
+      | Address 1    | 127 Montreal Forum     |
+      | Address 2    | Loge Seats             |
+      | City         | Montreal, Quebec       |
+      | Postal Code  | 23591                  |
+      | Country      | Canada                 |
+      # special handling needs a note
+    And   I add note 'This needs to be picked up in Person' to the Disbursement Voucher document
+    And   I complete the Nonresident Alien Tax Tab and generate accounting line for Tax
+          # the tax will generate an accounting line of (30,000)
+    And   I approve the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
+    And   I am logged in as a Disbursement Manager
+    And   I select Disbursement Voucher document from my Action List
+    And   the Special Handling tab is open
+    And   I approve the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
+    And   I am logged in as a Disbursement Method Reviewer
+    And   I select Disbursement Voucher document from my Action List
     And   I change the Account Amount for Accounting Line 1 to 56000 on a Disbursement Voucher
     And   I change the Check Amount on the Payment Information tab to 71000
     And   I approve the Disbursement Voucher document
