@@ -337,7 +337,7 @@ And /^I update the Postal Code on the Payment Information tab to (.*)$/ do |post
 end
 
 And /^the Special Handling tab is open$/ do
-  on (SpecialHandlingTab) {|tab| tab.close_special_handling.exist?.should == true}
+  on (SpecialHandlingTab) {|tab| tab.close_special_handling.should exist}
 end
 
 And /^I search and retrieve Payee '(.*)' with Reason Code (\w)$/ do |vendor_name, reason_code|

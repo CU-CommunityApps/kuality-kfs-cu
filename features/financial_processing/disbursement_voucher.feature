@@ -305,7 +305,7 @@ Feature: Disbursement Voucher
     When  I submit the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to ENROUTE
 
-  @KFSQA-677 @smoke @cornell @coral @wip
+  @KFSQA-677 @smoke @cornell @coral
   Scenario: Disbursement Voucher foreign draft with non resident tax, special handling, and workflow changes for Account, Object Code, and Amount.
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
