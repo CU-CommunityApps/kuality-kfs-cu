@@ -8,7 +8,7 @@ Feature: import csv for accounting lines on multiple documents
   Scenario Outline: Checking General Ledger for Accounting Line Description using from Import Template with blanket approval
     Given   I am logged in as a KFS User for the <type code> document
     And     I start a <document> document for "<file name>" file import
-    And     On the <document> I import the From Accounting Lines from a csv file
+    And     on the <document> I import the From Accounting Lines from a csv file
     And     I submit the <document> document
     And     I am logged in as "dh273"
     When    I view the <document> document
@@ -28,7 +28,7 @@ Feature: import csv for accounting lines on multiple documents
   Scenario Outline: Checking General Ledger for Accounting Line Description using Import Template without blanket approve
     Given   I am logged in as a KFS User for the <type code> document
     And     I start a <document> document for "<file name>" file import
-    And     On the <document> I import the From Accounting Lines from a csv file
+    And     on the <document> I import the From Accounting Lines from a csv file
     And     I submit the <document> document
     And     Nightly Batch Jobs run
     And     I am logged in as a KFS User for the <type code> document
@@ -43,8 +43,8 @@ Feature: import csv for accounting lines on multiple documents
   Scenario Outline: Checking General Ledger for Accounting Line Description using from and to Import Templates with blanket approval
     Given   I am logged in as a KFS User for the <type code> document
     And     I start a <document> document for from "<From file name>" file import and to "<To file name>" file import
-    And     On the <document> I import the From Accounting Lines from a csv file
-    And     On the <document> I import the To Accounting Lines from a csv file
+    And     on the <document> I import the From Accounting Lines from a csv file
+    And     on the <document> I import the To Accounting Lines from a csv file
     And     I submit the <document> document
     And     I am logged in as "dh273"
     When    I view the <document> document
@@ -64,8 +64,8 @@ Feature: import csv for accounting lines on multiple documents
   Scenario Outline: Checking General Ledger for Accounting Line Description using from and to Import Templates without blanket approval
     Given   I am logged in as a KFS User for the <type code> document
     And     I start a <document> document for from "<From file name>" file import and to "<To file name>" file import
-    And     On the <document> I import the From Accounting Lines from a csv file
-    And     On the <document> I import the To Accounting Lines from a csv file
+    And     on the <document> I import the From Accounting Lines from a csv file
+    And     on the <document> I import the To Accounting Lines from a csv file
     And     I submit the <document> document
     And     Nightly Batch Jobs run
     And     I am logged in as a KFS User for the <type code> document

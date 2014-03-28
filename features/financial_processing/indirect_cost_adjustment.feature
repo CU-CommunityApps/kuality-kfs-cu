@@ -28,12 +28,13 @@ Feature: Indirect Cost Adjustment
     When  I start an empty Indirect Cost Adjustment document
     And   I upload a Grant line template for the Indirect Cost Adjustment document
     And   I upload a Receipt line template for the Indirect Cost Adjustment document
-    And   I blanket Approve the Indirect Cost Adjustment document
+    And   I blanket approve the Indirect Cost Adjustment document
     Then  the Indirect Cost Adjustment document goes to one of the following statuses:
       | PROCESSED |
       | FINAL     |
 
-    Given I am logged in as a KFS System Administrator
-    And   Nightly Batch Jobs run
+    Given Nightly Batch Jobs run
+    And   I am logged in as a KFS System Administrator
     When  I lookup the document ID for the Indirect Cost Adjustment document from the General Ledger
-    Then  the Template Accounting Line Description for Indirect Cost Adjustment equals the General Ledger entry
+    Then  the Grant Template Accounting Line Description for Indirect Cost Adjustment equals the General Ledger entry
+    And   the Receipt Template Accounting Line Description for Indirect Cost Adjustment equals the General Ledger entry

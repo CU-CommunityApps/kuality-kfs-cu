@@ -161,19 +161,9 @@ And /^The line description for the To Account should be displayed$/ do
   on(BudgetAdjustmentPage).find_target_line_description.should == @budget_adjustment.accounting_lines[:target][0].line_description
 end
 
-#And /^I upload From Accounting Lines containing Base Budget amounts$/ do
-#  on BudgetAdjustmentPage do |page|
-#    page.import_lines_source
-#    page.account_line_source_file_name.set($file_folder+@budget_adjustment.accounting_lines[:source][0].file_name)
-#    page.add_source_import
-#  end
-#end
-
 And /^I upload (To|From) Accounting Lines containing Base Budget amounts$/ do |type|
+  # This assumes you've provided a file_name in the first initial_lines entry for that type.
   on BudgetAdjustmentPage do |page|
-    #page.import_lines_target
-    #page.account_line_target_file_name.set($file_folder+@budget_adjustment.accounting_lines[:target][0].file_name)
-    #page.add_target_import
     case type
       when 'To'
         @budget_adjustment.accounting_lines[:target][0].import_lines
