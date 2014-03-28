@@ -196,7 +196,7 @@ And /^I add Vendor (\d+-\d+) to the Disbursement Voucher document as the Payee u
   end
 end
 
-And /^I fill out the Special Handling tab with following fields:$/ do |table|
+And /^I fill out the Special Handling tab with the following fields:$/ do |table|
   on(DisbursementVoucherPage).expand_all
   special_handling = table.rows_hash
   special_handling.delete_if { |k,v| v.empty? }
@@ -287,7 +287,7 @@ And /^I change the Check Amount on the Payment Information tab to (.*)$/ do |amo
   on (PaymentInformationTab) {|tab| tab.check_amount.fit amount}
 end
 
-And /^I change the Account (\w+) ?(\w+)? for Accounting Line (\d+) to (\w+) on a Disbursement Voucher$/ do |account_field, account_field_1, line_number, new_value|
+And /^I change the Account (\w+) ?(\w+)? for Accounting Line (\d+) to (\w+) on the Disbursement Voucher$/ do |account_field, account_field_1, line_number, new_value|
   line_idx = line_number.to_i - 1
   case account_field
     when 'Number'
