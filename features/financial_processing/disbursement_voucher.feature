@@ -292,6 +292,18 @@ Feature: Disbursement Voucher
     And   I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to FINAL
 
+  @KFSQA-689 @smoke @cornell @sloth
+  Scenario: Terminated employee but Alumnus should get a DV; People with Multiple Affiliations in PeopleSoft should only return one row
+    Given I am logged in as a KFS User for the DV document
+    And   I start an empty Disbursement Voucher document
+    And   I add the only payee with Payee Id rlg3 and Reason Code B to the Disbursement Voucher
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G003704            |
+      | Object Code  | 6100               |
+      | Amount       | 23                 |
+      | Description  | Line Test Number 1 |
+    When  I submit the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
 
   @KFSQA-677 @smoke @cornell @coral @wip
   Scenario: Disbursement Voucher foreign draft with non resident tax, special handling, and workflow changes for Account, Object Code, and Amount.
@@ -354,16 +366,4 @@ Feature: Disbursement Voucher
     And   I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to FINAL
 
-  @KFSQA-689 @smoke @cornell @sloth
-  Scenario: Terminated employee but Alumnus should get a DV; People with Multiple Affiliations in PeopleSoft should only return one row
-    Given I am logged in as a KFS User for the DV document
-    And   I start an empty Disbursement Voucher document
-    And   I add the only payee with Payee Id rlg3 and Reason Code B to the Disbursement Voucher
-    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
-      | Number       | G003704            |
-      | Object Code  | 6100               |
-      | Amount       | 23                 |
-      | Description  | Line Test Number 1 |
-    When  I submit the Disbursement Voucher document
-    Then  the Disbursement Voucher document goes to ENROUTE
 
