@@ -371,7 +371,7 @@ Feature: Disbursement Voucher
     And   I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to FINAL
 
-  @KFSQA-711 @cornell @coral @wip
+  @KFSQA-711 @cornell @coral
   Scenario: Disbursement Voucher foreign draft with non resident tax and workflow changes for Account, Object Code, and Amount.
     Given I am logged in as a KFS User
     When  I edit a Vendor with Vendor Number 5328-1
