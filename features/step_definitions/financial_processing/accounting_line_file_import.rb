@@ -39,7 +39,7 @@ And /^On the (.*) I import the (From|To) Accounting Lines from a csv file$/ do |
       when 'To'
         get(doc_object).accounting_lines[:target][0].import_lines
     end
-  end
+end
 
 And /^I view the (.*) document on the General Ledger Entry$/ do |document|
   doc_object = snake_case document
@@ -55,7 +55,7 @@ And /^I view the (.*) document on the General Ledger Entry$/ do |document|
   end
 end
 
-And /^The Template Accounting Line Description for (.*) equal the General Ledger$/ do |document|
+And /^the Template Accounting Line Description for (.*) equals the General Ledger entry$/ do |document|
   # This step requires that the CSV file content is placed into an array
   page_klass = Kernel.const_get(page_class_for(document))
   on(page_klass).source_line_description_value.should == @line_item
@@ -84,3 +84,15 @@ And /^I take the csv file "(.*)" and make into an array for the (.*) document$/ 
      end
   end #file.open
 end #step
+
+And /^I upload a (Grant|Receipt|Source|Target|Encumbrance|Disencumbrance) line template for the (.*) document$/ do |type, document|
+  doc_object = document_object_for document
+  doc_object.file_name = "#{doc_object.type_code}_#{snake_case(type).to_s}_line.csv"
+  pending doc_object.inspect
+  case type
+  when 'Grant', 'Source', 'Encumbrance'
+    doc_object.accounting_lines[:source][0].import_lines
+  when 'Receipt', 'Target', 'Disencumbrance'
+    doc_object.accounting_lines[:target][0].import_lines
+  end
+end
