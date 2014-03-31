@@ -1,9 +1,9 @@
 Given /^I am logged in as a KFS Technical Administrator$/ do
-  visit(BackdoorLoginPage).login_as('cab379') #TODO get from role service
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Technical Administrator'))
 end
 
 Given /^I am logged in as a Vendor Reviewer$/ do
-  visit(BackdoorLoginPage).login_as('kme44') #TODO get from role service
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Vendor Attachment viewer (cu)'))
 end
 
 Given /^I am logged in as a KFS Fiscal Officer$/ do
@@ -11,40 +11,27 @@ Given /^I am logged in as a KFS Fiscal Officer$/ do
 end
 
 Given /^I am logged in as a KFS User$/  do
-  visit(BackdoorLoginPage).login_as('ccs1') #TODO get from role service
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'User'))
 end
 
 Given /^I am logged in as "([^"]*)"$/ do |user_id|
   visit(BackdoorLoginPage).login_as(user_id)
 end
 
-Given /^I am logged in as a KFS Chart User$/  do
-  visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+Given /^I am logged in as a KFS Chart Manager$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Chart Manager'))
 end
 
 Given /^I am logged in as a KFS Chart Administrator$/ do
-  visit(BackdoorLoginPage).login_as('ky16') #TODO get from role service
-end
-
-Given /^I am logged in as a KFS Chart Manager$/ do
-  #visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Chart Manager'))
-  visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-end
-
-Given /^I am am logged in as a KFS Chart Administrator$/ do
-  visit(BackdoorLoginPage).login_as('ky16') #TODO get from role service
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Chart Administrator (cu)'))
 end
 
 Given /^I am logged in as a KFS Cash Manager$/ do
-  visit(BackdoorLoginPage).login_as('ccs1') #TODO get from role service
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Cash Manager'))
 end
 
 Given /^I am logged in as a KFS Contracts & Grants Processor$/ do
-  visit(BackdoorLoginPage).login_as('jis45') #TODO get from role service
-end
-
-Given /^I am logged in as a KFS System Manager$/ do
-  visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Contracts & Grants Processor'))
 end
 
 Given /^I am logged in as a KFS User for the (.*) document$/ do |eDoc|
@@ -113,5 +100,5 @@ Then /^I switch to the user with the next Pending Action in the Route Log$/ do
 end
 
 Given /^I am logged in as a Disbursement Manager$/ do
-  visit(BackdoorLoginPage).login_as('jas9') #TODO get from role service
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Disbursement Manager'))
 end
