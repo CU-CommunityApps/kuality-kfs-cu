@@ -35,6 +35,14 @@ Given /^I am logged in as a KFS Contracts & Grants Processor$/ do
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Contracts & Grants Processor'))
 end
 
+Given /^I am logged in as a KFS Parameter Change Administrator$/ do
+  visit(BackdoorLoginPage).login_as('ky16') #TODO get from role service
+end
+
+Given /^I am logged in as a KFS System Manager$/ do
+  visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+end
+
 Given /^I am logged in as a KFS User for the (.*) document$/ do |eDoc|
   case eDoc
     when 'AD'
@@ -102,4 +110,13 @@ end
 
 Given /^I am logged in as a Disbursement Manager$/ do
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Disbursement Manager'))
+  visit(BackdoorLoginPage).login_as('jas9') #TODO get from role service
+end
+
+Given /^I am logged in as a Tax Manager$/ do
+  visit(BackdoorLoginPage).login_as('llk3') #TODO get from role service
+end
+
+Given /^I am logged in as a Disbursement Method Reviewer$/ do
+  visit(BackdoorLoginPage).login_as('kpg1') #TODO get from role service
 end

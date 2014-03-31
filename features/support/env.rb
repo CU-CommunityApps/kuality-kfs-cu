@@ -29,11 +29,9 @@ World StringFactory
 World DateFactory
 
 if ENV['HEADLESS']
-  headless = Headless.new
+  headless = Headless.new(:reuse           => false,
+                          :destroy_at_exit => true)
   headless.start
-  at_exit do
-    headless.destroy
-  end
 end
 
 kuality = KualityKFS.new @config[:browser]
@@ -48,7 +46,7 @@ Before do
 
 end
 
-After do |scenario|
+After do
 
   # If there are any extant modal dialogs,
   # hopefully this will save the run, at least.
