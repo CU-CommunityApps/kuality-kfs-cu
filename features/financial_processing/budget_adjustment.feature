@@ -34,7 +34,7 @@ Feature: KFS Fiscal Officer Account Copy
     When   I approve the Budget Adjustment document
     Then   the Budget Adjustment document goes to FINAL
 
-  @KFSQA-628 @cornell @nightly-jobs @tortoise
+  @KFSQA-628 @cornell @nightly-jobs @tortoise @broken!
   Scenario: General ledger balance displays correctly for a Budget Adjustment after nightly batch is run
     Given   I am logged in as a KFS User for the BA document
     And    I submit a balanced Budget Adjustment document
