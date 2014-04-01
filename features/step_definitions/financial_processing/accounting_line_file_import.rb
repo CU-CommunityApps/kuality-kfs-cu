@@ -24,11 +24,11 @@ And /^I start a (.*) document for from "(.*)" file import and to "(.*)" file imp
                                        description:   random_alphanums(20, 'AFT AV '),
                                        initial_lines: [{
                                                          type:      :source,
-                                                         file_name: file_name.to_s
+                                                         file_name: file_name
                                                        },
                                                        {
                                                          type:      :target,
-                                                         file_name: to_file_name.to_s
+                                                         file_name: to_file_name
                                                        }]))
 
   step "I take the csv file \"#{file_name}\" and make into an array for the #{document} document"
@@ -39,9 +39,9 @@ And /^on the (.*) I import the (From|To) Accounting Lines from a csv file$/ do |
   doc_object = document_object_for(document)
     case type
       when 'From'
-        doc_object.accounting_lines[:source][0].import_lines
+        doc_object.import_initial_lines(:source)
       when 'To'
-        doc_object.accounting_lines[:target][0].import_lines
+        doc_object.import_initial_lines(:target)
     end
 end
 

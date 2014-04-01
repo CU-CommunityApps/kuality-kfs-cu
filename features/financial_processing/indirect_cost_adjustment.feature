@@ -27,7 +27,7 @@ Feature: Indirect Cost Adjustment
     Given I am logged in as a KFS User for the ICA document
     When  I start an empty Indirect Cost Adjustment document
     And   I upload a Grant line template for the Indirect Cost Adjustment document
-    And   I stop here
+    #And   I stop here
     And   I upload a Receipt line template for the Indirect Cost Adjustment document
     And   I blanket approve the Indirect Cost Adjustment document
     Then  the Indirect Cost Adjustment document goes to one of the following statuses:

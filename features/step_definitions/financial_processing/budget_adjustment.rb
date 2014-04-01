@@ -84,8 +84,6 @@ And /^I (#{BudgetAdjustmentPage::available_buttons}) a balanced Budget Adjustmen
                               ]
 
     on BudgetAdjustmentPage do |page|
-      #TODO:: Make data object for adding accounting lines (sounds like better solution)
-      #@budget_adjustment.adding_a_from_accounting_line(page, 'G003704', '6510', '250.11', random_alphanums(20, 'AFT FROM 2 '), '125')
       @budget_adjustment.add_source_line({
                                          account_number:   'G003704',
                                          object:           '6510',
@@ -93,7 +91,6 @@ And /^I (#{BudgetAdjustmentPage::available_buttons}) a balanced Budget Adjustmen
                                          line_description: random_alphanums(20, 'AFT TO 2 '),
                                          base_amount:      '125'
                                         })
-      #@budget_adjustment.adding_a_to_accounting_line(page, 'G013300', '6510', '250.11', random_alphanums(20, 'AFT TO 2 '), '125')
       @budget_adjustment.add_target_line({
                                            account_number:   'G013300',
                                            object:           '6510',
@@ -166,9 +163,9 @@ And /^I upload (To|From) Accounting Lines containing Base Budget amounts$/ do |t
   on BudgetAdjustmentPage do |page|
     case type
       when 'To'
-        @budget_adjustment.accounting_lines[:target][0].import_lines
+        @budget_adjustment.import_initial_lines(:target)
       when 'From'
-        @budget_adjustment.accounting_lines[:source][0].import_lines
+        @budget_adjustment.import_initial_lines(:source)
     end
   end
 end
