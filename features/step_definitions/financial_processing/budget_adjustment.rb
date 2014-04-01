@@ -18,7 +18,8 @@ And /^I create a Budget Adjustment document for file import$/ do  # ME!
                                                                       {
                                                                         type: :target,
                                                                         file_name: 'BA_test_to.csv'
-                                                                      }]
+                                                                      }],
+                                                      immediate_import: false
 end
 
 And /^I (#{BudgetAdjustmentPage::available_buttons}) a Budget Adjustment document$/ do |button|
