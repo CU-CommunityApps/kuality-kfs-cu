@@ -2,12 +2,11 @@ Feature: Purap Preq Building Blocks
 
   [purap-4f] purap test manual entry, >$500, <$25000, external vendor and no wire
 
+  #PURAP TEST IN PROGRESS JUST UPLOADING TO ADD FILES SO OTHERS CAN WORK ON PURAP
 @pending @wip @purap
-  #PURAP TEST IN PROGRESS JUST UPLOADING TO ADD FILES
   Scenario: Purap Preq building block 4f
    Given I login as a KFS user to create an REQS
    And I create the Requisition document with:
-#   | payment request     | :clear   |
    | vendor number       | 4471-0   |
    | item quanity        | 9.9      |
    | item cost           | 1000     |
