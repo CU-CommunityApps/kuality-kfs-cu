@@ -65,7 +65,6 @@ And /^I enter a valid Reports to Object Code$/ do
   end
 
   on ObjectCodePage do |page|
-    @object_code.reports_to_object_code = page.reports_to_object_code.value
     page.description.set @object_code.description
   end
 

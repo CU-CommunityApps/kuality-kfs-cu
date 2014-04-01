@@ -1,6 +1,6 @@
 And /^I start a (.*) document for "(.*)" file import$/ do  |document, file_name|
   doc_object = snake_case document
-  object_klass = Kernel.const_get(object_class_for(document))
+  object_klass = Kernel.const_get(object_class_for(document).to_s)
 
   step "I take the csv file \"#{file_name}\" and make into an array for the #{document} document"
 
@@ -15,7 +15,7 @@ end
 
 And /^I start a (.*) document for from "(.*)" file import and to "(.*)" file import$/ do  |document, file_name, to_file_name|
   doc_object = snake_case document
-  object_klass = Kernel.const_get(object_class_for(document))
+  object_klass = Kernel.const_get(object_class_for(document).to_s)
 
   step "I take the csv file \"#{file_name}\" and make into an array for the #{document} document"
 
