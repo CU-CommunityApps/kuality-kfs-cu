@@ -48,7 +48,7 @@ And /^I view the (.*) document on the General Ledger Entry$/ do |document|
 
   on GeneralLedgerEntryLookupPage do |page|
     page.document_number.fit get(doc_object).document_id
-    page.chart_code.fit 'IT'
+    page.chart_code.fit        get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
     page.balance_type_code.fit ''
     page.search
     page.open_item(get(document).document_id)

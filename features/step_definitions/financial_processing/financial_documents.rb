@@ -3,9 +3,9 @@ Then /^The Chart of Accounts on the accounting line defaults appropriately for t
   page_klass = Kernel.const_get(doc_object.class.to_s.gsub(/(.*)Object$/,'\1Page'))
 
   on page_klass do |page|
-    page.source_chart_code.value.should == 'IT' #TODO get from config
+    page.source_chart_code.value.should == get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
     if ['Budget Adjustment', 'Internal Billing', 'General Error Correction'].include?(document)
-      page.target_chart_code.value.should == 'IT' #TODO get from config
+      page.target_chart_code.value.should == get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
     end
   end
 

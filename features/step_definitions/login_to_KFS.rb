@@ -7,8 +7,7 @@ Given /^I am logged in as a Vendor Reviewer$/ do
 end
 
 Given /^I am logged in as a KFS Fiscal Officer$/ do
-#  visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Fiscal Officer'))
+  visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
 end
 
 Given /^I am logged in as a KFS User$/  do
@@ -36,11 +35,11 @@ Given /^I am logged in as a KFS Contracts & Grants Processor$/ do
 end
 
 Given /^I am logged in as a KFS Parameter Change Administrator$/ do
-  visit(BackdoorLoginPage).login_as('ky16') #TODO get from role service
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KR-NS', 'Parameter Approver (cu)'))
 end
 
 Given /^I am logged in as a KFS System Manager$/ do
-  visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Manager'))
 end
 
 Given /^I am logged in as a KFS User for the (.*) document$/ do |eDoc|
@@ -110,13 +109,12 @@ end
 
 Given /^I am logged in as a Disbursement Manager$/ do
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Disbursement Manager'))
-  visit(BackdoorLoginPage).login_as('jas9') #TODO get from role service
 end
 
 Given /^I am logged in as a Tax Manager$/ do
-  visit(BackdoorLoginPage).login_as('llk3') #TODO get from role service
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Tax Manager'))
 end
 
 Given /^I am logged in as a Disbursement Method Reviewer$/ do
-  visit(BackdoorLoginPage).login_as('kpg1') #TODO get from role service
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Disbursement Method Reviewer'))
 end
