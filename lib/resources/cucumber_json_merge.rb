@@ -15,9 +15,9 @@ require 'optparse'
 require 'json'
 
 flags = {
-  output:  ['-o', '--output FILENAME'],
-  verbose: ['-v', '--verbose'],
-  help:    ['-h', '--help']
+  output:  %w('-o', '--output FILENAME'),
+  verbose: %w('-v', '--verbose'),
+  help:    %w('-h', '--help')
 }
 options = {}
 options[:output_file] = 'kuality-kfs-cu-output.json'
