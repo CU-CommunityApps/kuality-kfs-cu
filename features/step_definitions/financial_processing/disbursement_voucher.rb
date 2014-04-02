@@ -198,14 +198,21 @@ And /^I add Vendor (\d+-\d+) to the Disbursement Voucher document as the Payee u
   end
 end
 
-And /^I fill out the Special Handling tab$/ do
+And /^I fill out the Special Handling tab with the following fields:$/ do |table|
+  on(DisbursementVoucherPage).expand_all
+  special_handling = table.rows_hash
+  special_handling.delete_if { |k,v| v.empty? }
   on (PaymentInformationTab) do |tab|
     tab.other_considerations_special_handling.set
     tab.alert.ok if tab.alert.exists? # click 'special handling' will have a pop up
-    on(SpecialHandlingTab) do |tab|
-      tab.person_name.fit 'Joe Lewis'
-      tab.address_1.fit 'Pick Up at Dept'
-    end
+  end
+  on(SpecialHandlingTab) do |tab|
+    tab.person_name.fit special_handling['Name']
+    tab.address_1.fit special_handling['Address 1']
+    tab.address_2.fit special_handling['Address 2']
+    tab.city.fit special_handling['City']
+    tab.country.fit special_handling['Country']
+    tab.postal_code.fit special_handling['Postal Code']
   end
 end
 
@@ -259,14 +266,18 @@ And /^I add a DV foreign vendor (\d+-\d+) with Reason Code (\w)$/ do |vendor_num
       plookup.vendor_number.fit         vendor_number
       plookup.search
       plookup.return_value(vendor_number)
+      sleep 1
+      plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
     end
     @disbursement_voucher.fill_in_payment_info(tab)
-    tab.payment_method.fit  'F - Foreign Draft'
-    tab.alert.ok if tab.alert.exists? # popup after select 'Foreign draft'
   end
 end
 
 And /^I complete the Foreign Draft Tab$/ do
+  on (PaymentInformationTab) do |tab|
+    tab.payment_method.fit  'F - Foreign Draft'
+    tab.alert.ok if tab.alert.exists? # popup after select 'Foreign draft'
+  end
   on (DisbursementVoucherPage) do |page|
     page.expand_all
     page.foreign_draft_in_foreign_currency.set
@@ -278,7 +289,7 @@ And /^I change the Check Amount on the Payment Information tab to (.*)$/ do |amo
   on (PaymentInformationTab) {|tab| tab.check_amount.fit amount}
 end
 
-And /^I change the Account (\w+) ?(\w+)? for Accounting Line (\d+) to (\w+) on a Disbursement Voucher$/ do |account_field, account_field_1, line_number, new_value|
+And /^I change the Account (\w+) ?(\w+)? for Accounting Line (\d+) to (\w+) on the Disbursement Voucher$/ do |account_field, account_field_1, line_number, new_value|
   line_idx = line_number.to_i - 1
   case account_field
     when 'Number'
@@ -316,6 +327,72 @@ And /^I update a random Bank Account to Disbursement Voucher Document$/ do
       blookup.search
       blookup.return_random
     end
+  end
+end
+
+And /^I can NOT update the W-9\/W-8BEN Completed field on the Payment Information tab$/ do
+  on (PaymentInformationTab) {|tab| tab.other_considerations_w9_completed.enabled?.should == false}
+end
+
+And /^I update the Postal Code on the Payment Information tab to (.*)$/ do |postal_code|
+  on (PaymentInformationTab) {|tab| tab.postal_code.fit  postal_code}
+end
+
+And /^the Special Handling tab is open$/ do
+  on (SpecialHandlingTab) {|tab| tab.close_special_handling.should exist}
+end
+
+And /^I search and retrieve Payee '(.*)' with Reason Code (\w)$/ do |vendor_name, reason_code|
+  case reason_code
+    when 'B'
+      @disbursement_voucher.payment_reason_code = 'B - Reimbursement for Out-of-Pocket Expenses'
+  end
+  on (PaymentInformationTab) do |tab|
+    tab.payee_search
+    on PayeeLookup do |plookup|
+      plookup.payment_reason_code.fit @disbursement_voucher.payment_reason_code
+      plookup.vendor_name.fit         vendor_name
+      plookup.search
+      plookup.return_value_links.first.click
+      sleep 1
+      plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
+    end
+    @disbursement_voucher.fill_in_payment_info(tab)
+  end
+end
+
+And /^I search and retrieve DV foreign vendor (\d+-\d+) with Reason Code (\w)$/ do |vendor_number, reason_code|
+  case reason_code
+    when 'B'
+      @disbursement_voucher.payment_reason_code = 'B - Reimbursement for Out-of-Pocket Expenses'
+  end
+  on (PaymentInformationTab) do |tab|
+    tab.payee_search
+    on PayeeLookup do |plookup|
+      plookup.payment_reason_code.fit @disbursement_voucher.payment_reason_code
+      plookup.vendor_number.fit         vendor_number
+      plookup.search
+      plookup.return_value(vendor_number)
+    end
+  end
+end
+
+And /^I select the added Remit Address$/ do
+  on VendorAddressLookup do |valookup|
+    valookup.return_value(@vendor.address_2)
+  end
+  on (PaymentInformationTab) do |tab|
+    @disbursement_voucher.fill_in_payment_info(tab)
+    tab.payment_method.fit  'F - Foreign Draft'
+    tab.alert.ok if tab.alert.exists? # popup after select 'Foreign draft'
+  end
+
+end
+
+And /^the GLPE contains Taxes withheld amount of (.*)$/ do |tax_amount|
+  on (DisbursementVoucherPage) {|page| page.expand_all}
+  on (GeneralLedgerPendingEntryTab) do |tab|
+    tab.amount_array.should include(tax_amount)
   end
 end
 

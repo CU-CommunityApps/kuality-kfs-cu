@@ -272,3 +272,19 @@ And /^the Address and Phone Number changes persist$/ do
   end
 end
 
+And /^I add an Address to a Vendor with following fields:$/ do |table|
+  vendor_address = table.rows_hash
+  vendor_address.delete_if { |k,v| v.empty? }
+  on VendorPage do |page|
+    page.expand_all
+    page.address_type.fit vendor_address['Address Type']
+    page.address_1.fit vendor_address['Address 1']
+    page.address_2.fit random_alphanums(30, 'Grntd') # new address indicator ? better way to do it ?
+    @vendor.address_2 = page.address_2.value
+    page.default_address.fit 'No'
+    page.city.fit vendor_address['City']
+    page.zipcode.fit vendor_address['Zip Code']
+    page.country.fit vendor_address['Country']
+    page.add_address
+  end
+end
