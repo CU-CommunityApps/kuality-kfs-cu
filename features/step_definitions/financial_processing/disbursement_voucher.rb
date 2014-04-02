@@ -8,6 +8,8 @@ When /^I start an empty Disbursement Voucher document with Payment to Vendor (\d
       payment_reason = 'B - Reimbursement for Out-of-Pocket Expenses'
     when 'N'
       payment_reason = 'N - Travel Payment for a Non-employee'
+    when 'K'
+      payment_reason = 'K - Univ PettyCash Custodian Replenishment'
 
   end
   @disbursement_voucher = create DisbursementVoucherObject, payee_id: vendor_number, payment_reason_code: payment_reason
@@ -392,4 +394,17 @@ And /^the GLPE contains Taxes withheld amount of (.*)$/ do |tax_amount|
   on (GeneralLedgerPendingEntryTab) do |tab|
     tab.amount_array.should include(tax_amount)
   end
+end
+
+And /^I search Account and cancel on Account Lookup$/ do
+  on(DisbursementVoucherPage) do |dv_page|
+    dv_page.update_account_search(0)
+    on AccountLookupPage do |page|
+      page.cancel_button
+    end
   end
+end
+
+And /^the Payee Id still displays on Disbursement Voucher$/ do
+  on (PaymentInformationTab) {|tab| tab.payee_id_value.should include (@disbursement_voucher.payee_id)}
+end
