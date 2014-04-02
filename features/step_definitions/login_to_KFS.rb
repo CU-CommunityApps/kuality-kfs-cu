@@ -115,6 +115,22 @@ Then /^I switch to the user with the next Pending Action in the Route Log$/ do
 
   step "I am logged in as \"#{new_user}\""
 end
+Then /^I switch to the user with the next Pending Action in the Route Log for the (.*) document$/ do |document|
+
+  new_user = ''
+  on(page_class_for(document)) do |page|
+    page.expand_all
+    page.pnd_act_req_table[1][2].links[0].click
+    page.use_new_tab
+    page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].should exist
+    page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].text.empty?.should_not
+    new_user = page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].text
+    page.close_children
+  end
+
+  step "I am logged in as \"#{new_user}\""
+end
+
 
 Given /^I am logged in as a Disbursement Manager$/ do
   visit(BackdoorLoginPage).login_as('jas9') #TODO get from role service
@@ -126,4 +142,8 @@ end
 
 Given /^I am logged in as a Disbursement Method Reviewer$/ do
   visit(BackdoorLoginPage).login_as('kpg1') #TODO get from role service
+end
+
+Given /^I login as a KFS user to create an REQS$/ do
+  visit(BackdoorLoginPage).login_as('der9') #TODO get from role service
 end

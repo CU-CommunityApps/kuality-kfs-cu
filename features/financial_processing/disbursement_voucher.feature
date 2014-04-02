@@ -36,6 +36,10 @@ Feature: Disbursement Voucher
      outside the United States. I also want to change the document during workflow. as reviewers may
      need to change the document. Object Code, and Amount.
 
+  [KFSQA-702] FO can do a search on the account and verify the payee id still displays on the DV. Approve it to final.
+
+  [KFSQA-721] Preclude Revolving Vendors getting a B Payment Reason Code.
+
   @KFSQA-681 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User
@@ -418,4 +422,51 @@ Feature: Disbursement Voucher
     And   I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to FINAL
 
+
+
+  @KFSQA-702 @cornell @tortoise
+  Scenario:  FO can do a search on the account and verify the payee id still displays on the DV. Approve it to final.
+    Given I am logged in as a KFS User for the DV document
+    # 21541-0 is slow to change doc status to 'final' so use '41473'
+    And   I start an empty Disbursement Voucher document with Payment to Vendor 41473-0 and Reason Code K
+    And   I save the Disbursement Voucher document
+    And   I view the Disbursement Voucher document
+    And   I change the Check Amount on the Payment Information tab to 22.22
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G003704        |
+      | Object Code  | 6540           |
+      | Amount       | 22.22          |
+      | Description  | DV13 Test....  |
+    And   I submit the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
+    And   I am logged in as "djj1"
+    And   I view the Disbursement Voucher document
+    When  I search Account and cancel on Account Lookup
+    Then  the Payee Id still displays on Disbursement Voucher
+    When  I approve the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to FINAL
+
+  @KFSQA-721 @tortoise @cornell @wip
+  Scenario: Preclude Revolving Vendors getting a B Payment Reason Code
+    Given I am logged in as a KFS User for the DV document
+    And   I start an empty Disbursement Voucher document with Payment to a Petty Cash Vendor
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G003704             |
+      | Object Code  | 6540                |
+      | Amount       | 10                  |
+      | Description  | Line Test Number 1  |
+    And   I save the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to SAVED
+    Given I am logged in as a KFS User for the DV document
+    And   I start an empty Disbursement Voucher document
+    And   I search Petty Cash vendor 41473-0 with Reason Code B
+    Then  I should get a Reason Code error saying "Employees Students Alumni, Vendor and Refund & Reimbursements Only are the only valid Payee Types for Payment Reason B - Reimbursement for Out-of-Pocket Expenses."
+    And   I change Reason Code to K for Payee search and select
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G003704             |
+      | Object Code  | 6540                |
+      | Amount       | 10                  |
+      | Description  | Line Test Number 1  |
+    And   I submit the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
 
