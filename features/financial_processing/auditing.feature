@@ -98,7 +98,7 @@ Feature: FP Auditing
 |  Transfer Of Funds                  | mdw84    | hc224   | A763306           | 8070           | 250        | A763900           | 7070          | 250       | To         |  0       | 8070                |
 
 
-  @KFSQA-747 @cornell @tortoise @wip
+  @KFSQA-747 @cornell @tortoise
   Scenario Outline: Display approver eDoc Accounting Line changes in Notes and Attachment Tab
     Given  I am logged in as "<initiator>"
 #for all these eDocs
