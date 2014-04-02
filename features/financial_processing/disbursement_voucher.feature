@@ -446,7 +446,7 @@ Feature: Disbursement Voucher
     When  I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to FINAL
 
-  @KFSQA-721 @tortoise @cornell @wip
+  @KFSQA-721 @tortoise @cornell
   Scenario: Preclude Revolving Vendors getting a B Payment Reason Code
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document with Payment to a Petty Cash Vendor

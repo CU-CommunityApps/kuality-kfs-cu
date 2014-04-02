@@ -289,7 +289,7 @@ And /^I change the Check Amount on the Payment Information tab to (.*)$/ do |amo
   on (PaymentInformationTab) {|tab| tab.check_amount.fit amount}
 end
 
-And /^I change the Account (\w+) ?(\w+)? for Accounting Line (\d+) to (\w+) on the Disbursement Voucher$/ do |account_field, account_field_1, line_number, new_value|
+And /^I change the Account (\w+) ?(\w+)? for Accounting Line (\d+) to (\w+) on the (.*)$/ do |account_field, account_field_1, line_number, new_value, document|
   line_idx = line_number.to_i - 1
   case account_field
     when 'Number'
@@ -298,6 +298,8 @@ And /^I change the Account (\w+) ?(\w+)? for Accounting Line (\d+) to (\w+) on t
       on (AccountingLine) {|line| line.update_source_amount(line_idx).fit new_value}
     when 'Object'
       on (AccountingLine) {|line| line.update_source_object_code(line_idx).fit new_value}
+    when 'Organization'
+      on (AccountingLine) {|line| line.update_source_organization_reference_id(line_idx).fit  new_value}
   end
 
 end
@@ -447,4 +449,19 @@ And /^I change Reason Code to (\w) for Payee search and select$/ do |reason_code
 end
 
 
-
+And /^I select a vendor payee to the (.*) document$/ do |document|
+  if document.eql?('Disbursement Voucher')
+    on (PaymentInformationTab) do |tab|
+      tab.payee_search
+      on PayeeLookup do |plookup|
+        plookup.payment_reason_code.fit 'B - Reimbursement for Out-of-Pocket Expenses'
+        plookup.vendor_name.fit         '*staple*'
+        plookup.search
+        plookup.return_value_links.first.click
+        sleep 1
+        plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
+      end
+      @disbursement_voucher.fill_in_payment_info(tab)
+    end
+  end
+end
