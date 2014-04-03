@@ -15,9 +15,9 @@ require 'optparse'
 require 'json'
 
 flags = {
-  output:  %w('-o', '--output FILENAME'),
-  verbose: %w('-v', '--verbose'),
-  help:    %w('-h', '--help')
+  output:  ['-o', '--output FILENAME'],
+  verbose: ['-v', '--verbose'],
+  help:    ['-h', '--help']
 }
 options = {}
 options[:output_file] = 'kuality-kfs-cu-output.json'
@@ -28,7 +28,7 @@ opt_parser = OptionParser.new do |opt|
   opt.banner = 'Usage: cucumber_json_merge.rb [options] <file.json>...'
   opt.separator 'Options:'
 
-  opt.on(*flags[:output], "output filename (default: ./#{options[:output_file]})") do |filename|
+  opt.on(*(flags[:output] + ["output filename (default: ./#{options[:output_file]})"])) do |filename|
     if filename.empty? || flags.values.flatten.any? { |other_opt| filename == other_opt}
       puts "ERROR: Output filename flag (-o) specified, but no filename was provided!\n#{opt_parser}"
       exit 1
@@ -36,11 +36,11 @@ opt_parser = OptionParser.new do |opt|
     options[:output_file] = filename unless filename.nil?
   end
 
-  opt.on(*flags[:verbose], 'print status info') do
+  opt.on(*(flags[:verbose] + ['print status info'])) do
     options[:verbose] = true
   end
 
-  opt.on(*flags[:help], 'help') do
+  opt.on(*(flags[:help] + ['help'])) do
     puts opt
     exit 0
   end
