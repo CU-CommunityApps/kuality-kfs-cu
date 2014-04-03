@@ -473,7 +473,7 @@ Feature: Disbursement Voucher
     Then  the Disbursement Voucher document goes to ENROUTE
 
 
-  @KFSQA-705 @sloth @wip
+  @KFSQA-705 @tortoise @cornell @wip
   Scenario: Payee should not be able to approve (as Fiscal Officer) a payment to themselves
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
