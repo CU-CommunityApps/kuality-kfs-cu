@@ -40,6 +40,8 @@ Feature: Disbursement Voucher
 
   [KFSQA-721] Preclude Revolving Vendors getting a B Payment Reason Code.
 
+  [KFSQA-705] Payee should not be able to approve (as Fiscal Officer) a payment to themselves.
+
   @KFSQA-681 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User
@@ -470,3 +472,20 @@ Feature: Disbursement Voucher
     And   I submit the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to ENROUTE
 
+
+  @KFSQA-705 @sloth @wip
+  Scenario: Payee should not be able to approve (as Fiscal Officer) a payment to themselves
+    Given I am logged in as a KFS User for the DV document
+    And   I start an empty Disbursement Voucher document
+    And   I search and retrieve a DV Payee ID kmt1 with Reason Code B
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G254700             |
+      | Object Code  | 6100                |
+      | Amount       | 10                  |
+      | Description  | Line Test Number 1  |
+    And   I submit the Disbursement Voucher document
+    And   the Disbursement Voucher document goes to ENROUTE
+    And   I am logged in as "kmt1"
+    And   I view the Disbursement Voucher document
+    When  I approve the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
