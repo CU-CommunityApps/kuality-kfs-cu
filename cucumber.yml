@@ -17,7 +17,7 @@ tortoise: <%= clean_default %> --tags @tortoise                           # Only
 tortoise_and_hare: <%= clean_default %> --tags @hare,@tortoise            # Only run @hare- and @tortoise-class Scenarios
 slug: <%= clean_default %> --tags @slug                                   # Only run @slug-class Scenarios
 coral: <%= clean_default %> --tags @coral                                 # Only run @coral-class Scenarios
-nightly_jobs: <%= clean_default %> --tags @nightly-jobs                   # Only run Scenarios that Run Nightly Jobs
+nightly_jobs: <%= clean_nightly %>                                        # Only run Scenarios that Run Nightly Jobs
 master: <%= clean_default %>                                              # Run all Scenarios that will run during the nightly report run
 master_no_nightly: <%= clean_no_nightly %>                                # Same as master, except jobs that do not Run Nightly Jobs will be excluded
 headless: HEADLESS=true <%= clean_default %>                              # Same as master, but using a headless browser
