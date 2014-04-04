@@ -30,7 +30,7 @@ World DateFactory
 
 if ENV['HEADLESS']
   headless = Headless.new(:reuse           => false,
-                          :destroy_at_exit => true)
+                          :destroy_at_exit => false)
   headless.start
 end
 
