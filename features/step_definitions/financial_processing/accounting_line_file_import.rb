@@ -57,8 +57,7 @@ end
 
 And /^The Template Accounting Line Description for (.*) equal the General Ledger$/ do |document|
   # This step requires that the CSV file content is placed into an array
-  page_klass = Kernel.const_get(page_class_for(document))
-  on(page_klass).source_line_description_value.should == @line_item
+  on(page_class_for(document)).source_line_description_value.should == @line_item
 end
 
 And /^I take the csv file "(.*)" and make into an array for the (.*) document$/ do |file_name, document|
