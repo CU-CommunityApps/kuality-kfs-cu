@@ -153,7 +153,7 @@ And /^I add a random vendor payee to the Disbursement Voucher$/ do
       plookup.search
       plookup.return_random
       sleep 1
-      plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
+      plookup.return_random if plookup.doc_title.eql?('Vendor Address Lookup')
     end
     @disbursement_voucher.fill_in_payment_info(tab)
   end
@@ -267,7 +267,7 @@ And /^I add a DV foreign vendor (\d+-\d+) with Reason Code (\w)$/ do |vendor_num
       plookup.search
       plookup.return_value(vendor_number)
       sleep 1
-      plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
+      plookup.return_random if plookup.doc_title.eql?('Vendor Address Lookup')
     end
     @disbursement_voucher.fill_in_payment_info(tab)
   end
@@ -357,7 +357,7 @@ And /^I search and retrieve Payee '(.*)' with Reason Code (\w)$/ do |vendor_name
       plookup.search
       plookup.return_value_links.first.click
       sleep 1
-      plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
+      plookup.return_random if plookup.doc_title.eql?('Vendor Address Lookup')
     end
     @disbursement_voucher.fill_in_payment_info(tab)
   end
@@ -442,7 +442,7 @@ And /^I change Reason Code to (\w) for Payee search and select$/ do |reason_code
       plookup.search
       plookup.return_value(@disbursement_voucher.payee_id)
       sleep 1
-      plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
+      plookup.return_random if plookup.doc_title.eql?('Vendor Address Lookup')
     end
     @disbursement_voucher.fill_in_payment_info(tab)
   end
@@ -459,7 +459,7 @@ And /^I select a vendor payee to the (.*) document$/ do |document|
         plookup.search
         plookup.return_value_links.first.click
         sleep 1
-        plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
+        plookup.return_random if plookup.doc_title.eql?('Vendor Address Lookup')
       end
       @disbursement_voucher.fill_in_payment_info(tab)
     end
