@@ -40,6 +40,8 @@ Feature: Disbursement Voucher
 
   [KFSQA-721] Preclude Revolving Vendors getting a B Payment Reason Code.
 
+  [KFSQA-674] DV can only be submitted by Initiators having Primary Department Codes
+
   @KFSQA-681 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User
@@ -470,3 +472,19 @@ Feature: Disbursement Voucher
     And   I submit the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to ENROUTE
 
+  @KFSQA-674 @tortoise @cornell @wip
+  Scenario: DV can only be submitted by Initiators having Primary Department Codes
+    Given I am logged in as "nms32"
+    And   I navigate to Person page
+    And   I lookup a user with no Primary Department Code
+    And   I assign the DV Initiator role to that user and Clear Cache
+    Given I am logged in as that user
+    And   I start an empty Disbursement Voucher document
+    And   I search and retrieve a DV Payee ID rlc56 with Reason Code B
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G003704            |
+      | Object Code  | 6100               |
+      | Amount       | 23                 |
+      | Description  | Line Test Number 1 |
+    When  I submit the Disbursement Voucher document
+    Then  I should get a Global error saying "This Disbursement Voucher cannot be processed because the user record of the initiator does not have an assigned primary department. Please contact your BSC or FTC for further assistance."

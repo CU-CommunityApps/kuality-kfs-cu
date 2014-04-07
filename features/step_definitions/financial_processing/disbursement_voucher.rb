@@ -252,6 +252,9 @@ And /^I search and retrieve a DV Payee ID (\w+) with Reason Code (\w)$/ do |net_
     end
     @disbursement_voucher.fill_in_payment_info(tab)
   end
+  on (DisbursementVoucherPage) do |page|
+    page.phone_number.fit '607-123-4567' unless !page.phone_number..nil?
+  end
 end
 
 And /^I add a DV foreign vendor (\d+-\d+) with Reason Code (\w)$/ do |vendor_number, reason_code|
@@ -464,4 +467,51 @@ And /^I select a vendor payee to the (.*) document$/ do |document|
       @disbursement_voucher.fill_in_payment_info(tab)
     end
   end
+end
+
+And /^I navigate to Person page$/ do
+  on(BasePage).close_extra_windows
+  visit(AdministrationPage).person
+end
+
+And /^I lookup a user with no Primary Department Code$/ do
+
+  on PersonLookup do |look|
+    look.principal_name.fit  'l*'
+    look.search
+    look.sort_results_by('Primary Department Code')
+    look.edit_person 'IT'
+  end
+
+end
+
+And /^I assign the DV Initiator role to that user and Clear Cache$/ do
+
+  on(PersonPage) do |page|
+    page.expand_all
+    @principal_name = page.principal_name.value
+    page.description.fit random_alphanums(40, 'AFT')
+    page.role_id.fit '100000191'
+    page.add_role
+    page.role_id.fit '54'
+    page.add_role
+    page.blanket_approve
+  end
+
+  visit(AdministrationPage).cache_admin
+  on(CacheAdminPage) do |page|
+    page.cache_boxes.each {|check_box| check_box.visible? ? check_box.click : nil }
+    page.flush
+  end
+end
+
+Given /^I am logged in as that user$/ do
+  sleep 2  # sometimes this time is needed.
+  visit(BackdoorLoginPage).login_as(@principal_name)
+  visit(MainPage).disbursement_voucher
+
+end
+
+Then /^I should get a Global error saying "([^"]*)"$/ do |error_msg|
+  on (DisbursementVoucherPage) {|page| page.left_errmsg_text.should include error_msg}
 end
