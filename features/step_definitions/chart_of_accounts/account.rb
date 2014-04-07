@@ -117,17 +117,17 @@ When /^I save an Account document with only the ([^"]*) field populated$/ do |fi
       number:               random_alphanums(7),
       name:                 random_alphanums(10),
       organization_code:               '01G0',
-      campus_code:          get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_CODE),#'IT - Ithaca' #TODO grab this from config file   get_aft_parameter_values('DEFAULT_CAMPUS_CODE')
+      campus_code:          get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_CODE),
       effective_date:       '01/01/2010',
-      postal_code:          get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_POSTAL_CODE),#  '14853', #TODO grab this from config file    get_aft_parameter_values('DEFAULT_CAMPUS_POSTAL_CODE')
-      city:                 get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_CITY),#'Ithaca', #TODO grab this from config file     get_aft_parameter_values('DEFAULT_CAMPUS_POSTAL_CITY')
-      state:                get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_STATE),#'NY', #TODO grab this from config file         get_aft_parameter_values('DEFAULT_CAMPUS_POSTAL_STATE')
-      address:              get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_ADDRESS),#'Cornell University', #TODO grab this from config file   get_aft_parameter_values('DEFAULT_CAMPUS_POSTAL_ADDRESS')
-      type_code:              'CC - Contract College', #TODO grab this from config file   get_aft_parameter_values('DEFAULT_CAMPUS_TYPE_CODE')
+      postal_code:          get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_POSTAL_CODE),
+      city:                 get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_CITY),
+      state:                get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_STATE),
+      address:              get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_ADDRESS),
+      type_code:            get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_TYPE_CODE),
       sub_fund_group_code:     'ADMSYS',
       higher_ed_funct_code:   '4000',
       restricted_status_code: 'U - Unrestricted',
-      fo_principal_name:    'dh273',
+      fo_principal_name:    get_aft_parameter_values(ParameterConstants::DEFAULT_FISCAL_OFFICER),#'dh273',
       supervisor_principal_name:  'ccs1',
       manager_principal_name: 'aap98',
       budget_record_level_code: 'C - Consolidation',
