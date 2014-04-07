@@ -144,6 +144,7 @@ And /^I lookup the (Encumbrance|Disencumbrance|Source|Target|From|To) Accounting
     page.fiscal_period.fit             fiscal_period_conversion(right_now[:MON])
     page.account_number.fit            '*'
     page.reference_document_number.fit doc_object.document_id
+    page.pending_entry_all.set
     page.search
   end
 end
@@ -160,6 +161,7 @@ And /^I lookup the (Encumbrance|Disencumbrance|Source|Target|From|To) Accounting
     page.fiscal_period.fit             fiscal_period_conversion(right_now[:MON])
     page.account_number.fit            '*'
     page.reference_document_number.fit doc_object.document_id
+    page.pending_entry_approved_indicator_all
     page.search
   end
 end

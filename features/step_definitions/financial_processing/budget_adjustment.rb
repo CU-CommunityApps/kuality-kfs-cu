@@ -62,14 +62,13 @@ end
 And /^I (#{BudgetAdjustmentPage::available_buttons}) a balanced Budget Adjustment document$/ do |button|
   button.gsub!(' ', '_')
   @budget_adjustment = create BudgetAdjustmentObject,
-                              press: nil, # We should add the accounting lines before submitting, eh?
+                              press: nil,
                               initial_lines: [
                                   {
                                       type:             :source,
                                       account_number:   'G003704',
                                       object:           '4480',
                                       current_amount:   '250.11',
-                                      base_amount:      '125',
                                       line_description: random_alphanums(20, 'AFT FROM 1 '),
                                   },
                                   {
@@ -77,29 +76,23 @@ And /^I (#{BudgetAdjustmentPage::available_buttons}) a balanced Budget Adjustmen
                                       account_number:   'G013300',
                                       object:           '4480',
                                       current_amount:   '250.11',
-                                      base_amount:      '125',
                                       line_description: random_alphanums(20, 'AFT TO 1 '),
                                       chart_code:       get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
                                   }
                               ]
 
     on BudgetAdjustmentPage do |page|
-      #TODO:: Make data object for adding accounting lines (sounds like better solution)
-      #@budget_adjustment.adding_a_from_accounting_line(page, 'G003704', '6510', '250.11', random_alphanums(20, 'AFT FROM 2 '), '125')
       @budget_adjustment.add_source_line({
                                          account_number:   'G003704',
                                          object:           '6510',
                                          current_amount:   '250.11',
                                          line_description: random_alphanums(20, 'AFT TO 2 '),
-                                         base_amount:      '125'
                                         })
-      #@budget_adjustment.adding_a_to_accounting_line(page, 'G013300', '6510', '250.11', random_alphanums(20, 'AFT TO 2 '), '125')
       @budget_adjustment.add_target_line({
                                            account_number:   'G013300',
                                            object:           '6510',
                                            current_amount:   '250.11',
                                            line_description: random_alphanums(20, 'AFT TO 2 '),
-                                           base_amount:      '125'
                                      })
 
       page.send(button)
@@ -161,19 +154,9 @@ And /^The line description for the To Account should be displayed$/ do
   on(BudgetAdjustmentPage).find_target_line_description.should == @budget_adjustment.accounting_lines[:target][0].line_description
 end
 
-#And /^I upload From Accounting Lines containing Base Budget amounts$/ do
-#  on BudgetAdjustmentPage do |page|
-#    page.import_lines_source
-#    page.account_line_source_file_name.set($file_folder+@budget_adjustment.accounting_lines[:source][0].file_name)
-#    page.add_source_import
-#  end
-#end
 
 And /^I upload (To|From) Accounting Lines containing Base Budget amounts$/ do |type|
-  on BudgetAdjustmentPage do |page|
-    #page.import_lines_target
-    #page.account_line_target_file_name.set($file_folder+@budget_adjustment.accounting_lines[:target][0].file_name)
-    #page.add_target_import
+  on BudgetAdjustmentPage do
     case type
       when 'To'
         @budget_adjustment.accounting_lines[:target][0].import_lines
@@ -183,10 +166,10 @@ And /^I upload (To|From) Accounting Lines containing Base Budget amounts$/ do |t
   end
 end
 
-Then /^The GLPE contains 4 Balance Type BB transactions$/ do
+Then /^The GLPE contains 4 Balance Type (.*) transactions for the (.*) document$/ do |type_code, document|
   visit(MainPage).general_ledger_pending_entry
   on GeneralLedgerPendingEntryLookupPage do |page|
-    page.balance_type_code.fit 'BB'
+    page.balance_type_code.fit type_code.upcase
     page.document_number.fit @budget_adjustment.document_id
     page.search
 

@@ -8,6 +8,8 @@ When /^I start an empty Disbursement Voucher document with Payment to Vendor (\d
       payment_reason = 'B - Reimbursement for Out-of-Pocket Expenses'
     when 'N'
       payment_reason = 'N - Travel Payment for a Non-employee'
+    when 'K'
+      payment_reason = 'K - Univ PettyCash Custodian Replenishment'
 
   end
   @disbursement_voucher = create DisbursementVoucherObject, payee_id: vendor_number, payment_reason_code: payment_reason
@@ -286,7 +288,7 @@ And /^I change the Check Amount on the Payment Information tab to (.*)$/ do |amo
   on (PaymentInformationTab) {|tab| tab.check_amount.fit amount}
 end
 
-And /^I change the Account (\w+) ?(\w+)? for Accounting Line (\d+) to (\w+) on the Disbursement Voucher$/ do |account_field, account_field_1, line_number, new_value|
+And /^I change the Account (\w+) ?(\w+)? for Accounting Line (\d+) to (\w+) on the (.*)$/ do |account_field, account_field_1, line_number, new_value, document|
   line_idx = line_number.to_i - 1
   case account_field
     when 'Number'
@@ -295,6 +297,8 @@ And /^I change the Account (\w+) ?(\w+)? for Accounting Line (\d+) to (\w+) on t
       on (AccountingLine) {|line| line.update_source_amount(line_idx).fit new_value}
     when 'Object'
       on (AccountingLine) {|line| line.update_source_object_code(line_idx).fit new_value}
+    when 'Organization'
+      on (AccountingLine) {|line| line.update_source_organization_reference_id(line_idx).fit  new_value}
   end
 
 end
@@ -391,4 +395,72 @@ And /^the GLPE contains Taxes withheld amount of (.*)$/ do |tax_amount|
   on (GeneralLedgerPendingEntryTab) do |tab|
     tab.amount_array.should include(tax_amount)
   end
+end
+
+And /^I search Account and cancel on Account Lookup$/ do
+  on(DisbursementVoucherPage) do |dv_page|
+    dv_page.update_account_search(0)
+    on AccountLookupPage do |page|
+      page.cancel_button
+    end
   end
+end
+
+And /^the Payee Id still displays on Disbursement Voucher$/ do
+  on (PaymentInformationTab) {|tab| tab.payee_id_value.should include (@disbursement_voucher.payee_id)}
+end
+
+And /^I search Petty Cash vendor (\d+-\d+) with Reason Code (\w)$/ do |vendor_number, reason_code|
+  case reason_code
+    when 'B'
+      @disbursement_voucher.payment_reason_code = 'B - Reimbursement for Out-of-Pocket Expenses'
+  end
+  on (PaymentInformationTab) do |tab|
+    tab.payee_search
+    on PayeeLookup do |plookup|
+      plookup.payment_reason_code.fit @disbursement_voucher.payment_reason_code
+      plookup.vendor_number.fit         vendor_number
+      plookup.search
+    end
+  end
+end
+
+Then /^I should get a Reason Code error saying "([^"]*)"$/ do |error_msg|
+  on (PayeeLookup) {|plookup| plookup.left_errmsg_text.should include error_msg}
+end
+
+And /^I change Reason Code to (\w) for Payee search and select$/ do |reason_code|
+  case reason_code
+    when 'K'
+      @disbursement_voucher.payment_reason_code = 'K - Univ PettyCash Custodian Replenishment'
+  end
+  on (PaymentInformationTab) do |tab|
+    on PayeeLookup do |plookup|
+      @disbursement_voucher.payee_id = plookup.vendor_number.value
+      plookup.payment_reason_code.fit @disbursement_voucher.payment_reason_code
+      plookup.search
+      plookup.return_value(@disbursement_voucher.payee_id)
+      sleep 1
+      plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
+    end
+    @disbursement_voucher.fill_in_payment_info(tab)
+  end
+end
+
+
+And /^I select a vendor payee to the (.*) document$/ do |document|
+  if document.eql?('Disbursement Voucher')
+    on (PaymentInformationTab) do |tab|
+      tab.payee_search
+      on PayeeLookup do |plookup|
+        plookup.payment_reason_code.fit 'B - Reimbursement for Out-of-Pocket Expenses'
+        plookup.vendor_name.fit         '*staple*'
+        plookup.search
+        plookup.return_value_links.first.click
+        sleep 1
+        plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
+      end
+      @disbursement_voucher.fill_in_payment_info(tab)
+    end
+  end
+end

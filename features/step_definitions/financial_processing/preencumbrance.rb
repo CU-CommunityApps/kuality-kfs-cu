@@ -90,9 +90,9 @@ end
 
 And /^I add the (encumbrance|disencumbrance) to the stack$/ do |type|
   if @pre_encumbrances.nil?
-    @pre_encumbrances = {"#{type}" => [@pre_encumbrance]}
-  elsif @pre_encumbrance[type.to_sym].nil?
-    @pre_encumbrances.merge!({"#{type}" => [@pre_encumbrance]})
+    @pre_encumbrances = {type.to_sym => [@pre_encumbrance]}
+  elsif @pre_encumbrances[type.to_sym].nil?
+    @pre_encumbrances.merge!({type.to_sym => [@pre_encumbrance]})
   else
     @pre_encumbrances[type.to_sym] << @pre_encumbrance
   end
