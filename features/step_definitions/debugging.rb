@@ -13,46 +13,84 @@ And /^I stop here$/ do
   pending
 end
 
-And(/^I print out all "(field|button|select|checkbox|radio|link)" on the page$/) do |item_type|
+And(/^I print out all "(field|textarea|button|select|checkbox|radio|link)" on the page$/) do |item_type|
   # For page object creation
   on MainPage do |page|
     case item_type
       when 'field'
-        puts 'TEXT FIELDS '
-        puts 'TEXT FIELDS '
-        page.frm.text_fields.each { |t| puts 'element(:) { |b| b.frm.text_field(name: \'' + t.name.to_s + '\') }' "\n" }
-        puts ' '
-        puts ' '
+        puts '#TEXT FIELDS '
+        page.frm.text_fields.each { |t| puts 'element(:' + t.name.to_s.gsub(/([a-z])([A-Z])/ , '\1_\2').downcase + ') { |b| b.frm.text_field(name: \'' + t.name.to_s + '\') }' "\n" }
+        #puts ' '
+      when 'field'
+        puts '#TEXT AREA '
+        page.frm.textareas.each { |t| puts 'element(:' + t.name.gsub(/([a-z])([A-Z])/ , '\1_\2').downcase + ') { |b| b.frm.textarea(name: \'' + t.name.to_s + '\') }' "\n" }
+        #puts ' '
       when 'button'
-        puts 'BUTTONS'
-        puts 'BUTTONS'
-        page.frm.buttons.each { |t| puts 'action(:'+ t.title.to_s.downcase.gsub(' ', '_').gsub('-','_') + ') { |b| b.frm.button(title: \'' + t.title.to_s + '\').click }' "\n" }
-        puts ' '
-        puts ' '
+        puts '#BUTTONS'
+        page.frm.buttons.each { |t| puts 'action(:'+ t.title.to_s.downcase.gsub(' ', '_').gsub('-','_').gsub('#','number') + ') { |b| b.frm.button(title: \'' + t.title.to_s + '\').click }' "\n" }
+        #puts ' '
       when 'select'
-        puts 'SELECT'
-        puts 'SELECT'
-        page.frm.select_lists.each { |t| puts 'element(:) { |b| b.frm.select(name: \''+t.name.to_s+'\') }' }
-        puts ' '
-        puts ' '
+        puts '#SELECT'
+        page.frm.select_lists.each { |t| puts 'element(:' + t.name.to_s.gsub(/([a-z])([A-Z])/ , '\1_\2').downcase + ') { |b| b.frm.select(name: \''+t.name.to_s+'\') }' }
+        #puts ' '
       when 'checkbox'
-        puts 'CHECKBOX'
-        puts 'CHECKBOX'
-        page.frm.checkboxes.each { |t| puts 'element(:) { |b| b.frm.checkbox(name: \''+t.name.to_s+'\') }' }
-        puts ' '
-        puts ' '
+        puts '#CHECKBOX'
+        page.frm.checkboxes.each { |t| puts 'element(:' + t.name.to_s.gsub(/([a-z])([A-Z])/ , '\1_\2').downcase + ') { |b| b.frm.checkbox(name: \''+t.name.to_s+'\') }' }
+        #puts ' '
       when 'radio'
-        puts 'RADIO'
-        puts 'RADIO'
-        page.frm.radios.each { |r| puts 'element(:) { |b| b.frm.radio(id: \''+r.id.to_s+'\') }' "\n"}
-        puts ' '
-        puts ' '
+        puts '#RADIO'
+        page.frm.radios.each { |t| puts 'element(:' + t.id.to_s.gsub(/([a-z])([A-Z])/ , '\1_\2').downcase + ') { |b| b.frm.radio(id: \''+t.id.to_s+'\') }' "\n"}
+        #puts ' '
       when 'link'
-        puts 'LINK'
-        puts 'LINK'
-        page.frm.links.each { |t| puts 'element(:) { |b| b.frm.link(text: \''+t.text.to_s+'\') }' }
-        puts ' '
-        puts ' '
+        puts '#LINK'
+        page.frm.links.each { |t| puts 'element(:' + t.text.to_s.gsub(/([a-z])([A-Z])/ , '\1_\2').downcase + ') { |b| b.frm.link(text: \''+t.text.to_s+'\') }' }
+        #puts ' '
     end
   end
 end #print all
+
+And(/^I print out all "(field|textarea|button|select|checkbox|radio|link)" on the page without frame$/) do |item_type|
+  # For page object creation
+  on MainPage do |page|
+    case item_type
+      when 'field'
+        puts '#TEXT FIELDS '
+        page.text_fields.each { |t| puts 'element(:' + t.name.to_s.gsub(/([a-z])([A-Z])/ , '\1_\2').downcase + ') { |b| b.text_field(name: \'' + t.name.to_s + '\') }' "\n" }
+      #puts ' '
+      when 'field'
+        puts '#TEXT AREA '
+        page.textareas.each { |t| puts 'element(:' + t.name.gsub(/([a-z])([A-Z])/ , '\1_\2').downcase + ') { |b| b.textarea(name: \'' + t.name.to_s + '\') }' "\n" }
+      #puts ' '
+      when 'button'
+        puts '#BUTTONS'
+        page.buttons.each { |t| puts 'action(:'+ t.title.to_s.downcase.gsub(' ', '_').gsub('-','_').gsub('#','number') + ') { |b| b.button(title: \'' + t.title.to_s + '\').click }' "\n" }
+      #puts ' '
+      when 'select'
+        puts '#SELECT'
+        page.select_lists.each { |t| puts 'element(:' + t.name.to_s.gsub(/([a-z])([A-Z])/ , '\1_\2').downcase + ') { |b| b.select(name: \''+t.name.to_s+'\') }' }
+      #puts ' '
+      when 'checkbox'
+        puts '#CHECKBOX'
+        page.checkboxes.each { |t| puts 'element(:' + t.name.to_s.gsub(/([a-z])([A-Z])/ , '\1_\2').downcase + ') { |b| b.checkbox(name: \''+t.name.to_s+'\') }' }
+      #puts ' '
+      when 'radio'
+        puts '#RADIO'
+        page.radios.each { |t| puts 'element(:' + t.id.to_s.gsub(/([a-z])([A-Z])/ , '\1_\2').downcase + ') { |b| b.radio(id: \''+t.id.to_s+'\') }' "\n"}
+      #puts ' '
+      when 'link'
+        puts '#LINK'
+        page.links.each { |t| puts 'element(:' + t.text.to_s.gsub(/([a-z])([A-Z])/ , '\1_\2').downcase + ') { |b| b.link(text: \''+t.text.to_s+'\') }' }
+      #puts ' '
+    end
+  end
+end #print all
+
+And(/^I select the purchase order '(\d+)' with the doc id '(\d+)'$/) do |req_num, doc_id|
+  on DocumentSearch do |page|
+    page.requisition_number.set req_num.to_s
+    page.search
+
+    page.result_item(doc_id.to_s).when_present.click
+                sleep 5
+  end
+end
