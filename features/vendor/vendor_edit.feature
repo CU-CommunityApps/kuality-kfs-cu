@@ -2,8 +2,7 @@ Feature: Vendor Edit
 
   [KFSQA-755] I want to edit a vendor with ownership type INDIVIDUAL.
 
-  [KFSQA-773] Cornell Modification- When editing a vendor, If that vendor has expired insurance, then a warning will be displayed and the user will be required to select yes to update or maintain the vendor’s records. Additionally, changes through any edits will persist from ENROUTE to FINAL.
-
+  [KFSQA-773] PO Vendor Edit, with Expired Insurance.
 
   @KFSQA-755 @cornell @slug
   Scenario: I want to edit a vendor with ownership type INDIVIDUAL
