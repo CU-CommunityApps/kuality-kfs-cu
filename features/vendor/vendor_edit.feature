@@ -2,6 +2,9 @@ Feature: Vendor Edit
 
   [KFSQA-755] I want to edit a vendor with ownership type INDIVIDUAL.
 
+  [KFSQA-773] Cornell Modification- When editing a vendor, If that vendor has expired insurance, then a warning will be displayed and the user will be required to select yes to update or maintain the vendor’s records. Additionally, changes through any edits will persist from ENROUTE to FINAL.
+
+
   @KFSQA-755 @cornell @slug
   Scenario: I want to edit a vendor with ownership type INDIVIDUAL
     # "rlc56" can't view notes
@@ -36,3 +39,32 @@ Feature: Vendor Edit
     Then    the Tax Number and Notes are Not Visible on Vendor page
     And     the Address and Phone Number changes persist
 
+  @KFSQA-773 @cornell @slug @wip
+  Scenario: Cornell Modification- When editing a vendor, If that vendor has expired insurance, then a warning will be displayed and the user will be required to select yes to update or maintain the vendor’s records. Additionally, changes through any edits will persist from ENROUTE to FINAL.
+    # "ccs1" can blanket approve
+    Given   I am logged in as "ccs1"
+    When    I edit a Vendor with Vendor Number 12587-1
+    And     I update the General Liability with expired date
+    And     I blanket approve the Vendor document with expired liability date
+    Then    the Vendor document goes to FINAL
+    Given   I am logged in as "lda22"
+    When    I edit a Vendor with Vendor Number 12587-1
+    And     I change the Address Line 1 on Vendor Address tab
+    And     I change the Phone Number on Vendor Phone tab
+    And     I submit the Vendor document with expired liability date
+    Then    the Vendor document goes to ENROUTE
+    Given   I am logged in as "pag4"
+    And     I select Vendor document from my Action List
+    Then    the changes to Vendor document have persisted
+    And     I change the Address Line 2 on Vendor Address tab
+    And     I change the Phone Extension on Vendor Phone tab
+    And     I close and save the Vendor document
+    And     I select Vendor document from my Action List
+    Then    the changes to Vendor document have persisted
+    And     I approve the Vendor document with expired liability date
+    Then    the Vendor document goes to FINAL
+    Given   I am logged in as "lda22"
+    And     I select Vendor document from my Action List
+    And     I fyi the Vendor document
+    When    I edit a Vendor with Vendor Number 12587-1
+    Then    the changes to Vendor document have persisted

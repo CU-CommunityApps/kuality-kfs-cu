@@ -18,6 +18,6 @@ class VendorPage
   element(:cornell_additional_ins_ind) { |b| b.frm.select(name: 'document.newMaintainableObject.extension.cornellAdditionalInsuredIndicator') }
   element(:health_offsite_catering_lic_req) { |b| b.frm.select(name: 'document.newMaintainableObject.extension.healthOffSiteCateringLicenseReq') }
   element(:contract_extension_date) { |b| b.frm.text_field(name: 'document.newMaintainableObject.add.vendorContracts.vendorContractExtensionDate') }
-  element(:insurance_requirement_indicator) { |b| b.frm.checkbox(name: 'document.newMaintainableObject.extension.insuranceRequiredIndicato') }
+  element(:insurance_requirement_indicator) { |b| b.frm.checkbox(name: 'document.newMaintainableObject.extension.insuranceRequiredIndicator') }
 
 end

@@ -264,11 +264,11 @@ And /^the Address and Phone Number changes persist$/ do
   on VendorPage do |page|
     page.expand_all
     page.updated_address_1.value.should == @changed_addr_phone[:updated_address_1]
-    page.updated_phone_type.value.should == @changed_addr_phone[:updated_phone_type]
-    page.updated_address_2.value.should == @changed_addr_phone[:updated_address_2]
+    page.updated_phone_type.value.should == @changed_addr_phone[:updated_phone_type] unless @changed_addr_phone[:updated_phone_type].nil?
+    page.updated_address_2.value.should == @changed_addr_phone[:updated_address_2] unless @changed_addr_phone[:updated_address_2].nil?
     page.updated_phone_number.value.should == @changed_addr_phone[:updated_phone_number]
-    page.updated_address_attention.value.should == @changed_addr_phone[:updated_address_attention]
-    page.updated_phone_ext.value.should == @changed_addr_phone[:updated_phone_ext]
+    page.updated_address_attention.value.should == @changed_addr_phone[:updated_address_attention] unless @changed_addr_phone[:updated_address_attention].nil?
+    page.updated_phone_ext.value.should == @changed_addr_phone[:updated_phone_ext] unless @changed_addr_phone[:updated_phone_ext].nil?
   end
 end
 
@@ -286,5 +286,42 @@ And /^I add an Address to a Vendor with following fields:$/ do |table|
     page.zipcode.fit vendor_address['Zip Code']
     page.country.fit vendor_address['Country']
     page.add_address
+  end
+end
+
+And /^I update the General Liability with expired date$/ do
+  @changed_liability = {} unless !@changed_liability.nil?
+  on VendorPage do |page|
+    page.expand_all
+    page.insurance_requirements_complete.fit 'Yes'
+    page.cornell_additional_ins_ind.fit 'Yes'
+    page.insurance_requirement_indicator.set
+    page.general_liability_coverage_amt.fit '100.00'
+    page.general_liability_expiration_date.fit yesterday[:date_w_slashes]
+    @changed_liability.merge!(general_liability_coverage_amt: page.general_liability_coverage_amt.value)
+    @changed_liability.merge!(general_liability_expiration_date: page.general_liability_expiration_date.value)
+  end
+end
+
+When /^I (#{BasePage::available_buttons}) the Vendor document with expired liability date$/ do |button|
+  #doc_object = snake_case document
+  button.gsub!(' ', '_')
+  @vendor.send(button)
+  on(YesOrNoPage).yes
+  sleep 10 if (button == 'blanket approve' || button == 'approve' || 'submit')
+end
+
+When /^I close and save the Vendor document$/ do
+  on (VendorPage) {|page| page.close}
+  on(YesOrNoPage).yes
+end
+
+And /^the changes to Vendor document have persisted$/ do
+  step 'the Address and Phone Number changes persist'
+  unless @changed_liability.nil?
+    on VendorPage do |page|
+      page.general_liability_coverage_amt.value.should == @changed_liability[:general_liability_coverage_amt]
+      page.general_liability_expiration_date.value.should == @changed_liability[:general_liability_expiration_date]
+    end
   end
 end
