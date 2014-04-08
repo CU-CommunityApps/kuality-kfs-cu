@@ -3,7 +3,7 @@ Feature: KFS Fiscal Officer Account Copy
   [smoke] As a KFS Fiscal Officer I want to copy an Account
           because I want quickly create many accounts.
 
-  @smoke @hare @wip
+  @smoke @hare
   Scenario: Copy an Account
     Given I am logged in as a KFS Fiscal Officer
     And   I access Account Lookup
