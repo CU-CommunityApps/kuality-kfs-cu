@@ -150,10 +150,9 @@ end
 
 And /^I add an Attachment to the Vendor document$/ do
   on VendorPage do |page|
-    page.note_text.fit @vendor.note_text
+    page.note_text.fit  random_alphanums(20, 'AFT')
     page.attach_notes_file.set($file_folder+@vendor.attachment_file_name)
     page.add_note
-    page.attach_notes_file_1.should exist #verify that note is indeed added
 
   end
 end
@@ -287,4 +286,43 @@ And /^I add an Address to a Vendor with following fields:$/ do |table|
     page.country.fit vendor_address['Country']
     page.add_address
   end
+end
+
+
+And /^I create a DV Vendor with ACH\/Check as default Payment method$/  do
+  @vendor = create VendorObject,
+                   vendor_type:                'DV - DISBURSEMENT VOUCHER',
+                   vendor_name:                 nil,
+                   vendor_last_name:           'Twenty**************',
+                   vendor_first_name:          'Twenty-Three***********',
+                   foreign:                    'No',
+                   tax_number:                 "999#{rand(9)}#{rand(1..9)}#{rand(1..9999).to_s.rjust(4, '0')}",
+                   tax_number_type_ssn:         nil,
+                   tax_number_type_fein:        :set,
+                   ownership:                  'CORPORATION',
+                   w9_received:                'Yes',
+                   w9_received_date:           yesterday[:date_w_slashes],
+                   address_type:               'RM - REMIT',
+                   address_1:                  'PO Box 54777',
+                   address_2:                  '(127 Matt Street)',
+                   city:                       'Hanover',
+                   state:                      'MA',
+                   zipcode:                    '02359',
+                   country:                    'United States',
+                   default_address:            'Yes',
+                   method_of_po_transmission:  nil,
+                   supplier_diversity:         'HUBZONE',
+                   supplier_diversity_expiration_date: tomorrow[:date_w_slashes],
+                   attachment_file_name:       'vendor_edit_attachment_2.png'
+end
+
+And /^I can not view the Tax ID and Attachments on Vendor page$/ do
+  on VendorPage do |page|
+    page.hidden_tax_number.parent.text.should include ('Tax Number: *********')
+    page.notes_table.rows.length.should == 2
+  end
+end
+
+And /^I enter a default payment method (\w+) on Vendor Page$/ do |payment_method|
+  on (VendorPage) {|page|  page.default_payment_method.fit  payment_method}
 end
