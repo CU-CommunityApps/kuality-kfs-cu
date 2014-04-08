@@ -7,35 +7,38 @@ Feature: Notes And Attachments Tab
   Scenario Outline: Sequential tab flow of Notes and Attachment Tab
     Given I am logged in as a KFS User for the <docType> document
     When  I start an empty <eDoc> document
-    And   I open the Notes and Attachments Tab
-    And   I enter text into the Note Text field
-    And   I press Tab
-    Then  my cursor is on the Browse button
-    When  I attach a file to the Notes and Attachments Tab line
-    Then  my cursor is on the Cancel button
-    When  I press Tab
-    Then  my cursor is on the Add button
-    When  I click the Add button
-    And   I select Save
-    When  I enter a a Valid Notification Recipient < Valid Notification Recipient> and press tab
-    And   I arrive at delete and I press tab
-    When  I arrive at Send and press Send
-    Then  I will see a display of” Note notification was successfully sent.”
+    And   I enter text into the Note Text field of the <eDoc> document
+    And   I press the Tab key
+    Then  my cursor is on the Attach File field
+    When  I attach a file to the Notes and Attachments Tab line of the <eDoc> document
+    Then  my cursor is on the Cancel Attachment button
+    When  I press the Tab key
+    Then  my cursor is on the Add a Note button
+    When  I click the Add a Note button
+    And   I save the <eDoc> document
+    And   I enter a a Valid Notification Recipient for the <eDoc> document
+    And   I press the Tab key
+    Then  my cursor is on the Delete a Note button
+    When  I press the Tab key
+    Then  my cursor is on the Send FYI button
+    When  I click the Send FYI button
+    And   I stop here
+    Then  I will see a display of "Note notification was successfully sent."
   Examples:
       | eDoc                               | docType |
       | Advance Deposit                    | AD      |
-      | Auxiliary Voucher                  | AV      |
-      | Credit Card Receipt                | CCR     |
-      | Distribution Of Income And Expense | DI      |
-      | General Error Correction           | GEC     |
-      | Internal Billing                   | IB      |
-      | Journal Voucher                    | JV-1    |
-      | Journal Voucher                    | JV-2    |
-      | Journal Voucher                    | JV-3    |
-      | Non-Check Disbursement             | ND      |
-      | Pre-Encumbrance                    | PE      |
-      | Transfer Of Funds                  | TF      |
-      | Budget Adjustment                  | BA      |
-      | Service Billing                    | SB      |
-      | Disbursement Voucher               | DV      |
-      | Indirect Cost Adjustment           | ICA     |
+#      | Auxiliary Voucher                  | AV      |
+#      | Credit Card Receipt                | CCR     |
+#      | Distribution Of Income And Expense | DI      |
+#      | General Error Correction           | GEC     |
+#      | Internal Billing                   | IB      |
+#      | Journal Voucher                    | JV-1    |
+#      | Journal Voucher                    | JV-2    |
+#      | Journal Voucher                    | JV-3    |
+#      | Non-Check Disbursement             | ND      |
+#      | Pre-Encumbrance                    | PE      |
+#      | Transfer Of Funds                  | TF      |
+#      | Budget Adjustment                  | BA      |
+#      | Service Billing                    | SB      |
+#      | Disbursement Voucher               | DV      |
+#      | Indirect Cost Adjustment           | ICA     |
