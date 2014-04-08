@@ -4,9 +4,9 @@ Feature: Purap Preq Building Blocks
 
   #PURAP TEST IN PROGRESS JUST UPLOADING TO ADD FILES SO OTHERS CAN WORK ON PURAP
 @pending @wip @purap
-  Scenario: Purap Preq building block 4f
-   Given I login as a KFS user to create an REQS
-   And I create the Requisition document with:
+Scenario: Purap Preq building block 4f
+  Given I login as a KFS user to create an REQS
+  And I create the Requisition document with:
    | vendor number       | 4471-0   |
    | item quanity        | 9.9      |
    | item cost           | 1000     |
@@ -14,64 +14,49 @@ Feature: Purap Preq Building Blocks
    | account number      | 1093603  |
    | object code         | 6540     |
    | percent             | 100      |
-   And I calculate my Requisition document
-   And I submit the Requisition document
-   And the requisition document goes to ENROUTE
-   And I switch to the user with the next Pending Action in the Route Log for the Requisition document
-   And I view the Requisition document on my action list
-   And I approve the Requisition document
-   And the Requisition document goes to FINAL
+  And I calculate my Requisition document
+  And I submit the Requisition document
+  And the requisition document goes to ENROUTE
+  And I switch to the user with the next Pending Action in the Route Log for the Requisition document
+  And I view the Requisition document on my action list
+  And I approve the Requisition document
+  And the Requisition document goes to FINAL
+  #skip req for testing
+        #PO
+  And I am logged in as a Purchasing Processor
+  #<ml284>
+  And I submit a Contract Manager Assignment of '10' for the Requisition
+  #10
+#REQS/PO STATUS CHECK for ********
+#  And I login as a KFS user to create an REQS
+  #der9
+#  And The REQS Status is
+  #UNNAPPROVED
+  And I am logged in as a Contract Manager
+  #mss7
+  And I search and retrieve the REQS
+  And The View Related Documents Tab PO Status displays
+  #UNAPPROVED
+  And I Select the PO
+  And I Complete Selecting a Vendor
+  #27015-0
+  And I enter a Vendor Choice
+  #LOWESt PRICE
+  And I calculate and verify the GLPE
+  #PARM
+  And I submit the PO eDoc Status is
+  #FINAL
+#PO APPROVAL OPTIONS
+#WRAP UP PROCESSES AND TESTS
+  Then In Pending Action Requests an FYI is sent to FO and Initiator
+  #jaf54 and der9
+  And The PO eDoc Status is
+  #FINAL
+  And The Purchase Order Doc Status equals
+  #OPEN
 
-#
-##
-#
-##  And the REQS eDoc Status Equals "Awaiting Contract Manager Assignment"
-#  And I login as Purchasing Processor "ml284"
-##  And I create a Contract Manager Assignment
-##  And I Select the REQS and Enter a Contract Manager
-#  And I create a Contract Manager Assignment of '10' for the Requisition
-#
-##<10>
-#  And I Submit the document and it goes FINAL
-#  And I login as the REQS Initiator
-#<Initiator of REQS>
-#  And the REQS Status is
-#<Masked ******** UNNAPPROVED>
-#  And I login as Contract Manager
-#<mss7>
-#  And I search and retrieve the REQS
-#  And The View Related Documents Tab PO Status displays
-#<Unmasked UNNAPPROVED>
-#  And I Select the PO
-#  And I Complete Selecting a Vendor
-#<27015-0>
-#  And I enter a Vendor Choice
-#<Lowest Price>
-#  And I calculate and verify the GLPE
-#We already have this coded. See some of the PE tests where we validate the expected results. Debit Expense, Credit Object Code 3110
-#  And I submit the document and it status is
-#  And in Pending Action Requests an FYI is sent to FO and Initiator
-#<Automatic FYI to jaf54 and der9>
-#  And I submit the PO eDoc Status is
-#<FINAL>
-#  And The Purchase Order Doc Status equals
-#<Open>
-#  Given I login to KFS and select eShop
-#<Initiator of REQS>
-#  And I Search Documents retrieve the PO
-#<Today>
-#  And the Document Status displayed came from the PO and is
-#<Completed>
-#  And the Delivery Instructions displayed equals what came from the PO
-#  And the Notes to Supplier displayed equals what came from the PO
-#  And the Attachments for Supplier came from the PO
-#  And I login as KFS Administrator
-#We already have this coded. See some of the PE tests where we validate the expected results. Debit Expense, Credit Object Code 3110
-#  And The PO GLPE are verified
-#  And I run the nightly batches
-#  When The PO GLPE equal the General Ledger Entries
-#  Then I close POS with Zero Balances
-#autoCloseRecurringOrdersStep
+
+
 
 
   @pending @wip
