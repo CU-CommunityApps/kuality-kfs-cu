@@ -41,7 +41,7 @@ Feature: Pre-Encumbrance
     When    I am logged in as a KFS Chart Manager
     Then    the Pre-Encumbrance document accounting lines equal the General Ledger entries
 
-  @KFSQA-740 @sloth
+  @KFSQA-740 @sloth @wip
   Scenario: E2E - PE Created, Approved and Accounting Line persists and updates GL
     Given   I am logged in as a KFS User for the PE document
     And     I start an empty Pre-Encumbrance document

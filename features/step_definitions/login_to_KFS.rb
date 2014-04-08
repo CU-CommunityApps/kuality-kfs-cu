@@ -3,7 +3,7 @@ Given /^I am logged in as a KFS Technical Administrator$/ do
 end
 
 Given /^I am logged in as a Vendor Reviewer$/ do
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Vendor Attachment viewer (cu)'))
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-VND', 'Reviewer'))
 end
 
 Given /^I am logged in as a KFS Fiscal Officer$/ do
@@ -27,7 +27,7 @@ Given /^I am logged in as a KFS Chart Administrator$/ do
 end
 
 Given /^I am logged in as a KFS Cash Manager$/ do
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Cash Manager'))
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-FP', 'Cash Manager'))
 end
 
 Given /^I am logged in as a KFS Contracts & Grants Processor$/ do
@@ -124,7 +124,7 @@ end
 
 
 Given /^I am logged in as a Disbursement Manager$/ do
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Disbursement Manager'))
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-FP', 'Disbursement Manager'))
 end
 
 Given /^I am logged in as a Tax Manager$/ do
@@ -132,7 +132,7 @@ Given /^I am logged in as a Tax Manager$/ do
 end
 
 Given /^I am logged in as a Disbursement Method Reviewer$/ do
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Disbursement Method Reviewer'))
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-FP', 'Disbursement Method Reviewer'))
 end
 
 Given /^I login as a KFS user to create an REQS$/ do
