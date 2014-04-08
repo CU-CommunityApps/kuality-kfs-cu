@@ -12,7 +12,7 @@ And /^Nightly Batch Jobs run$/ do
 end
 
 And /^I run (Nightly Out|Scrubber|Poster), not waiting for completion$/ do |action|
-  
+
   case action
   when 'Nightly Out'
     run_nightly_out(false)
