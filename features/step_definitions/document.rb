@@ -21,7 +21,7 @@ And /^I copy a random (.*) document with (.*) status/ do |document, doc_status|
 end
 
 When /^I view the (.*) document$/ do |document|
-  get(snake_case(document)).view
+  document_object_for(document).view
 end
 
 When /^I (#{BasePage::available_buttons}) the (.*) document$/ do |button, document|
