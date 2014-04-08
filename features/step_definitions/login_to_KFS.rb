@@ -116,7 +116,7 @@ Then /^I switch to the user with the next Pending Action in the Route Log$/ do
   step "I am logged in as \"#{new_user}\""
 end
 Then /^I switch to the user with the next Pending Action in the Route Log for the (.*) document$/ do |document|
-
+  # TODO : it will be good if a member of 'group' approver can be selected.  For example :  'Group Name: Radioactive Review'
   new_user = ''
   on(page_class_for(document)) do |page|
     page.expand_all
@@ -146,4 +146,8 @@ end
 
 Given /^I login as a KFS user to create an REQS$/ do
   visit(BackdoorLoginPage).login_as('der9') #TODO get from role service
+end
+
+Given /^I am logged in as a Commodity Reviewer$/ do
+  visit(BackdoorLoginPage).login_as('am28') #TODO get from role service
 end
