@@ -289,7 +289,7 @@ And /^I add an Address to a Vendor with following fields:$/ do |table|
 end
 
 
-And /^I create a DV Vendor with ACH\/Check as default Payment method$/  do
+And /^I create a DV Vendor$/  do
   @vendor = create VendorObject,
                    vendor_type:                'DV - DISBURSEMENT VOUCHER',
                    vendor_name:                 nil,

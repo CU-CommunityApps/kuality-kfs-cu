@@ -120,7 +120,7 @@ Feature: Vendor Create
   @KFSQA-774 @cornell @tortoise @wip
   Scenario: I want to create a DV vendor with ACH/Check as the default payment method.
     Given   I am logged in as "rlc56"
-    When    I create a DV Vendor with ACH/Check as default Payment method
+    When    I create a DV Vendor
     And     I enter a default payment method P on Vendor Page
     And     I add an Attachment to the Vendor document
     And     I submit the Vendor document
