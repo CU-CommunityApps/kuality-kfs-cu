@@ -2,7 +2,7 @@ Feature: Purap REQS 2 Building Blocks
 
   [KFSQA-733] Create -- non eShop with C&G, Commodity routing
 
- @KFSQA-733 @purap @cornell @tortoise @wip
+ @KFSQA-733 @purap @cornell @tortoise
   Scenario: Create -- non eShop with C&G, Commodity routing
     Given I login as a KFS user to create an REQS
     And   I create the Requisition document with:
