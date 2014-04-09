@@ -34,7 +34,7 @@ Scenario: Purap Preq building block 4f
   #UNNAPPROVED
   And I am logged in as a Contract Manager
   #mss7
-  And I search and retrieve the REQS
+  And I search and retrieve the Requisition
   And The View Related Documents Tab PO Status displays
   #UNAPPROVED
   And I Select the PO

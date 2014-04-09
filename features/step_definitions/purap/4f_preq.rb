@@ -100,6 +100,18 @@ And(/^I search and retrieve the Requisition\$/) do
 end
 
 And(/^The View Related Documents Tab PO Status displays$/) do
+    on RequisitionPage do |page|
+      page.show_related_documents
+      page.show_purchase_order
+      @purchase_order = page.purchase_order_number
+
+      page.purchase_order_number_link
+      puts @purchase_order
+
+      sleep 15
+    end
+
+
   pending # express the regexp above with the code you wish you had
 end
 
