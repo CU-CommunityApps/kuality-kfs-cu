@@ -26,6 +26,10 @@ Feature: Vendor Create
   policy, on subsequent lookups, The initiator will not be allowed to view the Tax ID and
   Attachments for this vendor.
 
+  [KFSQA-776] I want to create a DV vendor with foreign draft as the default payment method.  Per Cornell
+  policy, on subsequent lookups, The initiator will not be allowed to view the Tax ID and
+  Attachments for this vendor.
+
   @KFSQA-638 @cornell @tortoise
   Scenario: I want to create a vendor with ownership type INDIVIDUAL
     Given   I am logged in as a KFS User
@@ -117,7 +121,7 @@ Feature: Vendor Create
     When    I am logged in as a KFS User
     Then    the Vendor document should be in my action list
 
-  @KFSQA-774 @cornell @tortoise @wip
+  @KFSQA-774 @cornell @tortoise
   Scenario: I want to create a DV vendor with ACH/Check as the default payment method.
     Given   I am logged in as "rlc56"
     When    I create a DV Vendor
@@ -133,3 +137,29 @@ Feature: Vendor Create
     When    I view the Vendor document
     Then    I can not view the Tax ID and Attachments on Vendor page
 
+  @KFSQA-776 @cornell @tortoise @wip
+  Scenario: I want to create a DV vendor with foreign draft as the default payment method.
+    Given   I am logged in as "rlc56"
+    When    I create a DV Vendor
+    And     I enter a default payment method F on Vendor Page
+    And     I add an Attachment to the Vendor document
+    And     I add an Address to a Vendor with following fields:
+      | Address Type   | TX - TAX             |
+      | Address 1      | UFFICIO ROMA TRULLO  |
+      | Address 2      | CASELLA POSTALE 1234 |
+      | City           | Hanover              |
+      | Zip Code       | 00149 ROMA RM        |
+      | Country        | Italy                |
+    And     I submit the Vendor document
+    Then    the Vendor document goes to ENROUTE
+    And     I am logged in as a Vendor Reviewer
+    And     I view the Vendor document
+    And     I change Remit Address and the Foreign Tax Address
+    And     I save the Vendor document
+    And     I view the Vendor document
+    And     the Address changes persist
+    And     I approve the Vendor document
+    Then    the Vendor document goes to FINAL
+    Given   I am logged in as "rlc56"
+    When    I view the Vendor document
+    Then    I can not view the Tax ID and Attachments on Vendor page

@@ -326,3 +326,21 @@ end
 And /^I enter a default payment method (\w+) on Vendor Page$/ do |payment_method|
   on (VendorPage) {|page|  page.default_payment_method.fit  payment_method}
 end
+
+And /^the Address changes persist$/ do
+  on VendorPage do |page|
+    page.expand_all
+    page.updated_address_1.value.should == @changed_addr[:updated_address_1]
+    page.updated_2nd_address_2.value.should == @changed_addr[:updated_2nd_address_2]
+  end
+end
+
+And /^I change Remit Address and the Foreign Tax Address$/ do
+  on VendorPage do |page|
+    @changed_addr = {} unless !@changed_addr.nil?
+    page.updated_address_1.fit random_alphanums(30, 'AFT')
+    @changed_addr.merge!(updated_address_1: page.updated_address_1.value)
+    page.updated_2nd_address_2.fit random_alphanums(30, 'AFT')
+    @changed_addr.merge!(updated_2nd_address_2: page.updated_2nd_address_2.value)
+  end
+end
