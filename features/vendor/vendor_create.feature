@@ -26,6 +26,10 @@ Feature: Vendor Create
   policy, on subsequent lookups, The initiator will not be allowed to view the Tax ID and
   Attachments for this vendor.
 
+  [KFSQA-775] I want to create a DV vendor with Wire as the default payment method. Per Cornell
+  policy, on subsequent lookups, The initiator will not be allowed to view the Tax ID and
+  Attachments for this vendor.
+
   [KFSQA-776] I want to create a DV vendor with foreign draft as the default payment method.  Per Cornell
   policy, on subsequent lookups, The initiator will not be allowed to view the Tax ID and
   Attachments for this vendor.
@@ -121,11 +125,11 @@ Feature: Vendor Create
     When    I am logged in as a KFS User
     Then    the Vendor document should be in my action list
 
-  @KFSQA-774 @cornell @tortoise
-  Scenario: I want to create a DV vendor with ACH/Check as the default payment method.
+  @KFSQA-774 @KFSQA-775 @cornell @slug
+  Scenario Outline: I want to create a DV vendor with ACH/Check or Wire as the default payment method.
     Given   I am logged in as "rlc56"
     When    I create a DV Vendor
-    And     I enter a default payment method P on Vendor Page
+    And     I enter a default payment method <default_payment_method> on Vendor Page
     And     I add an Attachment to the Vendor document
     And     I submit the Vendor document
     Then    the Vendor document goes to ENROUTE
@@ -136,6 +140,10 @@ Feature: Vendor Create
     Given   I am logged in as "rlc56"
     When    I view the Vendor document
     Then    I can not view the Tax ID and Attachments on Vendor page
+  Examples:
+    | default_payment_method    |
+    | P                         |
+    | W                         |
 
   @KFSQA-776 @cornell @tortoise @wip
   Scenario: I want to create a DV vendor with foreign draft as the default payment method.
