@@ -12,6 +12,8 @@ And /^I create the Requisition document with:$/  do |table|
                         item_unit_cost:       updates['item cost'],
                         item_commodity_code:  updates['item commodity code'],
                         item_account_number:  updates['account number'],
+                        item_catalog_number:  updates['item catalog number'],
+                        item_description:     updates['item description'].nil? ? random_alphanums(15, 'AFT') : updates['item description'],
                         item_object_code:     updates['object code'],
                         item_percent:         updates['percent']
 
