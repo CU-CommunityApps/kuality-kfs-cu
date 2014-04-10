@@ -115,8 +115,8 @@ Then /^I switch to the user with the next Pending Action in the Route Log$/ do
 
   step "I am logged in as \"#{new_user}\""
 end
+
 Then /^I switch to the user with the next Pending Action in the Route Log for the (.*) document$/ do |document|
-  # TODO : it will be good if a member of 'group' approver can be selected.  For example :  'Group Name: Radioactive Review'
   new_user = ''
   on(page_class_for(document)) do |page|
     page.expand_all
@@ -124,7 +124,14 @@ Then /^I switch to the user with the next Pending Action in the Route Log for th
     page.use_new_tab
     page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].should exist
     page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].text.empty?.should_not
-    new_user = page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].text
+    if (page.frm.div(id: 'tab-Overview-div').tables[0][1].text.include?('Principal Name:'))
+       new_user = page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].text
+    else
+      # TODO : this is for group.  any other alternative ?
+      mbr_tr = page.frm.select(id: 'document.members[0].memberTypeCode').parent.parent.parent
+      new_user = mbr_tr[4].text
+    end
+
     page.close_children
   end
 
