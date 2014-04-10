@@ -1,86 +1,112 @@
+require 'csv'
+
 And /^I start a (.*) document for "(.*)" file import$/ do  |document, file_name|
   doc_object = snake_case document
-  object_klass = Kernel.const_get(object_class_for(document).to_s)
+  object_klass = object_class_for(document)
+
+  set(doc_object, create(object_klass, press:         nil,
+                                       document_id:   @document_id,
+                                       description:   random_alphanums(20, 'AFT AV '),
+                                       initial_lines: [{
+                                                         type:        :source,
+                                                         file_name:   file_name.to_s
+                                                       }]))
 
   step "I take the csv file \"#{file_name}\" and make into an array for the #{document} document"
-
-
-  set(doc_object, create(object_klass, press: nil,
-                         description: random_alphanums(20, 'AFT AV '),
-                         initial_lines: [{
-                                             type: :source,
-                                             file_name: file_name.to_s
-                                         }], document_id: @document_id))
 end
 
 And /^I start a (.*) document for from "(.*)" file import and to "(.*)" file import$/ do  |document, file_name, to_file_name|
   doc_object = snake_case document
-  object_klass = Kernel.const_get(object_class_for(document).to_s)
+  object_klass = object_class_for(document)
+
+  set(doc_object, create(object_klass, press:         nil,
+                                       document_id:   @document_id,
+                                       description:   random_alphanums(20, 'AFT AV '),
+                                       initial_lines: [{
+                                                         type:      :source,
+                                                         file_name: file_name
+                                                       },
+                                                       {
+                                                         type:      :target,
+                                                         file_name: to_file_name
+                                                       }]))
 
   step "I take the csv file \"#{file_name}\" and make into an array for the #{document} document"
-
-  set(doc_object, create(object_klass, press: nil,
-                         description: random_alphanums(20, 'AFT AV '),
-                         initial_lines: [{
-                                             type: :source,
-                                             file_name: file_name.to_s
-                                         },
-                                        {
-                                            type: :target,
-                                            file_name: to_file_name.to_s
-                         }], document_id: @document_id))
 end
 
-And /^On the (.*) I import the (From|To) Accounting Lines from a csv file$/ do |document, type|
-  doc_object = snake_case document
+And /^on the (.*) I import the (From|To) Accounting Lines from a csv file$/ do |document, type|
+  # This assumes you've provided a file_name in the first initial_lines entry for that type.
+  doc_object = document_object_for(document)
     case type
       when 'From'
-        get(doc_object).accounting_lines[:source][0].import_lines
+        doc_object.import_initial_lines(:source)
       when 'To'
-        get(doc_object).accounting_lines[:target][0].import_lines
+        doc_object.import_initial_lines(:target)
     end
-  end
+end
 
 And /^I view the (.*) document on the General Ledger Entry$/ do |document|
-  doc_object = snake_case document
+  doc_object = document_object_for(document)
 
   visit(MainPage).general_ledger_entry
 
   on GeneralLedgerEntryLookupPage do |page|
-    page.document_number.fit get(doc_object).document_id
-    page.chart_code.fit 'IT'
+    page.document_number.fit   doc_object.document_id
+    page.chart_code.fit        'IT'
     page.balance_type_code.fit ''
+    page.pending_entry_approved_indicator_all
     page.search
-    page.open_item(get(document).document_id)
+    page.open_item(doc_object.document_id)
   end
 end
 
-And /^The Template Accounting Line Description for (.*) equal the General Ledger$/ do |document|
+And /^the Template Accounting Line Description for (.*) equals the General Ledger entry$/ do |document|
+  # This step requires that the CSV file content is placed into an array and that the CSV file was the last one loaded
+  @imported_file.each { |line| line.collect{|c| c.nil? ? c : c.upcase}.should include on(AccountingLine).result_source_line_description.upcase }
+end
+
+And /^the (Grant|Receipt|Source|Target|Encumbrance|Disencumbrance) Template Accounting Line Description for (.*) equals the General Ledger entry$/ do |type, document|
   # This step requires that the CSV file content is placed into an array
-  page_klass = Kernel.const_get(page_class_for(document))
-  on(page_klass).source_line_description_value.should == @line_item
+  alt = AccountingLineObject::get_type_conversion(type)
+  @imported_files[alt].each do |file|
+    file.each do |line|
+      line.collect { |c| c.nil? ? c : c.upcase }.should include on(AccountingLine).send("result_#{alt}_line_description").upcase
+    end
+  end
 end
 
 And /^I take the csv file "(.*)" and make into an array for the (.*) document$/ do |file_name, document|
 #Leaving as a step def for now. If we get more tests that use reading a CSV import to test data then we should pull this into a method.
-  @import_file_array = []
-
-  File.open($file_folder+file_name) do |file|
-    while line = file.gets
-      @import_file_array << line
-    end
-
-    @import_file_array.each do |comm|
-      @import_split = comm.split(',')
-    end
-
-    case
-      when document == 'Non Check Disbursement'
-        @line_item =  @import_split[8].upcase
-      when document == 'General Error Correction'
-        @line_item =  @import_split[9].upcase
+  @imported_file = []
+  CSV.foreach($file_folder+file_name) do |line|
+    case document
+      when 'Non Check Disbursement'
+        line[8].upcase!
+      when 'General Error Correction'
+        line[9].upcase!
       else
-        @line_item =  @import_split[7].upcase
-     end
-  end #file.open
+        line[7].upcase!
+    end
+    @imported_file << line
+  end
 end #step
+
+And /^I upload a (Grant|Receipt|Source|Target|Encumbrance|Disencumbrance) line template for the (.*) document$/ do |type, document|
+  doc_object = document_object_for(document)
+  file_name = "#{object_class_for(document)::DOC_INFO[:type_code]}_#{snake_case(type).to_s}_line.csv"
+  doc_object.import_lines(AccountingLineObject::get_type_conversion(type), file_name)
+
+  step "I take the csv file \"#{file_name}\" and make into an array for the #{document} document"
+  step "I add the imported #{type} Accounting Line file data to the stack"
+end
+
+And /^I add the imported (.*) Accounting Line file data to the stack$/ do |type|
+  alt = AccountingLineObject::get_type_conversion(type)
+  if @imported_files.nil?
+    @imported_files = {alt => [@imported_file]}
+  elsif @imported_files[alt].nil?
+    @imported_files.merge!({alt => [@imported_file]})
+  else
+    @imported_files[alt] << @imported_file
+  end
+end

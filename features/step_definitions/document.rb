@@ -21,7 +21,7 @@ And /^I copy a random (.*) document with (.*) status/ do |document, doc_status|
 end
 
 When /^I view the (.*) document$/ do |document|
-  get(snake_case(document)).view
+  document_object_for(document).view
 end
 
 When /^I (#{BasePage::available_buttons}) the (.*) document$/ do |button, document|
@@ -59,16 +59,14 @@ When /^I (#{BasePage::available_buttons}) the (.*) document and deny any questio
 end
 
 Then /^the (.*) document goes to (PROCESSED|ENROUTE|FINAL|INITIATED|SAVED)$/ do |document, doc_status|
-  doc_object = snake_case document
   sleep 10
-  get(doc_object).view
+  document_object_for(document).view
   on(page_class_for(document)).document_status.should == doc_status
 end
 
 Then /^the (.*) document goes to one of the following statuses:$/ do |document, required_statuses|
-  doc_object = snake_case document
   sleep 10
-  get(doc_object).view
+  document_object_for(document).view
   on(page_class_for(document)) { |page| required_statuses.raw.flatten.should include page.document_status }
 end
 
