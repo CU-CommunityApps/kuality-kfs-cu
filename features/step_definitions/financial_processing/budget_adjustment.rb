@@ -55,8 +55,8 @@ end
 
 Then /^I verify that Chart Value defaults to IT$/ do
   on BudgetAdjustmentPage do |page|
-    page.source_chart_code.value.should == 'IT'
-    page.target_chart_code.value.should == 'IT'
+    page.source_chart_code.value.should == get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
+    page.target_chart_code.value.should == get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
   end
 end
 
@@ -80,7 +80,7 @@ And /^I (#{BudgetAdjustmentPage::available_buttons}) a balanced Budget Adjustmen
                                       current_amount:   '250.11',
                                       base_amount:      '125',
                                       line_description: random_alphanums(20, 'AFT TO 1 '),
-                                      chart_code:       'IT'
+                                      chart_code:       get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
                                   }
                               ]
 

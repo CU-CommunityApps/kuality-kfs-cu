@@ -19,7 +19,7 @@ end
 
 And /^I am logged in as the FO of the Account$/ do
   sleep(1)
-  #TODO user service to do this in future
+  #TODO user service to do this in future - lookup current account and grab the FO
   step 'I am logged in as "nja3"'
   @user_id = 'nja3'
 end
@@ -29,13 +29,6 @@ And /^The Sub-Account document should be in my action list$/ do
   on(ActionList).view_as(@user_id)
   on(ActionList).last if on(ActionList).last_link.exists?
   on(ActionList).result_item(@sub_account.document_id).should exist
-end
-
-When(/^I am logged in as a Contract and Grant Processor$/) do
-  sleep(1)
-  #TODO user service to do this in future
-  step 'I am logged in as "drs4"'
-  @user_id = 'drs4'
 end
 
 And /^I (#{SubAccountPage::available_buttons}) a Sub-Account through action list routing with adhoc approver user "(.*)"$/ do |button, approver_user|

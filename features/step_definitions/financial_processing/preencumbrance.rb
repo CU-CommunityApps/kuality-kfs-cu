@@ -4,7 +4,7 @@ When /^I (#{PreEncumbrancePage::available_buttons}) a Pre\-Encumbrance Document 
                                               initial_lines: [{
                                                   type:           :source,
                                                   account_number: @account.number,
-                                                  chart_code:     'IT', #TODO grab this from config file
+                                                  chart_code:     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
                                                   object:         '6100',
                                                   amount:         '0.01'
                                               }]
@@ -17,7 +17,7 @@ When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance document t
                                                   initial_lines: [{
                                                                       type:             :source,
                                                                       account_number:   account_number,
-                                                                      chart_code:       'IT', #TODO grab this from config file
+                                                                      chart_code:       get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
                                                                       object:           '6540',
                                                                       amount:           '200',
                                                                       line_description: 'Test 753 Encumbrance'
@@ -45,7 +45,7 @@ When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance Document t
                                                    type:             :target,
                                                    account_number:   @account_number,
                                                    reference_number: encumbrance_reference_number,
-                                                   chart_code:       'IT', #TODO grab this from config file
+                                                   chart_code:       get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
                                                    object:           '6100',
                                                    amount:           '0.01'
                                                  }]
@@ -75,7 +75,7 @@ Then /^The outstanding encumbrance for account (.*) and object code (.*) is (.*)
   visit(MainPage).open_encumbrances
   on OpenEncumbranceLookupPage do |page|
     page.account_number.set account_number
-    page.chart_code.set 'IT' #TODO get from config
+    page.chart_code.set get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
     page.object_code.set object_code
     page.including_pending_ledger_entry_approved.set
     page.doc_number.set @remembered_document_id

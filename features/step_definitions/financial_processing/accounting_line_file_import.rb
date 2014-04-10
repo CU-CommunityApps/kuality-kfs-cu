@@ -52,7 +52,7 @@ And /^I view the (.*) document on the General Ledger Entry$/ do |document|
 
   on GeneralLedgerEntryLookupPage do |page|
     page.document_number.fit   doc_object.document_id
-    page.chart_code.fit        'IT'
+    page.chart_code.fit        get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
     page.balance_type_code.fit ''
     page.pending_entry_approved_indicator_all
     page.search

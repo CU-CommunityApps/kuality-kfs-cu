@@ -3,13 +3,13 @@ When /^I perform a (.*) Lookup using account number (.*)$/ do |gl_balance_inquir
   visit(MainPage).send(gl_balance_inquiry_lookup)
   if gl_balance_inquiry_lookup == 'current_fund_balance'
     on CurrentFundBalanceLookupPage do |page|
-      page.chart_code.fit     'IT'
+      page.chart_code.fit     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
       page.account_number.fit account_number
       page.search
     end
   else
     on GeneralLedgerEntryLookupPage do |page|
-      page.chart_code.fit     'IT' #TODO get from config
+      page.chart_code.fit     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
       page.account_number.fit account_number
       page.search
     end
