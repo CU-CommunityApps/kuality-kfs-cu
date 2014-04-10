@@ -153,7 +153,7 @@ And /^I add an Attachment to the Vendor document$/ do
     page.note_text.fit @vendor.note_text
     page.attach_notes_file.set($file_folder+@vendor.attachment_file_name)
     page.add_note
-    page.attach_notes_file_1.should exist #verify that note is indeed added
+    page.download_file_button.should exist #verify that note is indeed added
 
   end
 end
