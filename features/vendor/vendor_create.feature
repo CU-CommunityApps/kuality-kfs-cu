@@ -145,7 +145,7 @@ Feature: Vendor Create
     | P                         |
     | W                         |
 
-  @KFSQA-776 @cornell @tortoise @wip
+  @KFSQA-776 @cornell @tortoise
   Scenario: I want to create a DV vendor with foreign draft as the default payment method.
     Given   I am logged in as "rlc56"
     When    I create a DV Vendor
