@@ -18,11 +18,11 @@ require 'rspec/matchers'
 
 require 'java'
 require "#{File.dirname(__FILE__)}/../../lib/ext/ksb-client.jar"
-java_import "edu.cornell.ksbclient.KSBServiceClient"
-java_import "org.kuali.rice.kim.v2_0.IdentityService"
-java_import "org.kuali.rice.kim.v2_0.RoleService"
-java_import "org.kuali.rice.core.v2_0.StringMapEntryListType"
-java_import "org.kuali.rice.kim.v2_0.EntityType"
+java_import 'edu.cornell.ksbclient.KSBServiceClient'
+java_import 'org.kuali.rice.kim.v2_0.IdentityService'
+java_import 'org.kuali.rice.kim.v2_0.RoleService'
+java_import 'org.kuali.rice.core.v2_0.StringMapEntryListType'
+java_import 'org.kuali.rice.kim.v2_0.EntityType'
 
 World Foundry
 World StringFactory
@@ -30,7 +30,7 @@ World DateFactory
 
 if ENV['HEADLESS']
   headless = Headless.new(:reuse           => false,
-                          :destroy_at_exit => true)
+                          :destroy_at_exit => false)
   headless.start
 end
 
