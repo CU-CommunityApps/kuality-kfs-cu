@@ -356,7 +356,7 @@ And /^I search and retrieve Payee '(.*)' with Reason Code (\w)$/ do |vendor_name
       plookup.search
       plookup.return_value_links.first.click
       sleep 1
-      plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
+      plookup.return_random if plookup.on_a_lookup? && (plookup.lookup_title == 'Vendor Address Lookup')
     end
     @disbursement_voucher.fill_in_payment_info(tab)
   end

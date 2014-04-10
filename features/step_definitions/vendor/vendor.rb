@@ -150,10 +150,9 @@ end
 
 And /^I add an Attachment to the Vendor document$/ do
   on VendorPage do |page|
-    page.note_text.fit @vendor.note_text
+    page.note_text.fit  random_alphanums(20, 'AFT')
     page.attach_notes_file.set($file_folder+@vendor.attachment_file_name)
     page.add_note
-    page.attach_notes_file_1.should exist #verify that note is indeed added
 
   end
 end
@@ -264,11 +263,11 @@ And /^the Address and Phone Number changes persist$/ do
   on VendorPage do |page|
     page.expand_all
     page.updated_address_1.value.should == @changed_addr_phone[:updated_address_1]
-    page.updated_phone_type.value.should == @changed_addr_phone[:updated_phone_type]
-    page.updated_address_2.value.should == @changed_addr_phone[:updated_address_2]
+    page.updated_phone_type.value.should == @changed_addr_phone[:updated_phone_type] unless @changed_addr_phone[:updated_phone_type].nil?
+    page.updated_address_2.value.should == @changed_addr_phone[:updated_address_2] unless @changed_addr_phone[:updated_address_2].nil?
     page.updated_phone_number.value.should == @changed_addr_phone[:updated_phone_number]
-    page.updated_address_attention.value.should == @changed_addr_phone[:updated_address_attention]
-    page.updated_phone_ext.value.should == @changed_addr_phone[:updated_phone_ext]
+    page.updated_address_attention.value.should == @changed_addr_phone[:updated_address_attention] unless @changed_addr_phone[:updated_address_attention].nil?
+    page.updated_phone_ext.value.should == @changed_addr_phone[:updated_phone_ext] unless @changed_addr_phone[:updated_phone_ext].nil?
   end
 end
 
@@ -286,5 +285,99 @@ And /^I add an Address to a Vendor with following fields:$/ do |table|
     page.zipcode.fit vendor_address['Zip Code']
     page.country.fit vendor_address['Country']
     page.add_address
+  end
+end
+
+And /^I update the General Liability with expired date$/ do
+  @changed_liability = {} unless !@changed_liability.nil?
+  on VendorPage do |page|
+    page.expand_all
+    page.insurance_requirements_complete.fit 'Yes'
+    page.cornell_additional_ins_ind.fit 'Yes'
+    page.insurance_requirement_indicator.set
+    page.general_liability_coverage_amt.fit '100.00'
+    page.general_liability_expiration_date.fit yesterday[:date_w_slashes]
+    @changed_liability.merge!(general_liability_coverage_amt: page.general_liability_coverage_amt.value)
+    @changed_liability.merge!(general_liability_expiration_date: page.general_liability_expiration_date.value)
+  end
+end
+
+When /^I (#{BasePage::available_buttons}) the Vendor document with expired liability date$/ do |button|
+  #doc_object = snake_case document
+  button.gsub!(' ', '_')
+  @vendor.send(button)
+  on(YesOrNoPage).yes
+  sleep 10 if (button == 'blanket approve' || button == 'approve' || 'submit')
+end
+
+When /^I close and save the Vendor document$/ do
+  on (VendorPage) {|page| page.close}
+  on(YesOrNoPage).yes
+end
+
+And /^the changes to Vendor document have persisted$/ do
+  step 'the Address and Phone Number changes persist'
+  unless @changed_liability.nil?
+    on VendorPage do |page|
+      page.general_liability_coverage_amt.value.should == @changed_liability[:general_liability_coverage_amt]
+      page.general_liability_expiration_date.value.should == @changed_liability[:general_liability_expiration_date]
+    end
+  end
+end
+
+
+And /^I create a DV Vendor$/  do
+  @vendor = create VendorObject,
+                   vendor_type:                'DV - DISBURSEMENT VOUCHER',
+                   vendor_name:                 nil,
+                   vendor_last_name:           'Twenty**************',
+                   vendor_first_name:          'Twenty-Three***********',
+                   foreign:                    'No',
+                   tax_number:                 "999#{rand(9)}#{rand(1..9)}#{rand(1..9999).to_s.rjust(4, '0')}",
+                   tax_number_type_ssn:         nil,
+                   tax_number_type_fein:        :set,
+                   ownership:                  'CORPORATION',
+                   w9_received:                'Yes',
+                   w9_received_date:           yesterday[:date_w_slashes],
+                   address_type:               'RM - REMIT',
+                   address_1:                  'PO Box 54777',
+                   address_2:                  '(127 Matt Street)',
+                   city:                       'Hanover',
+                   state:                      'MA',
+                   zipcode:                    '02359',
+                   country:                    'United States',
+                   default_address:            'Yes',
+                   method_of_po_transmission:  nil,
+                   supplier_diversity:         'HUBZONE',
+                   supplier_diversity_expiration_date: tomorrow[:date_w_slashes],
+                   attachment_file_name:       'vendor_edit_attachment_2.png'
+end
+
+And /^I can not view the Tax ID and Attachments on Vendor page$/ do
+  on VendorPage do |page|
+    page.hidden_tax_number.parent.text.should include ('Tax Number: *********')
+    page.notes_table.rows.length.should == 2
+  end
+end
+
+And /^I enter a default payment method (\w+) on Vendor Page$/ do |payment_method|
+  on (VendorPage) {|page|  page.default_payment_method.fit  payment_method}
+end
+
+And /^the Address changes persist$/ do
+  on VendorPage do |page|
+    page.expand_all
+    page.updated_address_1.value.should == @changed_addr[:updated_address_1]
+    page.updated_2nd_address_2.value.should == @changed_addr[:updated_2nd_address_2]
+  end
+end
+
+And /^I change Remit Address and the Foreign Tax Address$/ do
+  on VendorPage do |page|
+    @changed_addr = {} unless !@changed_addr.nil?
+    page.updated_address_1.fit random_alphanums(30, 'AFT')
+    @changed_addr.merge!(updated_address_1: page.updated_address_1.value)
+    page.updated_2nd_address_2.fit random_alphanums(30, 'AFT')
+    @changed_addr.merge!(updated_2nd_address_2: page.updated_2nd_address_2.value)
   end
 end

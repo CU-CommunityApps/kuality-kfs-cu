@@ -5,7 +5,7 @@ end
 
 And /^I create the Requisition document with:$/  do |table|
   updates = table.rows_hash
-  @requisition = create RequisitionObject, description: 'HELLO',
+  @requisition = create RequisitionObject, description: random_alphanums(40, 'AFT'),
                         payment_request_positive_approval_required: updates['payment request'],
                         vendor_number:        updates['vendor number'],
                         item_quantity:        updates['item quanity'],
@@ -27,8 +27,27 @@ And /^I view the Requisition document on my action list$/ do
     visit(MainPage).action_list
   on ActionList do |page|
     #sort the date
-    page.sort_results_by('Date Created')
+    # if previous user already clicked this sort, then action list for next user will be sorted with 'Date created'.  So, add this 'unless' check
+    page.sort_results_by('Date Created') unless page.result_item(@requisition.document_id).exists?
     page.result_item(@requisition.document_id).wait_until_present
     page.open_item(@requisition.document_id)
+  end
+end
+
+And /^I enter Delivery Instructions and Notes to Vendor$/ do
+  on RequisitionPage do |page|
+    page.vendor_notes.fit random_alphanums(40, 'AFT-ToVendorNote')
+    page.delivery_instructions.fit random_alphanums(40, 'AFT-DelvInst')
+  end
+end
+
+And /^I add an Attachment to the Requisition document$/ do
+  on RequisitionPage do |page|
+    page.note_text.fit random_alphanums(40, 'AFT-NoteText')
+    page.send_to_vendor.fit 'Yes'
+    page.attach_notes_file.set($file_folder+@requisition.attachment_file_name)
+    page.add_note
+    page.attach_notes_file_1.should exist #verify that note is indeed added
+
   end
 end
