@@ -38,7 +38,7 @@ Feature: Vendor Edit
     Then    the Tax Number and Notes are Not Visible on Vendor page
     And     the Address and Phone Number changes persist
 
-  @KFSQA-773 @cornell @slug @wip
+  @KFSQA-773 @cornell @slug
   Scenario: Cornell Modification- When editing a vendor, If that vendor has expired insurance, then a warning will be displayed and the user will be required to select yes to update or maintain the vendor’s records. Additionally, changes through any edits will persist from ENROUTE to FINAL.
     # "ccs1" can blanket approve
     Given   I am logged in as "ccs1"
