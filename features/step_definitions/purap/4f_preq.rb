@@ -53,3 +53,15 @@ And /^I add an Attachment to the Requisition document$/ do
 
   end
 end
+
+And /^I enter Payment Information for recurring payment type (.*)$/ do |recurring_payment_type|
+  puts 'recur type',recurring_payment_type
+  unless recurring_payment_type.empty?
+    on RequisitionPage do |page|
+      page.recurring_payment_type.fit recurring_payment_type
+      page.payment_from_date.fit right_now[:date_w_slashes]
+      page.payment_to_date.fit next_year[:date_w_slashes]
+    end
+  end
+end
+

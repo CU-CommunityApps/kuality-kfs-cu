@@ -8,6 +8,8 @@ Feature: Purap REQS 2 Building Blocks
 
   [KFSQA-737] Create -- non eShop with C&G account, not Commodity
 
+  [KFSQA-738] PURAP E2E REQS - Create -- non eShop- with Recurring Payment, C&G, not Commodity
+
   @KFSQA-733 @purap @cornell @tortoise
   Scenario: Create -- non eShop with C&G, Commodity routing
     Given I login as a KFS user to create an REQS
@@ -75,8 +77,8 @@ Feature: Purap REQS 2 Building Blocks
       | 1278003           | 6570        | 4.9           |
       | R589854           | 6540        | 7.5           |
 
-  @KFSQA-737 @purap @cornell @slug @wip
-  Scenario: Create -- non eShop (PURAP E2E-002e) - C&G account, not Commodity
+  @KFSQA-737 @KFSQA-738 @purap @cornell @slug @wip
+  Scenario Outline: Create -- non eShop - recurring payment, C&G account, not Commodity
     Given I login as a KFS user to create an REQS
     And   I create the Requisition document with:
       | vendor number       | 4471-0           |
@@ -88,6 +90,7 @@ Feature: Purap REQS 2 Building Blocks
       | account number      | 1278003          |
       | object code         | 6570             |
       | percent             | 100              |
+    And   I enter Payment Information for recurring payment type <recurring_payment_type>
     And   I add an Attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
     And   I calculate my Requisition document
@@ -103,3 +106,7 @@ Feature: Purap REQS 2 Building Blocks
     And   I view the Requisition document on my action list
     And   I approve the Requisition document
     Then  the Requisition document goes to FINAL
+  Examples:
+  | recurring_payment_type              |
+  |                                     |
+  | VARIABLE SCHEDULE, VARIABLE AMOUNT  |
