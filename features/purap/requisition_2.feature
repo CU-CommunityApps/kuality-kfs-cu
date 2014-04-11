@@ -40,7 +40,7 @@ Feature: Purap REQS 2 Building Blocks
     And   I approve the Requisition document
     Then  the Requisition document goes to FINAL
 
-  @KFSQA-734 @KFSQA-735 @purap @cornell @slug @wip
+  @KFSQA-734 @KFSQA-735 @purap @cornell @slug
   Scenario Outline: Create -- non eShop with not C&G amount or account , Commodity routing
     Given I login as a KFS user to create an REQS
     And   I create the Requisition document with:
