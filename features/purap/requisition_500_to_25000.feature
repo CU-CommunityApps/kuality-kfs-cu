@@ -58,36 +58,31 @@ Scenario: Purap Preq building block 4f
 
 
 
-
-  @pending @wip
-Scenario: I make a page object the quick way
-   Given I am logged in as "mss7"
-   When I visit the "Purchase Orders" page
-    And I select the purchase order '319358' with the doc id '5210590'
-#   And I sleep for 10
-   And I print out all "field" on the page
-   And I print out all "textarea" on the page
-   And I print out all "button" on the page
-   And I print out all "select" on the page
-   And I print out all "checkbox" on the page
-   And I print out all "radio" on the page
-
-  @pending @wip
-  Scenario: I make a page object without frames the quick way
-    Given I am logged in as "mss7"
-    When I visit the "Purchase Orders" page
-    And I select the purchase order '319351' with the doc id '5210590'
-#   And I sleep for 10
-    And I print out all "field" on the page without frame
-    And I print out all "textarea" on the page without frame
-    And I print out all "button" on the page without frame
-    And I print out all "select" on the page without frame
-    And I print out all "checkbox" on the page without frame
-    And I print out all "radio" on the page without frame
-
-#OUTPUT EXAMPLE
-  element(:delivery_to_phone_number) { |b| b.text_field(name: 'document.deliveryToPhoneNumber') }
-  element(:document.delivery_to_email_address) { |b| b.text_field(name: 'document.deliveryToEmailAddress') }
-  element(:document.delivery_building_line2address) { |b| b.text_field(name: 'document.deliveryBuildingLine2Address') }
-  element(:document.delivery_required_date) { |b| b.text_field(name: 'document.deliveryRequiredDate') }
+#
+#  @pending @wip
+#Scenario: I make a page object the quick way
+#   Given I am logged in as "mss7"
+#   When I visit the "Purchase Orders" page
+#    And I select the purchase order '319358' with the doc id '5210590'
+##   And I sleep for 10
+#   And I print out all "field" on the page
+#   And I print out all "textarea" on the page
+#   And I print out all "button" on the page
+#   And I print out all "select" on the page
+#   And I print out all "checkbox" on the page
+#   And I print out all "radio" on the page
+#
+#  @pending @wip
+#  Scenario: I make a page object without frames the quick way
+#    Given I am logged in as "mss7"
+#    When I visit the "Purchase Orders" page
+#    And I select the purchase order '319351' with the doc id '5210590'
+##   And I sleep for 10
+#    And I print out all "field" on the page without frame
+#    And I print out all "textarea" on the page without frame
+#    And I print out all "button" on the page without frame
+#    And I print out all "select" on the page without frame
+#    And I print out all "checkbox" on the page without frame
+#    And I print out all "radio" on the page without frame
+#
 
