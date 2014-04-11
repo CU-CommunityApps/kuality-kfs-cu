@@ -248,6 +248,10 @@ And /^I add a (Source|Target|From|To) Accounting Line to the (.*) document with 
               new_source_line.merge!({
                                          object: '8070'
                                      })
+            when 'Disbursement Voucher'
+              new_source_line.merge!({
+                                         object: '6100'
+                                     })
             else
           end
           get(doc_object).add_source_line(new_source_line)
@@ -299,7 +303,7 @@ end
 And /^I add a source Accounting Line to the (.*) document with a bad object code$/ do |document|
   doc_object = snake_case document
   new_source_line = {
-      chart_code:     'IT',
+      chart_code:     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
       account_number: 'G003704',
       object:         '4010',
       amount:         '300'

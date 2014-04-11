@@ -16,17 +16,10 @@ $file_folder = "#{File.dirname(__FILE__)}/../../lib/resources/"
 require "#{File.dirname(__FILE__)}/../../lib/kuality-kfs-cu"
 require 'rspec/matchers'
 
-require 'java'
-require "#{File.dirname(__FILE__)}/../../lib/ext/ksb-client.jar"
-java_import "edu.cornell.ksbclient.KSBServiceClient"
-java_import "org.kuali.rice.kim.v2_0.IdentityService"
-java_import "org.kuali.rice.kim.v2_0.RoleService"
-java_import "org.kuali.rice.core.v2_0.StringMapEntryListType"
-java_import "org.kuali.rice.kim.v2_0.EntityType"
-
 World Foundry
 World StringFactory
 World DateFactory
+World GlobalConfig
 
 if ENV['HEADLESS']
   headless = Headless.new(:reuse           => false,

@@ -6,7 +6,7 @@ Feature: Roles Administration
 
   @pending
   Scenario: Adding an unassigned user to a Group in a Financial Processing Role
-    Given I am logged in as a KFS Chart User
+    Given I am logged in as a KFS Chart Administrator
     And   I create a Group
     And   I am logged in as "admin"
     And   create an 'Financial System User' User
