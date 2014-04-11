@@ -38,7 +38,7 @@ end
 And /^I finalize the Parameter document$/ do
   # Note: this means you'll change users before the end of this step.
   step 'the Parameter document goes to ENROUTE'
-  step 'I am logged in as a KFS Parameter Change Administrator'
+  step 'I am logged in as a KFS Parameter Change Approver'
   step 'I view the Parameter document'
   step 'I approve the Parameter document'
   step 'the Parameter document goes to FINAL'
