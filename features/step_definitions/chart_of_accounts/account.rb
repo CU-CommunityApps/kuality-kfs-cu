@@ -127,7 +127,7 @@ When /^I save an Account document with only the ([^"]*) field populated$/ do |fi
       sub_fund_group_code:     'ADMSYS',
       higher_ed_funct_code:   '4000',
       restricted_status_code: 'U - Unrestricted',
-      fo_principal_name:    get_aft_parameter_values(ParameterConstants::DEFAULT_FISCAL_OFFICER),#'dh273',
+      fo_principal_name:    get_aft_parameter_values(ParameterConstants::DEFAULT_FISCAL_OFFICER),
       supervisor_principal_name:  'ccs1',
       manager_principal_name: 'aap98',
       budget_record_level_code: 'C - Consolidation',
