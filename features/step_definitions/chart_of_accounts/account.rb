@@ -8,7 +8,7 @@ And /^I copy an Account$/ do
   on(AccountLookupPage).copy_random
   on AccountPage do |page|
     page.description.fit 'AFT testing copy'
-    page.chart_code.fit 'IT' #TODO get from config
+    page.chart_code.fit get_aft_parameter_values(ParameterConstants::DEFAULT_CHART_CODE)
     page.number.fit random_alphanums(4, 'AFT')
     @account = make AccountObject
     @account.chart_code = page.chart_code.text
@@ -116,28 +116,28 @@ When /^I save an Account document with only the ([^"]*) field populated$/ do |fi
       chart_code:           get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
       number:               random_alphanums(7),
       name:                 random_alphanums(10),
-      organization_code:               '01G0',
+      organization_code:               '01G0',#TODO config?
       campus_code:          get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_CODE),
       effective_date:       '01/01/2010',
       postal_code:          get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_POSTAL_CODE),
       city:                 get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_CITY),
       state:                get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_STATE),
-      address:              get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_ADDRESS),
+      address:              get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_ADDRESS_1),
       type_code:            get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_TYPE_CODE),
-      sub_fund_group_code:     'ADMSYS',
-      higher_ed_funct_code:   '4000',
-      restricted_status_code: 'U - Unrestricted',
+      sub_fund_group_code:     'ADMSYS',#TODO config?
+      higher_ed_funct_code:   '4000',#TODO config?
+      restricted_status_code: 'U - Unrestricted',#TODO config?
       fo_principal_name:    get_aft_parameter_values(ParameterConstants::DEFAULT_FISCAL_OFFICER),
-      supervisor_principal_name:  'ccs1',
-      manager_principal_name: 'aap98',
-      budget_record_level_code: 'C - Consolidation',
-      sufficient_funds_code:    'C - Consolidation',
+      supervisor_principal_name:  get_aft_parameter_values(ParameterConstants::DEFAULT_SUPERVISOR),
+      manager_principal_name: get_aft_parameter_values(ParameterConstants::DEFAULT_MANAGER),
+      budget_record_level_code: 'C - Consolidation',#TODO config?
+      sufficient_funds_code:    'C - Consolidation',#TODO config?
       expense_guideline_text: 'expense guideline text',
       income_guideline_txt:   'incomde guideline text',
       purpose_text:           'purpose text',
-      income_stream_financial_cost_code:  'IT - Ithaca Campus',
-      income_stream_account_number:     '1000710',
-      labor_benefit_rate_cat_code:      'CC'
+      income_stream_financial_cost_code: get_aft_parameter_values(ParameterConstants::DEFAULT_INCOME_STREAM_COST_CODE),
+      income_stream_account_number:      get_aft_parameter_values(ParameterConstants::DEFAULT_INCOME_STREAM_ACCOUNT_NUMBER),
+      labor_benefit_rate_cat_code:      'CC'#TODO config?
   }
 
   # TODO: Make the Account document creation with a single field step more flexible.
