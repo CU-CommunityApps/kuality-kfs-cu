@@ -78,7 +78,10 @@ And /^The View Related Documents Tab PO Status displays$/ do
       page.show_related_documents
       page.show_purchase_order
       @purchase_order_number = page.purchase_order_number
+      # verify unmasked and 'UNAPPROVED'
       page.purchase_order_number.should_not include '*****' # unmasked
+      page.po_unapprove.should include 'UNAPPROVED'
+      #puts 'po link', page.po_unapprove
       page.purchase_order_number_link
 
       sleep 15
