@@ -16,6 +16,8 @@ And /^I create the Requisition document with:$/  do |table|
                         item_description:     updates['item description'].nil? ? random_alphanums(15, 'AFT') : updates['item description'],
                         item_object_code:     updates['object code'],
                         item_percent:         updates['percent']
+  puts 'req doc id ',@requisition.document_id
+  @document_id = @requisition.document_id
 
 end
 
@@ -34,6 +36,11 @@ And /^I view the Requisition document on my action list$/ do
     page.result_item(@requisition.document_id).wait_until_present
     page.open_item(@requisition.document_id)
   end
+  on RequisitionPage do |page|
+    @requisition_number = page.requisition_number
+    puts 'requisition number',@requisition_number
+  end
+
 end
 
 And /^I enter Delivery Instructions and Notes to Vendor$/ do
