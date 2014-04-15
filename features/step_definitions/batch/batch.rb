@@ -5,7 +5,7 @@ And /^Nightly Batch Jobs run$/ do
   # TODO: It would be nice to be able to switch back to the User
   #       that we were logged in as at the beginning of the batch
   #       jobs with out saying so explicitly.
-  step 'I am logged in as a KFS Technical Administrator'
+  step 'I am logged in as a KFS Operations'
   step 'I run Nightly Out'
   step 'I run Scrubber'
   step 'I run Poster'

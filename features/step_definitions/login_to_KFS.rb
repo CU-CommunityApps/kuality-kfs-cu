@@ -2,6 +2,10 @@ Given /^I am logged in as a KFS Technical Administrator$/ do
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Technical Administrator'))
 end
 
+Given /^I am logged in as a KFS Operations$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Operations'))
+end
+
 Given /^I am logged in as a Vendor Reviewer$/ do
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-VND', 'Reviewer'))
 end
