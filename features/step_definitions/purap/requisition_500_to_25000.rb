@@ -33,8 +33,8 @@ And /^I view the Requisition document on my action list$/ do
   end
 
   on RequisitionPage do |page|
-    @requisition_number = page.requisition_number
-    puts @requisition_number
+    @requisition_id = page.requisition_id
+    puts @requisition_id
   end
 end
 
@@ -45,12 +45,13 @@ end
 And /^I (submit|close|cancel) a Contract Manager Assignment of '(\d+)' for the Requisition$/ do |btn, contract_manager_number|
    visit(MainPage).contract_manager_assignment
    on ContractManagerAssignmentPage do |page|
-    page.set_contract_manager(@requisition_number, contract_manager_number)
+    page.set_contract_manager(@requisition_id, contract_manager_number)
     page.send(btn)
 
-    puts @requisition_number
-    puts @requisition_number
-    puts @requisition_number
+    puts @requisition_id
+    puts @requisition_id
+    puts @requisition_id
+    puts @requisition_id
 
    end
 end
@@ -61,39 +62,56 @@ And /^I am logged in as a Contract Manager$/ do
 end
 
 
-And /^I retrieve the Requisition\$/ do
+
+And /^I retrieve my Requisition document$/ do
   visit(MainPage).requisitions  #remember "S" is for search
    on DocumentSearch do |page|
+     sleep 5
      page.document_type.set 'REQS'
-     page.requisition_number.fit @requisition_number
+     page.requisition_num.fit @requisition_id
      page.search
 
-     page.open_item(@document_id)
+     puts 'the req id'
+     puts @requisition_id
+     puts 'the doc id'
+     puts @requisition.document_id
+     # page.select_doc_id_with_po_number(@requisition_id)
+
+     page.open_item(@requisition.document_id)
    end
 end
 
 And /^The View Related Documents Tab PO Status displays$/ do
-    on RequisitionPage do |page|
+    on PurchaseOrderPage do |page|
       page.show_related_documents
       page.show_purchase_order
-      @purchase_order = page.purchase_order_number
+      @new_purchase_order = page.purchase_order_number
 
-      page.purchase_order_number_link
+      # page.purchase_order_number_link
+      page.open_purchase_order_number(@new_purchase_order)
+      puts 'old po num'
+
       puts @purchase_order
 
-      sleep 15
+      puts 'Nuew PO Num'
+      puts @new_purchase_order
+
+      #need to approve from routing
     end
-
-
 end
-
-And /^I Select the PO$/ do
-  pending # express the regexp above with the code you wish you had
-end
+#
+# And /^I Select the PO$/ do
+#   pending # express the regexp above with the code you wish you had
+# end
 
 And /^I Complete Selecting a Vendor$/ do
-  pending # express the regexp above with the code you wish you had
-end
+
+      @requisition.add_vendor_to_req('27015-0')
+                        # vendor_choice: 'lowest price'
+
+  sleep 30
+  end
+
 
 
 And /^I enter a Vendor Choice$/ do

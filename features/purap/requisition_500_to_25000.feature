@@ -20,7 +20,7 @@ Scenario: Purap Preq building block 4f
   And I switch to the user with the next Pending Action in the Route Log for the Requisition document
   And I view the Requisition document on my action list
   And I approve the Requisition document
-  And the Requisition document goes to FINAL
+  Then the Requisition document goes to FINAL
   #skip req for testing
         #PO
   And I am logged in as a Purchasing Processor
@@ -34,10 +34,11 @@ Scenario: Purap Preq building block 4f
   #UNNAPPROVED
   And I am logged in as a Contract Manager
   #mss7
-  And I retrieve the Requisition
+  And I retrieve my Requisition document
+#I retrieve the Requisition with PO number '290716'
   And The View Related Documents Tab PO Status displays
   #UNAPPROVED
-  And I Select the PO
+#  And I Select the PO
   And I Complete Selecting a Vendor
   #27015-0
   And I enter a Vendor Choice
