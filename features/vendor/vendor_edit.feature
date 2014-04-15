@@ -72,14 +72,16 @@ Feature: Vendor Edit
     When    I edit a Vendor with Vendor Number 12587-1
     Then    the changes to Vendor document have persisted
 
-  @KFSQA-839
+  @KFSQA-839 @wip
   Scenario: FTC/BSC edit of the vendor shows the vendor address generated field and the attachments are attached
     Given I am logged in as FTC/BSC user
-    And   in vendor lookup
-    When  supplier diversity is entered
-    And   search alias is entered
-    And   an attachment is added
-    And   routes for vendor reviewer approval
-    Then  submit
-    Then  vendor shows vendor # and attachment
+    And   I edit a random PO Vendor
+    When  I add a new Supplier Diversity to the Vendor document
+    And   I add a Search Alias to the Vendor document
+    And   I add an attachment to the Vendor document
+    And   I submit the Vendor document
+    Then  the document shows no error messages
+    And   the file is attached to the Vendor document
+    And   the next pending action for the Vendor document is an APPROVE from a KFS-SYS Vendor Reviewer # Verify role is correct
+    And   I route the Vendor document to FINAL by clicking submit for each request
 
