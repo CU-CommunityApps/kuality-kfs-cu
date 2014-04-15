@@ -3,6 +3,10 @@ Feature: Vendor Edit
   [KFSQA-755] I want to edit a vendor with ownership type INDIVIDUAL.
 
   [KFSQA-773] PO Vendor Edit, with Expired Insurance.
+  
+  [KFSQA-839] Verify that a FTC/BSC can edit the vendor record it routes to
+              the vendor reviewer and shows the vendor address generated field 
+              on the inquiry screen and the attachment are still attached. 
 
   @KFSQA-755 @cornell @slug
   Scenario: I want to edit a vendor with ownership type INDIVIDUAL
@@ -67,3 +71,15 @@ Feature: Vendor Edit
     And     I fyi the Vendor document
     When    I edit a Vendor with Vendor Number 12587-1
     Then    the changes to Vendor document have persisted
+
+  @KFSQA-839
+  Scenario: FTC/BSC edit of the vendor shows the vendor address generated field and the attachments are attached
+    Given I am logged in as FTC/BSC user
+    And   in vendor lookup
+    When  supplier diversity is entered
+    And   search alias is entered
+    And   an attachment is added
+    And   routes for vendor reviewer approval
+    Then  submit
+    Then  vendor shows vendor # and attachment
+
