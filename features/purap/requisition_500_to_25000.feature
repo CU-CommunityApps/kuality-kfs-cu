@@ -61,7 +61,7 @@ Scenario: Purap Preq building block 4f
   #OPEN
 
 
-  @KFSQA-743 @pending @purap @cornell @slug @wip
+  @KFSQA-743 @pending @purap @cornell @slug
   Scenario: PURAP E2E PO - Unapproved (PURAP E2E-003b) - vendor not selected, <$100K
     Given I login as a KFS user to create an REQS
     And I create the Requisition document with:

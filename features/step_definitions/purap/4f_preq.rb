@@ -27,18 +27,20 @@ And /^I calculate my Requisition document$/ do
   sleep 3
 end
 
-And /^I view the Requisition document on my action list$/ do
-    visit(MainPage).action_list
+And /^I view the (.*) document on my action list$/ do |document|
+  visit(MainPage).action_list
   on ActionList do |page|
     #sort the date
     # if previous user already clicked this sort, then action list for next user will be sorted with 'Date created'.  So, add this 'unless' check
-    page.sort_results_by('Date Created') unless page.result_item(@requisition.document_id).exists?
-    page.result_item(@requisition.document_id).wait_until_present
-    page.open_item(@requisition.document_id)
+    page.sort_results_by('Date Created') unless page.result_item(document_object_for(document).document_id).exists?
+    page.result_item(document_object_for(document).document_id).wait_until_present
+    page.open_item(document_object_for(document).document_id)
   end
-  on RequisitionPage do |page|
-    @requisition_number = page.requisition_number
-    puts 'requisition number',@requisition_number
+  if document.eql?('Requisition')
+    on RequisitionPage do |page|
+      @requisition_number = page.requisition_number
+      puts 'requisition number',@requisition_number
+    end
   end
 
 end
@@ -54,7 +56,7 @@ And /^I add an Attachment to the Requisition document$/ do
   on RequisitionPage do |page|
     page.note_text.fit random_alphanums(40, 'AFT-NoteText')
     page.send_to_vendor.fit 'Yes'
-    page.attach_notes_file.set($file_folder+@requisition.attachment_file_name)
+    #page.attach_notes_file.set($file_folder+@requisition.attachment_file_name)
     page.add_note
     page.attach_notes_file_1.should exist #verify that note is indeed added
 
