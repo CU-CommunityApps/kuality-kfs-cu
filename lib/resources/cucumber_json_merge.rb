@@ -51,6 +51,25 @@ if ARGV.empty?
   exit 1
 end
 
+# Read in the results JSONs and merge the resultant Hashes
+merged = {}
+ARGV.each do |in_file|
+  JSON.parse(File.read(in_file))
+      .collect{ |e| { e['id'] => e } unless e['elements'].nil? } # Sometimes you get duplicates due to the way things are split. The duplicate with no elements wasn't actually run.
+      .compact
+      .each do |c|
+        merged.merge!(c) do |key, old_v, new_v|
+          # It is unlikely that parallel_tests will split a single file, but
+          # this should allow us to merge results from the split between parallel
+          # and serial, if nothing else.
+          old_v.merge({ 'elements' => (old_v['elements'] + new_v['elements'])
+                                        .collect{ |e| e unless e.nil? }
+                                        .compact
+                                        .sort{ |a,b| a['line'] <=> b['line'] } })
+        end
+      end
+end
+
 File.open(options[:output_file], 'w') do |out_file|
-  out_file.write(ARGV.collect { |in_file| JSON.parse(File.read(in_file)) }.flatten.to_json)
+  out_file.write merged.values.to_json # Cucumber Reports expects an Array of Hashes
 end

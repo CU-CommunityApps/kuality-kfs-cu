@@ -25,6 +25,6 @@ Feature: KFS Fiscal Officer Account Creation
     
   @KFSQA-606 @hare
   Scenario: Account Edit Sub Fund Program case sensitive test on Submit
-    Given I am logged in as a KFS Chart User
+    Given I am logged in as a KFS Chart Administrator
     When  I save an Account with a lower case Sub Fund Program
     Then  the Account document goes to SAVED

@@ -169,7 +169,7 @@ Feature: Disbursement Voucher
     When  I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to FINAL
 
-  @KFSQA-719 @sloth @wip
+  @KFSQA-719 @sloth
   Scenario: Disbursement Voucher, Check, Wildcard payee search, Non Employee PP Travel Expenses
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document

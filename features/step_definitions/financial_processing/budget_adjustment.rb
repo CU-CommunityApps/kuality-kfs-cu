@@ -18,7 +18,8 @@ And /^I create a Budget Adjustment document for file import$/ do  # ME!
                                                                       {
                                                                         type: :target,
                                                                         file_name: 'BA_test_to.csv'
-                                                                      }]
+                                                                      }],
+                                                      immediate_import: false
 end
 
 And /^I (#{BudgetAdjustmentPage::available_buttons}) a Budget Adjustment document$/ do |button|
@@ -54,21 +55,22 @@ end
 
 Then /^I verify that Chart Value defaults to IT$/ do
   on BudgetAdjustmentPage do |page|
-    page.source_chart_code.value.should == 'IT'
-    page.target_chart_code.value.should == 'IT'
+    page.source_chart_code.value.should == get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
+    page.target_chart_code.value.should == get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
   end
 end
 
 And /^I (#{BudgetAdjustmentPage::available_buttons}) a balanced Budget Adjustment document$/ do |button|
   button.gsub!(' ', '_')
   @budget_adjustment = create BudgetAdjustmentObject,
-                              press: nil,
+                              press: nil, # We should add the accounting lines before submitting, eh?
                               initial_lines: [
                                   {
                                       type:             :source,
                                       account_number:   'G003704',
                                       object:           '4480',
                                       current_amount:   '250.11',
+                                      base_amount:      '125',
                                       line_description: random_alphanums(20, 'AFT FROM 1 '),
                                   },
                                   {
@@ -76,8 +78,9 @@ And /^I (#{BudgetAdjustmentPage::available_buttons}) a balanced Budget Adjustmen
                                       account_number:   'G013300',
                                       object:           '4480',
                                       current_amount:   '250.11',
+                                      base_amount:      '125',
                                       line_description: random_alphanums(20, 'AFT TO 1 '),
-                                      chart_code:       'IT'
+                                      chart_code:       get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
                                   }
                               ]
 
@@ -87,12 +90,14 @@ And /^I (#{BudgetAdjustmentPage::available_buttons}) a balanced Budget Adjustmen
                                          object:           '6510',
                                          current_amount:   '250.11',
                                          line_description: random_alphanums(20, 'AFT TO 2 '),
+                                         base_amount:      '125'
                                         })
       @budget_adjustment.add_target_line({
                                            account_number:   'G013300',
                                            object:           '6510',
                                            current_amount:   '250.11',
                                            line_description: random_alphanums(20, 'AFT TO 2 '),
+                                           base_amount:      '125'
                                      })
 
       page.send(button)
@@ -154,14 +159,14 @@ And /^The line description for the To Account should be displayed$/ do
   on(BudgetAdjustmentPage).find_target_line_description.should == @budget_adjustment.accounting_lines[:target][0].line_description
 end
 
-
 And /^I upload (To|From) Accounting Lines containing Base Budget amounts$/ do |type|
+  # This assumes you've provided a file_name in the first initial_lines entry for that type.
   on BudgetAdjustmentPage do
     case type
       when 'To'
-        @budget_adjustment.accounting_lines[:target][0].import_lines
+        @budget_adjustment.import_initial_lines(:target)
       when 'From'
-        @budget_adjustment.accounting_lines[:source][0].import_lines
+        @budget_adjustment.import_initial_lines(:source)
     end
   end
 end

@@ -74,10 +74,9 @@ And /^I change the Check Amount for the Disbursement Voucher document to (.*)$/ 
   on (AccountingLine) {|line| line.update_source_amount(0).fit amount}
 end
 
-
 When /^I start an empty Disbursement Voucher document with Payment to a Petty Cash Vendor$/ do
   #TODO : vendor number '41473-0' should be retrieved from service
-  @disbursement_voucher = create DisbursementVoucherObject, payee_id: '41473-0', payment_reason_code: 'K - Univ PettyCash Custodian Replenishment'
+  @disbursement_voucher = create DisbursementVoucherObject, payee_id: get_aft_parameter_values('DV_PETTY_CASH_VENDOR'), payment_reason_code: 'K - Univ PettyCash Custodian Replenishment'
 end
 
 And /^I copy a Disbursement Voucher document with Tax Address to persist$/ do
@@ -153,7 +152,7 @@ And /^I add a random vendor payee to the Disbursement Voucher$/ do
       plookup.search
       plookup.return_random
       sleep 1
-      plookup.return_random if plookup.doc_title.eql?('Vendor Address Lookup')
+      plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
     end
     @disbursement_voucher.fill_in_payment_info(tab)
   end
@@ -267,7 +266,7 @@ And /^I add a DV foreign vendor (\d+-\d+) with Reason Code (\w)$/ do |vendor_num
       plookup.search
       plookup.return_value(vendor_number)
       sleep 1
-      plookup.return_random if plookup.doc_title.eql?('Vendor Address Lookup')
+      plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
     end
     @disbursement_voucher.fill_in_payment_info(tab)
   end
@@ -357,7 +356,7 @@ And /^I search and retrieve Payee '(.*)' with Reason Code (\w)$/ do |vendor_name
       plookup.search
       plookup.return_value_links.first.click
       sleep 1
-      plookup.return_random if plookup.doc_title.eql?('Vendor Address Lookup')
+      plookup.return_random if plookup.on_a_lookup? && (plookup.lookup_title == 'Vendor Address Lookup')
     end
     @disbursement_voucher.fill_in_payment_info(tab)
   end
@@ -442,7 +441,7 @@ And /^I change Reason Code to (\w) for Payee search and select$/ do |reason_code
       plookup.search
       plookup.return_value(@disbursement_voucher.payee_id)
       sleep 1
-      plookup.return_random if plookup.doc_title.eql?('Vendor Address Lookup')
+      plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
     end
     @disbursement_voucher.fill_in_payment_info(tab)
   end
