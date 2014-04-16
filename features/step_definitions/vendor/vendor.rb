@@ -214,7 +214,7 @@ And /^I change the Phone (\w+) on Vendor Phone tab$/ do |phone_field|
     if page.updated_phone_number.exists?
       case phone_field
         when 'Number'
-          page.updated_phone_number.fit "607-#{rand(100..999)}-#{rand(1000..9999)}"
+          page.updated_phone_number.fit "#{rand(100..999)}-#{rand(100..999)}-#{rand(1000..9999)}"
           @changed_addr_phone.merge!(updated_phone_number: page.updated_phone_number.value)
         when 'Extension'
           page.updated_phone_ext.fit rand(100..999)
@@ -224,7 +224,7 @@ And /^I change the Phone (\w+) on Vendor Phone tab$/ do |phone_field|
           @changed_addr_phone.merge!(updated_phone_type: page.updated_phone_type.value)
       end
     else
-      page.phone_number.fit "607-#{rand(100..999)}-#{rand(1000..9999)}"
+      page.phone_number.fit "#{rand(100..999)}-#{rand(100..999)}-#{rand(1000..9999)}"
       page.phone_type.fit 'SALES'
       page.add_phone_number
       @changed_addr_phone.merge!(updated_phone_type: page.updated_phone_type.value, updated_phone_number: page.updated_phone_number.value)

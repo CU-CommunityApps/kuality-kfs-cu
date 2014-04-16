@@ -76,7 +76,7 @@ end
 
 When /^I start an empty Disbursement Voucher document with Payment to a Petty Cash Vendor$/ do
   #TODO : vendor number '41473-0' should be retrieved from service
-  @disbursement_voucher = create DisbursementVoucherObject, payee_id: get_aft_parameter_values('DV_PETTY_CASH_VENDOR'), payment_reason_code: 'K - Univ PettyCash Custodian Replenishment'
+  @disbursement_voucher = create DisbursementVoucherObject, payee_id: get_aft_parameter_value('DV_PETTY_CASH_VENDOR'), payment_reason_code: 'K - Univ PettyCash Custodian Replenishment'
 end
 
 And /^I copy a Disbursement Voucher document with Tax Address to persist$/ do
@@ -147,8 +147,8 @@ And /^I add a random vendor payee to the Disbursement Voucher$/ do
   on (PaymentInformationTab) do |tab|
     tab.payee_search
     on PayeeLookup do |plookup|
-      plookup.payment_reason_code.fit 'B - Reimbursement for Out-of-Pocket Expenses'
-      plookup.vendor_name.fit         'Academy of Management'
+      plookup.payment_reason_code.fit 'B - Reimbursement for Out-of-Pocket Expenses' #TODO config
+      plookup.vendor_name.fit         'Academy of Management' #TODO LL fix (talk to Kyle)
       plookup.search
       plookup.return_random
       sleep 1
@@ -430,7 +430,7 @@ Then /^I should get a Reason Code error saying "([^"]*)"$/ do |error_msg|
 end
 
 And /^I change Reason Code to (\w) for Payee search and select$/ do |reason_code|
-  case reason_code
+  case reason_code #TODO make this lookup by first letter
     when 'K'
       @disbursement_voucher.payment_reason_code = 'K - Univ PettyCash Custodian Replenishment'
   end
@@ -454,7 +454,7 @@ And /^I select a vendor payee to the (.*) document$/ do |document|
       tab.payee_search
       on PayeeLookup do |plookup|
         plookup.payment_reason_code.fit 'B - Reimbursement for Out-of-Pocket Expenses'
-        plookup.vendor_name.fit         '*staple*'
+        plookup.vendor_name.fit         '*staple*' #TODO config for B2B vendor - should step definition name be more specific?
         plookup.search
         plookup.return_value_links.first.click
         sleep 1

@@ -5,6 +5,7 @@ Feature: Purap REQS 2 Building Blocks
  @KFSQA-733 @purap @cornell @tortoise
   Scenario: Create -- non eShop with C&G, Commodity routing
     Given I login as a KFS user to create an REQS
+   #TODO - todd fix
     And   I create the Requisition document with:
     | vendor number       | 4471-0   |
     | item quanity        | 7.5      |
@@ -13,6 +14,7 @@ Feature: Purap REQS 2 Building Blocks
     | account number      | 1278003  |
     | object code         | 6570     |
     | percent             | 100      |
+  #TODO TODD - make this less hard coded
     And   I add an Attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
     And   I calculate my Requisition document

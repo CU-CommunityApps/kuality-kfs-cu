@@ -5,6 +5,7 @@ Feature: Service Billing
   @KFSQA-668 @nightly-jobs
   Scenario: SB Authorization Error and E2E
     Given   I am logged in as "sml65"
+    #TODO   and i am logged in as a user for the SB doc
     And     I attempt to start an empty Service Billing document
     And     I should get an Authorization Exception Report error
     And     I am logged in as a KFS User for the SB document

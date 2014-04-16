@@ -7,7 +7,7 @@ Given /^I am logged in as a Vendor Reviewer$/ do
 end
 
 Given /^I am logged in as a KFS Fiscal Officer$/ do
-  visit(BackdoorLoginPage).login_as(get_aft_parameter_values(ParameterConstants::DEFAULT_FISCAL_OFFICER))
+  visit(BackdoorLoginPage).login_as(get_aft_parameter_value(ParameterConstants::DEFAULT_FISCAL_OFFICER))
 end
 
 Given /^I am logged in as a KFS Fiscal Officer for account number (.*)$/ do |account_number|

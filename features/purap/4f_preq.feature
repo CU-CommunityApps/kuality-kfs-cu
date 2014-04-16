@@ -6,6 +6,7 @@ Feature: Purap Preq Building Blocks
 @pending @purap
   Scenario: Purap Preq building block 4f
    Given I login as a KFS user to create an REQS
+  #TODO TODD fix
    And I create the Requisition document with:
    | vendor number       | 4471-0   |
    | item quanity        | 9.9      |
@@ -14,6 +15,7 @@ Feature: Purap Preq Building Blocks
    | account number      | 1093603  |
    | object code         | 6540     |
    | percent             | 100      |
+  #TODO TODD - make this less hard coded
    And I calculate my Requisition document
    And I submit the Requisition document
    And the requisition document goes to ENROUTE
