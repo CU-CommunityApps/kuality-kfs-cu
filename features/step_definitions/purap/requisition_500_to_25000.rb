@@ -189,4 +189,43 @@ end
       page.expand_all
       page.calculate
     end
- end
+  end
+
+
+And   /^I Search Documents retrieve the PO$/ do
+  on ShopCatalogPage do |page|
+    #page.key_words.fit 'Commidity 14111507'
+    page.order_doc
+    page.po_doc_search
+    page.po_id.fit @purchase_order_number
+    sleep 2
+    (0..page.go_buttons.length).each do |i|
+      if page.go_buttons[i].visible?
+        page.go_buttons[i].click
+        break
+      end
+    end
+  end
+end
+
+  And   /^the Document Status displayed '(\w+)'$/ do |doc_status|
+    on ShopCatalogPage do |page|
+      page.return_po_value(@purchase_order_number)
+      page.doc_summary[1].text.should include  'Workflow  ' + doc_status
+    end
+  end
+
+  And   /^the Delivery Instructions displayed equals what came from the PO$/ do
+    on ShopCatalogPage do |page|
+      page.doc_po_link
+      page.doc_summary[1].text.should include "Note to Supplier\nAFT-ToVendorNote"
+      page.doc_summary[3].text.should include "Delivery Instructions AFT-DelvInst"
+    end
+  end
+
+  And   /^the Attachments for Supplier came from the PO$/ do
+    on ShopCatalogPage do |page|
+      page.attachments_link
+      page.search_results[1].text.should include @requisition.attachment_file_name
+    end
+  end

@@ -48,9 +48,15 @@ Feature: Purap Preq Building Blocks
     And the Purchase Order document goes to FINAL
     Then In Pending Action Requests an FYI is sent to FO and Initiator
     And the Purchase Order Doc Status is Open
+    Given I am logged in as "db18"
+    And   I visit the "e-SHOP" page
+    And   I Search Documents retrieve the PO
+    Then  the Document Status displayed 'Completed'
+    And   the Delivery Instructions displayed equals what came from the PO
+    And   the Attachments for Supplier came from the PO
 
 
-  @KFSQA-744 @pending @purap @cornell @coral @wip
+  @KFSQA-744 @pending @purap @cornell @coral
   Scenario: PURAP E2E PO - Approved (PURAP E2E-003c) - vendor selected, >$100K, <$500K
     Given I login as a KFS user to create an REQS
     And   I create the Requisition document with:
@@ -118,3 +124,12 @@ Feature: Purap Preq Building Blocks
     And   I approve the Payment Request document
     And   the Payment Request document goes to FINAL
     And   the Payment Request Doc Status is Department-Approved
+
+#  @pending @purap @cornell @coral @wip
+#  Scenario: test eshop
+#    Given I am logged in as "db18"
+#    And   I visit the "e-SHOP" page
+#    And   I Search Documents retrieve the PO
+#    Then  the Document Status displayed 'Completed'
+#    And   the Delivery Instructions displayed equals what came from the PO
+#    And   the Attachments for Supplier came from the PO

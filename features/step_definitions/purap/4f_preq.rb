@@ -1,5 +1,6 @@
 When /^I visit the "(.*)" page$/  do   |go_to_page|
   go_to_pages = go_to_page.downcase.gsub!(' ', '_')
+  go_to_pages = go_to_page.downcase.gsub!('-', '_')
   on(MainPage).send(go_to_pages)
 end
 
