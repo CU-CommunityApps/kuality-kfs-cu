@@ -15,7 +15,7 @@ And /^Nightly Batch Jobs run, waiting at most (\d+) seconds for each step$/ do |
   # TODO: It would be nice to be able to switch back to the User
   #       that we were logged in as at the beginning of the batch
   #       jobs with out saying so explicitly.
-  step 'I am logged in as a KFS Technical Administrator'
+  step 'I am logged in as a KFS Operations'
   step "I run Nightly Out, waiting at most #{seconds} seconds"
   step "I run Scrubber, waiting at most #{seconds} seconds"
   step "I run Poster, waiting at most #{seconds} seconds"
