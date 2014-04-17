@@ -19,9 +19,19 @@ end
 
 And /^I am logged in as the FO of the Account$/ do
   sleep(1)
-  #TODO user service to do this in future - lookup current account and grab the FO
-  step 'I am logged in as "nja3"'
-  @user_id = 'nja3'
+  step 'I am logged in as "' + @account.accountFiscalOfficerUser.principalName + '"'
+  @user_id = 'fiscal_officer_principal_name'
+end
+
+And /^I am logged in as the FO of the Sub-Account$/ do
+  sleep(1)
+  account_info = get_kuali_business_object('KFS-COA','Account','accountNumber=' + @sub_account.account_number)
+  puts account_info
+  fiscal_officer_principal_name = account_info['accountFiscalOfficerUser.principalName']
+  puts account_info['accountCityName']
+  puts fiscal_officer_principal_name
+  step 'I am logged in as "' + fiscal_officer_principal_name + '"'
+  @user_id = fiscal_officer_principal_name
 end
 
 And /^The Sub-Account document should be in my action list$/ do

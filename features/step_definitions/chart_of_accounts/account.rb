@@ -119,10 +119,10 @@ When /^I save an Account document with only the ([^"]*) field populated$/ do |fi
       organization_code:    '01G0',#TODO config?
       campus_code:          get_aft_parameter_value(ParameterConstants::DEFAULT_CAMPUS_CODE),
       effective_date:       '01/01/2010',
-      postal_code:          get_aft_parameter_value(ParameterConstants::DEFAULT_CAMPUS_POSTAL_CODE),
-      city:                 get_aft_parameter_value(ParameterConstants::DEFAULT_CAMPUS_CITY),
-      state:                get_aft_parameter_value(ParameterConstants::DEFAULT_CAMPUS_STATE),
-      address:              get_aft_parameter_value(ParameterConstants::DEFAULT_CAMPUS_ADDRESS_1),
+      postal_code:          get_random_postal_code('*'),
+      city:                 get_generic_city,
+      state:                get_random_state_code,
+      address:              get_generic_address_1,
       type_code:            get_aft_parameter_value(ParameterConstants::DEFAULT_CAMPUS_TYPE_CODE),
       sub_fund_group_code:  'ADMSYS',#TODO config?
       higher_ed_funct_code: '4000',#TODO config?
