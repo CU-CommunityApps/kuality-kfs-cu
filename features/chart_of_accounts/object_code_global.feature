@@ -5,7 +5,7 @@ Feature: Object Code Global
               this document to route to processed or final. Invalid CG Reporting Codes will produce an
               error message.
 
-  @KFSQA-639 @test-highlights-bug @hare
+  @KFSQA-639 @test-highlights-bug @hare @wip
   Scenario: Create an Object Code Global with an invalid CR Reporting Code and get an error message
     Given I am logged in as a KFS Chart Manager
     And   I save an Object Code Global document

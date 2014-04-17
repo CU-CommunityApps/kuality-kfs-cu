@@ -8,7 +8,7 @@ And /^I copy an Account$/ do
   on(AccountLookupPage).copy_random
   on AccountPage do |page|
     page.description.fit 'AFT testing copy'
-    page.chart_code.fit get_aft_parameter_values(ParameterConstants::DEFAULT_CHART_CODE)
+    page.chart_code.fit get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
     page.number.fit random_alphanums(4, 'AFT')
     @account = make AccountObject
     @account.chart_code = page.chart_code.text

@@ -3,7 +3,7 @@ Feature: KFS Fiscal Officer Account Copy
   [KFSQA-646] No Parm Checking for Object Codes on AV
   [KFSQA-627] I want to create an Auxiliary Voucher posting accounting lines across Sub-Fund Group Codes because of Cornell SOP.
 
-  @KFSQA-646 @hare @wip
+  @KFSQA-646 @hare
   Scenario: Input an Accounting Line on a AD that will be denied because of parameter KFS-FP Auxiliary Voucher OBJECT_SUB_TYPES
     Given   I am logged in as a KFS Technical Administrator
     And     I find a value for a parameter named OBJECT_SUB_TYPES for the Auxiliary Voucher document
