@@ -149,3 +149,7 @@ end
 Given /^I am logged in as a Commodity Reviewer$/ do
   visit(BackdoorLoginPage).login_as('am28') #TODO get from role service
 end
+
+Given /^I login as a Accounts Payable Processor to create a PREQ$/ do
+  visit(BackdoorLoginPage).login_as('jf427') #TODO get from role service
+end

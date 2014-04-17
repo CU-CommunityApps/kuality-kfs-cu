@@ -16,7 +16,6 @@ And /^I create the Requisition document with:$/  do |table|
                         item_description:     updates['item description'].nil? ? random_alphanums(15, 'AFT') : updates['item description'],
                         item_object_code:     updates['object code'],
                         item_percent:         updates['percent']
-  puts 'req doc id ',@requisition.document_id
   @document_id = @requisition.document_id
 
 end
@@ -39,7 +38,6 @@ And /^I view the (.*) document on my action list$/ do |document|
   if document.eql?('Requisition')
     on RequisitionPage do |page|
       @requisition_number = page.requisition_number
-      puts 'requisition number',@requisition_number
     end
   end
 
@@ -56,7 +54,7 @@ And /^I add an Attachment to the Requisition document$/ do
   on RequisitionPage do |page|
     page.note_text.fit random_alphanums(40, 'AFT-NoteText')
     page.send_to_vendor.fit 'Yes'
-    #page.attach_notes_file.set($file_folder+@requisition.attachment_file_name)
+    page.attach_notes_file.set($file_folder+@requisition.attachment_file_name)
     page.add_note
     page.attach_notes_file_1.should exist #verify that note is indeed added
 

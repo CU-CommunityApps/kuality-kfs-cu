@@ -1,43 +1,3 @@
-#When /^I visit the "(.*)" page$/  do   |go_to_page|
-#  go_to_pages = go_to_page.downcase.gsub!(' ', '_')
-#  on(MainPage).send(go_to_pages)
-#end
-#
-#And /^I create the Requisition document with:$/  do |table|
-#  updates = table.rows_hash
-#  @requisition = create RequisitionObject, description: 'HELLO',
-#                        payment_request_positive_approval_required: updates['payment request'],
-#                        vendor_number:        updates['vendor number'],
-#                        item_quantity:        updates['item quanity'],
-#                        item_unit_cost:       updates['item cost'],
-#                        item_commodity_code:  updates['item commodity code'],
-#                        item_account_number:  updates['account number'],
-#                        item_object_code:     updates['object code'],
-#                        item_percent:         updates['percent']
-#
-#end
-#
-#And /^I calculate my Requisition document$/ do
-#  on(RequisitionPage).calculate
-#  #need to let calculate process, no other way to verify calculate is completed
-#  sleep 3
-#end
-#
-#And /^I view the Requisition document on my action list$/ do
-#    visit(MainPage).action_list
-#  on ActionList do |page|
-#    #sort the date
-#    page.sort_results_by('Date Created')
-#    page.result_item(@requisition.document_id).wait_until_present
-#    page.open_item(@requisition.document_id)
-#  end
-#
-#  on RequisitionPage do |page|
-#    @requisition_number = page.requisition_number
-#    puts @requisition_number
-#  end
-#end
-
   Given /^I am logged in as a Purchasing Processor$/ do
     visit(BackdoorLoginPage).login_as('ml284') #TODO get from role service
   end
@@ -62,7 +22,6 @@ And /^I retrieve the Requisition$/ do
   # temp
   #@requisition_number = '325401'
   #@document_id = '5291056'
-  puts 'req, doc# ',@requisition_number,@document_id
   visit(MainPage).requisitions  #remember "S" is for search
    on DocumentSearch do |page|
      page.document_type.set 'REQS'
@@ -73,7 +32,7 @@ And /^I retrieve the Requisition$/ do
    end
 end
 
-And /^The View Related Documents Tab PO Status displays$/ do
+And /^the View Related Documents Tab PO Status displays (\w+)$/ do |po_status|
     on RequisitionPage do |page|
       page.show_related_documents
       page.show_purchase_order
@@ -81,7 +40,6 @@ And /^The View Related Documents Tab PO Status displays$/ do
       # verify unmasked and 'UNAPPROVED'
       page.purchase_order_number.should_not include '*****' # unmasked
       page.po_unapprove.should include 'UNAPPROVED'
-      #puts 'po link', page.po_unapprove
       page.purchase_order_number_link
 
       sleep 15
@@ -170,12 +128,65 @@ And(/^The PO eDoc Status is$/) do
 end
 
 
-And(/^The Purchase Order Doc Status is (\w+)/) do |doc_status|
-  on (PurchaseOrderPage) do |page|
+And(/^the (.*) Doc Status is (.*)/) do |document, doc_status|
+  on (KFSBasePage) do |page|
     page.app_doc_status.should == doc_status
   end
 end
 
 
 
+  And /^I fill out the PREQ initiation page and continue$/ do
+    #@purchase_order_number = '296399' # temporary.  don't commit
+    visit(MainPage).payment_request
+    on(PaymentRequestInitiationPage) do |page|
+      page.purchase_order.fit @purchase_order_number
+      page.invoice_date.fit yesterday[:date_w_slashes]
+      page.invoice_number.fit rand(100000)
+      page.vendor_invoice_amount.fit @requisition.item_quantity.to_i * @requisition.item_unit_cost.to_i
+      page.continue
+    end
+    on YesOrNoPage do |page|
+      page.yes if page.yes_button.exists?
+    end
+    sleep 10
+    @payment_request = create PaymentRequestObject
+  end
 
+  And  /^I change the Remit To Address$/ do
+    on(PaymentRequestPage) do |page|
+      page.vendor_address_1.fit "Apt1" + page.vendor_address_1.value
+    end
+  end
+  And  /^I enter the Qty Invoiced and calculate$/ do
+    on(PaymentRequestPage) do |page|
+      page.item_qty_invoiced(0).fit @requisition.item_quantity # same as REQS item qty
+      page.item_calculate(0)
+    end
+
+  end
+
+  And  /^I enter a Pay Date$/ do
+    on(PaymentRequestPage) do |page|
+      page.pay_date.fit right_now[:date_w_slashes]
+    end
+  end
+
+
+  And /^I attach an Invoice Image$/ do
+    on PaymentRequestPage do |page|
+      page.note_text.fit random_alphanums(40, 'AFT-NoteText')
+      page.attachment_type.fit 'Invoice Image'
+      page.attach_notes_file.set($file_folder+@payment_request.attachment_file_name)
+      page.add_note
+      page.attach_notes_file_1.should exist #verify that note is indeed added
+
+    end
+  end
+
+  And /^I calculate PREQ$/ do
+    on (PaymentRequestPage) do |page|
+      page.expand_all
+      page.calculate
+    end
+ end
