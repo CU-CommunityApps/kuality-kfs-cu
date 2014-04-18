@@ -13,6 +13,11 @@ And /^I stop here$/ do
   pending
 end
 
+When /^I visit the '(.*)' page$/  do   |goto_page|
+  go_to_page = goto_page.downcase.gsub!(' ', '_')
+  visit(MainPage).send(go_to_page)
+end
+
 And(/^I print out all "(field|textarea|button|select|checkbox|radio|link)" on the page$/) do |item_type|
   # For page object creation
   on MainPage do |page|
@@ -85,12 +90,3 @@ And(/^I print out all "(field|textarea|button|select|checkbox|radio|link)" on th
   end
 end #print all
 
-And(/^I select the purchase order '(\d+)' with the doc id '(\d+)'$/) do |req_num, doc_id|
-  on DocumentSearch do |page|
-    page.requisition_number.set req_num.to_s
-    page.search
-
-    page.result_item(doc_id.to_s).when_present.click
-                sleep 5
-  end
-end

@@ -1,11 +1,6 @@
-When /^I visit the "(.*)" page$/  do   |go_to_page|
-  go_to_pages = go_to_page.downcase.gsub!(' ', '_')
-  on(MainPage).send(go_to_pages)
-end
-
 And /^I create the Requisition document with:$/  do |table|
   updates = table.rows_hash
-  @requisition = create RequisitionObject, description: 'HELLO',
+  @requisition = create RequisitionObject, description: 'AFT',
                         payment_request_positive_approval_required: updates['payment request'],
                         vendor_number:        updates['vendor number'],
                         item_quantity:        updates['item quanity'],
@@ -31,52 +26,34 @@ And /^I view the Requisition document on my action list$/ do
     page.result_item(@requisition.document_id).wait_until_present
     page.open_item(@requisition.document_id)
   end
-
   on RequisitionPage do |page|
     @requisition_id = page.requisition_id
-    puts @requisition_id
   end
 end
 
-  Given /^I am logged in as a Purchasing Processor$/ do
-    visit(BackdoorLoginPage).login_as('ml284') #TODO get from role service
+And /^I view the Requisition document from the Requisitions search$/ do
+  visit(MainPage).requisitions
+  on DocumentSearch do |page|
+    page.requisition_num
+    page.search
+    page.open_item(@requisition.document_id)
   end
+end
 
 And /^I (submit|close|cancel) a Contract Manager Assignment of '(\d+)' for the Requisition$/ do |btn, contract_manager_number|
    visit(MainPage).contract_manager_assignment
    on ContractManagerAssignmentPage do |page|
     page.set_contract_manager(@requisition_id, contract_manager_number)
     page.send(btn)
-
-    puts @requisition_id
-    puts @requisition_id
-    puts @requisition_id
-    puts @requisition_id
-
    end
 end
 
-And /^I am logged in as a Contract Manager$/ do
-  visit(BackdoorLoginPage).login_as('mss7') #TODO get from role service
-  # pending # express the regexp above with the code you wish you had
-end
-
-
-
-And /^I retrieve my Requisition document$/ do
+And /^I retrieve the Requisition document$/ do
   visit(MainPage).requisitions  #remember "S" is for search
    on DocumentSearch do |page|
-     sleep 5
      page.document_type.set 'REQS'
      page.requisition_num.fit @requisition_id
      page.search
-
-     puts 'the req id'
-     puts @requisition_id
-     puts 'the doc id'
-     puts @requisition.document_id
-     # page.select_doc_id_with_po_number(@requisition_id)
-
      page.open_item(@requisition.document_id)
    end
 end
@@ -85,63 +62,75 @@ And /^The View Related Documents Tab PO Status displays$/ do
     on PurchaseOrderPage do |page|
       page.show_related_documents
       page.show_purchase_order
-      @new_purchase_order = page.purchase_order_number
+      @purchase_order_id = page.purchase_order_number
+      page.open_purchase_order_number(@purchase_order_id)
 
-      # page.purchase_order_number_link
-      page.open_purchase_order_number(@new_purchase_order)
-      puts 'old po num'
-
-      puts @purchase_order
-
-      puts 'Nuew PO Num'
-      puts @new_purchase_order
-
-      #need to approve from routing
+      puts 'PO Num'
+      puts @purchase_order_id
+      page.description.wait_until_present
     end
 end
-#
-# And /^I Select the PO$/ do
-#   pending # express the regexp above with the code you wish you had
-# end
 
 And /^I Complete Selecting a Vendor$/ do
+  @requisition.add_vendor_to_req('27015-0')
+  #pull common vendor from service
+end
 
-      @requisition.add_vendor_to_req('27015-0')
-                        # vendor_choice: 'lowest price'
-
-  sleep 30
+And /^I enter a Vendor Choice of '(.*)'$/ do  |choice|
+  on PurchaseOrderPage do |page|
+    page.vendor_choice.fit choice
   end
-
-
-
-And /^I enter a Vendor Choice$/ do
-  pending # express the regexp above with the code you wish you had
 end
 
-And /^I calculate and verify the GLPE$/ do
-  pending # express the regexp above with the code you wish you had
+And /^I calculate and verify the GLPE tab$/ do
+  on PurchaseOrderPage do |page|
+    page.calculate
+    page.show_glpe
+
+    page.glpe_results_table.text.include? @requisition.item_object_code
+    page.glpe_results_table.text.include? @requisition.item_account_number
+    # credit object code should be 3110 (depends on parm)
+
+  end
 end
-
-
-And /^I submit the PO eDoc Status is$/ do
-  pending # express the regexp above with the code you wish you had
-end
-
 
 Then /^In Pending Action Requests an FYI is sent to FO and Initiator$/ do
-  pending # express the regexp above with the code you wish you had
+  on PurchaseOrderPage do |page|
+    page.headerinfo_table.wait_until_present
+    page.expand_all
+  page.pending_action_annotation_1.include? 'Fiscal Officer'
+  page.pending_action_annotation_2.include? 'Initiator'
+  end
 end
 
-
-And(/^The PO eDoc Status is$/) do
-  pending # express the regexp above with the code you wish you had
+And /^the Purchase Order document status is '(.*)'$/  do  |status|
+  on PurchaseOrderPage do |page|
+    sleep 5
+    page.reload
+    page.document_status.should == status
+  end
 end
 
-
-And(/^The Purchase Order Doc Status equals$/) do
-  pending # express the regexp above with the code you wish you had
+And /^the Purchase Order Doc Status equals '(.*)'$/ do |po_doc_status|
+  on PurchaseOrderPage do |page|
+    #this is a different field from the document status field
+    page.po_doc_status.should == po_doc_status
+  end
 end
 
+And /^The Requisition status is '(.*)'$/ do |doc_status|
+  on RequisitionPage do |page|
+    sleep 5
+    page.reload unless page.reload_button.nil?
+    page.document_status == doc_status
+  end
+end
 
-
-
+And(/^I select the purchase order '(\d+)' with the doc id '(\d+)'$/) do |req_num, doc_id|
+  on DocumentSearch do |page|
+    page.requisition_number.set req_num.to_s
+    page.search
+    page.result_item(doc_id.to_s).when_present.click
+    sleep 5
+  end
+end

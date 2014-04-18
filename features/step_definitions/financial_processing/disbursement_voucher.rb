@@ -401,7 +401,8 @@ And /^I search Account and cancel on Account Lookup$/ do
   on(DisbursementVoucherPage) do |dv_page|
     dv_page.update_account_search(0)
     on AccountLookupPage do |page|
-      page.cancel_button
+      # page.cancel_button
+      page.cancel
     end
   end
 end

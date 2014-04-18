@@ -139,6 +139,21 @@ Given /^I login as a KFS user to create an REQS$/ do
   visit(BackdoorLoginPage).login_as('der9') #TODO get from role service
 end
 
+Given /^And I login as a Requisition Officer$/ do
+  visit(BackdoorLoginPage).login_as('der9') #TODO get from role service
+  # visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('', ''))
+end
+
+And /^I am logged in as a Contract Manager$/ do
+  visit(BackdoorLoginPage).login_as('mss7') #TODO get from role service
+  # visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('', ''))
+end
+
+Given /^I am logged in as a Purchasing Processor$/ do
+  visit(BackdoorLoginPage).login_as('ml284') #TODO get from role service
+  # visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('', ''))
+end
+
 Given /^I am logged in as a Commodity Reviewer$/ do
   visit(BackdoorLoginPage).login_as('am28') #TODO get from role service
 end
