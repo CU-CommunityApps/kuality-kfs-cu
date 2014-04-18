@@ -10,6 +10,10 @@ Given /^I am logged in as a Vendor Reviewer$/ do
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-VND', 'Reviewer'))
 end
 
+Given /^I am logged in as a Vendor Initiator$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-VND', 'CU Vendor Initiator'))
+end
+
 Given /^I am logged in as a KFS Fiscal Officer$/ do
   visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
 end
