@@ -48,6 +48,8 @@ And /^I enter Delivery Instructions and Notes to Vendor$/ do
   on RequisitionPage do |page|
     page.vendor_notes.fit random_alphanums(40, 'AFT-ToVendorNote')
     page.delivery_instructions.fit random_alphanums(40, 'AFT-DelvInst')
+    @requisition.delivery_instructions = page.delivery_instructions.value
+    @requisition.vendor_notes = page.vendor_notes.value
   end
 end
 

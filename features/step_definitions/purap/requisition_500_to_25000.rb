@@ -198,6 +198,11 @@ And   /^I Search Documents retrieve the PO$/ do
     page.order_doc
     page.po_doc_search
     page.po_id.fit @purchase_order_number
+    (0..page.date_range.length).each do |i|
+      if page.date_range[i].visible?
+        page.date_range[i].fit 'Today'
+      end
+    end
     sleep 2
     (0..page.go_buttons.length).each do |i|
       if page.go_buttons[i].visible?
@@ -218,8 +223,8 @@ end
   And   /^the Delivery Instructions displayed equals what came from the PO$/ do
     on ShopCatalogPage do |page|
       page.doc_po_link
-      page.doc_summary[1].text.should include "Note to Supplier\nAFT-ToVendorNote"
-      page.doc_summary[3].text.should include "Delivery Instructions AFT-DelvInst"
+      page.doc_summary[1].text.should include "Note to Supplier\n" + @requisition.vendor_notes
+      page.doc_summary[3].text.should include "Delivery Instructions " + @requisition.delivery_instructions
     end
   end
 
@@ -229,3 +234,4 @@ end
       page.search_results[1].text.should include @requisition.attachment_file_name
     end
   end
+
