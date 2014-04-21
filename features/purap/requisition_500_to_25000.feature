@@ -103,7 +103,60 @@ Scenario: Purap Preq building block 4f
     And   the Purchase Order Doc Status is Open
 
 
-
+  @KFSQA-763 @pending @purap @cornell @coral @wip
+  Scenario: PURAP E2E-004a PREQ - Manual Entry, >$500 Auto Approve
+    Given I login as a KFS user to create an REQS
+    And I create the Requisition document with:
+      | vendor number       |          |
+      | item quanity        | 4.9      |
+      | item cost           | 1000     |
+      | item commodity code | 10121800 |
+      | item catalog number | 14111703 |
+      | item description    | ANIM     |
+      | account number      | 1093603  |
+      | object code         | 6540     |
+      | percent             | 100      |
+    And I add an Attachment to the Requisition document
+    And I enter Delivery Instructions and Notes to Vendor
+    And I calculate my Requisition document
+    And I submit the Requisition document
+    And the requisition document goes to ENROUTE
+    And I switch to the user with the next Pending Action in the Route Log for the Requisition document
+    And I view the Requisition document on my action list
+    And I approve the Requisition document
+    And the Requisition document goes to FINAL
+    And I am logged in as a Purchasing Processor
+    And I submit a Contract Manager Assignment of '10' for the Requisition
+    And I am logged in as a Contract Manager
+    And I retrieve the Requisition
+    And the View Related Documents Tab PO Status displays UNAPPROVED
+    And the Purchase Order Number is unmasked
+    And I Complete Selecting Vendor 27015-0
+    And I enter a Vendor Choice
+    And I calculate and verify the GLPE with amount 4,900.00
+    And I submit the Purchase Order document
+    And the Purchase Order document goes to FINAL
+    Then In Pending Action Requests an FYI is sent to FO and Initiator
+    And the Purchase Order Doc Status is Open
+    Given I am logged in as "db18"
+    And   I visit the "e-SHOP" page
+    And   I Search Documents retrieve the PO
+    Then  the Document Status displayed 'Completed'
+    And   the Delivery Instructions displayed equals what came from the PO
+    And   the Attachments for Supplier came from the PO
+    Given I login as a Accounts Payable Processor to create a PREQ
+    And   I fill out the PREQ initiation page and continue
+    And   I change the Remit To Address
+    And   I enter the Qty Invoiced and calculate
+    And   I enter a Pay Date
+    And   I attach an Invoice Image
+    And   I calculate PREQ
+    And   I submit the Payment Request document
+    And   the Payment Request document goes to ENROUTE
+    Given I am logged in as "srb55"
+    And   I run Auto Approve PREQ
+    Given I login as a Accounts Payable Processor to create a PREQ
+    And   the Payment Request document goes to FINAL
 #
 #  @pending @wip
 #Scenario: I make a page object the quick way

@@ -143,7 +143,7 @@ end
       page.purchase_order.fit @purchase_order_number
       page.invoice_date.fit yesterday[:date_w_slashes]
       page.invoice_number.fit rand(100000)
-      page.vendor_invoice_amount.fit @requisition.item_quantity.to_i * @requisition.item_unit_cost.to_i
+      page.vendor_invoice_amount.fit @requisition.item_quantity.delete(',').to_f * @requisition.item_unit_cost.to_i
       page.continue
     end
     on YesOrNoPage do |page|

@@ -35,3 +35,13 @@ end
 And /^I run Poster$/ do
   run_poster(true)
 end
+
+And /^I run Auto Approve PREQ$/ do
+  run_auto_approve_preq(true)
+end
+
+And /^I Fax PO's$/ do
+  run_fax_pending_doc(true)
+end
+
+
