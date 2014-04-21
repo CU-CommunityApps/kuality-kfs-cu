@@ -379,7 +379,7 @@ Feature: Disbursement Voucher
 
   @KFSQA-711 @cornell @coral
   Scenario: Disbursement Voucher foreign draft with non resident tax and workflow changes for Account, Object Code, and Amount.
-    Given I am logged in as a KFS User
+    Given I am logged in as a Vendor Initiator
     When  I edit a Vendor with Vendor Number 5328-1
     And   I add an Address to a Vendor with following fields:
       | Address Type   | RM - REMIT        |
