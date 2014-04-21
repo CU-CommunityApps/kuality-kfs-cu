@@ -247,3 +247,37 @@ end
       page.postal_country_code.fit     'Canada'
     end
   end
+
+  And /^I verified the GLPE on Payment Request page with the following:$/ do |table|
+
+    on(PaymentRequestPage).expand_all
+    glpe_entry = table.raw.flatten.each_slice(7).to_a
+    glpe_entry.shift # skip header row
+    glpe_entry.each do |line,account_number,object_code,balance_type,object_type,amount,dorc|
+      on (GeneralLedgerPendingEntryTab) do |gtab|
+        idx = gtab.glpe_tables.length - 1
+        glpe_table = gtab.glpe_tables[idx]
+        seq = line.to_i
+        glpe_table[seq][3].text.should == account_number
+        glpe_table[seq][5].text.should == object_code
+        glpe_table[seq][9].text.should == balance_type
+        glpe_table[seq][10].text.should == object_type
+        glpe_table[seq][11].text.should == amount
+        glpe_table[seq][12].text.strip.should == dorc
+      end
+    end
+  end
+
+  #And /^I retrieve the Payment Request$/ do
+  #  # temp
+  #  #@requisition_number = '325401'
+  #  @document_id = '5296314'
+  #  visit(MainPage).requisitions  #remember "S" is for search
+  #  on DocumentSearch do |page|
+  #    page.document_type.set 'PREQ'
+  #    page.requisition_number.fit '404075'
+  #    page.search
+  #
+  #    page.open_item(@document_id)
+  #  end
+  #end

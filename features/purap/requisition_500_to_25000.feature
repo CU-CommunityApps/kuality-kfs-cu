@@ -161,6 +161,7 @@ Scenario: Purap Preq building block 4f
     And   I run Auto Approve PREQ
     Given I login as a Accounts Payable Processor to create a PREQ
     And   the Payment Request document goes to FINAL
+    And   the Payment Request Doc Status is Auto-Approved
 
   @KFSQA-765 @pending @purap @cornell @coral @wip
   Scenario: PURAP E2E-004a PREQ - Manual Entry, >$500 Auto Approve
@@ -229,7 +230,13 @@ Scenario: Purap Preq building block 4f
     And   I calculate PREQ
     And I approve the Payment Request document
     And the Payment Request document goes to FINAL
-
+    And   the Payment Request Doc Status is Department-Approved
+    And I verified the GLPE on Payment Request page with the following:
+      | line        | account number    | object code | balance type | object type  | amount    | dorc |
+      | 1           | 1093603           | 6540        | EX           | EX           | 4,900.00  | C    |
+      | 2           | 1093603           | 3110        | EX           | FB           | 4,900.00  | D    |
+      | 3           | 1093603           | 6540        | AC           | EX           | 4,900.00  | D    |
+      | 4           | 1093603           | 2900        | AC           | LI           | 4,900.00  | C    |
 
 
 
