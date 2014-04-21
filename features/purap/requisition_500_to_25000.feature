@@ -153,7 +153,7 @@ Scenario: Purap Preq building block 4f
     And   I calculate PREQ
     And   I submit the Payment Request document
     And   the Payment Request document goes to ENROUTE
-    Given I am logged in as "srb55"
+    Given I am logged in as a KFS Operator
     And   I run Auto Approve PREQ
     Given I login as a Accounts Payable Processor to create a PREQ
     And   the Payment Request document goes to FINAL
