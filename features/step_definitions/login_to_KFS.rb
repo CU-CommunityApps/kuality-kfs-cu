@@ -139,19 +139,20 @@ Given /^I login as a KFS user to create an REQS$/ do
   visit(BackdoorLoginPage).login_as('der9') #TODO get from role service
 end
 
-Given /^And I login as a Requisition Officer$/ do
-  visit(BackdoorLoginPage).login_as('der9') #TODO get from role service
-  # visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('', ''))
+Given /^I login as a Purap eSHop user$/ do
+  # visit(BackdoorLoginPage).login_as('der9')
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'eShop User (cu)'))
+  puts 'logged in as' + get_first_principal_name_for_role('KFS-PURAP', 'eShop User (cu)')
 end
 
-And /^I am logged in as a Contract Manager$/ do
-  visit(BackdoorLoginPage).login_as('mss7') #TODO get from role service
-  # visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('', ''))
+And /^I am logged in as a Purap Contract Manager$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'Contract Manager'))
 end
 
 Given /^I am logged in as a Purchasing Processor$/ do
-  visit(BackdoorLoginPage).login_as('ml284') #TODO get from role service
-  # visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('', ''))
+  # visit(BackdoorLoginPage).login_as('ml284')
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'Purchasing Processor'))
+  puts ' logged in as' + get_first_principal_name_for_role('KFS-PURAP', 'Purchasing Processor')
 end
 
 Given /^I am logged in as a Commodity Reviewer$/ do
