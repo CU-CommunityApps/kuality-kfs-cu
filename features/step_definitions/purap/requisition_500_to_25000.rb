@@ -1,7 +1,6 @@
 And /^I create the Requisition document with:$/  do |table|
   updates = table.rows_hash
-  @requisition = create RequisitionObject, description: 'AFT',
-                        payment_request_positive_approval_required: updates['payment request'],
+  @requisition = create RequisitionObject, payment_request_positive_approval_required: updates['payment request'],
                         vendor_number:        updates['vendor number'],
                         item_quantity:        updates['item quanity'],
                         item_unit_cost:       updates['item cost'],
