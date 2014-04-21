@@ -155,5 +155,6 @@ Given /^I login as a Accounts Payable Processor to create a PREQ$/ do
 end
 
 Given /^I am logged in as a KFS Operator$/ do
+  # to run batch jobs
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Operations'))
 end
