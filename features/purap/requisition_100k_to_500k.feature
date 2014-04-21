@@ -69,6 +69,7 @@ Feature: Purap Preq Building Blocks
       | account number      | 1093603  |
       | object code         | 6540     |
       | percent             | 100      |
+    And   I select the Payment Request Positive Approval Required
     And   I add an Attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
     And   I calculate my Requisition document

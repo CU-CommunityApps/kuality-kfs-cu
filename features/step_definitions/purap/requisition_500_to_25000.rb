@@ -235,3 +235,15 @@ end
     end
   end
 
+  And  /^I select the Payment Request Positive Approval Required$/ do
+    on(RequisitionPage).payment_request_positive_approval_required.set
+  end
+
+  Then /^I update the Tax Tab$/ do
+    on (PaymentRequestPage) do |page|
+      page.income_class_code.fit       'A - Honoraria, Prize'
+      page.federal_tax_pct.fit  '0'
+      page.state_tax_pct.fit    '0'
+      page.postal_country_code.fit     'Canada'
+    end
+  end
