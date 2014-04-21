@@ -149,3 +149,7 @@ end
 Given /^I am logged in as a Commodity Reviewer$/ do
   visit(BackdoorLoginPage).login_as('am28') #TODO get from role service
 end
+
+Given /^I am logged in as FTC\/BSC member User$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'FTC/BSC members'))
+end

@@ -381,3 +381,32 @@ And /^I change Remit Address and the Foreign Tax Address$/ do
     @changed_addr.merge!(updated_2nd_address_2: page.updated_2nd_address_2.value)
   end
 end
+
+And /^I edit a random PO Vendor$/ do
+  visit(MainPage).vendor
+  on VendorLookupPage do |page|
+    page.search
+    page.edit_random
+  end
+  on VendorPage do |page|
+    page.description.fit random_alphanums(40, 'AFT')
+    @vendor = make VendorObject
+    @vendor.document_id = page.document_id
+    @document_id = page.document_id
+  end
+end
+
+And /^I add a new Supplier Diversity to the Vendor document$/ do
+  on VendorPage do |page|
+    page.expand_all
+    pending
+  end
+end
+
+And /^I add a Search Alias to the Vendor document$/ do
+  on(VendorPage).expand_all
+  @vendor.search_aliases.update_from_page!
+  @vendor.search_aliases.add Hash.new # We'll just add the default value.
+                                      # For some reason, we still need to provide an empty hash.
+end
+

@@ -29,3 +29,10 @@ When /^I enter a a Valid Notification Recipient for the (.*) document$/ do |docu
                                    .notification_recipient = recipient
   end
 end
+
+And /^I add an attachment to the (.*) document$/ do |document|
+  document_object_for(document).notes_and_attachments_tab.add note_text: 'Testing note text.'
+  document_object_for(document).notes_and_attachments_tab
+                               .first
+                               .attach_file 'vendor_attachment_test.png'
+end
