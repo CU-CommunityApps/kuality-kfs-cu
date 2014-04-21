@@ -26,11 +26,8 @@ end
 And /^I am logged in as the FO of the Sub-Account$/ do
   sleep(1)
   account_info = get_kuali_business_object('KFS-COA','Account','accountNumber=' + @sub_account.account_number)
-  puts account_info
-  fiscal_officer_principal_name = account_info['accountFiscalOfficerUser.principalName']
-  puts account_info['accountCityName']
-  puts fiscal_officer_principal_name
-  step 'I am logged in as "' + fiscal_officer_principal_name + '"'
+  fiscal_officer_principal_name = account_info['accountFiscalOfficerUser.principalName'].to_s
+  step "I am logged in as \"#{fiscal_officer_principal_name}\""
   @user_id = fiscal_officer_principal_name
 end
 
