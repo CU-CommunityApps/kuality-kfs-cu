@@ -151,5 +151,6 @@ Given /^I am logged in as a Commodity Reviewer$/ do
 end
 
 Given /^I login as a Accounts Payable Processor to create a PREQ$/ do
-  visit(BackdoorLoginPage).login_as('jf427') #TODO get from role service
+  #visit(BackdoorLoginPage).login_as('jf427') #TODO get from role service
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'Accounts Payable Processor'))
 end

@@ -56,7 +56,7 @@ Feature: Purap Preq Building Blocks
     And   the Attachments for Supplier came from the PO
 
 
-  @KFSQA-744 @pending @purap @cornell @coral
+  @KFSQA-744 @pending @purap @cornell @coral @wip
   Scenario: PURAP E2E PO - Approved (PURAP E2E-003c) - vendor selected, >$100K, <$500K
     Given I login as a KFS user to create an REQS
     And   I create the Requisition document with:
