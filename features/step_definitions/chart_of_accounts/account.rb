@@ -113,21 +113,21 @@ end
 When /^I save an Account document with only the ([^"]*) field populated$/ do |field|
   default_fields = {
       description:          random_alphanums(40, 'AFT'),
-      chart_code:           'IT', #TODO grab this from config file
+      chart_code:           get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
       number:               random_alphanums(7),
       name:                 random_alphanums(10),
       organization_code:               '01G0',
-      campus_code:            'IT - Ithaca', #TODO grab this from config file
+      campus_code:          get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_CODE),
       effective_date:       '01/01/2010',
-      postal_code:            '14853', #TODO grab this from config file
-      city:                 'Ithaca', #TODO grab this from config file
-      state:                'NY', #TODO grab this from config file
-      address:              'Cornell University', #TODO grab this from config file
-      type_code:              'CC - Contract College', #TODO grab this from config file
+      postal_code:          get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_POSTAL_CODE),
+      city:                 get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_CITY),
+      state:                get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_STATE),
+      address:              get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_ADDRESS),
+      type_code:            get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_TYPE_CODE),
       sub_fund_group_code:     'ADMSYS',
       higher_ed_funct_code:   '4000',
       restricted_status_code: 'U - Unrestricted',
-      fo_principal_name:    'dh273',
+      fo_principal_name:    get_aft_parameter_values(ParameterConstants::DEFAULT_FISCAL_OFFICER),#'dh273',
       supervisor_principal_name:  'ccs1',
       manager_principal_name: 'aap98',
       budget_record_level_code: 'C - Consolidation',
@@ -239,6 +239,9 @@ Then /^an empty error should appear$/ do
 end
 
 And /^I clone a random Account with the following changes:$/ do |table|
+  puts get_parameter_values('KFS-AR', 'CONTACTS_TEXT')
+  puts get_parameter_values('KFS-AR', 'ALLOW_SALES_TAX_LIABILITY_ADJUSTMENT_IND').inspect
+  puts get_parameter_values('KFS-AR', 'INVOICE_RECURRENCE_INTERVALS').inspect
   updates = table.rows_hash
 
   visit(MainPage).account
@@ -311,7 +314,7 @@ And /^I find an expired Account$/ do
   visit(MainPage).account
   on AccountLookupPage do |page|
     # FIXME: These values should be set by a service.
-    page.chart_code.fit     'IT'
+    page.chart_code.fit     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
     page.account_number.fit '147*'
     page.search
     page.sort_results_by('Account Expiration Date')
@@ -338,7 +341,7 @@ And /^I use these Accounts:$/ do |table|
   on AccountLookupPage do |page|
     existing_accounts.each do |account_number|
       # FIXME: These values should be set by a service.
-      page.chart_code.fit     'IT'
+      page.chart_code.fit     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
       page.account_number.fit account_number
       page.search
 

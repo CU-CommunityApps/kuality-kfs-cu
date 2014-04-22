@@ -74,10 +74,9 @@ And /^I change the Check Amount for the Disbursement Voucher document to (.*)$/ 
   on (AccountingLine) {|line| line.update_source_amount(0).fit amount}
 end
 
-
 When /^I start an empty Disbursement Voucher document with Payment to a Petty Cash Vendor$/ do
   #TODO : vendor number '41473-0' should be retrieved from service
-  @disbursement_voucher = create DisbursementVoucherObject, payee_id: '41473-0', payment_reason_code: 'K - Univ PettyCash Custodian Replenishment'
+  @disbursement_voucher = create DisbursementVoucherObject, payee_id: get_aft_parameter_values('DV_PETTY_CASH_VENDOR'), payment_reason_code: 'K - Univ PettyCash Custodian Replenishment'
 end
 
 And /^I copy a Disbursement Voucher document with Tax Address to persist$/ do
@@ -459,7 +458,7 @@ And /^I select a vendor payee to the (.*) document$/ do |document|
         plookup.search
         plookup.return_value_links.first.click
         sleep 1
-        plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
+        plookup.return_random if plookup.doc_title.eql?('Vendor Address Lookup')
       end
       @disbursement_voucher.fill_in_payment_info(tab)
     end

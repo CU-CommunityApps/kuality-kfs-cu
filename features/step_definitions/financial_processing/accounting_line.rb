@@ -303,7 +303,7 @@ end
 And /^I add a source Accounting Line to the (.*) document with a bad object code$/ do |document|
   doc_object = snake_case document
   new_source_line = {
-      chart_code:     'IT',
+      chart_code:     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
       account_number: 'G003704',
       object:         '4010',
       amount:         '300'

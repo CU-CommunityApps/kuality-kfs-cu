@@ -83,7 +83,7 @@ Feature: Pre-Encumbrance
 
   @KFSQA-664 @nightly-jobs @cornell @slug
   Scenario: Process a Pre-Encumbrance using a revenue object code.
-    Given   I am logged in as a KFS System Administrator
+    Given   I am logged in as a KFS System Manager
     When    I update the OBJECT_TYPES Parameter for the Pre-Encumbrance component in the KFS-FP namespace with the following values:
       | Parameter Value | EX;IC |
     And     I finalize the Parameter document
@@ -103,7 +103,7 @@ Feature: Pre-Encumbrance
     And     the Encumbrance Accounting Line on the General Ledger Balance lookup for the Pre-Encumbrance document equals the displayed amounts
 
     When    Nightly Batch Jobs run
-    And     I am logged in as a KFS System Administrator
+    And     I am logged in as a KFS System Manager
     Then    the Encumbrance Accounting Line appears in the Pre-Encumbrance document's GL entry
     And     I update the OBJECT_TYPES Parameter for the Pre-Encumbrance component in the KFS-FP namespace with the following values:
       | Parameter Value | EX |
