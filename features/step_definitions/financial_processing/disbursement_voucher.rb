@@ -76,7 +76,7 @@ end
 
 When /^I start an empty Disbursement Voucher document with Payment to a Petty Cash Vendor$/ do
   #TODO : vendor number '41473-0' should be retrieved from service
-  @disbursement_voucher = create DisbursementVoucherObject, payee_id: get_aft_parameter_values('DV_PETTY_CASH_VENDOR'), payment_reason_code: 'K - Univ PettyCash Custodian Replenishment'
+  @disbursement_voucher = create DisbursementVoucherObject, payee_id: get_aft_parameter_value('DV_PETTY_CASH_VENDOR'), payment_reason_code: 'K - Univ PettyCash Custodian Replenishment'
 end
 
 And /^I copy a Disbursement Voucher document with Tax Address to persist$/ do
