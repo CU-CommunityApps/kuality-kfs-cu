@@ -57,7 +57,7 @@ Feature: Purap Preq Building Blocks
 
 
   @KFSQA-744 @pending @purap @cornell @coral @wip
-  Scenario: PURAP E2E PO - Approved (PURAP E2E-003c) - vendor selected, >$100K, <$500K
+  Scenario: PURAP E2E PO - Approved (PURAP E2E-003d) - vendor selected, >$100K, >$500K, <$5MM
     Given I login as a KFS user to create an REQS
     And   I create the Requisition document with:
       | vendor number       |          |
