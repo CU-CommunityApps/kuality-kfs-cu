@@ -8,7 +8,7 @@ end
 And /^I enter text into the Note Text field of the (.*) document$/ do |document|
   new_text = 'Testing note text.'
   on(KFSBasePage).note_text.fit new_text
-  document_object_for(document).notes_and_attachments_tab.add note_text: new_text
+  document_object_for(document).notes_and_attachments_tab.add note_text: new_text, immediate_add: false
 end
 
 When /^I attach a file to the Notes and Attachments Tab line of the (.*) document$/ do |document|
@@ -31,8 +31,7 @@ When /^I enter a a Valid Notification Recipient for the (.*) document$/ do |docu
 end
 
 And /^I add an attachment to the (.*) document$/ do |document|
-  document_object_for(document).notes_and_attachments_tab.add note_text: 'Testing note text.'
   document_object_for(document).notes_and_attachments_tab
-                               .first
-                               .attach_file 'vendor_attachment_test.png'
+                               .add note_text: 'Testing note text.',
+                                    file:      'vendor_attachment_test.png'
 end

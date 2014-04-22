@@ -394,6 +394,7 @@ And /^I edit a random PO Vendor$/ do
     @vendor.document_id = page.document_id
     @document_id = page.document_id
   end
+  puts @vendor.inspect
 end
 
 And /^I add a new Supplier Diversity to the Vendor document$/ do
