@@ -56,7 +56,7 @@ And /^I add an Attachment to the Requisition document$/ do
   on RequisitionPage do |page|
     page.note_text.fit random_alphanums(40, 'AFT-NoteText')
     page.send_to_vendor.fit 'Yes'
-    #page.attach_notes_file.set($file_folder+@requisition.attachment_file_name)
+    page.attach_notes_file.set($file_folder+@requisition.attachment_file_name)
     page.add_note
     page.attach_notes_file_1.should exist #verify that note is indeed added
 
