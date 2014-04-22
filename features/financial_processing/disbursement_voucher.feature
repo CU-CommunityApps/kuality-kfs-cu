@@ -424,8 +424,6 @@ Feature: Disbursement Voucher
     And   I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to FINAL
 
-
-
   @KFSQA-702 @cornell @tortoise
   Scenario:  FO can do a search on the account and verify the payee id still displays on the DV. Approve it to final.
     Given I am logged in as a KFS User for the DV document
