@@ -139,20 +139,18 @@ Given /^I login as a KFS user to create an REQS$/ do
   visit(BackdoorLoginPage).login_as('der9') #TODO get from role service
 end
 
-Given /^I login as a Purap eSHop user$/ do
-  # visit(BackdoorLoginPage).login_as('der9')
+Given /^I login as a PURAP eSHop user$/ do
+  # der9
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'eShop User (cu)'))
-  puts 'logged in as' + get_first_principal_name_for_role('KFS-PURAP', 'eShop User (cu)')
 end
 
-And /^I am logged in as a Purap Contract Manager$/ do
+And /^I am logged in as a PURAP Contract Manager$/ do
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'Contract Manager'))
 end
 
 Given /^I am logged in as a Purchasing Processor$/ do
-  # visit(BackdoorLoginPage).login_as('ml284')
+  # ml284
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'Purchasing Processor'))
-  puts ' logged in as' + get_first_principal_name_for_role('KFS-PURAP', 'Purchasing Processor')
 end
 
 Given /^I am logged in as a Commodity Reviewer$/ do

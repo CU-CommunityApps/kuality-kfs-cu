@@ -71,8 +71,7 @@ And /^The View Related Documents Tab PO Status displays$/ do
 end
 
 And /^I Complete Selecting a Vendor$/ do
-  @requisition.add_vendor_to_req('27015-0')
-  #pull common vendor from service
+  @requisition.add_vendor_to_req('27015-0')  #TODO:: get from services 'Vendor number'
 end
 
 And /^I enter a Vendor Choice of '(.*)'$/ do  |choice|
@@ -125,7 +124,7 @@ And /^The Requisition status is '(.*)'$/ do |doc_status|
   end
 end
 
-And(/^I select the purchase order '(\d+)' with the doc id '(\d+)'$/) do |req_num, doc_id|
+And /^I select the purchase order '(\d+)' with the doc id '(\d+)'$/ do |req_num, doc_id|
   on DocumentSearch do |page|
     page.requisition_number.set req_num.to_s
     page.search

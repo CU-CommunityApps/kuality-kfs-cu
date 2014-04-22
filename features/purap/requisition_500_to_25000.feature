@@ -1,10 +1,10 @@
-Feature: Purap Preq Building Blocks
+Feature: PURAP manual entry greater than 500 but less than 25000
 
-  [purap-4f] purap test manual entry, >$500, <$25000, external vendor and no wire
+  [KFSQA-791] purap test manual entry, >$500, <$25000, external vendor and no wire
 
-@pending @wip @purap
-Scenario: Purap Preq building block 4f
-  Given I login as a Purap eSHop user
+@KFSQA-791 @purap
+Scenario: PURAP manual >$500, <$25000 external vendor no wire
+  Given I login as a PURAP eSHop user
   And I create the Requisition document with:
    | vendor number       | 4471-0   |
    | item quanity        | 9.9      |
@@ -23,10 +23,10 @@ Scenario: Purap Preq building block 4f
   And I am logged in as a Purchasing Processor
   #ml284
   And I submit a Contract Manager Assignment of '10' for the Requisition
-  And I login as a Purap eSHop user
+  And I login as a PURAP eSHop user
   #der9
   And I view the Requisition document from the Requisitions search
-  And I am logged in as a Purap Contract Manager
+  And I am logged in as a PURAP Contract Manager
   #mss7
   And I retrieve the Requisition document
   And The View Related Documents Tab PO Status displays
