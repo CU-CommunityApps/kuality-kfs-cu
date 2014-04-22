@@ -385,6 +385,7 @@ end
 And /^I edit a random PO Vendor$/ do
   visit(MainPage).vendor
   on VendorLookupPage do |page|
+    page.active_indicator_yes.set
     page.search
     page.edit_random
   end
