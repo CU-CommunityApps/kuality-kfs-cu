@@ -49,7 +49,7 @@ Feature: Vendor Create
     When    I am logged in as a KFS User
     Then    the Vendor document should be in my action list
 
-  @KFSQA-635 @cornell @tortoise
+  @KFSQA-635 @cornell @tortoise @broken!
   Scenario: I want to create a vendor with ownership type CORPORATION that is NON-FOREIGN
     Given   I am logged in as a KFS User
     When    I create a Corporation and Non-Foreign Vendor with Contract and Insurance

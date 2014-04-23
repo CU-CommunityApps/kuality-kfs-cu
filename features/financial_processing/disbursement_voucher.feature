@@ -377,7 +377,7 @@ Feature: Disbursement Voucher
 
   @KFSQA-711 @cornell @coral
   Scenario: Disbursement Voucher foreign draft with non resident tax and workflow changes for Account, Object Code, and Amount.
-    Given I am logged in as a KFS User
+    Given I am logged in as a Vendor Initiator
     When  I edit a Vendor with Vendor Number 5328-1
     And   I add an Address to a Vendor with following fields:
       | Address Type   | RM - REMIT        |
@@ -421,8 +421,6 @@ Feature: Disbursement Voucher
     And   I view the Disbursement Voucher document
     And   I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to FINAL
-
-
 
   @KFSQA-702 @cornell @tortoise
   Scenario:  FO can do a search on the account and verify the payee id still displays on the DV. Approve it to final.

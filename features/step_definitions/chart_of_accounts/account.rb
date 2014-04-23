@@ -341,7 +341,7 @@ And /^I use these Accounts:$/ do |table|
   on AccountLookupPage do |page|
     existing_accounts.each do |account_number|
       # FIXME: These values should be set by a service.
-      page.chart_code.fit     ParameterConstants::DEFAULT_CHART_CODE
+      page.chart_code.fit     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
       page.account_number.fit account_number
       page.search
 

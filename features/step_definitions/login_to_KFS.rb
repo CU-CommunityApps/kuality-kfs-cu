@@ -106,7 +106,6 @@ Then /^I switch to the user with the next Pending Action in the Route Log$/ do
 
   step "I am logged in as \"#{new_user}\""
 end
-
 Then /^I switch to the user with the next Pending Action in the Route Log for the (.*) document$/ do |document|
   new_user = ''
   on(page_class_for(document)) do |page|
@@ -144,6 +143,20 @@ end
 
 Given /^I login as a KFS user to create an REQS$/ do
   visit(BackdoorLoginPage).login_as('der9') #TODO get from role service
+end
+
+Given /^I login as a PURAP eSHop user$/ do
+  # der9
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'eShop User (cu)'))
+end
+
+And /^I am logged in as a PURAP Contract Manager$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'Contract Manager'))
+end
+
+Given /^I am logged in as a Purchasing Processor$/ do
+  # ml284
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'Purchasing Processor'))
 end
 
 Given /^I am logged in as a Commodity Reviewer$/ do
