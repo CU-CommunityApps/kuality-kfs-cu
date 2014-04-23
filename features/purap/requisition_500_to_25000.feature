@@ -157,6 +157,7 @@ Scenario: Purap Preq building block 4f
     And   I run Auto Approve PREQ
     Given I login as a Accounts Payable Processor to create a PREQ
     And   the Payment Request document goes to FINAL
+    And the Payment Request Doc Status is Auto-Approved
 #
 #  @pending @wip
 #Scenario: I make a page object the quick way
