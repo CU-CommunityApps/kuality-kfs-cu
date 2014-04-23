@@ -306,7 +306,7 @@ Scenario: Purap Preq building block 4f
       | 3           | 1093603           | 6540        | AC           | EX           | 2,750.00  | D    |
       | 4           | 1093603           | 2900        | AC           | LI           | 2,750.00  | C    |
 
-  @KFSQA-766 @pending @purap @cornell @coral @wip
+  @KFSQA-766 @pending @purap @cornell @coral
   Scenario: PURAP E2E-004d PREQ - Manual Entry, >$500, <$5000, Internal Vendor
     Given I login as a KFS user to create an REQS
     And I create the Requisition document with:
