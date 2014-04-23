@@ -4,7 +4,7 @@ Feature: Purap Preq Building Blocks
 
   @KFSQA-745 @pending @purap @cornell @slug @wip
   Scenario: PURAP E2E PO - Approved (PURAP E2E-003d) - vendor selected, >$100K, >$500K, <$5MM
-    Given I login as a KFS user to create an REQS
+    Given I login as a PURAP eSHop user
     And I create the Requisition document with:
       | vendor number       |          |
       | item quanity        | 180      |
@@ -31,13 +31,13 @@ Feature: Purap Preq Building Blocks
     And the Requisition document goes to FINAL
     And I am logged in as a Purchasing Processor
     And I submit a Contract Manager Assignment of '10' for the Requisition
-    And I am logged in as a Contract Manager
-    And I retrieve the Requisition
+    And I am logged in as a PURAP Contract Manager
+    And I retrieve the Requisition document
     And The View Related Documents Tab PO Status displays
     And the Purchase Order Number is unmasked
     And I Complete Selecting Vendor 27015-0
     And I enter a Vendor Choice
-    And I calculate and verify the GLPE with amount 180,000.00
+    And I calculate and verify the GLPE tab
     And I submit the Purchase Order document
     And the Purchase Order document goes to ENROUTE
     And I switch to the user with the next Pending Action in the Route Log for the Purchase Order document

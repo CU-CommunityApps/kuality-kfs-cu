@@ -27,6 +27,7 @@ end
 When /^I (#{BasePage::available_buttons}) the (.*) document$/ do |button, document|
   doc_object = snake_case document
   button.gsub!(' ', '_')
+sleep 2
   get(doc_object).send(button)
   on(YesOrNoPage).yes if button == 'cancel'
   sleep 10 if (button == 'blanket approve' || button == 'approve' || 'submit')
@@ -62,6 +63,7 @@ Then /^the (.*) document goes to (PROCESSED|ENROUTE|FINAL|INITIATED|SAVED)$/ do 
   sleep 10
   document_object_for(document).view
   on(page_class_for(document)).document_status.should == doc_status
+  sleep 3
 end
 
 Then /^the (.*) document goes to one of the following statuses:$/ do |document, required_statuses|
