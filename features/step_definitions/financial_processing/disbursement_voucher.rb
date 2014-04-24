@@ -398,12 +398,8 @@ And /^the GLPE contains Taxes withheld amount of (.*)$/ do |tax_amount|
 end
 
 And /^I search Account and cancel on Account Lookup$/ do
-  on(DisbursementVoucherPage) do |dv_page|
-    dv_page.update_account_search(0)
-    on AccountLookupPage do |page|
-      page.cancel_button
-    end
-  end
+  on(DisbursementVoucherPage).update_account_search(0)
+  on(AccountLookupPage).cancel_button
 end
 
 And /^the Payee Id still displays on Disbursement Voucher$/ do

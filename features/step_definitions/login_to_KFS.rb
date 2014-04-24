@@ -123,7 +123,8 @@ Then /^I switch to the user with the next Pending Action in the Route Log for th
     page.use_new_tab
     page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].should exist
     page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].text.empty?.should_not
-    if (page.frm.div(id: 'tab-Overview-div').tables[0][1].text.include?('Principal Name:'))
+
+    if page.frm.div(id: 'tab-Overview-div').tables[0][1].text.include?('Principal Name:')
        new_user = page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].text
     else
       # TODO : this is for group.  any other alternative ?
@@ -152,6 +153,20 @@ end
 
 Given /^I login as a KFS user to create an REQS$/ do
   visit(BackdoorLoginPage).login_as('der9') #TODO get from role service
+end
+
+Given /^I login as a PURAP eSHop user$/ do
+  # der9
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'eShop User (cu)'))
+end
+
+And /^I am logged in as a PURAP Contract Manager$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'Contract Manager'))
+end
+
+Given /^I am logged in as a Purchasing Processor$/ do
+  # ml284
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'Purchasing Processor'))
 end
 
 Given /^I am logged in as a Commodity Reviewer$/ do
