@@ -8,15 +8,15 @@ And /^I create the Requisition document with:$/  do |table|
   updates = table.rows_hash
   @requisition = create RequisitionObject, description: random_alphanums(40, 'AFT'),
                         payment_request_positive_approval_required: updates['payment request'],
-                        vendor_number:        updates['vendor number'],
-                        item_quantity:        updates['item quanity'],
-                        item_unit_cost:       updates['item cost'],
-                        item_commodity_code:  updates['item commodity code'],
-                        item_account_number:  updates['account number'],
-                        item_catalog_number:  updates['item catalog number'],
-                        item_description:     updates['item description'].nil? ? random_alphanums(15, 'AFT') : updates['item description'],
-                        item_object_code:     updates['object code'],
-                        item_percent:         updates['percent']
+                        vendor_number:        updates['Vendor Number'],
+                        item_quantity:        updates['Item Quantity'],
+                        item_unit_cost:       updates['Item Cost'],
+                        item_commodity_code:  updates['Item Commodity Code'],
+                        item_account_number:  updates['Account Number'],
+                        item_catalog_number:  updates['Item Catalog Number'],
+                        item_description:     updates['Item Description'].nil? ? random_alphanums(15, 'AFT') : updates['Item Description'],
+                        item_object_code:     updates['Object Code'],
+                        item_percent:         updates['Percent']
   @document_id = @requisition.document_id
 
 end

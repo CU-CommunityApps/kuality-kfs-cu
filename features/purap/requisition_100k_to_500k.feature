@@ -8,15 +8,15 @@ Feature: Purap Preq Building Blocks
   Scenario: PURAP E2E PO - Approved (PURAP E2E-003c) - vendor selected, >$100K, <$500K
     Given I login as a KFS user to create an REQS
     And I create the Requisition document with:
-      | vendor number       |          |
-      | item quanity        | 180      |
-      | item cost           | 1000     |
-      | item commodity code | 12142203 |
-      | item catalog number | 10101157 |
-      | item description    | ANIM     |
-      | account number      | R589854  |
-      | object code         | 6540     |
-      | percent             | 100      |
+      | Vendor Number       |          |
+      | Item Quantity       | 180      |
+      | Item Cost           | 1000     |
+      | Item Commodity Code | 12142203 |
+      | Item Catalog Number | 10101157 |
+      | Item Description    | ANIM     |
+      | Account Number      | R589854  |
+      | Object Code         | 6540     |
+      | Percent             | 100      |
     And I add an Attachment to the Requisition document
     And I enter Delivery Instructions and Notes to Vendor
     And I calculate my Requisition document
@@ -60,15 +60,15 @@ Feature: Purap Preq Building Blocks
   Scenario: PURAP E2E PO - Approved (PURAP E2E-003c) - vendor selected, >$100K, <$500K
     Given I login as a KFS user to create an REQS
     And   I create the Requisition document with:
-      | vendor number       |          |
-      | item quanity        | 180      |
-      | item cost           | 1000     |
-      | item commodity code | 12142203 |
-      | item catalog number | 10101157 |
-      | item description    | ANIM     |
-      | account number      | 1093603  |
-      | object code         | 6540     |
-      | percent             | 100      |
+      | Vendor Number       |          |
+      | Item Quantity       | 180      |
+      | Item Cost           | 1000     |
+      | Item Commodity Code | 12142203 |
+      | Item Catalog Number | 10101157 |
+      | Item Description    | ANIM     |
+      | Account Number      | 1093603  |
+      | Object Code         | 6540     |
+      | Percent             | 100      |
     And   I select the Payment Request Positive Approval Required
     And   I add an Attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
