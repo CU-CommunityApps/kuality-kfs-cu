@@ -40,7 +40,7 @@ And /^I run Auto Approve PREQ$/ do
   run_auto_approve_preq(true)
 end
 
-And /^I Fax PO's$/ do
+And /^I run Fax Pending Documents$/ do
   run_fax_pending_doc(true)
 end
 

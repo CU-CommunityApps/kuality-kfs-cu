@@ -9,13 +9,13 @@ Feature: Purap Preq Building Blocks
 Scenario: Purap Preq building block 4f
   Given I login as a KFS user to create an REQS
   And I create the Requisition document with:
-   | vendor number       | 4471-0   |
-   | item quanity        | 9.9      |
-   | item cost           | 1000     |
-   | item commodity code | 10121800 |
-   | account number      | 1093603  |
-   | object code         | 6540     |
-   | percent             | 100      |
+   | Vendor Number       | 4471-0   |
+   | Item Quantity       | 9.9      |
+   | Item Cost           | 1000     |
+   | Item Commodity Code | 10121800 |
+   | Account Number      | 1093603  |
+   | Object Code         | 6540     |
+   | Percent             | 100      |
   And I calculate my Requisition document
   And I submit the Requisition document
   And the requisition document goes to ENROUTE
@@ -61,19 +61,19 @@ Scenario: Purap Preq building block 4f
   #OPEN
 
 
-  @KFSQA-743 @pending @purap @cornell @coral
+  @KFSQA-743 @purap @cornell @coral
   Scenario: PURAP E2E PO - Unapproved (PURAP E2E-003b) - vendor not selected, <$100K
     Given I login as a KFS user to create an REQS
     And   I create the Requisition document with:
-      | vendor number       |          |
-      | item quanity        | 18       |
-      | item cost           | 1000     |
-      | item commodity code | 12142203 |
-      | item catalog number | 10101157 |
-      | item description    | ANIM     |
-      | account number      | R589854  |
-      | object code         | 6540     |
-      | percent             | 100      |
+      | Vendor Number       |          |
+      | Item Quantity       | 18       |
+      | Item Cost           | 1000     |
+      | Item Commodity Code | 12142203 |
+      | Item Catalog Number | 10101157 |
+      | Item Description    | ANIM     |
+      | Account Number      | R589854  |
+      | Object Code         | 6540     |
+      | Percent             | 100      |
     And   I add an Attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
     And   I calculate my Requisition document
@@ -103,24 +103,23 @@ Scenario: Purap Preq building block 4f
     And   the Purchase Order Doc Status is Open
 
 
-  @KFSQA-763 @pending @purap @cornell @coral @wip
+  @KFSQA-763 @E2E @MultiDay @PO @PREQ @REQS @Routing @PO @auto-approve-preq-job @cornell @coral @wip
   Scenario: PURAP E2E-004a PREQ - Manual Entry, >$500 Auto Approve
     Given I login as a KFS user to create an REQS
     And I create the Requisition document with:
-      | vendor number       |          |
-      | item quanity        | 4.9      |
-      | item cost           | 1000     |
-      | item commodity code | 10121800 |
-      | item catalog number | 14111703 |
-      | item description    | ANIM     |
-      | account number      | 1093603  |
-      | object code         | 6540     |
-      | percent             | 100      |
+      | Item Quantity       | 4.9      |
+      | Item Cost           | 1000     |
+      | Item Commodity Code | 10121800 |
+      | Item Catalog Number | 14111703 |
+      | Item Description    | ANIM     |
+      | Account Number      | 1093603  |
+      | Object Code         | 6540     |
+      | Percent             | 100      |
     And I add an Attachment to the Requisition document
     And I enter Delivery Instructions and Notes to Vendor
     And I calculate my Requisition document
     And I submit the Requisition document
-    And the requisition document goes to ENROUTE
+    And the Requisition document goes to ENROUTE
     And I switch to the user with the next Pending Action in the Route Log for the Requisition document
     And I view the Requisition document on my action list
     And I approve the Requisition document
@@ -140,7 +139,7 @@ Scenario: Purap Preq building block 4f
     And the Purchase Order Doc Status is Open
     Given I am logged in as "db18"
     And   I visit the "e-SHOP" page
-    And   I Search Documents retrieve the PO
+    And   I view the Purchase Order document via e-SHOP
     Then  the Document Status displayed 'Completed'
     And   the Delivery Instructions displayed equals what came from the PO
     And   the Attachments for Supplier came from the PO

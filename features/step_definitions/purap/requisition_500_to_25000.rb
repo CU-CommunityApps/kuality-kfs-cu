@@ -192,7 +192,7 @@ end
   end
 
 
-And   /^I Search Documents retrieve the PO$/ do
+And   /^I view the Purchase Order document via e-SHOP$/ do
   on ShopCatalogPage do |page|
     #page.key_words.fit 'Commidity 14111507'
     page.order_doc
