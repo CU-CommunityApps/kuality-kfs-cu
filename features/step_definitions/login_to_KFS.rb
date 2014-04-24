@@ -2,8 +2,16 @@ Given /^I am logged in as a KFS Technical Administrator$/ do
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Technical Administrator'))
 end
 
+Given /^I am logged in as a KFS Operations$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Operations'))
+end
+
 Given /^I am logged in as a Vendor Reviewer$/ do
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-VND', 'Reviewer'))
+end
+
+Given /^I am logged in as a Vendor Initiator$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-VND', 'CU Vendor Initiator'))
 end
 
 Given /^I am logged in as a KFS Fiscal Officer$/ do
@@ -106,8 +114,8 @@ Then /^I switch to the user with the next Pending Action in the Route Log$/ do
 
   step "I am logged in as \"#{new_user}\""
 end
+
 Then /^I switch to the user with the next Pending Action in the Route Log for the (.*) document$/ do |document|
-  # TODO : it will be good if a member of 'group' approver can be selected.  For example :  'Group Name: Radioactive Review'
   new_user = ''
   on(page_class_for(document)) do |page|
     page.expand_all
@@ -115,7 +123,14 @@ Then /^I switch to the user with the next Pending Action in the Route Log for th
     page.use_new_tab
     page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].should exist
     page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].text.empty?.should_not
-    new_user = page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].text
+    if (page.frm.div(id: 'tab-Overview-div').tables[0][1].text.include?('Principal Name:'))
+       new_user = page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].text
+    else
+      # TODO : this is for group.  any other alternative ?
+      mbr_tr = page.frm.select(id: 'document.members[0].memberTypeCode').parent.parent.parent
+      new_user = mbr_tr[4].text
+    end
+
     page.close_children
   end
 
@@ -137,20 +152,6 @@ end
 
 Given /^I login as a KFS user to create an REQS$/ do
   visit(BackdoorLoginPage).login_as('der9') #TODO get from role service
-end
-
-Given /^I login as a PURAP eSHop user$/ do
-  # der9
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'eShop User (cu)'))
-end
-
-And /^I am logged in as a PURAP Contract Manager$/ do
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'Contract Manager'))
-end
-
-Given /^I am logged in as a Purchasing Processor$/ do
-  # ml284
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'Purchasing Processor'))
 end
 
 Given /^I am logged in as a Commodity Reviewer$/ do

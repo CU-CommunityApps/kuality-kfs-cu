@@ -401,8 +401,7 @@ And /^I search Account and cancel on Account Lookup$/ do
   on(DisbursementVoucherPage) do |dv_page|
     dv_page.update_account_search(0)
     on AccountLookupPage do |page|
-      # page.cancel_button
-      page.cancel
+      page.cancel_button
     end
   end
 end
@@ -459,7 +458,7 @@ And /^I select a vendor payee to the (.*) document$/ do |document|
         plookup.search
         plookup.return_value_links.first.click
         sleep 1
-        plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
+        plookup.return_random if plookup.doc_title.eql?('Vendor Address Lookup')
       end
       @disbursement_voucher.fill_in_payment_info(tab)
     end
