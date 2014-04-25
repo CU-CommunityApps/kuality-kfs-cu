@@ -18,7 +18,8 @@ And /^I create a Budget Adjustment document for file import$/ do  # ME!
                                                                       {
                                                                         type: :target,
                                                                         file_name: 'BA_test_to.csv'
-                                                                      }]
+                                                                      }],
+                                                      immediate_import: false
 end
 
 And /^I (#{BudgetAdjustmentPage::available_buttons}) a Budget Adjustment document$/ do |button|
@@ -27,17 +28,17 @@ And /^I (#{BudgetAdjustmentPage::available_buttons}) a Budget Adjustment documen
   sleep 10 if (button == 'blanket_approve') || (button == 'approve')
 end
 
-And /^I add a (from|to) amount of "(.*)" for account "(.*)" with object code "(.*)" with a line description of "(.*)"$/  do |target, amount, account_number, object_code, line_desc|
+And /^I add a (From|To) amount of "(.*)" for account "(.*)" with object code "(.*)" with a line description of "(.*)"$/  do |target, amount, account_number, object_code, line_desc|
   on BudgetAdjustmentPage do |page|
     case target
-      when 'from'
+      when 'From'
         @budget_adjustment.add_source_line({
                                               account_number:   account_number,
                                               object:           object_code,
                                               current_amount:   amount,
                                               line_description: line_desc
                                             })
-      when 'to'
+      when 'To'
         @budget_adjustment.add_target_line({
                                              account_number:   account_number,
                                              object:           object_code,
@@ -54,8 +55,8 @@ end
 
 Then /^I verify that Chart Value defaults to IT$/ do
   on BudgetAdjustmentPage do |page|
-    page.source_chart_code.value.should == 'IT'
-    page.target_chart_code.value.should == 'IT'
+    page.source_chart_code.value.should == get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
+    page.target_chart_code.value.should == get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
   end
 end
 
@@ -79,13 +80,11 @@ And /^I (#{BudgetAdjustmentPage::available_buttons}) a balanced Budget Adjustmen
                                       current_amount:   '250.11',
                                       base_amount:      '125',
                                       line_description: random_alphanums(20, 'AFT TO 1 '),
-                                      chart_code:       'IT'
+                                      chart_code:       get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
                                   }
                               ]
 
     on BudgetAdjustmentPage do |page|
-      #TODO:: Make data object for adding accounting lines (sounds like better solution)
-      #@budget_adjustment.adding_a_from_accounting_line(page, 'G003704', '6510', '250.11', random_alphanums(20, 'AFT FROM 2 '), '125')
       @budget_adjustment.add_source_line({
                                          account_number:   'G003704',
                                          object:           '6510',
@@ -93,7 +92,6 @@ And /^I (#{BudgetAdjustmentPage::available_buttons}) a balanced Budget Adjustmen
                                          line_description: random_alphanums(20, 'AFT TO 2 '),
                                          base_amount:      '125'
                                         })
-      #@budget_adjustment.adding_a_to_accounting_line(page, 'G013300', '6510', '250.11', random_alphanums(20, 'AFT TO 2 '), '125')
       @budget_adjustment.add_target_line({
                                            account_number:   'G013300',
                                            object:           '6510',
@@ -114,7 +112,7 @@ And /^I view the From Account on the General Ledger Balance with balance type co
     page.balance_type_code.fit bal_type_code
     page.including_pending_ledger_entry_all.set
     page.search
-    page.select_monthly_item(@budget_adjustment.accounting_lines[:source][0].object, BudgetAdjustmentObject::fiscal_period_conversion(right_now[:MON]))
+    page.select_monthly_item(@budget_adjustment.accounting_lines[:source][0].object, fiscal_period_conversion(right_now[:MON]))
  end
  on(GeneralLedgerEntryLookupPage) do |page|
    page.sort_results_by('Transaction Date')
@@ -131,7 +129,7 @@ When /^I view the To Account on the General Ledger Balance with balance type cod
     page.balance_type_code.fit bal_type_code
     page.including_pending_ledger_entry_all.set
     page.search
-    page.select_monthly_item(@budget_adjustment.accounting_lines[:target][0].object, BudgetAdjustmentObject::fiscal_period_conversion(right_now[:MON]))
+    page.select_monthly_item(@budget_adjustment.accounting_lines[:target][0].object, fiscal_period_conversion(right_now[:MON]))
   end
   on(GeneralLedgerEntryLookupPage) do |page|
     page.sort_results_by('Transaction Date')
@@ -161,32 +159,22 @@ And /^The line description for the To Account should be displayed$/ do
   on(BudgetAdjustmentPage).find_target_line_description.should == @budget_adjustment.accounting_lines[:target][0].line_description
 end
 
-#And /^I upload From Accounting Lines containing Base Budget amounts$/ do
-#  on BudgetAdjustmentPage do |page|
-#    page.import_lines_source
-#    page.account_line_source_file_name.set($file_folder+@budget_adjustment.accounting_lines[:source][0].file_name)
-#    page.add_source_import
-#  end
-#end
-
 And /^I upload (To|From) Accounting Lines containing Base Budget amounts$/ do |type|
-  on BudgetAdjustmentPage do |page|
-    #page.import_lines_target
-    #page.account_line_target_file_name.set($file_folder+@budget_adjustment.accounting_lines[:target][0].file_name)
-    #page.add_target_import
+  # This assumes you've provided a file_name in the first initial_lines entry for that type.
+  on BudgetAdjustmentPage do
     case type
       when 'To'
-        @budget_adjustment.accounting_lines[:target][0].import_lines
+        @budget_adjustment.import_initial_lines(:target)
       when 'From'
-        @budget_adjustment.accounting_lines[:source][0].import_lines
+        @budget_adjustment.import_initial_lines(:source)
     end
   end
 end
 
-Then /^The GLPE contains 4 Balance Type BB transactions$/ do
+Then /^The GLPE contains 4 Balance Type (.*) transactions for the (.*) document$/ do |type_code, document|
   visit(MainPage).general_ledger_pending_entry
   on GeneralLedgerPendingEntryLookupPage do |page|
-    page.balance_type_code.fit 'BB'
+    page.balance_type_code.fit type_code.upcase
     page.document_number.fit @budget_adjustment.document_id
     page.search
 

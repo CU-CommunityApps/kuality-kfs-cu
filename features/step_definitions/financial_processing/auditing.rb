@@ -7,24 +7,6 @@ And /^I view my Budget Adjustment document$/ do
   end
 end
 
-#And /^I start an empty "<document>" document$/ do |document|
-#  doc_object = snake_case document
-#  puts 'and doc_object is'
-#  puts doc_object.inspect
-#  puts 'and now the get(doc object) is'
-#  puts get(doc_object).inspect
-#
-#
-#  doc_object_class = document.gsub(' ', '') + 'Object'
-#
-#  page_klass = Kernel.const_get(doc_page_class)
-#
-#  get(doc_object).to_s = create doc_object_class
-#
-#  #@non_check_disbursement = create NonCheckDisbursementObject
-#end
-
-
 And /^On the Budget Adjustment I modify the From current amount line item (.*) to be (.*)$/ do |line_item, amount|
   on BudgetAdjustmentPage do |page|
     page.from_amount_line_item(line_item).fit amount
@@ -37,11 +19,8 @@ And /^On the Budget Adjustment I modify the To current amount line item (.*) to 
   end
 end
 
-And(/^On the (.*) I modify the (From|To) Object Code line item (\d+) to be (.*)$/) do |document, from_or_to, line_item, new_object_code|
-  doc_page_class = document.gsub(' ', '') + 'Page'
-  page_klass = Kernel.const_get(doc_page_class)
-
-  on page_klass do |page|
+And /^on the (.*) document I modify the (From|To) Object Code line item (\d+) to be (.*)$/ do |document, from_or_to, line_item, new_object_code|
+  on page_class_for(document) do |page|
     case from_or_to
       when 'From'
         page.update_source_object_code(line_item).fit new_object_code
@@ -52,11 +31,8 @@ And(/^On the (.*) I modify the (From|To) Object Code line item (\d+) to be (.*)$
   end
 end
 
-And(/^On the (.*) I modify the Object Code line item (\d+) to be (.*)$/) do |document, line_item, new_object_code|
-  doc_page_class = document.gsub(' ', '') + 'Page'
-  page_klass = Kernel.const_get(doc_page_class)
-
-  on page_klass do |page|
+And /^on the (.*) document I modify the Object Code line item (\d+) to be (.*)$/ do |document, line_item, new_object_code|
+  on page_class_for(document) do |page|
     page.update_source_object_code(line_item).fit new_object_code
   end
 end
@@ -140,7 +116,7 @@ And /^I add accounting lines to test the notes tab for the General Error Correct
   end
 end
 
-And /^I add accounting lines to test the notes tab for the Pre Encumbrance doc$/ do
+And /^I add accounting lines to test the notes tab for the Pre-Encumbrance doc$/ do
   on PreEncumbrancePage do
     @pre_encumbrance.add_source_line({
       account_number: 'G003704',
@@ -163,8 +139,7 @@ end
 
 And /^I add a (From|To) accounting line to the (.*) document with:$/ do |from_or_to, document, table|
   doc_object = snake_case document
-  doc_page_class = document.gsub(' ', '') + 'Page'
-  page_klass = Kernel.const_get(doc_page_class)
+  page_klass = page_class_for document
 
   updates = table.rows_hash
 
@@ -187,13 +162,4 @@ And /^I add a (From|To) accounting line to the (.*) document with:$/ do |from_or
         })
       end
   end
-end
-
-#SHOULD PROBABLY MOVE THESE AT SOME POINT TO A BETTER PLACE
-And /^I visit the main page$/ do
-  visit(MainPage)
-end
-
-And /^I sleep for (\d+)$/ do |time|
-  sleep time.to_i
 end

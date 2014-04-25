@@ -11,37 +11,35 @@ Feature: Advance Deposit
 
   [KFSQA-728] As a KFS User I should be able to Copy a Final AD.
 
-  @KFSQA-608 @nightly-jobs
+  @KFSQA-608 @nightly-jobs @sloth
   Scenario: AD Create Save and continue after batch processes
     Given I am logged in as a KFS User
     And   I save an Advance Deposit document
     And   Nightly Batch Jobs run
+    And   I am logged in as a KFS User
     And   I view the Advance Deposit document
     When  I blanket approve the Advance Deposit document
-    And   I view the Advance Deposit document
-    Then  the AD document submits with no errors
+    Then  the Advance Deposit document goes to FINAL
 
-  @KFSQA-609
+  @KFSQA-609 @sloth
   Scenario: AD Copy and Save
     Given I am logged in as a KFS Cash Manager
-    And   I access Document Search
-    And   I search for all AD documents
+    When  I search for all AD documents
     And   I copy a random Advance Deposit document with FINAL status
-    When  I save the Advance Deposit document
+    And   I save the Advance Deposit document
     Then  the Advance Deposit document goes to SAVED
 
-  @KFSQA-645 @smoke
+  @KFSQA-645 @smoke @hare
   Scenario: * * * * * Actions to not display on AD
     Given I am logged in as a KFS User
     When  I start an empty Advance Deposit document
     Then  "* * * * Actions" should not be displayed in the Accounting Line section
 
-  @KFSQA-728
+  @KFSQA-728 @sloth
   Scenario: Copy a Final Advance Deposit, and then create a new one
     Given I am logged in as a KFS User
-    And   I access Document Search
-    And   I search for all AD documents
-    When  I copy a document with a FINAL status
+    When  I search for all AD documents
+    And   I copy a document with a FINAL status
     And   I blanket approve the document
     And   I reopen the document
     Then  the document status is FINAL
