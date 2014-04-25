@@ -137,5 +137,3 @@ Scenario: PURAP manual >$500, <$25000 external vendor no wire
     Given I login as a Accounts Payable Processor to create a PREQ
     And   the Payment Request document goes to FINAL
     And   the Payment Request Doc Status is Auto-Approved
-    # TODO test do not commit
-    And   I run Poster
