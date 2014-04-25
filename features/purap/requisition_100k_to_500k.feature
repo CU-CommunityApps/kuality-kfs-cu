@@ -9,7 +9,7 @@ Feature: Purap Preq Building Blocks
     Given I login as a PURAP eSHop user
     And I create the Requisition document with:
       | vendor number       |          |
-      | item quanity        | 180      |
+      | item quanity        | 1800     |
       | item cost           | 1000     |
       | item commodity code | 12142203 |
       | item catalog number | 10101157 |
@@ -30,6 +30,10 @@ Feature: Purap Preq Building Blocks
     And I switch to the user with the next Pending Action in the Route Log for the Requisition document
     And I view the Requisition document on my action list
     And I approve the Requisition document
+    And the requisition document goes to ENROUTE
+    And I switch to the user with the next Pending Action in the Route Log for the Requisition document
+    And I view the Requisition document on my action list
+    And I approve the Requisition document
     And the Requisition document goes to FINAL
     And I am logged in as a Purchasing Processor
     And I submit a Contract Manager Assignment of '10' for the Requisition
@@ -41,6 +45,10 @@ Feature: Purap Preq Building Blocks
     And I enter a Vendor Choice of 'Lowest Price'
     And I calculate and verify the GLPE tab
     And I submit the Purchase Order document
+    And the Purchase Order document goes to ENROUTE
+    And I switch to the user with the next Pending Action in the Route Log for the Purchase Order document
+    And I view the Purchase Order document on my action list
+    And I approve the Purchase Order document
     And the Purchase Order document goes to ENROUTE
     And I switch to the user with the next Pending Action in the Route Log for the Purchase Order document
     And I view the Purchase Order document on my action list
