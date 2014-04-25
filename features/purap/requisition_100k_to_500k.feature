@@ -8,15 +8,15 @@ Feature: Purap Preq Building Blocks
   Scenario: PURAP E2E PO - Approved (PURAP E2E-003c) - vendor selected, >$100K, <$500K
     Given I login as a PURAP eSHop user
     And I create the Requisition document with:
-      | vendor number       |          |
-      | item quanity        | 1800     |
-      | item cost           | 1000     |
-      | item commodity code | 12142203 |
-      | item catalog number | 10101157 |
-      | item description    | ANIM     |
-      | account number      | R589854  |
-      | object code         | 6540     |
-      | percent             | 100      |
+      | Vendor Number       |          |
+      | Item Quantity       | 1800     |
+      | Item Cost           | 1000     |
+      | Item Commodity Code | 12142203 |
+      | Item Catalog Number | 10101157 |
+      | Item Description    | ANIM     |
+      | Account Number      | R589854  |
+      | Object Code         | 6540     |
+      | Percent             | 100      |
     And I add an Attachment to the Requisition document
     And I enter Delivery Instructions and Notes to Vendor
     And I calculate my Requisition document
@@ -30,7 +30,7 @@ Feature: Purap Preq Building Blocks
     And I switch to the user with the next Pending Action in the Route Log for the Requisition document
     And I view the Requisition document on my action list
     And I approve the Requisition document
-    And the requisition document goes to ENROUTE
+    And the Requisition document goes to ENROUTE
     And I switch to the user with the next Pending Action in the Route Log for the Requisition document
     And I view the Requisition document on my action list
     And I approve the Requisition document
@@ -54,29 +54,29 @@ Feature: Purap Preq Building Blocks
     And I view the Purchase Order document on my action list
     And I approve the Purchase Order document
     And the Purchase Order document goes to FINAL
-    Then In Pending Action Requests an FYI is sent to FO and Initiator
+    Then in Pending Action Requests an FYI is sent to FO and Initiator
     And the Purchase Order Doc Status is Open
     Given I am logged in as "db18"
     And   I visit the "e-SHOP" page
-    And   I Search Documents retrieve the PO
+    And   I view the Purchase Order document via e-SHOP
     Then  the Document Status displayed 'Completed'
     And   the Delivery Instructions displayed equals what came from the PO
     And   the Attachments for Supplier came from the PO
 
 
-  @KFSQA-744 @purap @cornell @coral @wip
-  Scenario: PURAP E2E PO - Approved (PURAP E2E-003d) - vendor selected, >$100K, >$500K, <$5MM
+  @KFSQA-744 @purap @cornell @coral
+  Scenario: PURAP E2E PO - Approved (PURAP E2E-003c) - vendor selected, >$100K, <$500K
     Given I login as a PURAP eSHop user
     And   I create the Requisition document with:
-      | vendor number       |          |
-      | item quanity        | 180      |
-      | item cost           | 1000     |
-      | item commodity code | 12142203 |
-      | item catalog number | 10101157 |
-      | item description    | ANIM     |
-      | account number      | 1093603  |
-      | object code         | 6540     |
-      | percent             | 100      |
+      | Vendor Number       |          |
+      | Item Quantity       | 180      |
+      | Item Cost           | 1000     |
+      | Item Commodity Code | 12142203 |
+      | Item Catalog Number | 10101157 |
+      | Item Description    | ANIM     |
+      | Account Number      | 1093603  |
+      | Object Code         | 6540     |
+      | Percent             | 100      |
     And   I add an Attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
     And   I calculate my Requisition document
@@ -110,7 +110,7 @@ Feature: Purap Preq Building Blocks
     And   I view the Purchase Order document on my action list
     And   I approve the Purchase Order document
     And   the Purchase Order document goes to FINAL
-    Then  In Pending Action Requests an FYI is sent to FO and Initiator
+    Then  in Pending Action Requests an FYI is sent to FO and Initiator
     And   the Purchase Order Doc Status is Open
     Given I login as a Accounts Payable Processor to create a PREQ
     And   I fill out the PREQ initiation page and continue

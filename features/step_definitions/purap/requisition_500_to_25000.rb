@@ -1,13 +1,16 @@
 And /^I create the Requisition document with:$/  do |table|
   updates = table.rows_hash
   @requisition = create RequisitionObject, payment_request_positive_approval_required: updates['payment request'],
-                        vendor_number:        updates['vendor number'],
-                        item_quantity:        updates['item quanity'],
-                        item_unit_cost:       updates['item cost'],
-                        item_commodity_code:  updates['item commodity code'],
-                        item_account_number:  updates['account number'],
-                        item_object_code:     updates['object code'],
-                        item_percent:         updates['percent']
+                        payment_request_positive_approval_required: updates['payment request'],
+                        vendor_number:        updates['Vendor Number'],
+                        item_quantity:        updates['Item Quantity'],
+                        item_unit_cost:       updates['Item Cost'],
+                        item_commodity_code:  updates['Item Commodity Code'],
+                        item_account_number:  updates['Account Number'],
+                        item_catalog_number:  updates['Item Catalog Number'],
+                        item_description:     updates['Item Description'].nil? ? random_alphanums(15, 'AFT') : updates['Item Description'],
+                        item_object_code:     updates['Object Code'],
+                        item_percent:         updates['Percent']
 
 end
 
@@ -178,7 +181,7 @@ And /^I calculate and verify the GLPE tab$/ do
   end
 end
 
-Then /^In Pending Action Requests an FYI is sent to FO and Initiator$/ do
+Then /^in Pending Action Requests an FYI is sent to FO and Initiator$/ do
   on PurchaseOrderPage do |page|
     page.headerinfo_table.wait_until_present
     page.expand_all
@@ -260,7 +263,9 @@ And /^I attach an Invoice Image$/ do
   on PaymentRequestPage do |page|
     page.note_text.fit random_alphanums(40, 'AFT-NoteText')
     page.attachment_type.fit 'Invoice Image'
-    page.attach_notes_file.set($file_folder+@payment_request.attachment_file_name)
+    #page.attach_notes_file.set($file_folder+@payment_request.attachment_file_name)
+    #TODO : do not commit this path this is a temporarily fix for chrome bug.
+    page.attach_notes_file.set("C:\\java\\project_wrk\\kuality-kfs-cu\\lib\\resources\\"+@payment_request.attachment_file_name)
 
     page.add_note
     page.attach_notes_file_1.should exist #verify that note is indeed added
@@ -276,7 +281,7 @@ And /^I calculate PREQ$/ do
 end
 
 
-And   /^I Search Documents retrieve the PO$/ do
+And   /^I view the Purchase Order document via e-SHOP$/ do
   on ShopCatalogPage do |page|
     #page.key_words.fit 'Commidity 14111507'
     page.order_doc
@@ -356,7 +361,9 @@ And /^I add an Attachment to the Requisition document$/ do
   on RequisitionPage do |page|
     page.note_text.fit random_alphanums(40, 'AFT-NoteText')
     page.send_to_vendor.fit 'Yes'
-    page.attach_notes_file.set($file_folder+@requisition.attachment_file_name)
+    #page.attach_notes_file.set($file_folder+@requisition.attachment_file_name)
+    #TODO : do not commit this path this is a temporarily fix for chrome bug.
+    page.attach_notes_file.set("C:\\java\\project_wrk\\kuality-kfs-cu\\lib\\resources\\"+@requisition.attachment_file_name)
 
     page.add_note
     page.attach_notes_file_1.should exist #verify that note is indeed added
