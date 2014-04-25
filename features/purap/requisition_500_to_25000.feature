@@ -1,13 +1,12 @@
-Feature: Purap Preq Building Blocks
+Feature: PURAP manual entry greater than 500 but less than 25000
 
-  [purap-4f] purap test manual entry, >$500, <$25000, external vendor and no wire
+  [KFSQA-791] purap test manual entry, >$500, <$25000, external vendor and no wire
 
   [KFSQA-743] PURAP E2E PO - Unapproved (PURAP E2E-003b) - vendor not selected, <$100K
 
-  #PURAP TEST IN PROGRESS JUST UPLOADING TO ADD FILES SO OTHERS CAN WORK ON PURAP
-@pending @purap
-Scenario: Purap Preq building block 4f
-  Given I login as a KFS user to create an REQS
+  @KFSQA-791 @purap @coral
+Scenario: PURAP manual >$500, <$25000 external vendor no wire
+  Given I login as a PURAP eSHop user
   And I create the Requisition document with:
    | Vendor Number       | 4471-0   |
    | Item Quantity       | 9.9      |
@@ -23,47 +22,28 @@ Scenario: Purap Preq building block 4f
   And I view the Requisition document on my action list
   And I approve the Requisition document
   And the Requisition document goes to FINAL
-  #skip req for testing
-        #PO
   And I am logged in as a Purchasing Processor
   #<ml284>
   And I submit a Contract Manager Assignment of '10' for the Requisition
-  #10
-#REQS/PO STATUS CHECK for ********
-#  And I login as a KFS user to create an REQS
+  And I login as a PURAP eSHop user
   #der9
-#  And The REQS Status is
-  #UNNAPPROVED
-  And I am logged in as a Contract Manager
+  And I view the Requisition document from the Requisitions search
+  And I am logged in as a PURAP Contract Manager
   #mss7
-  And I retrieve the Requisition
-  And the View Related Documents Tab PO Status displays UNAPPROVED
-  #UNAPPROVED
-#  And I Select the PO
-  And the Purchase Order Number is unmasked
+  And I retrieve the Requisition document
+  And the View Related Documents Tab PO Status displays
   And I Complete Selecting Vendor 27015-0
-  #27015-0
-  And I enter a Vendor Choice
-  #LOWESt PRICE
-  And I calculate and verify the GLPE with amount 9,900.00
-  #PARM
-#  And I submit the PO eDoc Status is
-  And I submit the Purchase Order document
-  And the Purchase Order document goes to FINAL
-  #FINAL
-#PO APPROVAL OPTIONS
-#WRAP UP PROCESSES AND TESTS
-  Then In Pending Action Requests an FYI is sent to FO and Initiator
-  #jaf54 and der9
-#  And The PO eDoc Status is
-  #FINAL
-  And the Purchase Order Doc Status is Open
-  #OPEN
-
+  And I enter a Vendor Choice of 'Lowest Price'
+  And I calculate and verify the GLPE tab
+  And I submit the document
+  Then in Pending Action Requests an FYI is sent to FO and Initiator
+  And the Purchase Order document status is 'FINAL'
+  #using services getting 'error occurred sending cxml' instead of 'Open'
+#  And the Purchase Order Doc Status equals 'Open'
 
   @KFSQA-743 @purap @cornell @coral
   Scenario: PURAP E2E PO - Unapproved (PURAP E2E-003b) - vendor not selected, <$100K
-    Given I login as a KFS user to create an REQS
+    Given I login as a PURAP eSHop user
     And   I create the Requisition document with:
       | Vendor Number       |          |
       | Item Quantity       | 18       |
@@ -90,22 +70,22 @@ Scenario: Purap Preq building block 4f
     And   the Requisition document goes to FINAL
     And   I am logged in as a Purchasing Processor
     And   I submit a Contract Manager Assignment of '10' for the Requisition
-    And   I am logged in as a Contract Manager
-    And   I retrieve the Requisition
-    And   the View Related Documents Tab PO Status displays UNAPPROVED
+    And I am logged in as a PURAP Contract Manager
+    And I retrieve the Requisition document
+    And   the View Related Documents Tab PO Status displays
     And   the Purchase Order Number is unmasked
     And   I Complete Selecting Vendor 27015-0
-    And   I enter a Vendor Choice
-    And   I calculate and verify the GLPE with amount 18,000.00
+    And I enter a Vendor Choice of 'Lowest Price'
+    And I calculate and verify the GLPE tab
     And   I submit the Purchase Order document
     And   the Purchase Order document goes to FINAL
-    Then  In Pending Action Requests an FYI is sent to FO and Initiator
+    Then  in Pending Action Requests an FYI is sent to FO and Initiator
     And   the Purchase Order Doc Status is Open
 
 
   @KFSQA-763 @E2E @MultiDay @PO @PREQ @REQS @Routing @PO @auto-approve-preq-job @cornell @coral @wip
   Scenario: PURAP E2E-004a PREQ - Manual Entry, >$500 Auto Approve
-    Given I login as a KFS user to create an REQS
+    Given I login as a PURAP eSHop user
     And I create the Requisition document with:
       | Item Quantity       | 4.9      |
       | Item Cost           | 1000     |
@@ -126,16 +106,16 @@ Scenario: Purap Preq building block 4f
     And the Requisition document goes to FINAL
     And I am logged in as a Purchasing Processor
     And I submit a Contract Manager Assignment of '10' for the Requisition
-    And I am logged in as a Contract Manager
-    And I retrieve the Requisition
-    And the View Related Documents Tab PO Status displays UNAPPROVED
+    And I am logged in as a PURAP Contract Manager
+    And I retrieve the Requisition document
+    And the View Related Documents Tab PO Status displays
     And the Purchase Order Number is unmasked
     And I Complete Selecting Vendor 27015-0
-    And I enter a Vendor Choice
+    And I enter a Vendor Choice of 'Lowest Price'
     And I calculate and verify the GLPE with amount 4,900.00
     And I submit the Purchase Order document
     And the Purchase Order document goes to FINAL
-    Then In Pending Action Requests an FYI is sent to FO and Initiator
+    Then in Pending Action Requests an FYI is sent to FO and Initiator
     And the Purchase Order Doc Status is Open
     Given I am logged in as "db18"
     And   I visit the "e-SHOP" page
@@ -152,36 +132,8 @@ Scenario: Purap Preq building block 4f
     And   I calculate PREQ
     And   I submit the Payment Request document
     And   the Payment Request document goes to ENROUTE
-    Given I am logged in as a KFS Operator
+    Given I am logged in as a KFS Operations
     And   I run Auto Approve PREQ
     Given I login as a Accounts Payable Processor to create a PREQ
     And   the Payment Request document goes to FINAL
-    And the Payment Request Doc Status is Auto-Approved
-#
-#  @pending @wip
-#Scenario: I make a page object the quick way
-#   Given I am logged in as "mss7"
-#   When I visit the "Purchase Orders" page
-#    And I select the purchase order '319358' with the doc id '5210590'
-##   And I sleep for 10
-#   And I print out all "field" on the page
-#   And I print out all "textarea" on the page
-#   And I print out all "button" on the page
-#   And I print out all "select" on the page
-#   And I print out all "checkbox" on the page
-#   And I print out all "radio" on the page
-#
-#  @pending @wip
-#  Scenario: I make a page object without frames the quick way
-#    Given I am logged in as "mss7"
-#    When I visit the "Purchase Orders" page
-#    And I select the purchase order '319351' with the doc id '5210590'
-##   And I sleep for 10
-#    And I print out all "field" on the page without frame
-#    And I print out all "textarea" on the page without frame
-#    And I print out all "button" on the page without frame
-#    And I print out all "select" on the page without frame
-#    And I print out all "checkbox" on the page without frame
-#    And I print out all "radio" on the page without frame
-#
-
+    And   the Payment Request Doc Status is Auto-Approved
