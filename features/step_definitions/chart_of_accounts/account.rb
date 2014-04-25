@@ -256,6 +256,7 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
       page.chart_code.fit     'IT'
       page.account_number.fit account_number unless account_number.nil?
       page.search
+      page.wait_for_search_results
       page.copy_random
     end
     on AccountPage do |page|
