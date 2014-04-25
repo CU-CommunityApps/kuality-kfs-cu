@@ -61,32 +61,31 @@ And(/^I print out all "(field|textarea|button|select|checkbox|radio|link)" on th
       when 'field'
         puts '#TEXT FIELDS '
         page.text_fields.each { |t| puts 'element(:' + t.name.to_s.gsub(/([a-z])([A-Z])/ , '\1_\2').downcase + ') { |b| b.text_field(name: \'' + t.name.to_s + '\') }' "\n" }
-      #puts ' '
+        #puts ' '
       when 'field'
         puts '#TEXT AREA '
         page.textareas.each { |t| puts 'element(:' + t.name.gsub(/([a-z])([A-Z])/ , '\1_\2').downcase + ') { |b| b.textarea(name: \'' + t.name.to_s + '\') }' "\n" }
-      #puts ' '
+        #puts ' '
       when 'button'
         puts '#BUTTONS'
         page.buttons.each { |t| puts 'action(:'+ t.title.to_s.downcase.gsub(' ', '_').gsub('-','_').gsub('#','number') + ') { |b| b.button(title: \'' + t.title.to_s + '\').click }' "\n" }
-      #puts ' '
+        #puts ' '
       when 'select'
         puts '#SELECT'
         page.select_lists.each { |t| puts 'element(:' + t.name.to_s.gsub(/([a-z])([A-Z])/ , '\1_\2').downcase + ') { |b| b.select(name: \''+t.name.to_s+'\') }' }
-      #puts ' '
+        #puts ' '
       when 'checkbox'
         puts '#CHECKBOX'
         page.checkboxes.each { |t| puts 'element(:' + t.name.to_s.gsub(/([a-z])([A-Z])/ , '\1_\2').downcase + ') { |b| b.checkbox(name: \''+t.name.to_s+'\') }' }
-      #puts ' '
+        #puts ' '
       when 'radio'
         puts '#RADIO'
         page.radios.each { |t| puts 'element(:' + t.id.to_s.gsub(/([a-z])([A-Z])/ , '\1_\2').downcase + ') { |b| b.radio(id: \''+t.id.to_s+'\') }' "\n"}
-      #puts ' '
+        #puts ' '
       when 'link'
         puts '#LINK'
         page.links.each { |t| puts 'element(:' + t.text.to_s.gsub(/([a-z])([A-Z])/ , '\1_\2').downcase + ') { |b| b.link(text: \''+t.text.to_s+'\') }' }
-      #puts ' '
+        #puts ' '
     end
   end
 end #print all
-

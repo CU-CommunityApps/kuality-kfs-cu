@@ -13,5 +13,4 @@ test.feature
 *test_spec.rb
 *screenshot*.png
 Gemfile.lock
-client-sign.properties
-features/support/client-sign.properties
+**/client-sign.properties
