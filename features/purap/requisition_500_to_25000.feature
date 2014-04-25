@@ -75,7 +75,7 @@ Scenario: PURAP manual >$500, <$25000 external vendor no wire
     And the View Related Documents Tab PO Status displays
     And the Purchase Order Number is unmasked
     And I Complete Selecting Vendor 27015-0
-    And I enter a Vendor Choice
+    And I enter a Vendor Choice of 'Lowest Price'
     And I calculate and verify the GLPE tab
     And I submit the document
     And the Purchase Order document status is 'FINAL'
