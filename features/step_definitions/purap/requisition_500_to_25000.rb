@@ -1,50 +1,84 @@
-  Given /^I am logged in as a Purchasing Processor$/ do
-    visit(BackdoorLoginPage).login_as('ml284') #TODO get from role service
+And /^I create the Requisition document with:$/  do |table|
+  updates = table.rows_hash
+  @requisition = create RequisitionObject, payment_request_positive_approval_required: updates['payment request'],
+                        payment_request_positive_approval_required: updates['payment request'],
+                        vendor_number:        updates['Vendor Number'],
+                        item_quantity:        updates['Item Quantity'],
+                        item_unit_cost:       updates['Item Cost'],
+                        item_commodity_code:  updates['Item Commodity Code'],
+                        item_account_number:  updates['Account Number'],
+                        item_catalog_number:  updates['Item Catalog Number'],
+                        item_description:     updates['Item Description'].nil? ? random_alphanums(15, 'AFT') : updates['Item Description'],
+                        item_object_code:     updates['Object Code'],
+                        item_percent:         updates['Percent']
+
+end
+
+And /^I calculate my Requisition document$/ do
+  on(RequisitionPage).calculate
+  #need to let calculate process, no other way to verify calculate is completed
+  sleep 3
+end
+
+And /^I view the (.*) document on my action list$/ do |document|
+  visit(MainPage).action_list
+  on ActionList do |page|
+    #sort the date
+    # if previous user already clicked this sort, then action list for next user will be sorted with 'Date created'.  So, add this 'unless' check
+    page.sort_results_by('Date Created') unless page.result_item(document_object_for(document).document_id).exists?
+    page.result_item(document_object_for(document).document_id).wait_until_present
+    page.open_item(document_object_for(document).document_id)
+  end
+  if document.eql?('Requisition')
+    on RequisitionPage do |page|
+      @requisition_id = page.requisition_id
+    end
   end
 
+end
+
+And /^I view the Requisition document from the Requisitions search$/ do
+  visit(MainPage).requisitions
+  on DocumentSearch do |page|
+    page.requisition_num
+    page.search
+    page.open_item(@requisition.document_id)
+  end
+end
+
 And /^I (submit|close|cancel) a Contract Manager Assignment of '(\d+)' for the Requisition$/ do |btn, contract_manager_number|
-   visit(MainPage).contract_manager_assignment
-   on ContractManagerAssignmentPage do |page|
-    page.set_contract_manager(@requisition_number, contract_manager_number)
+  visit(MainPage).contract_manager_assignment
+  on ContractManagerAssignmentPage do |page|
+    page.set_contract_manager(@requisition_id, contract_manager_number)
     page.send(btn)
-
-    sleep 10 # need to wait a little
-   end
+  end
+  sleep 5
 end
 
-And /^I am logged in as a Contract Manager$/ do
-  visit(BackdoorLoginPage).login_as('mss7') #TODO get from role service
-  # pending # express the regexp above with the code you wish you had
-end
-
-
-And /^I retrieve the Requisition$/ do
-  # temp
-  #@requisition_number = '325401'
-  #@document_id = '5291056'
+And /^I retrieve the Requisition document$/ do
   visit(MainPage).requisitions  #remember "S" is for search
-   on DocumentSearch do |page|
-     page.document_type.set 'REQS'
-     page.requisition_number.fit @requisition_number
-     page.search
-
-     page.open_item(@document_id)
-   end
+  on DocumentSearch do |page|
+    page.document_type.set 'REQS'
+    page.requisition_num.fit @requisition_id
+    page.search
+    page.open_item(@requisition.document_id)
+  end
 end
 
-And /^the View Related Documents Tab PO Status displays (\w+)$/ do |po_status|
-    on RequisitionPage do |page|
-      page.show_related_documents
-      page.show_purchase_order
-      @purchase_order_number = page.purchase_order_number
-      # verify unmasked and 'UNAPPROVED'
-      page.purchase_order_number.should_not include '*****' # unmasked
-      page.po_unapprove.should include 'UNAPPROVED'
-      page.purchase_order_number_link
+And /^the View Related Documents Tab PO Status displays$/ do
+  on RequisitionPage do |page|
+    page.show_related_documents
+    page.show_purchase_order
+    @purchase_order_number = page.purchase_order_number
+    # verify unmasked and 'UNAPPROVED'
+    page.purchase_order_number.should_not include '*****' # unmasked
+    page.po_unapprove.should include 'UNAPPROVED'
+    #puts 'po link', page.po_unapprove
+    page.purchase_order_number_link
 
-      sleep 15
-      @purchase_order = create PurchaseOrderObject
-    end
+    sleep 10
+    @purchase_order = create PurchaseOrderObject
+  end
 
 
 end
@@ -108,7 +142,7 @@ And /^I calculate and verify the GLPE with amount (.*)$/ do |amount|
         glpe_table[2][12].text.should == 'D'
       end
     end
-   end
+  end
 end
 
 
@@ -116,23 +150,6 @@ And /^I submit the PO eDoc Status is$/ do
   pending # express the regexp above with the code you wish you had
 end
 
-
-Then /^In Pending Action Requests an FYI is sent to FO and Initiator$/ do
-  on(KFSBasePage) do |page|
-    page.expand_all
-
-    annotation_col = page.pnd_act_req_table.keyed_column_index(:annotation)
-    action_col = page.pnd_act_req_table.keyed_column_index(:action)
-    fo_row = page.pnd_act_req_table
-    .column(annotation_col)
-    .index{ |c| c.exists? && c.visible? && c.text.match(/Fiscal Officer/) }
-    initiator_row = page.pnd_act_req_table
-    .column(annotation_col)
-    .index{ |c| c.exists? && c.visible? && c.text.match(/Notification of Requisition Initiator/) }
-    page.pnd_act_req_table[fo_row][action_col].text.should include "IN ACTION LIST\nFYI"
-    page.pnd_act_req_table[initiator_row][action_col].text.should include "IN ACTION LIST\nFYI"
-  end
-end
 
 
 And(/^The PO eDoc Status is$/) do
@@ -146,65 +163,137 @@ And(/^the (.*) Doc Status is (.*)/) do |document, doc_status|
   end
 end
 
-
-
-  And /^I fill out the PREQ initiation page and continue$/ do
-    #@purchase_order_number = '296399' # temporary.  don't commit
-    visit(MainPage).payment_request
-    on(PaymentRequestInitiationPage) do |page|
-      page.purchase_order.fit @purchase_order_number
-      page.invoice_date.fit yesterday[:date_w_slashes]
-      page.invoice_number.fit rand(100000)
-      page.vendor_invoice_amount.fit @requisition.item_quantity.delete(',').to_f * @requisition.item_unit_cost.to_i
-      page.continue
-    end
-    on YesOrNoPage do |page|
-      page.yes if page.yes_button.exists?
-    end
-    sleep 10
-    @payment_request = create PaymentRequestObject
-  end
-
-  And  /^I change the Remit To Address$/ do
-    on(PaymentRequestPage) do |page|
-      page.vendor_address_1.fit "Apt1" + page.vendor_address_1.value
-    end
-  end
-  And  /^I enter the Qty Invoiced and calculate$/ do
-    on(PaymentRequestPage) do |page|
-      page.item_qty_invoiced(0).fit @requisition.item_quantity # same as REQS item qty
-      page.item_calculate(0)
-    end
-
-  end
-
-  And  /^I enter a Pay Date$/ do
-    on(PaymentRequestPage) do |page|
-      page.pay_date.fit right_now[:date_w_slashes]
+And /^I Complete Selecting a Vendor (.*)$/ do |vendor_number|
+  on (PurchaseOrderPage) do |page|
+    page.vendor_search
+    on VendorLookupPage do |vlookup|
+      vlookup.vendor_number.fit vendor_number
+      vlookup.search
+      vlookup.return_value(vendor_number)
     end
   end
 
+end
 
-  And /^I attach an Invoice Image$/ do
-    on PaymentRequestPage do |page|
-      page.note_text.fit random_alphanums(40, 'AFT-NoteText')
-      page.attachment_type.fit 'Invoice Image'
-      page.attach_notes_file.set($file_folder+@payment_request.attachment_file_name)
-      page.add_note
-      page.attach_notes_file_1.should exist #verify that note is indeed added
+And /^I enter a Vendor Choice of '(.*)'$/ do  |choice|
+  on PurchaseOrderPage do |page|
+    page.vendor_choice.fit choice
+  end
+end
 
-    end
+And /^I calculate and verify the GLPE tab$/ do
+  on PurchaseOrderPage do |page|
+    page.calculate
+    page.show_glpe
+
+    page.glpe_results_table.text.include? @requisition.item_object_code
+    page.glpe_results_table.text.include? @requisition.item_account_number
+    # credit object code should be 3110 (depends on parm)
+
+  end
+end
+
+Then /^in Pending Action Requests an FYI is sent to FO and Initiator$/ do
+  on PurchaseOrderPage do |page|
+    page.headerinfo_table.wait_until_present
+    page.expand_all
+    page.pending_action_annotation_1.include? 'Fiscal Officer'
+    page.pending_action_annotation_2.include? 'Initiator'
+  end
+end
+
+And /^the Purchase Order document status is '(.*)'$/  do  |status|
+  on PurchaseOrderPage do |page|
+    sleep 5
+    page.reload
+    page.document_status.should == status
+  end
+end
+
+And /^the Purchase Order Doc Status equals '(.*)'$/ do |po_doc_status|
+  on PurchaseOrderPage do |page|
+    #this is a different field from the document status field
+    page.po_doc_status.should == po_doc_status
+  end
+end
+
+And /^The Requisition status is '(.*)'$/ do |doc_status|
+  on RequisitionPage do |page|
+    sleep 5
+    page.reload unless page.reload_button.nil?
+    page.document_status == doc_status
+  end
+end
+
+And /^I select the purchase order '(\d+)' with the doc id '(\d+)'$/ do |req_num, doc_id|
+  on DocumentSearch do |page|
+    page.requisition_number.set req_num.to_s
+    page.search
+    page.result_item(doc_id.to_s).when_present.click
+    sleep 5
+  end
+end
+
+And /^I fill out the PREQ initiation page and continue$/ do
+  #@purchase_order_number = '296399' # temporary.  don't commit
+  visit(MainPage).payment_request
+  on(PaymentRequestInitiationPage) do |page|
+    page.purchase_order.fit @purchase_order_number
+    page.invoice_date.fit yesterday[:date_w_slashes]
+    page.invoice_number.fit rand(100000)
+    page.vendor_invoice_amount.fit @requisition.item_quantity.delete(',').to_f * @requisition.item_unit_cost.to_i
+    page.continue
+  end
+  on YesOrNoPage do |page|
+    page.yes if page.yes_button.exists?
+  end
+  sleep 10
+  @payment_request = create PaymentRequestObject
+end
+
+And  /^I change the Remit To Address$/ do
+  on(PaymentRequestPage) do |page|
+    page.vendor_address_1.fit "Apt1" + page.vendor_address_1.value
+  end
+end
+And  /^I enter the Qty Invoiced and calculate$/ do
+  on(PaymentRequestPage) do |page|
+    page.item_qty_invoiced.fit @requisition.item_quantity # same as REQS item qty
+    page.item_calculate
   end
 
-  And /^I calculate PREQ$/ do
-    on (PaymentRequestPage) do |page|
-      page.expand_all
-      page.calculate
-    end
+end
+
+And  /^I enter a Pay Date$/ do
+  on(PaymentRequestPage) do |page|
+    page.pay_date.fit right_now[:date_w_slashes]
   end
+end
 
 
-And   /^I Search Documents retrieve the PO$/ do
+And /^I attach an Invoice Image$/ do
+  on PaymentRequestPage do |page|
+    page.note_text.fit random_alphanums(40, 'AFT-NoteText')
+    page.attachment_type.fit 'Invoice Image'
+    #page.attach_notes_file.set($file_folder+@payment_request.attachment_file_name)
+    #TODO : do not commit this path this is a temporarily fix for chrome bug.
+    page.attach_notes_file.set("C:\\java\\project_wrk\\kuality-kfs-cu\\lib\\resources\\"+@payment_request.attachment_file_name)
+
+    page.add_note
+    page.attach_notes_file_1.should exist #verify that note is indeed added
+
+  end
+end
+
+And /^I calculate PREQ$/ do
+  on (PaymentRequestPage) do |page|
+    page.expand_all
+    page.calculate
+  end
+end
+
+
+And   /^I view the Purchase Order document via e-SHOP$/ do
   on ShopCatalogPage do |page|
     #page.key_words.fit 'Commidity 14111507'
     page.order_doc
@@ -225,60 +314,100 @@ And   /^I Search Documents retrieve the PO$/ do
   end
 end
 
-  And   /^the Document Status displayed '(\w+)'$/ do |doc_status|
-    on ShopCatalogPage do |page|
-      page.return_po_value(@purchase_order_number)
-      page.doc_summary[1].text.should include  'Workflow  ' + doc_status
+And   /^the Document Status displayed '(\w+)'$/ do |doc_status|
+  on ShopCatalogPage do |page|
+    page.return_po_value(@purchase_order_number)
+    page.doc_summary[1].text.should include  'Workflow  ' + doc_status
+  end
+end
+
+And   /^the Delivery Instructions displayed equals what came from the PO$/ do
+  on ShopCatalogPage do |page|
+    page.doc_po_link
+    page.doc_summary[1].text.should include "Note to Supplier\n" + @requisition.vendor_notes
+    page.doc_summary[3].text.should include "Delivery Instructions " + @requisition.delivery_instructions
+  end
+end
+
+And   /^the Attachments for Supplier came from the PO$/ do
+  on ShopCatalogPage do |page|
+    page.attachments_link
+    page.search_results[1].text.should include @requisition.attachment_file_name
+  end
+end
+
+And  /^I select the Payment Request Positive Approval Required$/ do
+  on(RequisitionPage).payment_request_positive_approval_required.set
+end
+
+Then /^I update the Tax Tab$/ do
+  on (PaymentRequestPage) do |page|
+    page.income_class_code.fit       'A - Honoraria, Prize'
+    page.federal_tax_pct.fit  '0'
+    page.state_tax_pct.fit    '0'
+    page.postal_country_code.fit     'Canada'
+  end
+end
+
+And /^I verified the GLPE on Payment Request page with the following:$/ do |table|
+
+  on(PaymentRequestPage).expand_all
+  glpe_entry = table.raw.flatten.each_slice(7).to_a
+  glpe_entry.shift # skip header row
+  glpe_entry.each do |line,account_number,object_code,balance_type,object_type,amount,dorc|
+    on (GeneralLedgerPendingEntryTab) do |gtab|
+      idx = gtab.glpe_tables.length - 1
+      glpe_table = gtab.glpe_tables[idx]
+      seq = line.to_i
+      glpe_table[seq][3].text.should == account_number
+      glpe_table[seq][5].text.should == object_code
+      glpe_table[seq][9].text.should == balance_type
+      glpe_table[seq][10].text.should == object_type
+      glpe_table[seq][11].text.should == amount
+      glpe_table[seq][12].text.strip.should == dorc
     end
   end
+end
 
-  And   /^the Delivery Instructions displayed equals what came from the PO$/ do
-    on ShopCatalogPage do |page|
-      page.doc_po_link
-      page.doc_summary[1].text.should include "Note to Supplier\n" + @requisition.vendor_notes
-      page.doc_summary[3].text.should include "Delivery Instructions " + @requisition.delivery_instructions
+And /^I add an Attachment to the Requisition document$/ do
+  on RequisitionPage do |page|
+    page.note_text.fit random_alphanums(40, 'AFT-NoteText')
+    page.send_to_vendor.fit 'Yes'
+    #page.attach_notes_file.set($file_folder+@requisition.attachment_file_name)
+    #TODO : do not commit this path this is a temporarily fix for chrome bug.
+    page.attach_notes_file.set("C:\\java\\project_wrk\\kuality-kfs-cu\\lib\\resources\\"+@requisition.attachment_file_name)
+
+    page.add_note
+    page.attach_notes_file_1.should exist #verify that note is indeed added
+
+  end
+end
+
+And /^I enter Delivery Instructions and Notes to Vendor$/ do
+  on RequisitionPage do |page|
+    page.vendor_notes.fit random_alphanums(40, 'AFT-ToVendorNote')
+    page.delivery_instructions.fit random_alphanums(40, 'AFT-DelvInst')
+    @requisition.delivery_instructions = page.delivery_instructions.value
+    @requisition.vendor_notes = page.vendor_notes.value
+  end
+end
+
+When /^I visit the "(.*)" page$/  do   |go_to_page|
+  go_to_pages = go_to_page.downcase.gsub!(' ', '_')
+  go_to_pages = go_to_page.downcase.gsub!('-', '_')
+  on(MainPage).send(go_to_pages)
+end
+
+And /^I enter Payment Information for recurring payment type (.*)$/ do |recurring_payment_type|
+  puts 'recur type',recurring_payment_type
+  unless recurring_payment_type.empty?
+    on RequisitionPage do |page|
+      page.recurring_payment_type.fit recurring_payment_type
+      page.payment_from_date.fit right_now[:date_w_slashes]
+      page.payment_to_date.fit next_year[:date_w_slashes]
     end
   end
-
-  And   /^the Attachments for Supplier came from the PO$/ do
-    on ShopCatalogPage do |page|
-      page.attachments_link
-      page.search_results[1].text.should include @requisition.attachment_file_name
-    end
-  end
-
-  And  /^I select the Payment Request Positive Approval Required$/ do
-    on(RequisitionPage).payment_request_positive_approval_required.set
-  end
-
-  Then /^I update the Tax Tab$/ do
-    on (PaymentRequestPage) do |page|
-      page.income_class_code.fit       'A - Honoraria, Prize'
-      page.federal_tax_pct.fit  '0'
-      page.state_tax_pct.fit    '0'
-      page.postal_country_code.fit     'Canada'
-    end
-  end
-
-  And /^I verified the GLPE on Payment Request page with the following:$/ do |table|
-
-    on(PaymentRequestPage).expand_all
-    glpe_entry = table.raw.flatten.each_slice(7).to_a
-    glpe_entry.shift # skip header row
-    glpe_entry.each do |line,account_number,object_code,balance_type,object_type,amount,dorc|
-      on (GeneralLedgerPendingEntryTab) do |gtab|
-        idx = gtab.glpe_tables.length - 1
-        glpe_table = gtab.glpe_tables[idx]
-        seq = line.to_i
-        glpe_table[seq][3].text.should == account_number
-        glpe_table[seq][5].text.should == object_code
-        glpe_table[seq][9].text.should == balance_type
-        glpe_table[seq][10].text.should == object_type
-        glpe_table[seq][11].text.should == amount
-        glpe_table[seq][12].text.strip.should == dorc
-      end
-    end
-  end
+end
 
   Then /^the Payment Request document's GLPE tab shows the Requisition document submissions$/ do
     on PaymentRequestPage do |page|
@@ -290,17 +419,3 @@ end
 
     end
   end
-
-  #And /^I retrieve the Payment Request$/ do
-  #  # temp
-  #  #@requisition_number = '325401'
-  #  @document_id = '5296314'
-  #  visit(MainPage).requisitions  #remember "S" is for search
-  #  on DocumentSearch do |page|
-  #    page.document_type.set 'PREQ'
-  #    page.requisition_number.fit '404075'
-  #    page.search
-  #
-  #    page.open_item(@document_id)
-  #  end
-  #end
