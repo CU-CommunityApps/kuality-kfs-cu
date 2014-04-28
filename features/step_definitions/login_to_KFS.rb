@@ -2,8 +2,16 @@ Given /^I am logged in as a KFS Technical Administrator$/ do
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Technical Administrator'))
 end
 
+Given /^I am logged in as a KFS Operations$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Operations'))
+end
+
 Given /^I am logged in as a Vendor Reviewer$/ do
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-VND', 'Reviewer'))
+end
+
+Given /^I am logged in as a Vendor Initiator$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-VND', 'CU Vendor Initiator'))
 end
 
 Given /^I am logged in as a KFS Fiscal Officer$/ do
@@ -128,7 +136,6 @@ Then /^I switch to the user with the next Pending Action in the Route Log for th
 
   step "I am logged in as \"#{new_user}\""
 end
-
 
 Given /^I am logged in as a Disbursement Manager$/ do
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-FP', 'Disbursement Manager'))

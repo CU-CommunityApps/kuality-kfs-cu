@@ -11,6 +11,11 @@ And /^I enter text into the Note Text field of the (.*) document$/ do |document|
   document_object_for(document).notes_and_attachments_tab.add note_text: new_text, immediate_add: false
 end
 
+And /^I add note '(.*)' to the (.*) document$/ do |note_text, document|
+  on(KFSBasePage).note_text.fit note_text
+  document_object_for(document).notes_and_attachments_tab.add note_text: note_text, immediate_add: true
+end
+
 When /^I attach a file to the Notes and Attachments Tab line of the (.*) document$/ do |document|
   document_object_for(document).notes_and_attachments_tab
                                .first

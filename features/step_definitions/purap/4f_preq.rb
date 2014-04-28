@@ -44,6 +44,7 @@ And /^I enter Delivery Instructions and Notes to Vendor$/ do
 end
 
 And /^I add an Attachment to the Requisition document$/ do
+  warn 'Step "I add an Attachment to the Requisition document" should be revised to use NotesAndAttachmentsLineObject, etc.' # FIXME
   on RequisitionPage do |page|
     page.note_text.fit random_alphanums(40, 'AFT-NoteText')
     page.send_to_vendor.fit 'Yes'

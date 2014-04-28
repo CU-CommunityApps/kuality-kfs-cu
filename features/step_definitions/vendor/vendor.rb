@@ -148,14 +148,6 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|eShop) Ven
 
 end
 
-And /^I add an Attachment to the Vendor document$/ do
-  on VendorPage do |page|
-    page.note_text.fit  random_alphanums(20, 'AFT')
-    page.attach_notes_file.set($file_folder+@vendor.attachment_file_name)
-    page.add_note
-
-  end
-end
 And /^I add a Contract to the Vendor document$/ do
   on VendorPage do |page|
     page.contract_po_limit.fit @vendor.contract_po_limit
@@ -168,6 +160,7 @@ And /^I add a Contract to the Vendor document$/ do
     page.contract_manager_code.fit @vendor.contract_manager_code
     page.b2b_contract_indicator.fit @vendor.b2b_contract_indicator
     page.vendor_pmt_terms_code.fit @vendor.vendor_pmt_terms_code
+    pending
 
     page.add_vendor_contract
     page.contract_name_1.should exist #verify that contract is indeed added
@@ -194,6 +187,9 @@ And /^I edit a Vendor with Vendor Number (.*)$/ do |vendor_number|
   on VendorPage do |page|
     page.description.fit random_alphanums(40, 'AFT')
     @vendor = make VendorObject
+    @vendor.phone_numbers.update_from_page!
+    puts @vendor.inspect
+    pending
     @vendor.document_id = page.document_id
     @document_id = page.document_id
   end
@@ -311,7 +307,7 @@ When /^I (#{BasePage::available_buttons}) the Vendor document with expired liabi
 end
 
 When /^I close and save the Vendor document$/ do
-  on (VendorPage) {|page| page.close}
+  on(VendorPage).close
   on(YesOrNoPage).yes
 end
 
@@ -324,7 +320,6 @@ And /^the changes to Vendor document have persisted$/ do
     end
   end
 end
-
 
 And /^I create a DV Vendor$/  do
   @vendor = create VendorObject,
@@ -361,7 +356,7 @@ And /^I can not view the Tax ID and Attachments on Vendor page$/ do
 end
 
 And /^I enter a default payment method (\w+) on Vendor Page$/ do |payment_method|
-  on (VendorPage) {|page|  page.default_payment_method.fit  payment_method}
+  on(VendorPage).default_payment_method.fit payment_method
 end
 
 And /^the Address changes persist$/ do
