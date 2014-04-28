@@ -1,9 +1,10 @@
 When /^I start an empty Vendor document$/ do
   @vendor = create VendorObject
-
 end
 
 When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|eShop) Vendor( with )?(.*)?$/ do |ownership_type, sub_type, with_1, tab_1|
+  default_fields = Hash.new
+  new_address = Hash.new
   case ownership_type
     when 'Corporation'
       case sub_type
@@ -15,17 +16,19 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|eShop) Ven
               tax_number_type_ssn:        nil,
               tax_number_type_fein:       :set,
               ownership:                  'CORPORATION',
-              address_type:               'PO - PURCHASE ORDER',
-              address_1:                  'PO Box 5466',
-              address_2:                  '(127 Matt Street)',
-              city:                       'Hanover',
-              state:                      'MA',
-              zipcode:                    '02359',
-              country:                    'United States',
-              method_of_po_transmission:  'US MAIL',
               supplier_diversity:         'VETERAN OWNED',
               supplier_diversity_expiration_date: '09/10/2015',
               attachment_file_name:       'vendor_attachment_test.png',
+          }
+          new_address = {
+              type:                      'PO - PURCHASE ORDER',
+              address_1:                 'PO Box 5466',
+              address_2:                 '(127 Matt Street)',
+              city:                      'Hanover',
+              state:                     'MA',
+              zipcode:                   '02359',
+              country:                   'United States',
+              method_of_po_transmission:  'US MAIL'
           }
         when 'Non-Foreign'
           case tab_1
@@ -39,14 +42,6 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|eShop) Ven
                   ownership:                  'CORPORATION',
                   w9_received:                'Yes',
                   w9_received_date:           '02/01/2014',
-                  address_type:               'PO - PURCHASE ORDER',
-                  address_1:                  'PO Box 54777',
-                  address_2:                  '(127 Matt Street)',
-                  city:                       'Hanover',
-                  state:                      'MA',
-                  zipcode:                    '02359',
-                  country:                    'United States',
-                  method_of_po_transmission:  'US MAIL',
                   supplier_diversity:         'VETERAN OWNED',
                   supplier_diversity_expiration_date: '09/10/2015',
                   attachment_file_name:       'vendor_attachment_test.png',
@@ -63,6 +58,16 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|eShop) Ven
                   insurance_requirements_complete:      'Yes',
                   cornell_additional_ins_ind:           'Yes'
               }
+              new_address = {
+                  type:                      'PO - PURCHASE ORDER',
+                  address_1:                 'PO Box 54777',
+                  address_2:                 '(127 Matt Street)',
+                  city:                      'Hanover',
+                  state:                     'MA',
+                  zipcode:                   '02359',
+                  country:                   'United States',
+                  method_of_po_transmission:  'US MAIL'
+              }
             when 'Contract' #KFSQA-636
               default_fields = {
                   vendor_type:                'PO - PURCHASE ORDER',
@@ -73,14 +78,6 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|eShop) Ven
                   ownership:                  'CORPORATION',
                   w9_received:                'Yes',
                   w9_received_date:           '02/01/2014',
-                  address_type:               'PO - PURCHASE ORDER',
-                  address_1:                  'PO Box 54777',
-                  address_2:                  '25 Boylston St.',
-                  city:                       'Boston',
-                  state:                      'MA',
-                  zipcode:                    '02359',
-                  country:                    'United States',
-                  method_of_po_transmission:  'US MAIL',
                   supplier_diversity:         'VETERAN OWNED',
                   supplier_diversity_expiration_date: '09/10/2015',
                   attachment_file_name:       'vendor_attachment_test.png',
@@ -94,6 +91,16 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|eShop) Ven
                   b2b_contract_indicator:     'No',
                   vendor_pmt_terms_code:      'Net 5 Days',
               }
+              new_address = {
+                  type:                      'PO - PURCHASE ORDER',
+                  address_1:                 'PO Box 54777',
+                  address_2:                 '25 Boylston St.',
+                  city:                      'Boston',
+                  state:                     'MA',
+                  zipcode:                   '02359',
+                  country:                   'United States',
+                  method_of_po_transmission:  'US MAIL'
+              }
 
           end
         when 'eShop'  # KFSQA-633
@@ -105,17 +112,19 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|eShop) Ven
               ownership:                  'CORPORATION',
               w9_received:                'Yes',
               w9_received_date:           '02/01/2014',
-              address_type:               'PO - PURCHASE ORDER',
-              address_1:                  'PO Box 63RF',
-              address_2:                  '(127 Matt and Dave Street)	',
-              city:                       'Hanover',
-              state:                      'MA',
-              zipcode:                    '02359',
-              country:                    'United States',
-              method_of_po_transmission:  'US MAIL',
               supplier_diversity:         'VETERAN OWNED',
               supplier_diversity_expiration_date: '09/10/2015',
               attachment_file_name:       'vendor_attachment_test.png',
+          }
+          new_address = {
+              type:                      'PO - PURCHASE ORDER',
+              address_1:                 'PO Box 63RF',
+              address_2:                 '(127 Matt and Dave Street)	',
+              city:                      'Hanover',
+              state:                     'MA',
+              zipcode:                   '02359',
+              country:                   'United States',
+              method_of_po_transmission:  'US MAIL'
           }
       end
     when 'Individual'
@@ -127,24 +136,31 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|eShop) Ven
                   vendor_type:                'PO - PURCHASE ORDER',
                   vendor_name:                'Ron McKernan Enterprises',
                   foreign:                    'No',
-                  address_type:               'PO - PURCHASE ORDER',
-                  address_1:                  '66 Sunset Blvd',
-                  address_2:                  '(127 Walkway)',
-                  city:                       'Hollywood',
-                  state:                      'CA',
-                  zipcode:                    '91190',
-                  country:                    'United States',
-                  method_of_po_transmission:  'US MAIL',
                   supplier_diversity:         'HUBZONE',
                   supplier_diversity_expiration_date: '09/10/2015',
                   attachment_file_name:       'vendor_attachment_test.png',
                   insurance_requirements_complete:      'Yes',
                   cornell_additional_ins_ind:           'Yes'
               }
+              new_address = {
+                  type:                      'PO - PURCHASE ORDER',
+                  address_1:                 '66 Sunset Blvd',
+                  address_2:                 '(127 Walkway)',
+                  city:                      'Hollywood',
+                  state:                     'CA',
+                  zipcode:                   '91190',
+                  country:                   'United States',
+                  method_of_po_transmission:  'US MAIL'
+              }
           end
       end
   end
   @vendor = create VendorObject, default_fields
+  if @vendor.addresses.length.zero?
+    @vendor.addresses.add new_address
+  else
+    @vendor.addresses.first.edit new_address
+  end
 
 end
 
@@ -186,12 +202,10 @@ And /^I edit a Vendor with Vendor Number (.*)$/ do |vendor_number|
   end
   on VendorPage do |page|
     page.description.fit random_alphanums(40, 'AFT')
-    @vendor = make VendorObject
-    @vendor.phone_numbers.update_from_page!
-    puts @vendor.inspect
-    pending
-    @vendor.document_id = page.document_id
-    @document_id = page.document_id
+    @vendor = make VendorObject, description: page.description.text.strip,
+                                 document_id: page.document_id
+    @vendor.update_line_objects_from_page!
+    @document_id = @vendor.document_id
   end
 end
 
@@ -205,46 +219,44 @@ end
 
 And /^I change the Phone (\w+) on Vendor Phone tab$/ do |phone_field|
   on VendorPage do |page|
-    @changed_addr_phone = {} unless !@changed_addr_phone.nil?
+    @changed_addr_phone = {} if @changed_addr_phone.nil?
     page.expand_all
     if page.updated_phone_number.exists?
       case phone_field
         when 'Number'
-          page.updated_phone_number.fit "607-#{rand(100..999)}-#{rand(1000..9999)}"
-          @changed_addr_phone.merge!(updated_phone_number: page.updated_phone_number.value)
+          @vendor.phone_numbers.first.edit number: "607-#{rand(100..999)}-#{rand(1000..9999)}"
+          @changed_addr_phone.merge!(updated_phone_number: @vendor.phone_numbers.first.number)
         when 'Extension'
-          page.updated_phone_ext.fit rand(100..999)
-          @changed_addr_phone.merge!(updated_phone_ext: page.updated_phone_ext.value)
+          @vendor.phone_numbers.first.edit extension: rand(100..999)
+          @changed_addr_phone.merge!(updated_phone_ext: @vendor.phone_numbers.first.extension)
         when 'Type'
-          page.updated_phone_type.fit 'MOBILE'
-          @changed_addr_phone.merge!(updated_phone_type: page.updated_phone_type.value)
+          @vendor.phone_numbers.first.edit type: 'MOBILE'
+          @changed_addr_phone.merge!(updated_phone_type: @vendor.phone_numbers.first.type)
       end
     else
-      page.phone_number.fit "607-#{rand(100..999)}-#{rand(1000..9999)}"
-      page.phone_type.fit 'SALES'
-      page.add_phone_number
-      @changed_addr_phone.merge!(updated_phone_type: page.updated_phone_type.value, updated_phone_number: page.updated_phone_number.value)
+      @vendor.phone_numbers.add number: "607-#{rand(100..999)}-#{rand(1000..9999)}", type: 'SALES'
+      @changed_addr_phone.merge!(updated_phone_type: @vendor.phone_numbers.first.type, updated_phone_number: @vendor.phone_numbers.first.number)
     end
   end
 end
 
 And /^I change the Address (\w+) ?(\w)? on Vendor Address tab$/ do |address_field_1, address_field_2|
   on VendorPage do |page|
-    @changed_addr_phone = {} unless !@changed_addr_phone.nil?
+    @changed_addr_phone = {} if @changed_addr_phone.nil?
 
     case address_field_1
       when 'Line'
         case address_field_2
           when '1'
-            page.updated_address_1.fit random_alphanums(30, 'AFT')
-            @changed_addr_phone.merge!(updated_address_1: page.updated_address_1.value)
+            @vendor.addresses.first.edit address_1: random_alphanums(30, 'AFT')
+            @changed_addr_phone.merge!(updated_address_1: @vendor.addresses.first.address_1)
           when '2'
-            page.updated_address_2.fit random_alphanums(30, 'AFT')
-            @changed_addr_phone.merge!(updated_address_2: page.updated_address_2.value)
+            @vendor.addresses.first.edit address_2: random_alphanums(30, 'AFT')
+            @changed_addr_phone.merge!(updated_address_2: @vendor.addresses.first.address_2)
         end
       when 'Attention'
-        page.updated_address_attention.fit random_alphanums(20, 'AFT')
-        @changed_addr_phone.merge!(updated_address_attention: page.updated_address_attention.value)
+        @vendor.addresses.first.edit attention: random_alphanums(20, 'AFT')
+        @changed_addr_phone.merge!(updated_address_attention: @vendor.addresses.first.attention)
     end
   end
 end
@@ -258,30 +270,33 @@ end
 And /^the Address and Phone Number changes persist$/ do
   on VendorPage do |page|
     page.expand_all
-    page.updated_address_1.value.should == @changed_addr_phone[:updated_address_1]
-    page.updated_phone_type.value.should == @changed_addr_phone[:updated_phone_type] unless @changed_addr_phone[:updated_phone_type].nil?
-    page.updated_address_2.value.should == @changed_addr_phone[:updated_address_2] unless @changed_addr_phone[:updated_address_2].nil?
-    page.updated_phone_number.value.should == @changed_addr_phone[:updated_phone_number]
-    page.updated_address_attention.value.should == @changed_addr_phone[:updated_address_attention] unless @changed_addr_phone[:updated_address_attention].nil?
-    page.updated_phone_ext.value.should == @changed_addr_phone[:updated_phone_ext] unless @changed_addr_phone[:updated_phone_ext].nil?
+    page.updated_address_1.text.strip.should == @changed_addr_phone[:updated_address_1]
+    page.updated_phone_type.selected_options.first.text.should == @changed_addr_phone[:updated_phone_type] unless @changed_addr_phone[:updated_phone_type].nil?
+    page.updated_address_2.text.strip.should == @changed_addr_phone[:updated_address_2] unless @changed_addr_phone[:updated_address_2].nil?
+    page.updated_phone_number.text.strip.should == @changed_addr_phone[:updated_phone_number]
+    page.updated_address_attention.text.strip.should == @changed_addr_phone[:updated_address_attention] unless @changed_addr_phone[:updated_address_attention].nil?
+    page.updated_phone_ext.text.should == @changed_addr_phone[:updated_phone_ext] unless @changed_addr_phone[:updated_phone_ext].nil?
   end
 end
 
 And /^I add an Address to a Vendor with following fields:$/ do |table|
   vendor_address = table.rows_hash
   vendor_address.delete_if { |k,v| v.empty? }
-  on VendorPage do |page|
-    page.expand_all
-    page.address_type.fit vendor_address['Address Type']
-    page.address_1.fit vendor_address['Address 1']
-    page.address_2.fit random_alphanums(30, 'Grntd') # new address indicator ? better way to do it ?
-    @vendor.address_2 = page.address_2.value
-    page.default_address.fit 'No'
-    page.city.fit vendor_address['City']
-    page.zipcode.fit vendor_address['Zip Code']
-    page.country.fit vendor_address['Country']
-    page.add_address
-  end
+  @vendor.addresses.add type:        vendor_address['Address Type'],
+                        address_1:   vendor_address['Address 1'],
+                        address_2:   vendor_address['Address 2'],
+                        city:        vendor_address['City'],
+                        state:       vendor_address['State'],
+                        postal_code: vendor_address['Postal Code'],
+                        province:  vendor_address['Province'],
+                        country:   vendor_address['Country'],
+                        attention: vendor_address['Attention'],
+                        url:    vendor_address['URL'],
+                        fax:    vendor_address['Fax'],
+                        email:  vendor_address['Email'],
+                        active: yesno2setclear(vendor_address['Active']),
+                        set_as_default: vendor_address['Set As Default?'],
+                        method_of_po_transmission: vendor_address['Set As Default?']
 end
 
 And /^I update the General Liability with expired date$/ do
@@ -334,18 +349,26 @@ And /^I create a DV Vendor$/  do
                    ownership:                  'CORPORATION',
                    w9_received:                'Yes',
                    w9_received_date:           yesterday[:date_w_slashes],
-                   address_type:               'RM - REMIT',
-                   address_1:                  'PO Box 54777',
-                   address_2:                  '(127 Matt Street)',
-                   city:                       'Hanover',
-                   state:                      'MA',
-                   zipcode:                    '02359',
-                   country:                    'United States',
-                   default_address:            'Yes',
-                   method_of_po_transmission:  nil,
                    supplier_diversity:         'HUBZONE',
                    supplier_diversity_expiration_date: tomorrow[:date_w_slashes],
                    attachment_file_name:       'vendor_edit_attachment_2.png'
+  new_address = {
+    type:                      'RM - REMIT',
+    address_1:                 'PO Box 54777',
+    address_2:                 '(127 Matt Street)',
+    city:                      'Hanover',
+    state:                     'MA',
+    zipcode:                   '02359',
+    country:                   'United States',
+    set_as_default:            'Yes',
+    method_of_po_transmission: ''
+  }
+  if @vendor.addresses.length.zero?
+    @vendor.addresses.add new_address
+  else
+    @vendor.addresses.first.edit new_address
+  end
+
 end
 
 And /^I can not view the Tax ID and Attachments on Vendor page$/ do
@@ -356,6 +379,7 @@ And /^I can not view the Tax ID and Attachments on Vendor page$/ do
 end
 
 And /^I enter a default payment method (\w+) on Vendor Page$/ do |payment_method|
+  @vendor.default_payment_method = payment_method
   on(VendorPage).default_payment_method.fit payment_method
 end
 
@@ -369,11 +393,13 @@ end
 
 And /^I change Remit Address and the Foreign Tax Address$/ do
   on VendorPage do |page|
-    @changed_addr = {} unless !@changed_addr.nil?
-    page.updated_address_1.fit random_alphanums(30, 'AFT')
-    @changed_addr.merge!(updated_address_1: page.updated_address_1.value)
-    page.updated_2nd_address_2.fit random_alphanums(30, 'AFT')
-    @changed_addr.merge!(updated_2nd_address_2: page.updated_2nd_address_2.value)
+    @changed_addr = {} if @changed_addr.nil?
+
+    @vendor.addresses.first.edit address_1: random_alphanums(30, 'AFT')
+    @changed_addr.merge!(updated_address_1: @vendor.addresses.first.address_1)
+
+    @vendor.addresses.first.edit address_2: random_alphanums(30, 'AFT')
+    @changed_addr.merge!(updated_2nd_address_2: @vendor.addresses.first.address_2)
   end
 end
 
@@ -386,11 +412,11 @@ And /^I edit a random PO Vendor$/ do
   end
   on VendorPage do |page|
     page.description.fit random_alphanums(40, 'AFT')
-    @vendor = make VendorObject
-    @vendor.document_id = page.document_id
-    @document_id = page.document_id
+    @vendor = make VendorObject, description: page.description.text.strip,
+                                 document_id: page.document_id
+    @vendor.update_line_objects_from_page!
+    @document_id = @vendor.document_id
   end
-  puts @vendor.inspect
 end
 
 And /^I add a new Supplier Diversity to the Vendor document$/ do

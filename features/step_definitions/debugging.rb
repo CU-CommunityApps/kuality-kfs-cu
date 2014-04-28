@@ -13,6 +13,10 @@ And /^I stop here$/ do
   pending
 end
 
+And /^I inspect the (.*) document$/ do |document|
+  puts document_object_for(document).inspect
+end
+
 And(/^I print out all "(field|button|select|checkbox|radio|link)" on the page$/) do |item_type|
   # For page object creation
   on MainPage do |page|
