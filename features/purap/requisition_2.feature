@@ -10,7 +10,7 @@ Feature: Purap REQS 2 Building Blocks
 
   [KFSQA-738] PURAP E2E REQS - Create -- non eShop- with Recurring Payment, C&G, not Commodity
 
-  @KFSQA-733 @purap @cornell @tortoise
+  @KFSQA-733 @E2E @PURAP @REQS @cornell @tortoise
   Scenario: Create -- non eShop with C&G, Commodity routing
     Given I login as a KFS user to create an REQS
     And   I create the Requisition document with:
@@ -44,7 +44,7 @@ Feature: Purap REQS 2 Building Blocks
     And   I approve the Requisition document
     Then  the Requisition document goes to FINAL
 
-  @KFSQA-734 @KFSQA-735 @purap @cornell @slug
+  @KFSQA-734 @KFSQA-735 @E2E @PURAP @REQS @cornell @slug
   Scenario Outline: Create -- non eShop with not C&G amount or account , Commodity routing
     Given I login as a KFS user to create an REQS
     And   I create the Requisition document with:
@@ -77,7 +77,7 @@ Feature: Purap REQS 2 Building Blocks
       | 1278003           | 6570        | 4.9           |
       | R589854           | 6540        | 7.5           |
 
-  @KFSQA-737 @KFSQA-738 @purap @cornell @slug
+  @KFSQA-737 @KFSQA-738 @E2E @PURAP @REQS @RecurringOrder @cornell @slug
   Scenario Outline: Create -- non eShop - recurring payment, C&G account, not Commodity
     Given I login as a KFS user to create an REQS
     And   I create the Requisition document with:
