@@ -20,7 +20,7 @@ Feature: Purap Preq Building Blocks
     And I enter Delivery Instructions and Notes to Vendor
     And I calculate my Requisition document
     And I submit the Requisition document
-    And the requisition document goes to ENROUTE
+    And the Requisition document goes to ENROUTE
     And I switch to the user with the next Pending Action in the Route Log for the Requisition document
     And I view the Requisition document on my action list
     And I approve the Requisition document
@@ -80,7 +80,7 @@ Feature: Purap Preq Building Blocks
     And   I enter Delivery Instructions and Notes to Vendor
     And   I calculate my Requisition document
     And   I submit the Requisition document
-    And   the requisition document goes to ENROUTE
+    And   the Requisition document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
     And   I view the Requisition document on my action list
     And   I approve the Requisition document

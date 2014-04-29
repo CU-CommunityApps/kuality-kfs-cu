@@ -24,7 +24,7 @@ Scenario: PURAP manual >$500, <$25000 external vendor no wire
    | Percent             | 100      |
   And I calculate my Requisition document
   And I submit the Requisition document
-  And the requisition document goes to ENROUTE
+  And the Requisition document goes to ENROUTE
   And I switch to the user with the next Pending Action in the Route Log for the Requisition document
   And I view the Requisition document on my action list
   And I approve the Requisition document
@@ -64,7 +64,7 @@ Scenario: PURAP manual >$500, <$25000 external vendor no wire
     And   I enter Delivery Instructions and Notes to Vendor
     And   I calculate my Requisition document
     And   I submit the Requisition document
-    And   the requisition document goes to ENROUTE
+    And   the Requisition document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
     And   I view the Requisition document on my action list
     And   I approve the Requisition document
@@ -161,11 +161,11 @@ Scenario: PURAP manual >$500, <$25000 external vendor no wire
     And I enter Delivery Instructions and Notes to Vendor
     And I calculate my Requisition document
     And I submit the Requisition document
-    And the requisition document goes to ENROUTE
+    And the Requisition document goes to ENROUTE
     And I switch to the user with the next Pending Action in the Route Log for the Requisition document
     And I view the Requisition document on my action list
     And I approve the Requisition document
-    And the requisition document goes to ENROUTE
+    And the Requisition document goes to ENROUTE
     # commodity reviewer
     And I switch to the user with the next Pending Action in the Route Log for the Requisition document
     And I view the Requisition document on my action list
@@ -230,11 +230,11 @@ Scenario: PURAP manual >$500, <$25000 external vendor no wire
     And I enter Delivery Instructions and Notes to Vendor
     And I calculate my Requisition document
     And I submit the Requisition document
-    And the requisition document goes to ENROUTE
+    And the Requisition document goes to ENROUTE
     And I switch to the user with the next Pending Action in the Route Log for the Requisition document
     And I view the Requisition document on my action list
     And I approve the Requisition document
-    And the requisition document goes to FINAL
+    And the Requisition document goes to FINAL
     And I am logged in as a Purchasing Processor
     And I submit a Contract Manager Assignment of '10' for the Requisition
     And I am logged in as a PURAP Contract Manager
