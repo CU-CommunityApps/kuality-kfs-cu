@@ -17,6 +17,10 @@ Then /^The document should save successfully$/ do
   $current_page.document_status.should == 'SAVED'
 end
 
+Then /^The document should submit successfully$/ do
+  $current_page.left_errmsg_text.should include 'Document was successfully submitted.'
+end
+
 Then /^I should get an error saying "([^"]*)"$/ do |error_msg|
   $current_page.errors.should include error_msg
 end

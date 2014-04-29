@@ -5,3 +5,7 @@ end
 And /^I visit the main page$/ do
   visit(MainPage)
 end
+
+And /^I visit the maintenance page$/ do
+  visit(MaintenancePage)
+end
