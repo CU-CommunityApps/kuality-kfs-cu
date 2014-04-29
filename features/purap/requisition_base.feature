@@ -1,0 +1,18 @@
+Feature: PURAP manual entry greater than 500 but less than 25000
+
+  @KFSQA-853 @pending @purap @coral @wip
+  Scenario: PURAP manual >$500, <$25000 external vendor no wire
+  Given I INITIATE A REQS with following:
+    |Vendor Type    | Foreign     |
+    |Account Type   | Grant       |
+    |Commodity Code | Sensitive   |
+    |APO            | LT          |
+#    |APO            | GT          |
+    # Vendor Type : Foreign, External, Internal
+    # Account Type : Grant, ?.
+    # Commodity Code : Regular, Sensitive
+    # APO : LT, GT.  Do we need EQ
+    #
+  And  I EXTRACT THE REQS TO SQ
+  When I INITIATE A PREQS
+
