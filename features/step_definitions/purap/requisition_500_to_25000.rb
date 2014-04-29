@@ -105,6 +105,18 @@ And /^I Complete Selecting Vendor (.*)$/ do |vendor_number|
 
 end
 
+  And /^I Complete Selecting a Foreign Vendor$/ do
+    on (PurchaseOrderPage) do |page|
+      page.vendor_search
+      on VendorLookupPage do |vlookup|
+        vendor_number = '39210-0' # TODO : this vendor number should be from a parameter
+        vlookup.vendor_number.fit vendor_number
+        vlookup.search
+        vlookup.return_value(vendor_number)
+      end
+    end
+
+  end
 
 And /^I enter a Vendor Choice$/ do
   on (PurchaseOrderPage) do |page|
@@ -393,3 +405,26 @@ And /^I enter Payment Information for recurring payment type (.*)$/ do |recurrin
   end
 end
 
+  Then /^the Payment Request document's GLPE tab shows the Requisition document submissions$/ do
+    on PaymentRequestPage do |page|
+      page.show_glpe
+
+      page.glpe_results_table.text.include? @requisition.item_object_code
+      page.glpe_results_table.text.include? @requisition.item_account_number
+      # credit object code should be 3110 (depends on parm)
+
+    end
+  end
+
+And /^I Complete Selecting an External Vendor$/ do
+  on (PurchaseOrderPage) do |page|
+    page.vendor_search
+    on VendorLookupPage do |vlookup|
+      vendor_number = '27015-0' # TODO : this vendor number should be from a parameter
+      vlookup.vendor_number.fit vendor_number
+      vlookup.search
+      vlookup.return_value(vendor_number)
+    end
+  end
+
+end

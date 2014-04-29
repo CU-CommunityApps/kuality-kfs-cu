@@ -1,14 +1,13 @@
 Feature: Purap Preq Building Blocks
 
-  [KFSQA-745] PURAP E2E PO - Approved (PURAP E2E-003c) - vendor selected, >$100K, <$500K
+  [KFSQA-745] PURAP E2E PO - Approved (PURAP E2E-003d) - vendor selected, >$100K, >$500K, <$5MM
 
-  [KFSQA-744] PURAP E2E PO - Approved (PURAP E2E-003d) - vendor selected, >$100K, >$500K, <$5MM
+  [KFSQA-744] PURAP E2E PO - Approved (PURAP E2E-003c) - vendor selected, >$100K, <$500K
 
-  @KFSQA-745 @purap @cornell @coral
-  Scenario: PURAP E2E PO - Approved (PURAP E2E-003c) - vendor selected, >$100K, <$500K
+  @KFSQA-745 @E2E @PO @PURAP @cornell @coral
+  Scenario: PURAP E2E PO - Approved (PURAP E2E-003d) - vendor selected, >$100K, >$500K, <$5MM
     Given I login as a PURAP eSHop user
     And I create the Requisition document with:
-      | Vendor Number       |          |
       | Item Quantity       | 1800     |
       | Item Cost           | 1000     |
       | Item Commodity Code | 12142203 |
@@ -21,7 +20,7 @@ Feature: Purap Preq Building Blocks
     And I enter Delivery Instructions and Notes to Vendor
     And I calculate my Requisition document
     And I submit the Requisition document
-    And the requisition document goes to ENROUTE
+    And the Requisition document goes to ENROUTE
     And I switch to the user with the next Pending Action in the Route Log for the Requisition document
     And I view the Requisition document on my action list
     And I approve the Requisition document
@@ -64,11 +63,10 @@ Feature: Purap Preq Building Blocks
     And   the Attachments for Supplier came from the PO
 
 
-  @KFSQA-744 @purap @cornell @coral
+  @KFSQA-744 @E2E @PO @PURAP @cornell @coral
   Scenario: PURAP E2E PO - Approved (PURAP E2E-003c) - vendor selected, >$100K, <$500K
     Given I login as a PURAP eSHop user
     And   I create the Requisition document with:
-      | Vendor Number       |          |
       | Item Quantity       | 180      |
       | Item Cost           | 1000     |
       | Item Commodity Code | 12142203 |
@@ -77,11 +75,12 @@ Feature: Purap Preq Building Blocks
       | Account Number      | 1093603  |
       | Object Code         | 6540     |
       | Percent             | 100      |
+    And  I select the Payment Request Positive Approval Required
     And   I add an Attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
     And   I calculate my Requisition document
     And   I submit the Requisition document
-    And   the requisition document goes to ENROUTE
+    And   the Requisition document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
     And   I view the Requisition document on my action list
     And   I approve the Requisition document
