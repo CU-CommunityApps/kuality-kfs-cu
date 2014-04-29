@@ -33,7 +33,8 @@ When /^I select a random Federal Funded Code$/ do
     row = page.return_random_row
     @validation = { code: row[1].text, name: row[2].text, active: row[3].text  }
 
-    page.select_link_item(@validation[:code])
+    page.open_item_link(@validation[:code])
+        # page.select_link_item(@validation[:code])
   end
 end
 

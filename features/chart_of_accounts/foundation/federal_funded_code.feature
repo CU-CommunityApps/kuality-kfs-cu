@@ -22,7 +22,7 @@ Feature: Federal Funded Code
     | code | Z  |
     | name | Test FF new |
     | active | set      |
-    #if Code already exists then this test will fail
+    #if Federal Funded Code already exists then this test will fail
     And I blanket approve the document
     Then I should be on the Maintenance tab
 
