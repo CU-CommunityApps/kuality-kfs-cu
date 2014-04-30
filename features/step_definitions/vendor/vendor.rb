@@ -53,8 +53,8 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
                 contract_begin_date:             '02/05/2014',
                 contract_end_date:               '02/05/2016',
                 contract_campus_code:            get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
-                contract_manager_code:           'Scott Otey',
-                po_cost_source_code:             'Pricing Agreement',
+                contract_manager:                'Scott Otey',
+                new_contract_po_cost_source:     'Pricing Agreement',
                 b2b_contract_indicator:          'No',
                 vendor_pmt_terms_code:           'Net 5 Days',
                 insurance_requirements_complete: 'Yes',
@@ -90,8 +90,8 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
                 contract_begin_date:    '02/05/2014',
                 contract_end_date:      '02/05/2016',
                 contract_campus_code:   get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_CODE),
-                contract_manager_code:  'Scott Otey',
-                po_cost_source_code:    'Pricing Agreement',
+                contract_manager:       'Scott Otey',
+                new_contract_po_cost_source: 'Pricing Agreement',
                 b2b_contract_indicator: 'No',
                 vendor_pmt_terms_code:  'Net 5 Days',
               }
@@ -184,19 +184,20 @@ end
 
 And /^I add a Contract to the Vendor document$/ do
   on VendorPage do |page|
-    page.contract_po_limit.fit      @vendor.contract_po_limit
+    page.contract_default_apo_limit.fit      @vendor.contract_po_limit
     page.contract_name.fit          @vendor.contract_name
     page.contract_description.fit   @vendor.contract_description
     page.contract_begin_date.fit    @vendor.contract_begin_date
     page.contract_end_date.fit      @vendor.contract_end_date
-    page.po_cost_source_code.fit    @vendor.po_cost_source_code
-    page.contract_campus_code.fit   @vendor.contract_campus_code
-    page.contract_manager_code.fit  @vendor.contract_manager_code
+    page.contract_po_cost_source.fit @vendor.po_cost_source_code
+    page.contract_campus_code.fit   'IT - Ithaca' #@vendor.contract_campus_code
+    page.contract_manager.fit       @vendor.contract_manager_code
     page.b2b_contract_indicator.fit @vendor.b2b_contract_indicator
-    page.vendor_pmt_terms_code.fit  @vendor.vendor_pmt_terms_code
+    page.contract_payment_terms.fit  @vendor.vendor_pmt_terms_code
 
-    page.add_vendor_contract
+    page.add_contract
     page.contract_name_1.should exist #verify that contract is indeed added
+    pending
   end
 end
 
