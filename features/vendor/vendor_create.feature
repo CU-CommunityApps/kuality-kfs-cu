@@ -10,7 +10,7 @@ Feature: Vendor Create
               procurement information based on ownership type as required by federal laws,
               state laws, and university policies.
 
-  [KFSQA-633] Vendor Create - VN E2E-1a - eShop vendor,
+  [KFSQA-633] Vendor Create - VN E2E-1a - e-SHOP vendor,
   Cornell University pays vendors for goods and services. The University captures legal, tax and procurement information based on ownership type as required by federal laws, state laws, and university policies.
 
   [KFSQA-634] Vendor Create VN E2E-1b - Foreign vendor,
@@ -49,9 +49,9 @@ Feature: Vendor Create
     When    I am logged in as a Vendor Initiator
     Then    the Vendor document should be in my action list
 
-  @KFSQA-635 @cornell @tortoise @broken!
+  @KFSQA-635 @cornell @tortoise @wip
   Scenario: I want to create a vendor with ownership type CORPORATION that is NON-FOREIGN
-    Given   I am logged in as a Vendor Initiator
+    Given   I am logged in as a Vendor Contract Editor(cu)
     When    I create a Corporation and Non-Foreign Vendor with Contract and Insurance
     And     I save the Vendor document
     And     I add an attachment to the Vendor document
@@ -66,9 +66,9 @@ Feature: Vendor Create
     Then    the Vendor document should be in my action list
 
   @KFSQA-633 @cornell @tortoise @wipA
-  Scenario: I want to create a vendor with ownership type CORPORATION that is eShop
+  Scenario: I want to create a vendor with ownership type CORPORATION that is e-SHOP
     Given   I am logged in as a Vendor Initiator
-    When    I create a Corporation and eShop Vendor
+    When    I create a Corporation and e-SHOP Vendor
     And     I save the Vendor document
     And     I add an attachment to the Vendor document
     And     I submit the Vendor document

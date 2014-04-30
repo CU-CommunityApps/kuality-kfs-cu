@@ -160,3 +160,12 @@ end
 Given /^I am logged in as FTC\/BSC member User$/ do
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'FTC/BSC members'))
 end
+
+Given /^I am logged in as a Vendor Contract Editor\(cu\)$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'Vendor Contract Editor(cu)'))
+end
+
+Given /^I am logged in as a (.*) principal in namespace (.*)$/ do |role, namespace|
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role(role, namespace))
+end
+

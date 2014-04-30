@@ -2,7 +2,8 @@ When /^I start an empty Vendor document$/ do
   @vendor = create VendorObject
 end
 
-When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|eShop) Vendor( with )?(.*)?$/ do |ownership_type, sub_type, with_1, tab_1|
+When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Vendor( with .*)?$/ do |ownership_type, sub_type, tab_1|
+  tab_1.gsub!(/^ with /, '') unless tab_1.nil?
   default_fields = Hash.new
   new_address = Hash.new
   new_supplier_diversity = Hash.new
@@ -110,7 +111,7 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|eShop) Ven
               }
 
           end
-        when 'eShop'  # KFSQA-633
+        when 'e-SHOP'  # KFSQA-633
           default_fields = {
             vendor_name:                'J Garcia Guitars',
             foreign:                    'No',
@@ -193,7 +194,6 @@ And /^I add a Contract to the Vendor document$/ do
     page.contract_manager_code.fit @vendor.contract_manager_code
     page.b2b_contract_indicator.fit @vendor.b2b_contract_indicator
     page.vendor_pmt_terms_code.fit @vendor.vendor_pmt_terms_code
-    pending
 
     page.add_vendor_contract
     page.contract_name_1.should exist #verify that contract is indeed added
