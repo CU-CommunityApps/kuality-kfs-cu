@@ -184,16 +184,16 @@ end
 
 And /^I add a Contract to the Vendor document$/ do
   on VendorPage do |page|
-    page.contract_po_limit.fit @vendor.contract_po_limit
-    page.contract_name.fit @vendor.contract_name
-    page.contract_description.fit @vendor.contract_description
-    page.contract_begin_date.fit @vendor.contract_begin_date
-    page.contract_end_date.fit @vendor.contract_end_date
-    page.po_cost_source_code.fit @vendor.po_cost_source_code
-    page.contract_campus_code.fit @vendor.contract_campus_code
-    page.contract_manager_code.fit @vendor.contract_manager_code
+    page.contract_po_limit.fit      @vendor.contract_po_limit
+    page.contract_name.fit          @vendor.contract_name
+    page.contract_description.fit   @vendor.contract_description
+    page.contract_begin_date.fit    @vendor.contract_begin_date
+    page.contract_end_date.fit      @vendor.contract_end_date
+    page.po_cost_source_code.fit    @vendor.po_cost_source_code
+    page.contract_campus_code.fit   @vendor.contract_campus_code
+    page.contract_manager_code.fit  @vendor.contract_manager_code
     page.b2b_contract_indicator.fit @vendor.b2b_contract_indicator
-    page.vendor_pmt_terms_code.fit @vendor.vendor_pmt_terms_code
+    page.vendor_pmt_terms_code.fit  @vendor.vendor_pmt_terms_code
 
     page.add_vendor_contract
     page.contract_name_1.should exist #verify that contract is indeed added
@@ -252,14 +252,14 @@ And /^I change the Phone (\w+) on Vendor Phone tab$/ do |phone_field|
   end
 end
 
-And /^I change the Address (\w+) ?(\w)? on Vendor Address tab$/ do |address_field_1, address_field_2|
+And /^I change the Address (\w+) ?(\d)? on Vendor Address tab$/ do |address_field_1, address_field_2|
   on VendorPage do |page|
     case address_field_1
       when 'Line'
         case address_field_2
-          when '1'
+          when 1
             @vendor.addresses.first.edit address_1: random_alphanums(30, 'AFT')
-          when '2'
+          when 2
             @vendor.addresses.first.edit address_2: random_alphanums(30, 'AFT')
         end
       when 'Attention'
