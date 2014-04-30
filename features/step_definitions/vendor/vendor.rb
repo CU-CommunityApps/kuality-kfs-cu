@@ -7,6 +7,7 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
   default_fields = Hash.new
   new_address = Hash.new
   new_supplier_diversity = Hash.new
+  new_contract = Hash.new
   case ownership_type
     when 'Corporation'
       case sub_type
@@ -47,18 +48,20 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
                 w9_received:                     'Yes',
                 w9_received_date:                '02/01/2014',
                 attachment_file_name:            'vendor_attachment_test.png',
-                contract_po_limit:               '100000',
-                contract_name:                   'MH Drums',
-                contract_description:            'MH Drums Master Agreement',
-                contract_begin_date:             '02/05/2014',
-                contract_end_date:               '02/05/2016',
-                contract_campus_code:            get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
-                contract_manager:                'Scott Otey',
-                new_contract_po_cost_source:     'Pricing Agreement',
-                b2b_contract_indicator:          'No',
-                vendor_pmt_terms_code:           'Net 5 Days',
                 insurance_requirements_complete: 'Yes',
                 cornell_additional_ins_ind:      'Yes'
+              }
+              new_contract = {
+                name:              'MH Drums',
+                description:       'MH Drums Master Agreement',
+                campus_code:       get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
+                begin_date:        '02/05/2014',
+                end_date:          '02/05/2016',
+                manager:           'Scott Otey',
+                po_cost_source:    'Pricing Agreement',
+                b2b:               'No',
+                payment_terms:     'Net 5 Days',
+                default_apo_limit: '100000'
               }
               new_supplier_diversity = {
                 type:                          'VETERAN OWNED',
@@ -85,15 +88,17 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
                 w9_received:            'Yes',
                 w9_received_date:       '02/01/2014',
                 attachment_file_name:   'vendor_attachment_test.png',
-                contract_name:          'Lesh Bass Agreement',
-                contract_description:   'Lesh Bass Agreement, 8 String Bass',
-                contract_begin_date:    '02/05/2014',
-                contract_end_date:      '02/05/2016',
-                contract_campus_code:   get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_CODE),
-                contract_manager:       'Scott Otey',
-                new_contract_po_cost_source: 'Pricing Agreement',
-                b2b_contract_indicator: 'No',
-                vendor_pmt_terms_code:  'Net 5 Days',
+              }
+              new_contract = {
+                name:              'Lesh Bass Agreement',
+                description:       'Lesh Bass Agreement, 8 String Bass',
+                campus_code:       get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
+                begin_date:        '02/05/2014',
+                end_date:          '02/05/2016',
+                manager:           'Scott Otey',
+                po_cost_source:    'Pricing Agreement',
+                b2b:               'No',
+                payment_terms:     'Net 5 Days'
               }
               new_supplier_diversity = {
                 type:                          'VETERAN OWNED',
@@ -179,26 +184,16 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
   else
     @vendor.supplier_diversities.first.edit new_supplier_diversity.delete(:type)
   end
+  if @vendor.contracts.length.zero?
+    @vendor.contracts.add new_contract
+  else
+    @vendor.contracts.first.edit new_contract
+  end
 
 end
 
 And /^I add a Contract to the Vendor document$/ do
-  on VendorPage do |page|
-    page.contract_default_apo_limit.fit      @vendor.contract_po_limit
-    page.contract_name.fit          @vendor.contract_name
-    page.contract_description.fit   @vendor.contract_description
-    page.contract_begin_date.fit    @vendor.contract_begin_date
-    page.contract_end_date.fit      @vendor.contract_end_date
-    page.contract_po_cost_source.fit @vendor.po_cost_source_code
-    page.contract_campus_code.fit   'IT - Ithaca' #@vendor.contract_campus_code
-    page.contract_manager.fit       @vendor.contract_manager_code
-    page.b2b_contract_indicator.fit @vendor.b2b_contract_indicator
-    page.contract_payment_terms.fit  @vendor.vendor_pmt_terms_code
-
-    page.add_contract
-    page.contract_name_1.should exist #verify that contract is indeed added
-    pending
-  end
+  @vendor.contracts.add Hash.new # This relies on defaults being specified for a Contract. May need revision/replacement to be more useful.
 end
 
 Then /^the Vendor document should be in my action list$/ do
