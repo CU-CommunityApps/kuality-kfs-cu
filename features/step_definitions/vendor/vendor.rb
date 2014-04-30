@@ -12,13 +12,13 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
       case sub_type
         when 'Foreign' # KFSQA-634
           default_fields = {
-            vendor_type:                'PO - PURCHASE ORDER',
-            vendor_name:                'Bob Weir Guitars',
-            foreign:                    'Yes',
-            tax_number_type_ssn:        nil,
-            tax_number_type_fein:       :set,
-            ownership:                  'CORPORATION',
-            attachment_file_name:       'vendor_attachment_test.png',
+            vendor_type:          'PO - PURCHASE ORDER',
+            vendor_name:          'Bob Weir Guitars',
+            foreign:              'Yes',
+            tax_number_type_ssn:  nil,
+            tax_number_type_fein: :set,
+            ownership:            'CORPORATION',
+            attachment_file_name: 'vendor_attachment_test.png',
           }
           new_supplier_diversity = {
             type:                          'VETERAN OWNED',
@@ -32,7 +32,7 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
             state:                     'MA',
             zipcode:                   '02359',
             country:                   'United States',
-            method_of_po_transmission:  'US MAIL'
+            method_of_po_transmission: 'US MAIL'
           }
         when 'Non-Foreign'
           case tab_1
