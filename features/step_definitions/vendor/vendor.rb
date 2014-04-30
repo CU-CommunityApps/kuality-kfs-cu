@@ -38,27 +38,27 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
           case tab_1
             when 'Contract and Insurance' #KFSQA-635
               default_fields = {
-                vendor_type:                'PO - PURCHASE ORDER',
-                vendor_name:                'M Hart Drums',
-                foreign:                    'No',
-                tax_number_type_ssn:        nil,
-                tax_number_type_fein:       :set,
-                ownership:                  'CORPORATION',
-                w9_received:                'Yes',
-                w9_received_date:           '02/01/2014',
-                attachment_file_name:       'vendor_attachment_test.png',
-                contract_po_limit:          '100000',
-                contract_name:              'MH Drums',
-                contract_description:       'MH Drums Master Agreement',
-                contract_begin_date:        '02/05/2014',
-                contract_end_date:          '02/05/2016',
-                contract_campus_code:       get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
-                contract_manager_code:      'Scott Otey',
-                po_cost_source_code:        'Pricing Agreement',
-                b2b_contract_indicator:     'No',
-                vendor_pmt_terms_code:      'Net 5 Days',
-                insurance_requirements_complete:      'Yes',
-                cornell_additional_ins_ind:           'Yes'
+                vendor_type:                     'PO - PURCHASE ORDER',
+                vendor_name:                     'M Hart Drums',
+                foreign:                         'No',
+                tax_number_type_ssn:             nil,
+                tax_number_type_fein:            :set,
+                ownership:                       'CORPORATION',
+                w9_received:                     'Yes',
+                w9_received_date:                '02/01/2014',
+                attachment_file_name:            'vendor_attachment_test.png',
+                contract_po_limit:               '100000',
+                contract_name:                   'MH Drums',
+                contract_description:            'MH Drums Master Agreement',
+                contract_begin_date:             '02/05/2014',
+                contract_end_date:               '02/05/2016',
+                contract_campus_code:            get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
+                contract_manager_code:           'Scott Otey',
+                po_cost_source_code:             'Pricing Agreement',
+                b2b_contract_indicator:          'No',
+                vendor_pmt_terms_code:           'Net 5 Days',
+                insurance_requirements_complete: 'Yes',
+                cornell_additional_ins_ind:      'Yes'
               }
               new_supplier_diversity = {
                 type:                          'VETERAN OWNED',
@@ -72,28 +72,28 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
                 state:                     'MA',
                 zipcode:                   '02359',
                 country:                   'United States',
-                method_of_po_transmission:  'US MAIL'
+                method_of_po_transmission: 'US MAIL'
               }
             when 'Contract' #KFSQA-636
               default_fields = {
-                vendor_type:                'PO - PURCHASE ORDER',
-                vendor_name:                'Phil Lesh Bass',
-                foreign:                    'No',
-                tax_number_type_ssn:        nil,
-                tax_number_type_fein:       :set,
-                ownership:                  'CORPORATION',
-                w9_received:                'Yes',
-                w9_received_date:           '02/01/2014',
-                attachment_file_name:       'vendor_attachment_test.png',
-                contract_name:              'Lesh Bass Agreement',
-                contract_description:       'Lesh Bass Agreement, 8 String Bass',
-                contract_begin_date:        '02/05/2014',
-                contract_end_date:          '02/05/2016',
-                contract_campus_code:       get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_CODE),
-                contract_manager_code:      'Scott Otey',
-                po_cost_source_code:        'Pricing Agreement',
-                b2b_contract_indicator:     'No',
-                vendor_pmt_terms_code:      'Net 5 Days',
+                vendor_type:            'PO - PURCHASE ORDER',
+                vendor_name:            'Phil Lesh Bass',
+                foreign:                'No',
+                tax_number_type_ssn:    nil,
+                tax_number_type_fein:   :set,
+                ownership:              'CORPORATION',
+                w9_received:            'Yes',
+                w9_received_date:       '02/01/2014',
+                attachment_file_name:   'vendor_attachment_test.png',
+                contract_name:          'Lesh Bass Agreement',
+                contract_description:   'Lesh Bass Agreement, 8 String Bass',
+                contract_begin_date:    '02/05/2014',
+                contract_end_date:      '02/05/2016',
+                contract_campus_code:   get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_CODE),
+                contract_manager_code:  'Scott Otey',
+                po_cost_source_code:    'Pricing Agreement',
+                b2b_contract_indicator: 'No',
+                vendor_pmt_terms_code:  'Net 5 Days',
               }
               new_supplier_diversity = {
                 type:                          'VETERAN OWNED',
@@ -107,20 +107,20 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
                 state:                     'MA',
                 zipcode:                   '02359',
                 country:                   'United States',
-                method_of_po_transmission:  'US MAIL'
+                method_of_po_transmission: 'US MAIL'
               }
 
           end
         when 'e-SHOP'  # KFSQA-633
           default_fields = {
-            vendor_name:                'J Garcia Guitars',
-            foreign:                    'No',
-            tax_number_type_ssn:        nil,
-            tax_number_type_fein:       :set,
-            ownership:                  'CORPORATION',
-            w9_received:                'Yes',
-            w9_received_date:           '02/01/2014',
-            attachment_file_name:       'vendor_attachment_test.png',
+            vendor_name:          'J Garcia Guitars',
+            foreign:              'No',
+            tax_number_type_ssn:  nil,
+            tax_number_type_fein: :set,
+            ownership:            'CORPORATION',
+            w9_received:          'Yes',
+            w9_received_date:     '02/01/2014',
+            attachment_file_name: 'vendor_attachment_test.png',
           }
           new_supplier_diversity = {
             type:                          'VETERAN OWNED',
@@ -134,7 +134,7 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
             state:                     'MA',
             zipcode:                   '02359',
             country:                   'United States',
-            method_of_po_transmission:  'US MAIL'
+            method_of_po_transmission: 'US MAIL'
           }
       end
     when 'Individual'
@@ -147,8 +147,8 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
                 vendor_name:                'Ron McKernan Enterprises',
                 foreign:                    'No',
                 attachment_file_name:       'vendor_attachment_test.png',
-                insurance_requirements_complete:      'Yes',
-                cornell_additional_ins_ind:           'Yes'
+                insurance_requirements_complete: 'Yes',
+                cornell_additional_ins_ind:      'Yes'
               }
               new_supplier_diversity = {
                 type:                          'HUBZONE',
@@ -162,7 +162,7 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
                 state:                     'CA',
                 zipcode:                   '91190',
                 country:                   'United States',
-                method_of_po_transmission:  'US MAIL'
+                method_of_po_transmission: 'US MAIL'
               }
           end
       end
