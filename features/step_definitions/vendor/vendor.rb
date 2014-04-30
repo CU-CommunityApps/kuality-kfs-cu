@@ -248,11 +248,11 @@ And /^I change the Phone (\w+) on Vendor Phone tab$/ do |phone_field|
   end
 end
 
-And /^I change the Address (\w+) ?(\d)? on Vendor Address tab$/ do |address_field_1, address_field_2|
+And /^I change the Address (\w+) ?(\d)? on Vendor Address tab$/ do |line_or_attention, which_line|
   on VendorPage do |page|
-    case address_field_1
+    case line_or_attention
       when 'Line'
-        case address_field_2
+        case which_line
           when 1
             @vendor.addresses.first.edit address_1: random_alphanums(30, 'AFT')
           when 2
