@@ -5,126 +5,135 @@ end
 When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|eShop) Vendor( with )?(.*)?$/ do |ownership_type, sub_type, with_1, tab_1|
   default_fields = Hash.new
   new_address = Hash.new
+  new_supplier_diversity = Hash.new
   case ownership_type
     when 'Corporation'
       case sub_type
         when 'Foreign' # KFSQA-634
           default_fields = {
-              vendor_type:                'PO - PURCHASE ORDER',
-              vendor_name:                'Bob Weir Guitars',
-              foreign:                    'Yes',
-              tax_number_type_ssn:        nil,
-              tax_number_type_fein:       :set,
-              ownership:                  'CORPORATION',
-              supplier_diversity:         'VETERAN OWNED',
-              supplier_diversity_expiration_date: '09/10/2015',
-              attachment_file_name:       'vendor_attachment_test.png',
+            vendor_type:                'PO - PURCHASE ORDER',
+            vendor_name:                'Bob Weir Guitars',
+            foreign:                    'Yes',
+            tax_number_type_ssn:        nil,
+            tax_number_type_fein:       :set,
+            ownership:                  'CORPORATION',
+            attachment_file_name:       'vendor_attachment_test.png',
+          }
+          new_supplier_diversity = {
+            type:                          'VETERAN OWNED',
+            certification_expiration_date: '09/10/2015',
           }
           new_address = {
-              type:                      'PO - PURCHASE ORDER',
-              address_1:                 'PO Box 5466',
-              address_2:                 '(127 Matt Street)',
-              city:                      'Hanover',
-              state:                     'MA',
-              zipcode:                   '02359',
-              country:                   'United States',
-              method_of_po_transmission:  'US MAIL'
+            type:                      'PO - PURCHASE ORDER',
+            address_1:                 'PO Box 5466',
+            address_2:                 '(127 Matt Street)',
+            city:                      'Hanover',
+            state:                     'MA',
+            zipcode:                   '02359',
+            country:                   'United States',
+            method_of_po_transmission:  'US MAIL'
           }
         when 'Non-Foreign'
           case tab_1
             when 'Contract and Insurance' #KFSQA-635
               default_fields = {
-                  vendor_type:                'PO - PURCHASE ORDER',
-                  vendor_name:                'M Hart Drums',
-                  foreign:                    'No',
-                  tax_number_type_ssn:        nil,
-                  tax_number_type_fein:       :set,
-                  ownership:                  'CORPORATION',
-                  w9_received:                'Yes',
-                  w9_received_date:           '02/01/2014',
-                  supplier_diversity:         'VETERAN OWNED',
-                  supplier_diversity_expiration_date: '09/10/2015',
-                  attachment_file_name:       'vendor_attachment_test.png',
-                  contract_po_limit:          '100000',
-                  contract_name:              'MH Drums',
-                  contract_description:       'MH Drums Master Agreement',
-                  contract_begin_date:        '02/05/2014',
-                  contract_end_date:          '02/05/2016',
-                  contract_campus_code:       get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
-                  contract_manager_code:      'Scott Otey',
-                  po_cost_source_code:        'Pricing Agreement',
-                  b2b_contract_indicator:     'No',
-                  vendor_pmt_terms_code:      'Net 5 Days',
-                  insurance_requirements_complete:      'Yes',
-                  cornell_additional_ins_ind:           'Yes'
+                vendor_type:                'PO - PURCHASE ORDER',
+                vendor_name:                'M Hart Drums',
+                foreign:                    'No',
+                tax_number_type_ssn:        nil,
+                tax_number_type_fein:       :set,
+                ownership:                  'CORPORATION',
+                w9_received:                'Yes',
+                w9_received_date:           '02/01/2014',
+                attachment_file_name:       'vendor_attachment_test.png',
+                contract_po_limit:          '100000',
+                contract_name:              'MH Drums',
+                contract_description:       'MH Drums Master Agreement',
+                contract_begin_date:        '02/05/2014',
+                contract_end_date:          '02/05/2016',
+                contract_campus_code:       get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
+                contract_manager_code:      'Scott Otey',
+                po_cost_source_code:        'Pricing Agreement',
+                b2b_contract_indicator:     'No',
+                vendor_pmt_terms_code:      'Net 5 Days',
+                insurance_requirements_complete:      'Yes',
+                cornell_additional_ins_ind:           'Yes'
+              }
+              new_supplier_diversity = {
+                type:                          'VETERAN OWNED',
+                certification_expiration_date: '09/10/2015',
               }
               new_address = {
-                  type:                      'PO - PURCHASE ORDER',
-                  address_1:                 'PO Box 54777',
-                  address_2:                 '(127 Matt Street)',
-                  city:                      'Hanover',
-                  state:                     'MA',
-                  zipcode:                   '02359',
-                  country:                   'United States',
-                  method_of_po_transmission:  'US MAIL'
+                type:                      'PO - PURCHASE ORDER',
+                address_1:                 'PO Box 54777',
+                address_2:                 '(127 Matt Street)',
+                city:                      'Hanover',
+                state:                     'MA',
+                zipcode:                   '02359',
+                country:                   'United States',
+                method_of_po_transmission:  'US MAIL'
               }
             when 'Contract' #KFSQA-636
               default_fields = {
-                  vendor_type:                'PO - PURCHASE ORDER',
-                  vendor_name:                'Phil Lesh Bass',
-                  foreign:                    'No',
-                  tax_number_type_ssn:        nil,
-                  tax_number_type_fein:       :set,
-                  ownership:                  'CORPORATION',
-                  w9_received:                'Yes',
-                  w9_received_date:           '02/01/2014',
-                  supplier_diversity:         'VETERAN OWNED',
-                  supplier_diversity_expiration_date: '09/10/2015',
-                  attachment_file_name:       'vendor_attachment_test.png',
-                  contract_name:              'Lesh Bass Agreement',
-                  contract_description:       'Lesh Bass Agreement, 8 String Bass',
-                  contract_begin_date:        '02/05/2014',
-                  contract_end_date:          '02/05/2016',
-                  contract_campus_code:       get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_CODE),
-                  contract_manager_code:      'Scott Otey',
-                  po_cost_source_code:        'Pricing Agreement',
-                  b2b_contract_indicator:     'No',
-                  vendor_pmt_terms_code:      'Net 5 Days',
+                vendor_type:                'PO - PURCHASE ORDER',
+                vendor_name:                'Phil Lesh Bass',
+                foreign:                    'No',
+                tax_number_type_ssn:        nil,
+                tax_number_type_fein:       :set,
+                ownership:                  'CORPORATION',
+                w9_received:                'Yes',
+                w9_received_date:           '02/01/2014',
+                attachment_file_name:       'vendor_attachment_test.png',
+                contract_name:              'Lesh Bass Agreement',
+                contract_description:       'Lesh Bass Agreement, 8 String Bass',
+                contract_begin_date:        '02/05/2014',
+                contract_end_date:          '02/05/2016',
+                contract_campus_code:       get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_CODE),
+                contract_manager_code:      'Scott Otey',
+                po_cost_source_code:        'Pricing Agreement',
+                b2b_contract_indicator:     'No',
+                vendor_pmt_terms_code:      'Net 5 Days',
+              }
+              new_supplier_diversity = {
+                type:                          'VETERAN OWNED',
+                certification_expiration_date: '09/10/2015',
               }
               new_address = {
-                  type:                      'PO - PURCHASE ORDER',
-                  address_1:                 'PO Box 54777',
-                  address_2:                 '25 Boylston St.',
-                  city:                      'Boston',
-                  state:                     'MA',
-                  zipcode:                   '02359',
-                  country:                   'United States',
-                  method_of_po_transmission:  'US MAIL'
+                type:                      'PO - PURCHASE ORDER',
+                address_1:                 'PO Box 54777',
+                address_2:                 '25 Boylston St.',
+                city:                      'Boston',
+                state:                     'MA',
+                zipcode:                   '02359',
+                country:                   'United States',
+                method_of_po_transmission:  'US MAIL'
               }
 
           end
         when 'eShop'  # KFSQA-633
           default_fields = {
-              vendor_name:                'J Garcia Guitars',
-              foreign:                    'No',
-              tax_number_type_ssn:        nil,
-              tax_number_type_fein:       :set,
-              ownership:                  'CORPORATION',
-              w9_received:                'Yes',
-              w9_received_date:           '02/01/2014',
-              supplier_diversity:         'VETERAN OWNED',
-              supplier_diversity_expiration_date: '09/10/2015',
-              attachment_file_name:       'vendor_attachment_test.png',
+            vendor_name:                'J Garcia Guitars',
+            foreign:                    'No',
+            tax_number_type_ssn:        nil,
+            tax_number_type_fein:       :set,
+            ownership:                  'CORPORATION',
+            w9_received:                'Yes',
+            w9_received_date:           '02/01/2014',
+            attachment_file_name:       'vendor_attachment_test.png',
+          }
+          new_supplier_diversity = {
+            type:                          'VETERAN OWNED',
+            certification_expiration_date: '09/10/2015',
           }
           new_address = {
-              type:                      'PO - PURCHASE ORDER',
-              address_1:                 'PO Box 63RF',
-              address_2:                 '(127 Matt and Dave Street)	',
-              city:                      'Hanover',
-              state:                     'MA',
-              zipcode:                   '02359',
-              country:                   'United States',
-              method_of_po_transmission:  'US MAIL'
+            type:                      'PO - PURCHASE ORDER',
+            address_1:                 'PO Box 63RF',
+            address_2:                 '(127 Matt and Dave Street)	',
+            city:                      'Hanover',
+            state:                     'MA',
+            zipcode:                   '02359',
+            country:                   'United States',
+            method_of_po_transmission:  'US MAIL'
           }
       end
     when 'Individual'
@@ -133,33 +142,41 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|eShop) Ven
           case tab_1
             when 'Insurance' # KFSQA-637
               default_fields = {
-                  vendor_type:                'PO - PURCHASE ORDER',
-                  vendor_name:                'Ron McKernan Enterprises',
-                  foreign:                    'No',
-                  supplier_diversity:         'HUBZONE',
-                  supplier_diversity_expiration_date: '09/10/2015',
-                  attachment_file_name:       'vendor_attachment_test.png',
-                  insurance_requirements_complete:      'Yes',
-                  cornell_additional_ins_ind:           'Yes'
+                vendor_type:                'PO - PURCHASE ORDER',
+                vendor_name:                'Ron McKernan Enterprises',
+                foreign:                    'No',
+                attachment_file_name:       'vendor_attachment_test.png',
+                insurance_requirements_complete:      'Yes',
+                cornell_additional_ins_ind:           'Yes'
+              }
+              new_supplier_diversity = {
+                type:                          'HUBZONE',
+                certification_expiration_date: '09/10/2015',
               }
               new_address = {
-                  type:                      'PO - PURCHASE ORDER',
-                  address_1:                 '66 Sunset Blvd',
-                  address_2:                 '(127 Walkway)',
-                  city:                      'Hollywood',
-                  state:                     'CA',
-                  zipcode:                   '91190',
-                  country:                   'United States',
-                  method_of_po_transmission:  'US MAIL'
+                type:                      'PO - PURCHASE ORDER',
+                address_1:                 '66 Sunset Blvd',
+                address_2:                 '(127 Walkway)',
+                city:                      'Hollywood',
+                state:                     'CA',
+                zipcode:                   '91190',
+                country:                   'United States',
+                method_of_po_transmission:  'US MAIL'
               }
           end
       end
   end
   @vendor = create VendorObject, default_fields
+  @vendor.update_line_objects_from_page!
   if @vendor.addresses.length.zero?
     @vendor.addresses.add new_address
   else
     @vendor.addresses.first.edit new_address
+  end
+  if @vendor.supplier_diversities.length.zero?
+    @vendor.supplier_diversities.add new_supplier_diversity
+  else
+    @vendor.supplier_diversities.first.edit new_supplier_diversity.delete(:type)
   end
 
 end
@@ -219,44 +236,34 @@ end
 
 And /^I change the Phone (\w+) on Vendor Phone tab$/ do |phone_field|
   on VendorPage do |page|
-    @changed_addr_phone = {} if @changed_addr_phone.nil?
     page.expand_all
     if page.updated_phone_number.exists?
       case phone_field
         when 'Number'
           @vendor.phone_numbers.first.edit number: "607-#{rand(100..999)}-#{rand(1000..9999)}"
-          @changed_addr_phone.merge!(updated_phone_number: @vendor.phone_numbers.first.number)
         when 'Extension'
           @vendor.phone_numbers.first.edit extension: rand(100..999)
-          @changed_addr_phone.merge!(updated_phone_ext: @vendor.phone_numbers.first.extension)
         when 'Type'
           @vendor.phone_numbers.first.edit type: 'MOBILE'
-          @changed_addr_phone.merge!(updated_phone_type: @vendor.phone_numbers.first.type)
       end
     else
       @vendor.phone_numbers.add number: "607-#{rand(100..999)}-#{rand(1000..9999)}", type: 'SALES'
-      @changed_addr_phone.merge!(updated_phone_type: @vendor.phone_numbers.first.type, updated_phone_number: @vendor.phone_numbers.first.number)
     end
   end
 end
 
 And /^I change the Address (\w+) ?(\w)? on Vendor Address tab$/ do |address_field_1, address_field_2|
   on VendorPage do |page|
-    @changed_addr_phone = {} if @changed_addr_phone.nil?
-
     case address_field_1
       when 'Line'
         case address_field_2
           when '1'
             @vendor.addresses.first.edit address_1: random_alphanums(30, 'AFT')
-            @changed_addr_phone.merge!(updated_address_1: @vendor.addresses.first.address_1)
           when '2'
             @vendor.addresses.first.edit address_2: random_alphanums(30, 'AFT')
-            @changed_addr_phone.merge!(updated_address_2: @vendor.addresses.first.address_2)
         end
       when 'Attention'
         @vendor.addresses.first.edit attention: random_alphanums(20, 'AFT')
-        @changed_addr_phone.merge!(updated_address_attention: @vendor.addresses.first.attention)
     end
   end
 end
@@ -270,33 +277,33 @@ end
 And /^the Address and Phone Number changes persist$/ do
   on VendorPage do |page|
     page.expand_all
-    page.updated_address_1.text.strip.should == @changed_addr_phone[:updated_address_1]
-    page.updated_phone_type.selected_options.first.text.should == @changed_addr_phone[:updated_phone_type] unless @changed_addr_phone[:updated_phone_type].nil?
-    page.updated_address_2.text.strip.should == @changed_addr_phone[:updated_address_2] unless @changed_addr_phone[:updated_address_2].nil?
-    page.updated_phone_number.text.strip.should == @changed_addr_phone[:updated_phone_number]
-    page.updated_address_attention.text.strip.should == @changed_addr_phone[:updated_address_attention] unless @changed_addr_phone[:updated_address_attention].nil?
-    page.updated_phone_ext.text.should == @changed_addr_phone[:updated_phone_ext] unless @changed_addr_phone[:updated_phone_ext].nil?
+    page.updated_address_1.value.strip.should == @vendor.addresses.first.address_1
+    page.updated_phone_type.selected_options.first.text.should == @vendor.phone_numbers.first.type
+    page.updated_address_2.value.strip.should == @vendor.addresses.first.address_2
+    page.updated_phone_number.value.strip.should == @vendor.phone_numbers.first.number.to_s
+    page.updated_address_attention.value.strip.should == @vendor.addresses.first.attention
+    page.updated_phone_ext.value.strip.should == @vendor.phone_numbers.first.extension.to_s
   end
 end
 
 And /^I add an Address to a Vendor with following fields:$/ do |table|
   vendor_address = table.rows_hash
   vendor_address.delete_if { |k,v| v.empty? }
-  @vendor.addresses.add type:        vendor_address['Address Type'],
-                        address_1:   vendor_address['Address 1'],
-                        address_2:   vendor_address['Address 2'],
-                        city:        vendor_address['City'],
-                        state:       vendor_address['State'],
-                        postal_code: vendor_address['Postal Code'],
-                        province:  vendor_address['Province'],
-                        country:   vendor_address['Country'],
-                        attention: vendor_address['Attention'],
-                        url:    vendor_address['URL'],
-                        fax:    vendor_address['Fax'],
-                        email:  vendor_address['Email'],
-                        active: yesno2setclear(vendor_address['Active']),
-                        set_as_default: vendor_address['Set As Default?'],
-                        method_of_po_transmission: vendor_address['Set As Default?']
+  @vendor.addresses.add type:        vendor_address['Address Type'] ||= '',
+                        address_1:   vendor_address['Address 1'] ||= '',
+                        address_2:   vendor_address['Address 2'] ||= '',
+                        city:        vendor_address['City'] ||= '',
+                        state:       vendor_address['State'] ||= '',
+                        postal_code: vendor_address['Postal Code'] ||= '',
+                        province:  vendor_address['Province'] ||= '',
+                        country:   vendor_address['Country'] ||= '',
+                        attention: vendor_address['Attention'] ||= '',
+                        url:    vendor_address['URL'] ||= '',
+                        fax:    vendor_address['Fax'] ||= '',
+                        email:  vendor_address['Email'] ||= '',
+                        active: yesno2setclear(vendor_address['Active'] ||= 'YES'),
+                        set_as_default: vendor_address['Set As Default?'] ||= 'No',
+                        method_of_po_transmission: vendor_address['Method of PO Transmission'] ||= '' # Cornell-specific mod
 end
 
 And /^I update the General Liability with expired date$/ do
@@ -349,9 +356,11 @@ And /^I create a DV Vendor$/  do
                    ownership:                  'CORPORATION',
                    w9_received:                'Yes',
                    w9_received_date:           yesterday[:date_w_slashes],
-                   supplier_diversity:         'HUBZONE',
-                   supplier_diversity_expiration_date: tomorrow[:date_w_slashes],
                    attachment_file_name:       'vendor_edit_attachment_2.png'
+  new_supplier_diversity = {
+      type:                          'HUBZONE',
+      certification_expiration_date: tomorrow[:date_w_slashes],
+  }
   new_address = {
     type:                      'RM - REMIT',
     address_1:                 'PO Box 54777',
@@ -363,10 +372,16 @@ And /^I create a DV Vendor$/  do
     set_as_default:            'Yes',
     method_of_po_transmission: ''
   }
+  @vendor.update_line_objects_from_page!
   if @vendor.addresses.length.zero?
     @vendor.addresses.add new_address
   else
     @vendor.addresses.first.edit new_address
+  end
+  if @vendor.supplier_diversities.length.zero?
+    @vendor.supplier_diversities.add new_supplier_diversity
+  else
+    @vendor.supplier_diversities.first.edit new_supplier_diversity.delete(:type)
   end
 
 end
@@ -386,20 +401,15 @@ end
 And /^the Address changes persist$/ do
   on VendorPage do |page|
     page.expand_all
-    page.updated_address_1.value.should == @changed_addr[:updated_address_1]
-    page.updated_2nd_address_2.value.should == @changed_addr[:updated_2nd_address_2]
+    page.updated_address_1.value.should == @vendor.addresses[0].address_1
+    page.updated_2nd_address_2.value.should == @vendor.addresses[1].address_2
   end
 end
 
 And /^I change Remit Address and the Foreign Tax Address$/ do
   on VendorPage do |page|
-    @changed_addr = {} if @changed_addr.nil?
-
-    @vendor.addresses.first.edit address_1: random_alphanums(30, 'AFT')
-    @changed_addr.merge!(updated_address_1: @vendor.addresses.first.address_1)
-
-    @vendor.addresses.first.edit address_2: random_alphanums(30, 'AFT')
-    @changed_addr.merge!(updated_2nd_address_2: @vendor.addresses.first.address_2)
+    @vendor.addresses[0].edit address_1: random_alphanums(30, 'AFT')
+    @vendor.addresses[1].edit address_2: random_alphanums(30, 'AFT')
   end
 end
 
@@ -421,15 +431,16 @@ end
 
 And /^I add a new Supplier Diversity to the Vendor document$/ do
   on VendorPage do |page|
-    page.expand_all
-    pending
+    @vendor.search_aliases.update_from_page!
+    @vendor.search_aliases.add Hash.new # We'll just add the default value.
+    # For some reason, we still need to provide an empty hash.
   end
 end
 
 And /^I add a Search Alias to the Vendor document$/ do
   on(VendorPage).expand_all
-  @vendor.search_aliases.update_from_page!
-  @vendor.search_aliases.add Hash.new # We'll just add the default value.
-                                      # For some reason, we still need to provide an empty hash.
+  @vendor.supplier_diversities.update_from_page!
+  @vendor.supplier_diversities.add Hash.new # We'll just add the default value.
+                                            # For some reason, we still need to provide an empty hash.
 end
 

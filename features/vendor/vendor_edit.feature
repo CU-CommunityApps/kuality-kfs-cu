@@ -72,7 +72,7 @@ Feature: Vendor Edit
     When    I edit a Vendor with Vendor Number 12587-1
     Then    the changes to Vendor document have persisted
 
-  @KFSQA-839 @wip
+  @KFSQA-839 @wip1
   Scenario: FTC/BSC edit of the vendor shows the vendor address generated field and the attachments are attached
     Given I am logged in as FTC/BSC member User
     And   I edit a random PO Vendor

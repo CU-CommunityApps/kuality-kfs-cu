@@ -9,7 +9,7 @@ class AddressLineObject
   end
 
   def update_extended_attributes(opts={})
-    on(VendorPage).update_method_of_po_transmission(@line_number).fit opts[:method_of_po_transmission]
+    on(VendorPage).update_method_of_po_transmission(@line_number).fit opts[:method_of_po_transmission] unless opts[:method_of_po_transmission].nil?
     @method_of_po_transmission = opts[:method_of_po_transmission]
   end
 
