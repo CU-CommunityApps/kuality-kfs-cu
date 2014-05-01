@@ -72,21 +72,24 @@ Feature: Vendor Edit
     When    I edit a Vendor with Vendor Number 12587-1
     Then    the changes to Vendor document have persisted
 
-  @KFSQA-839 @wip1
+  @KFSQA-839 @wip
   Scenario: FTC/BSC edit of the vendor shows the vendor address generated field and the attachments are attached
     Given I am logged in as FTC/BSC member User
     And   I edit a random PO Vendor
+    And   I note how many attachments the Vendor document has already
     When  I add a Search Alias to the Vendor document
     And   I add an attachment to the Vendor document
-    And   I inspect the Vendor document
-    And   I stop here
+#    And   I inspect the Vendor document
+#    And   I stop here
     And   I submit the Vendor document
     Then  The document should have no errors
     And   the file is attached to the Vendor document
-    And   the next pending action for the Vendor document is an APPROVE from a KFS-SYS Vendor Reviewer
+#   And   I open the document with ID 5358403
+    And   the next pending action for the Vendor document is an APPROVE from a KFS-VND Reviewer
     When  I switch to the user with the next Pending Action in the Route Log
     And   I view the Vendor document
-    And   I add a new Supplier Diversity to the Vendor document
+    And   I add a Supplier Diversity to the Vendor document
+    And   I stop here
     And   I submit the Vendor document
     Then  The document should have no errors
     And   the document status is FINAL

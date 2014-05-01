@@ -60,3 +60,14 @@ And(/^I print out all "(field|button|select|checkbox|radio|link)" on the page$/)
     end
   end
 end #print all
+
+And /^I open the document with ID (\d+)$/ do |document_id|
+  visit(MainPage).doc_search
+  on DocumentSearch do |search|
+    search.document_type.fit ''
+    search.document_id.fit   document_id
+    search.search
+    search.wait_for_search_results
+    search.open_doc document_id
+  end
+end

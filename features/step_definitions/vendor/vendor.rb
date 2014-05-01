@@ -425,7 +425,7 @@ And /^I edit a random PO Vendor$/ do
   end
 end
 
-And /^I add a new Supplier Diversity to the Vendor document$/ do
+And /^I add a Search Alias to the Vendor document$/ do
   on VendorPage do |page|
     @vendor.search_aliases.update_from_page!
     @vendor.search_aliases.add Hash.new # We'll just add the default value.
@@ -433,7 +433,7 @@ And /^I add a new Supplier Diversity to the Vendor document$/ do
   end
 end
 
-And /^I add a Search Alias to the Vendor document$/ do
+And /^I add a Supplier Diversity to the Vendor document$/ do
   on(VendorPage).expand_all
   @vendor.supplier_diversities.update_from_page!
   @vendor.supplier_diversities.add Hash.new # We'll just add the default value.

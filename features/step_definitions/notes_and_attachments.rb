@@ -41,8 +41,10 @@ And /^I add an attachment to the (.*) document$/ do |document|
                                     file:      'vendor_attachment_test.png'
 end
 
+And /^I note how many attachments the (.*) document has already$/ do |document|
+  @attachments_count = on(page_class_for(document)).notes_and_attachments_count
+end
+
 And /^the file is attached to the (.*) document$/ do |document|
-  #pending document_object_for(document).notes_and_attachments_tab.first.file
-  #document_object_for(document).notes_and_attachments_tab.first.file
-  warn "Step 'the file is attached to the #{document} document' is not actually complete yet!"
+  on(page_class_for(document)).notes_and_attachments_count.should == @attachments_count + 1
 end
