@@ -9,6 +9,8 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     |Account Type       | Grant       |
     |Commodity Code     | Sensitive   |
     |APO                | GT          |
+#    |Default PM         | P           |
+    # default PM can ve implemented after alternate PM is moved to upgrade
 #    |APO            | GT          |
     # Vendor Type : Foreign, External, Internal
     # Account Type : Grant, ?.

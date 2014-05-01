@@ -436,6 +436,8 @@ And /^I create an empty Requisition document$/  do
 end
 
 Then /^I switch to the user with the next Pending Action in the Route Log to approve (.*) document to Final$/ do |document|
+
+  # TODO : Should we collect the app doc status to make sure that this process did go thru all the route nodes ?
   x = 0 # in case something wrong , limit to 10
   while true && x < 10
     new_user = ''

@@ -15,9 +15,9 @@ Given  /^I INITIATE A REQS with following:$/ do |table|
   commodity_code = '10100000' # sensitive
   #commodity_code = '14111703'  # regular
   #account_number = get_aft_parameter_value('REQS_' + (arguments['Account Type'].nil? ? 'NONGRANT' : arguments['Account Type'].upcase) + '_ACCOUNT') # from service or parameter
-  account_number = '1278003' # this is grant
-  #account_number = '1093603' # nongrant account ?
-  #apo_amount = get_parameter_value('KFS-PURAP', 'AUTOMATIC_PURCHASE_ORDER_DEFAULT_LIMIT_AMOUNT').to_i
+  #account_number = '1278003' # this is grant
+  account_number = '1093603' # nongrant account ?
+  #apo_amount = get_parameter_values('KFS-PURAP', 'AUTOMATIC_PURCHASE_ORDER_DEFAULT_LIMIT_AMOUNT', 'Requisition')[0].to_i
   apo_amount = 10000
   #apo_amount = 500000
   apo_op = arguments['APO']
