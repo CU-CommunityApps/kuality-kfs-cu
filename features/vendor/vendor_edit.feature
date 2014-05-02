@@ -6,7 +6,7 @@ Feature: Vendor Edit
   
   [KFSQA-839] Verify that a FTC/BSC can edit the vendor record it routes to
               the vendor reviewer and shows the vendor address generated field 
-              on the inquiry screen and the attachment are still attached. 
+              on the inquiry screen and the attachment are still attached.
 
   @KFSQA-755 @cornell @slug @wipA
   Scenario: I want to edit a vendor with ownership type INDIVIDUAL
@@ -72,7 +72,7 @@ Feature: Vendor Edit
     When    I edit a Vendor with Vendor Number 12587-1
     Then    the changes to Vendor document have persisted
 
-  @KFSQA-839 @wip
+  @KFSQA-839 @wip1
   Scenario: FTC/BSC edit of the vendor shows the vendor address generated field and the attachments are attached
     Given I am logged in as FTC/BSC member User
     And   I edit a random PO Vendor

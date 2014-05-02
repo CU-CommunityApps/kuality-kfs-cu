@@ -2,6 +2,7 @@
 class VendorObject
 
    attr_accessor :w9_received_date, :default_payment_method,
+                 # == Insurance Tracking Tab (wouldn't hurt to break it off eventually) ==
                  :general_liability_coverage_amt, :general_liability_expiration_date,
                  :automobile_liability_coverage_amt, :automobile_liability_expiration_date,
                  :workman_liability_coverage_amt,:workman_liability_expiration_date,
@@ -32,7 +33,7 @@ class VendorObject
    end
 
   def fill_out_extended_attributes
-    fill_out page, :w9_received_date, :default_payment_method
+    on(VendorPage) { |page| fill_out page, :w9_received_date, :default_payment_method }
     @supplier_diversities.add Hash.new
   end
 

@@ -26,7 +26,7 @@ class AddressLineObjectCollection
     on VendorPage do |b|
       case target
         when :old; result = { method_of_po_transmission: b.old_method_of_po_transmission(i) }
-        when :new; result = { method_of_po_transmission: b.new_method_of_po_transmission(i).selected_options.first.text }
+        when :new; result = { method_of_po_transmission: b.update_method_of_po_transmission(i).selected_options.first.text }
       end
     end
 

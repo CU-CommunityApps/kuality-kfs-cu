@@ -88,5 +88,13 @@ class VendorPage
   }
   action(:update_supplier_diversity_active) { |i=0, b| b.supplier_diversity_tab.checkbox(id: "document.newMaintainableObject.vendorHeader.vendorSupplierDiversities[#{i}].active") }
 
+  action(:old_supplier_diversity_type) { |i=0, b|
+    b.supplier_diversity_tab.span(id: "document.oldMaintainableObject.vendorHeader.vendorSupplierDiversities[#{i}].vendorSupplierDiversityCode.div").text.strip
+  }
+  action(:old_supplier_diversity_certification_expiration_date) { |i=0, b|
+    b.supplier_diversity_tab.span(id: "document.oldMaintainableObject.vendorHeader.vendorSupplierDiversities[#{i}].extension.vendorSupplierDiversityExpirationDate.div").text.strip
+  }
+  action(:old_supplier_diversity_active) { |i=0, b| b.supplier_diversity_tab.span(id: "document.oldMaintainableObject.vendorHeader.vendorSupplierDiversities[#{i}].active.div").text.strip }
+
 
 end
