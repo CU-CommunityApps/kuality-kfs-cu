@@ -79,8 +79,8 @@ Feature: Vendor Edit
     And   I note how many attachments the Vendor document has already
     When  I add a Search Alias to the Vendor document
     And   I add an attachment to the Vendor document
-#    And   I inspect the Vendor document
-#    And   I stop here
+    And   I inspect the Vendor document
+    And   I stop here
     And   I submit the Vendor document
     Then  The document should have no errors
     And   the file is attached to the Vendor document

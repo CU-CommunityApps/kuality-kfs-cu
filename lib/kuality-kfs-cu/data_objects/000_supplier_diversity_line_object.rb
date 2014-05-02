@@ -54,14 +54,14 @@ class SupplierDiversityLineObjectCollection < LineObjectCollection
 
   contains SupplierDiversityLineObject
 
-  def update_from_page!
+  def update_from_page!(target=:new)
     on VendorPage do |lines|
       clear # Drop any cached lines. More reliable than sorting out an array merge.
 
       lines.expand_all
       unless lines.current_supplier_diversity_count.zero?
         (0..(lines.current_supplier_diversity_count - 1)).to_a.collect!{ |i|
-          lines.pull_existing_supplier_diversity(i).merge(pull_extended_existing_supplier_diversity(i))
+          pull_existing_supplier_diversity(i).merge(pull_extended_existing_supplier_diversity(i))
         }.each { |new_obj|
           # Update the stored lines
           self << (make contained_class, new_obj)
@@ -71,11 +71,38 @@ class SupplierDiversityLineObjectCollection < LineObjectCollection
     end
   end
 
+  # @return [Hash] The return values of attributes for the given line
+  # @param [Fixnum] i The line number to look for (zero-based)
+  # @param [Symbol] target Which address to pull from (most useful during a copy action). Defaults to :new
+  # @return [Hash] The known line values
+  def pull_existing_supplier_diversity(i=0, target=:new)
+    pulled_supplier_diversity = Hash.new
+
+    on VendorPage do |vp|
+      case target
+        when :old
+          pulled_supplier_diversity = {
+              type:                          vp.update_supplier_diversity_type(i).text.strip,
+              certification_expiration_date: vp.update_supplier_diversity_certification_expiration_date(i).value.strip,
+              active:                        yesno2setclear(vp.update_supplier_diversity_active(i).value.strip)
+          }
+        when :new
+          pulled_supplier_diversity = {
+              type:                          vp.update_supplier_diversity_type(i).text.strip,
+              certification_expiration_date: vp.update_supplier_diversity_certification_expiration_date(i).value.strip,
+              active:                        yesno2setclear(vp.update_supplier_diversity_active(i).value.strip)
+          }
+      end
+    end
+
+    pulled_supplier_diversity
+  end
+
   # @return [Hash] The return values of extended attributes for the given line
   # @param [Fixnum] i The line number to look for (zero-based)
-  # @param [Watir::Browser] b The current browser object
+  # @param [Symbol] target Which address to pull from (most useful during a copy action). Defaults to :new
   # @return [Hash] The known line values
-  def pull_extended_existing_supplier_diversity(i=0)
+  def pull_extended_existing_supplier_diversity(i=0, target=:new)
     # This can be implemented for site-specific attributes. See the Hash returned in
     # the #collect! in #update_from_page! above for the kind of way to get the
     # right return value.

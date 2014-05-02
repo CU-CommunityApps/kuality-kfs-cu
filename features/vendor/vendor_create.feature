@@ -96,7 +96,7 @@ Feature: Vendor Create
 
   @KFSQA-636 @cornell @tortoise @wipA
   Scenario: I want to create a vendor with ownership type CORPORATION that is NON-FOREIGN with Contract
-    Given   I am logged in as a Vendor Initiator
+    Given   I am logged in as a Vendor Contract Editor(cu)
     When    I create a Corporation and Non-Foreign Vendor with Contract
     And     I save the Vendor document
     And     I add an attachment to the Vendor document
@@ -106,7 +106,7 @@ Feature: Vendor Create
     And     I view the Vendor document
     And     I approve the Vendor document
     Then    the Vendor document goes to FINAL
-    When    I am logged in as a Vendor Initiator
+    When    I am logged in as a Vendor Contract Editor(cu)
     Then    the Vendor document should be in my action list
 
   @KFSQA-637 @cornell @tortoise @wipA

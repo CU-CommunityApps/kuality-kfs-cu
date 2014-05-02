@@ -39,13 +39,6 @@ class VendorPage
   action(:update_supplier_diversity_certification_expiration_date) { |i=0, b| b.frm.div(id: 'tab-SupplierDiversity-div').text_field(id: "document.newMaintainableObject.vendorHeader.vendorSupplierDiversities[#{i}].extension.vendorSupplierDiversityExpirationDate") }
   action(:update_supplier_diversity_active) { |i=0, b| b.frm.div(id: 'tab-SupplierDiversity-div').checkbox(id: "document.newMaintainableObject.vendorHeader.vendorSupplierDiversities[#{i}].active") }
 
-  action(:pull_existing_supplier_diversity) do |i=0, b|
-    {
-        type:   b.update_supplier_diversity_type(i).text.strip,
-        certification_expiration_date:   b.update_supplier_diversity_certification_expiration_date(i).value.strip,
-        active: yesno2setclear(b.update_supplier_diversity_active(i).value.strip)
-    }
-  end
   value(:current_supplier_diversity_count) { |b| b.frm.div(id: 'tab-SearchAlias-div').spans(class: 'left', text: /Supplier Diversity [(]/m).length }
 
 end

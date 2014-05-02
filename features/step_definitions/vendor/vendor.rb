@@ -98,7 +98,8 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
                 manager:           'Scott Otey',
                 po_cost_source:    'Pricing Agreement',
                 b2b:               'No',
-                payment_terms:     'Net 5 Days'
+                payment_terms:     'Net 5 Days',
+                default_apo_limit: '100000'
               }
               new_supplier_diversity = {
                 type:                          'VETERAN OWNED',
@@ -174,20 +175,26 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
   end
   @vendor = create VendorObject, default_fields
   @vendor.update_line_objects_from_page!
-  if @vendor.addresses.length.zero?
-    @vendor.addresses.add new_address
-  else
-    @vendor.addresses.first.edit new_address
+  unless new_address.empty?
+    if @vendor.addresses.length.zero?
+      @vendor.addresses.add new_address
+    else
+      @vendor.addresses.first.edit new_address
+    end
   end
-  if @vendor.supplier_diversities.length.zero?
-    @vendor.supplier_diversities.add new_supplier_diversity
-  else
-    @vendor.supplier_diversities.first.edit new_supplier_diversity.delete(:type)
+  unless new_supplier_diversity.empty?
+    if @vendor.supplier_diversities.length.zero?
+      @vendor.supplier_diversities.add new_supplier_diversity
+    else
+      @vendor.supplier_diversities.first.edit new_supplier_diversity.delete(:type)
+    end
   end
-  if @vendor.contracts.length.zero?
-    @vendor.contracts.add new_contract
-  else
-    @vendor.contracts.first.edit new_contract
+  unless new_contract.empty?
+    if @vendor.contracts.length.zero?
+      @vendor.contracts.add new_contract
+    else
+      @vendor.contracts.first.edit new_contract
+    end
   end
 
 end
@@ -369,15 +376,19 @@ And /^I create a DV Vendor$/  do
     method_of_po_transmission: ''
   }
   @vendor.update_line_objects_from_page!
-  if @vendor.addresses.length.zero?
-    @vendor.addresses.add new_address
-  else
-    @vendor.addresses.first.edit new_address
+  unless new_address.empty?
+    if @vendor.addresses.length.zero?
+      @vendor.addresses.add new_address
+    else
+      @vendor.addresses.first.edit new_address
+    end
   end
-  if @vendor.supplier_diversities.length.zero?
-    @vendor.supplier_diversities.add new_supplier_diversity
-  else
-    @vendor.supplier_diversities.first.edit new_supplier_diversity.delete(:type)
+  unless new_supplier_diversity.empty?
+    if @vendor.supplier_diversities.length.zero?
+      @vendor.supplier_diversities.add new_supplier_diversity
+    else
+      @vendor.supplier_diversities.first.edit new_supplier_diversity.delete(:type)
+    end
   end
 
 end
@@ -418,23 +429,22 @@ And /^I edit a random PO Vendor$/ do
   end
   on VendorPage do |page|
     page.description.fit random_alphanums(40, 'AFT')
-    @vendor = make VendorObject, description: page.description.text.strip,
-                                 document_id: page.document_id
-    @vendor.update_line_objects_from_page!
+    # @vendor = make VendorObject, description: page.description.text.strip,
+    #                              document_id: page.document_id
+    # @vendor.update_line_objects_from_page!
+    @vendor = make VendorObject
+    @vendor.absorb(:old)
     @document_id = @vendor.document_id
   end
 end
 
 And /^I add a Search Alias to the Vendor document$/ do
-  on VendorPage do |page|
     @vendor.search_aliases.update_from_page!
     @vendor.search_aliases.add Hash.new # We'll just add the default value.
-    # For some reason, we still need to provide an empty hash.
-  end
+                                        # For some reason, we still need to provide an empty hash.
 end
 
 And /^I add a Supplier Diversity to the Vendor document$/ do
-  on(VendorPage).expand_all
   @vendor.supplier_diversities.update_from_page!
   @vendor.supplier_diversities.add Hash.new # We'll just add the default value.
                                             # For some reason, we still need to provide an empty hash.

@@ -19,11 +19,18 @@ class AddressLineObjectCollection
 
   # @return [Hash] The return values of extended attributes for the given line
   # @param [Fixnum] i The line number to look for (zero-based)
-  # @param [Watir::Browser] b The current browser object
+  # @param [Symbol] target Which address to pull from (most useful during a copy action). Defaults to :new
   # @return [Hash] The known line values
-  def pull_extended_existing_address(i=0)
+  def pull_extended_existing_address(i=0, target=:new)
     result = Hash.new
-    on(VendorPage){ |b| result = { method_of_po_transmission: b.update_method_of_po_transmission(i).selected_options.first.text } }
+
+    case target
+      when :old
+        on(VendorPage){ |b| result = { method_of_po_transmission: b.update_method_of_po_transmission(i).selected_options.first.text } }
+      when :new
+        on(VendorPage){ |b| result = { method_of_po_transmission: b.update_method_of_po_transmission(i).selected_options.first.text } }
+    end
+
     result
   end
 
