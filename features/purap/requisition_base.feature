@@ -3,10 +3,10 @@ Feature: PURAP manual entry greater than 500 but less than 25000
   @KFSQA-853 @pending @purap @coral @wip
   Scenario: PURAP manual >$500, <$25000 external vendor no wire
   Given I INITIATE A REQS with following:
-    |Vendor Type        | Foreign     |
+    |Vendor Type        | NonB2B     |
     |Add Vendor On REQS | No          |
-    |Positive Approval  | Checked     |
-    |Account Type       | Grant       |
+    |Positive Approval  | Unchecked     |
+    |Account Type       | NonGrant       |
     |Commodity Code     | Sensitive   |
     |APO                | GT          |
 #    |Default PM         | P           |

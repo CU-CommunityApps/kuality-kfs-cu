@@ -6,8 +6,8 @@ Given  /^I INITIATE A REQS with following:$/ do |table|
   if arguments['Vendor Type'].nil? || arguments['Vendor Type'] != 'Blank'
     puts 'vendor type ','REQS_' + (arguments['Vendor Type'].nil? ? 'NONB2B' : arguments['Vendor Type'].upcase + '_VENDOR')
      #@vendor_number = get_aft_parameter_value('REQS_' + arguments['Vendor Type'].nil? ? 'NONB2B' : arguments['Vendor Type'].upcase + '_VENDOR')
-     #@vendor_number = '27015-0' #NonB2B
-    @vendor_number = '39210-0' #foreign vendor
+     @vendor_number = '27015-0' #NonB2B
+    #@vendor_number = '39210-0' #foreign vendor
   end
   add_vendor = arguments['Add Vendor On REQS'].nil? ? 'Yes' : arguments['Vendor Type']
   positive_approve = arguments['Positive Approval'].nil? ? 'Unchecked' : arguments['Positive Approval']
@@ -19,7 +19,7 @@ Given  /^I INITIATE A REQS with following:$/ do |table|
   account_number = '1093603' # nongrant account ?
   #apo_amount = get_parameter_values('KFS-PURAP', 'AUTOMATIC_PURCHASE_ORDER_DEFAULT_LIMIT_AMOUNT', 'Requisition')[0].to_i
   apo_amount = 10000
-  #apo_amount = 500000
+  #apo_amount = 5000000
   apo_op = arguments['APO']
   item_qty = 1
   if (apo_op.nil? || apo_op == 'LT')
@@ -179,7 +179,7 @@ end
 And /^I select continue on Format Disbursement Summary$/ do
   on(FormatDisbursementSummaryPage).continue_format
   # this will take a while
-  sleep 30
+  sleep 60
 end
 
 And /^a Format Summary Lookup displays$/ do
