@@ -95,7 +95,7 @@ Feature: Vendor Create
     When    I am logged in as a Vendor Initiator
     Then    the Vendor document should be in my action list
 
-  @KFSQA-636 @cornell @tortoise @wip
+  @KFSQA-636 @cornell @tortoise @wipA
   Scenario: I want to create a vendor with ownership type CORPORATION that is NON-FOREIGN with Contract
     Given   I am logged in as a Vendor Contract Editor(cu)
     When    I create a Corporation and Non-Foreign Vendor with Contract
