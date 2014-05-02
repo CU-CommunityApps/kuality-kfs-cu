@@ -17,18 +17,17 @@ end
 
 class AddressLineObjectCollection
 
-  # @return [Hash] The return values of extended attributes for the given line
   # @param [Fixnum] i The line number to look for (zero-based)
   # @param [Symbol] target Which address to pull from (most useful during a copy action). Defaults to :new
-  # @return [Hash] The known line values
+  # @return [Hash] The return values of attributes for the given line
   def pull_extended_existing_address(i=0, target=:new)
     result = Hash.new
 
-    case target
-      when :old
-        on(VendorPage){ |b| result = { method_of_po_transmission: b.update_method_of_po_transmission(i).selected_options.first.text } }
-      when :new
-        on(VendorPage){ |b| result = { method_of_po_transmission: b.update_method_of_po_transmission(i).selected_options.first.text } }
+    on VendorPage do |b|
+      case target
+        when :old; result = { method_of_po_transmission: b.old_method_of_po_transmission(i) }
+        when :new; result = { method_of_po_transmission: b.new_method_of_po_transmission(i).selected_options.first.text }
+      end
     end
 
     result
