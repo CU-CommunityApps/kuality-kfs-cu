@@ -25,7 +25,11 @@ class VendorPage
 
   # Supplier Diversity
   action(:add_supplier_diversity) { |b| b.frm.button(id: /methodToCall.addLine.vendorHeader.vendorSupplierDiversities/m).click }
-  action(:show_supplier_diversities) { |b| b.frm.button(name: 'methodToCall.toggleTab.tabSupplierDiversity').click }
+  action(:show_supplier_diversities_button) { |b| b.frm.button(id: 'tab-SupplierDiversity-imageToggle') }
+  value(:supplier_diversities_tab_shown?) { |b| b.show_supplier_diversities_button.title.match(/close Supplier Diversity/m) }
+  value(:supplier_diversities_tab_hidden?) { |b| !b.supplier_diversities_tab_shown? }
+  action(:show_supplier_diversities) { |b| b.show_supplier_diversities_button.click }
+  alias_method :hide_supplier_diversities, :show_supplier_diversities
 
   element(:new_supplier_diversity_type) { |b| b.frm.select(name: 'document.newMaintainableObject.add.vendorHeader.vendorSupplierDiversities.vendorSupplierDiversityCode') }
   alias_method :supplier_diversity, :new_supplier_diversity_type
