@@ -429,13 +429,8 @@ And /^I edit a random PO Vendor$/ do
   end
   on VendorPage do |page|
     page.description.fit random_alphanums(40, 'AFT')
-    # @vendor = make VendorObject, description: page.description.text.strip,
-    #                              document_id: page.document_id
-    # @vendor.update_line_objects_from_page!
     @vendor = make VendorObject
     @vendor.absorb(:old)
-    puts @vendor.inspect
-    pending
     @document_id = @vendor.document_id
   end
 end
