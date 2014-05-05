@@ -420,19 +420,21 @@ And /^I change Remit Address and the Foreign Tax Address$/ do
   end
 end
 
-And /^I edit a random PO Vendor$/ do
+And /^I lookup a random PO Vendor$/ do
   visit(MainPage).vendor
   on VendorLookupPage do |page|
     page.active_indicator_yes.set
+    #page.document_id.fit ''
     page.search
     page.edit_random
   end
-  on VendorPage do |page|
-    page.description.fit random_alphanums(40, 'AFT')
-    @vendor = make VendorObject
-    @vendor.absorb(:old)
-    @document_id = @vendor.document_id
-  end
+end
+
+And /^I edit a random PO Vendor$/ do
+  step 'I lookup a random PO Vendor'
+  @vendor = make VendorObject
+  @vendor.absorb(:old)
+  @document_id = @vendor.document_id
 end
 
 And /^I add a Search Alias to the Vendor document$/ do

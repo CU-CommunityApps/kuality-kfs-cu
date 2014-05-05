@@ -25,9 +25,8 @@ When /^I view the (.*) document$/ do |document|
 end
 
 When /^I (#{BasePage::available_buttons}) the (.*) document$/ do |button, document|
-  doc_object = snake_case document
   button.gsub!(' ', '_')
-  get(doc_object).send(button)
+  document_object_for(document).send(button)
   on(YesOrNoPage).yes if button == 'cancel'
   sleep 10 if (button == 'blanket approve' || button == 'approve' || 'submit')
 end
@@ -97,10 +96,5 @@ Then /^the document status is (.*)/ do |doc_status|
 end
 
 And /^I remember the (.*) document number$/ do |document|
-  doc_object = snake_case document
-  page_klass = Kernel.const_get(get(doc_object).class.to_s.gsub(/(.*)Object$/,'\1Page'))
-
-  on page_klass do |page|
-    @remembered_document_id = page.document_id
-  end
+  @remembered_document_id = on(page_class_for(document)).document_id
 end
