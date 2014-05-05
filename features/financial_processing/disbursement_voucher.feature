@@ -375,13 +375,14 @@ Feature: Disbursement Voucher
     And   I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to FINAL
 
-  @KFSQA-711 @cornell @coral
+  @KFSQA-711 @cornell @coral @wip
   Scenario: Disbursement Voucher foreign draft with non resident tax and workflow changes for Account, Object Code, and Amount.
-    Given I am logged in as a KFS User
+    Given I am logged in as a Vendor Initiator
     When  I edit a Vendor with Vendor Number 5328-1
     And   I add an Address to a Vendor with following fields:
       | Address Type   | RM - REMIT        |
       | Address 1      | 3430 McTavish St  |
+      | Address 2      | Pick Me           |
       | City           | Montreal, Quebec  |
       | Zip Code       | H3A_1X9           |
       | Country        | Canada            |

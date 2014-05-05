@@ -214,12 +214,13 @@ Then /^the Vendor document should be in my action list$/ do
 end
 
 And /^I edit a Vendor with Vendor Number (.*)$/ do |vendor_number|
-  visit(MainPage).vendor
-  on VendorLookupPage do |page|
-    page.vendor_number.fit vendor_number
-    page.search
-    page.edit_item(vendor_number)
-  end
+  # visit(MainPage).vendor
+  # on VendorLookupPage do |page|
+  #   page.vendor_number.fit vendor_number
+  #   page.search
+  #   page.edit_item(vendor_number)
+  # end
+  step "I lookup a Vendor with Vendor Number #{vendor_number}"
   on VendorPage do |page|
     page.description.fit random_alphanums(40, 'AFT')
     @vendor = make VendorObject, description: page.description.text.strip,
@@ -297,7 +298,7 @@ And /^I add an Address to a Vendor with following fields:$/ do |table|
                         address_2:   vendor_address['Address 2'] ||= '',
                         city:        vendor_address['City'] ||= '',
                         state:       vendor_address['State'] ||= '',
-                        postal_code: vendor_address['Postal Code'] ||= '',
+                        postal_code: vendor_address['Zip Code'] ||= '',
                         province:  vendor_address['Province'] ||= '',
                         country:   vendor_address['Country'] ||= '',
                         attention: vendor_address['Attention'] ||= '',
@@ -307,6 +308,23 @@ And /^I add an Address to a Vendor with following fields:$/ do |table|
                         active: yesno2setclear(vendor_address['Active'] ||= 'YES'),
                         set_as_default: vendor_address['Set As Default?'] ||= 'No',
                         method_of_po_transmission: vendor_address['Method of PO Transmission'] ||= '' # Cornell-specific mod
+  @added_address = @vendor.addresses.find_all do |addr|
+    addr.type == (vendor_address['Address Type'] ||= '') and
+    addr.address_1 == (vendor_address['Address 1'] ||= '') and
+    addr.address_2 == (vendor_address['Address 2'] ||= '') and
+    addr.city == (vendor_address['City'] ||= '') and
+    addr.state == (vendor_address['State'] ||= '') and
+    addr.postal_code == (vendor_address['Zip Code'] ||= '') and
+    addr.province == (vendor_address['Province'] ||= '') and
+    addr.country == (vendor_address['Country'] ||= '') and
+    addr.attention == (vendor_address['Attention'] ||= '') and
+    addr.url == (vendor_address['URL'] ||= '') and
+    addr.fax == (vendor_address['Fax'] ||= '') and
+    addr.email == (vendor_address['Email'] ||= '') and
+    addr.active == (yesno2setclear(vendor_address['Active'] ||= 'YES')) and
+    addr.set_as_default == (vendor_address['Set As Default?'] ||= 'No') and
+    addr.method_of_po_transmission == (vendor_address['Method of PO Transmission'] ||= '')
+  end.sort{|a, b| a.line_number <=> b.line_number}.last
 end
 
 And /^I update the General Liability with expired date$/ do
@@ -414,20 +432,24 @@ And /^the Address changes persist$/ do
 end
 
 And /^I change Remit Address and the Foreign Tax Address$/ do
-  on VendorPage do |page|
+  #on VendorPage do |page|
     @vendor.addresses[0].edit address_1: random_alphanums(30, 'AFT')
     @vendor.addresses[1].edit address_2: random_alphanums(30, 'AFT')
+  #end
+end
+
+And /^I lookup a Vendor with Vendor Number (.*)$/ do |vendor_number|
+  visit(MainPage).vendor
+  on VendorLookupPage do |page|
+    page.active_indicator_yes.set
+    page.vendor_number.fit vendor_number
+    page.search
+    page.edit_item vendor_number # This should throw a fail if the item isn't found.
   end
 end
 
 And /^I lookup a random PO Vendor$/ do
-  visit(MainPage).vendor
-  on VendorLookupPage do |page|
-    page.active_indicator_yes.set
-    #page.document_id.fit ''
-    page.search
-    page.edit_random
-  end
+  step 'I lookup a Vendor with Vendor Number  ' # Eventually, we should set this to a provided PO Vendor
 end
 
 And /^I edit a random PO Vendor$/ do
