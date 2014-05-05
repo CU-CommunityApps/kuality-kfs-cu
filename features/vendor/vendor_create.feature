@@ -125,7 +125,7 @@ Feature: Vendor Create
     When    I am logged in as a Vendor Initiator
     Then    the Vendor document should be in my action list
 
-  @KFSQA-774 @KFSQA-775 @cornell @slug @wip
+  @KFSQA-774 @KFSQA-775 @cornell @slug @wipA
   Scenario Outline: I want to create a DV vendor with ACH/Check or Wire as the default payment method.
     Given   I am logged in as a Vendor Initiator
     When    I create a DV Vendor

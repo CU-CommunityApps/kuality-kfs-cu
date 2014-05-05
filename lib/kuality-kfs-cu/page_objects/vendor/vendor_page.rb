@@ -58,10 +58,10 @@ class VendorPage
   action(:old_contract_extension_option_date) { |i=0, b| b.contracts_tab.span(id: "document.oldMaintainableObject.vendorContracts[#{i}].vendorContractExtensionDate.div").text.strip }
 
   # Address
-  element(:method_of_po_transmission) { |b| b.addresses_tab.select(name: 'document.newMaintainableObject.add.vendorAddresses.extension.purchaseOrderTransmissionMethodCode') }
+  element(:method_of_po_transmission) { |b| b.addresses_tab.select(id: 'document.newMaintainableObject.add.vendorAddresses.extension.purchaseOrderTransmissionMethodCode') }
   alias_method :new_method_of_po_transmission, :method_of_po_transmission
-  element(:update_method_of_po_transmission) { |i=0, b| b.addresses_tab.select(name: "document.newMaintainableObject.vendorAddresses[#{i}].extension.purchaseOrderTransmissionMethodCode") }
-  element(:old_method_of_po_transmission) { |i=0, b| b.addresses_tab.span(name: "document.oldMaintainableObject.vendorAddresses[#{i}].extension.purchaseOrderTransmissionMethodCode.div").text.strip }
+  element(:update_method_of_po_transmission) { |i=0, b| b.addresses_tab.select(id: "document.newMaintainableObject.vendorAddresses[#{i}].extension.purchaseOrderTransmissionMethodCode") }
+  element(:old_method_of_po_transmission) { |i=0, b| b.addresses_tab.span(id: "document.oldMaintainableObject.vendorAddresses[#{i}].extension.purchaseOrderTransmissionMethodCode.div").text.strip }
 
   # Supplier Diversity
   element(:supplier_diversity_tab) { |b| b.frm.div(id: 'tab-SupplierDiversity-div') }

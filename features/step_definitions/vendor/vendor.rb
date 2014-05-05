@@ -434,6 +434,8 @@ And /^I edit a random PO Vendor$/ do
     # @vendor.update_line_objects_from_page!
     @vendor = make VendorObject
     @vendor.absorb(:old)
+    puts @vendor.inspect
+    pending
     @document_id = @vendor.document_id
   end
 end

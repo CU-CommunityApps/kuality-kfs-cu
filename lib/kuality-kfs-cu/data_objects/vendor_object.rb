@@ -13,37 +13,29 @@ class VendorObject
                  # == Collections ==
                  :supplier_diversities
 
-   def defaults
-     super.merge({
-       vendor_type:                'PO - PURCHASE ORDER',
-       vendor_name:                'Keith, inc',
-       foreign:                    'No',
-       tax_number:                 "999#{rand(9)}#{rand(1..9)}#{rand(1..9999).to_s.rjust(4, '0')}",
-       tax_number_type_ssn:        :set,
-       ownership:                  'INDIVIDUAL/SOLE PROPRIETOR',
-       w9_received:                'Yes',
-       w9_received_date:           yesterday[:date_w_slashes],
-       search_aliases:             collection('SearchAliasLineObject'),
-       phone_numbers:              collection('PhoneLineObject'),
-       addresses:                  collection('AddressLineObject'),
-       contacts:                   collection('ContactLineObject'),
-       contracts:                  collection('ContractLineObject'),
-       supplier_diversities:       collection('SupplierDiversityLineObject')
-     })
+   def extended_defaults
+     {
+       w9_received_date:     yesterday[:date_w_slashes],
+       supplier_diversities: collection('SupplierDiversityLineObject')
+     }
    end
 
   def fill_out_extended_attributes
-    on(VendorPage) { |page| fill_out page, :w9_received_date, :default_payment_method }
-    @supplier_diversities.add Hash.new
+    on(VendorPage) do |page|
+      fill_out page, :w9_received_date, :default_payment_method,
+                     :general_liability_coverage_amt, :general_liability_expiration_date,
+                     :automobile_liability_coverage_amt, :automobile_liability_expiration_date,
+                     :workman_liability_coverage_amt, :workman_liability_expiration_date,
+                     :excess_liability_umb_amt, :excess_liability_umb_expiration_date,
+                     :health_offset_lic_expiration_date, :health_offsite_catering_lic_req,
+                     :cornell_additional_ins_ind, :insurance_note,
+                     :insurance_requirements_complete, :insurance_requirement_indicator
+    end
+    @supplier_diversities.add Hash.new # Let's always add a supplier diversity.
   end
 
-  def update_line_objects_from_page!(target=:new)
-    super
-    @phone_numbers.update_from_page!(target)
-    @addresses.update_from_page!(target)
-    @contacts.update_from_page!(target)
-    @contracts.update_from_page!(target)
-    @supplier_diversities.update_from_page!(target) # FIXME: Copy this entire method to kuality-kfs-cu project, then remove this line here
+  def update_extended_line_objects_from_page!(target=:new)
+    @supplier_diversities.update_from_page!(target)
   end
 
    # @return [Hash] The return values of extended attributes for the old Vendor
@@ -69,7 +61,7 @@ class VendorObject
              cornell_additional_ins_ind:      vp.old_cornell_additional_ins_ind,
              health_offsite_catering_lic_req: vp.old_health_offsite_catering_lic_req,
              insurance_requirements_complete: vp.old_insurance_requirements_complete,
-             insurance_requirement_indicator: vp.old_insurance_requirement_indicator
+             insurance_requirement_indicator: yesno2setclear(vp.old_insurance_requirement_indicator)
            }
          when :new
            pulled_vendor = {
