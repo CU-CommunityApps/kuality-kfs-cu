@@ -75,34 +75,21 @@ Feature: KFS Fiscal Officer Account Copy
   Scenario Outline: CB and BB Balances from BA Import Template updates General Ledger
     Given   I am logged in as a KFS User for the <type code> document
     #djj1
-    And     I capture the CB balance amount on the GLB for:
-      | balance type code | CB      |
-      | object code       | 4480    |
-      | account number    | G013300 |
-      | chart code        | IT      |
-    And     I capture the BB balance amount on the GLB for:
-      | balance type code | BB      |
-      | object code       | 4480    |
-      | account number    | G013300 |
-      | chart code        | IT      |
-#    And     I capture the CB for the <account number>
-    And  I fail the test
     And     I start a <document> document for from "<From file name>" file import and to "<To file name>" file import
     And     on the <document> I import the From Accounting Lines from a csv file
+    And     I capture the From Accounting Lines for the <document>
     And     on the <document> I import the To Accounting Lines from a csv file
+    And     I capture the To Accounting Lines for the <document>
     And     I submit the <document> document
-    And I sleep for 15
-#    And     I upload BA Template with Current Amount and Base Amount
     And     I am logged in as "dh273"
     When    I view the <document> document
     And     I blanket approve the Budget Adjustment document
     And     the Budget Adjustment document goes to FINAL
-#    And     Nightly Batch Jobs run
+    And     Nightly Batch Jobs run
     And     I am logged in as a KFS User for the <type code> document
-    When    I view the <document> document on the General Ledger Entry
-    Then    The BA Template Current Amount equals the General Ledger CB Balance
-    Then    The BA Template Base Amount equals the General Ledger BB Balance
-     Examples:
+    And     I view the General Ledger Balance From account with balance type code of CB
+    Then    The BA Template Current Amount equals the General Ledger Balance for CB
+    Examples:
     | document          | type code | From file name      | To file name      |
     | Budget Adjustment | BA        | BA_test_from.csv    | BA_test_to.csv    |
     #This for when BA doesn't allow
