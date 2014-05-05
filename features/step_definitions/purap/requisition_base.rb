@@ -4,7 +4,6 @@ Given  /^I INITIATE A REQS with following:$/ do |table|
   step "I login as a PURAP eSHop user"
   # TODO : more work here to get all the parameters right
   if arguments['Vendor Type'].nil? || arguments['Vendor Type'] != 'Blank'
-    puts 'vendor type ','REQS_' + (arguments['Vendor Type'].nil? ? 'NONB2B' : arguments['Vendor Type'].upcase + '_VENDOR')
      #@vendor_number = get_aft_parameter_value('REQS_' + arguments['Vendor Type'].nil? ? 'NONB2B' : arguments['Vendor Type'].upcase + '_VENDOR')
      @vendor_number = '27015-0' #NonB2B
     #@vendor_number = '39210-0' #foreign vendor
@@ -20,12 +19,17 @@ Given  /^I INITIATE A REQS with following:$/ do |table|
   #apo_amount = get_parameter_values('KFS-PURAP', 'AUTOMATIC_PURCHASE_ORDER_DEFAULT_LIMIT_AMOUNT', 'Requisition')[0].to_i
   apo_amount = 10000
   #apo_amount = 5000000
-  apo_op = arguments['APO']
+  amount = arguments['Amount']
   item_qty = 1
-  if (apo_op.nil? || apo_op == 'LT')
+  if amount.nil? || amount == 'LT APO'
     item_qty = apo_amount/1000 - 1
   else
-    item_qty = apo_amount/1000 + 1
+    case amount
+      when 'GT APO'
+        item_qty = apo_amount/1000 + 1
+      else
+        item_qty = amount.to_i/1000 + 1
+    end
   end
   # so far it used 6540, 6560, 6570 which are all EX type (Expense Expenditure)
   object_code = 6540
