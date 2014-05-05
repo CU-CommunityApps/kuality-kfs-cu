@@ -5,7 +5,7 @@ And /^I access Document Search$/ do
 end
 
 And /^I search for all (.*) documents$/ do |doc_type|
-  on DocumentSearch do |page|
+  visit DocumentSearch do |page|
     page.date_created_from.fit '01/01/2014'
     page.document_type.fit doc_type
     page.search
@@ -24,8 +24,7 @@ When /^I copy a document with a (.*) status$/ do |status|
 end
 
 When /^I reopen the document$/ do
-  visit(DocumentSearch)
-  on DocumentSearch do |page|
+  visit DocumentSearch do |page|
     page.document_id.fit @document_id
     page.search
     page.open_doc(@document_id)
@@ -33,7 +32,7 @@ When /^I reopen the document$/ do
 end
 
 When /^I lookup the document ID for the (.*) document from the General Ledger$/ do |document|
-  target_document_id = get(snake_case(document)).document_id
+  target_document_id = document_object_for(document).document_id
 
   visit(MainPage).general_ledger_entry
   on GeneralLedgerEntryLookupPage do |page|

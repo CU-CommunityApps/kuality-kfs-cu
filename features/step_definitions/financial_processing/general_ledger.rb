@@ -3,13 +3,13 @@ When /^I perform a (.*) Lookup using account number (.*)$/ do |gl_balance_inquir
   visit(MainPage).send(gl_balance_inquiry_lookup)
   if gl_balance_inquiry_lookup == 'current_fund_balance'
     on CurrentFundBalanceLookupPage do |page|
-      page.chart_code.fit     'IT'
+      page.chart_code.fit     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
       page.account_number.fit account_number
       page.search
     end
   else
     on GeneralLedgerEntryLookupPage do |page|
-      page.chart_code.fit     'IT' #TODO get from config
+      page.chart_code.fit     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
       page.account_number.fit account_number
       page.search
     end
@@ -17,7 +17,7 @@ When /^I perform a (.*) Lookup using account number (.*)$/ do |gl_balance_inquir
 end
 
 Then /^the (.*) document GL Entry Lookup matches the document's GL entry$/ do |document|
-  step "I look up the #{document} document in the GL"
+  step "I lookup the Source Accounting Line of the #{document} document in the GL"
 
   on GeneralLedgerEntryLookupPage do |page|
     tled_col = page.results_table.keyed_column_index(:transaction_ledger_entry_description)
@@ -45,13 +45,13 @@ Then /^the (.*) document GL Entry Lookup matches the document's GL entry$/ do |d
 end
 
 And /^the (.*) document has matching GL and GLPE offsets$/ do |document|
-  step "I look up the offset for the #{document} document in the document's GLPE entry"
-  step "I look up the offset for the #{document} document in the document's GL entry"
+  step "I lookup the offset for the #{document} document in the document's GLPE entry"
+  step "I lookup the offset for the #{document} document in the document's GL entry"
   @glpe_offset_amount.should == @gl_offset_amount
 end
 
-And /^I look up the offset for the (.*) document in the document's GLPE entry$/ do |document|
-  step "I look up the #{document} document in the GLPE"
+And /^I lookup the offset for the (.*) document in the document's GLPE entry$/ do |document|
+  step "I lookup the Source Accounting Line of the #{document} document in the GLPE"
 
   on GeneralLedgerPendingEntryLookupPage do |page|
     tled_col = page.results_table.keyed_column_index(:transaction_ledger_entry_description)
@@ -82,8 +82,8 @@ And /^I look up the offset for the (.*) document in the document's GLPE entry$/ 
   end
 end
 
-And /^I look up the offset for the (.*) document in the document's GL entry$/ do |document|
-  step "I look up the #{document} document in the GL"
+And /^I lookup the offset for the (.*) document in the document's GL entry$/ do |document|
+  step "I lookup the Source Accounting Line of the #{document} document in the GL"
 
   on GeneralLedgerEntryLookupPage do |page|
     tled_col = page.results_table.keyed_column_index(:transaction_ledger_entry_description)
@@ -115,7 +115,7 @@ And /^I look up the offset for the (.*) document in the document's GL entry$/ do
 end
 
 And /^the Object Codes for the (.*) document appear in the document's GLPE entry$/ do |document|
-  step "I look up the #{document} document in the GLPE"
+  step "I lookup the Source Accounting Line of the #{document} document in the GLPE"
 
   on GeneralLedgerPendingEntryLookupPage do |page|
     document_object_for(document).accounting_lines.each_value do |als|
@@ -132,28 +132,31 @@ And /^the Object Codes for the (.*) document appear in the document's GLPE entry
   end
 end
 
-And /^I look up the (.*) document in the GLPE$/ do |document|
+And /^I lookup the (Encumbrance|Disencumbrance|Source|Target|From|To) Accounting Line of the (.*) document in the GLPE$/ do |al_type, document|
   doc_object = document_object_for(document)
+  alt = AccountingLineObject::get_type_conversion(al_type)
 
   visit(MainPage).general_ledger_pending_entry
   on GeneralLedgerPendingEntryLookupPage do |page|
     page.balance_type_code.fit         ''
-    page.chart_code.fit                doc_object.accounting_lines[:source][0].chart_code # We're assuming this exists, of course.
+    page.chart_code.fit                doc_object.accounting_lines[alt][0].chart_code # We're assuming this exists, of course.
     page.fiscal_year.fit               right_now[:year]
     page.fiscal_period.fit             fiscal_period_conversion(right_now[:MON])
     page.account_number.fit            '*'
     page.reference_document_number.fit doc_object.document_id
+    page.pending_entry_all.set
     page.search
   end
 end
 
-And /^I look up the (.*) document in the GL$/ do |document|
+And /^I lookup the (Encumbrance|Disencumbrance|Source|Target|From|To) Accounting Line of the (.*) document in the GL$/ do |al_type, document|
   doc_object = document_object_for(document)
+  alt = AccountingLineObject::get_type_conversion(al_type)
 
   visit(MainPage).general_ledger_entry
   on GeneralLedgerEntryLookupPage do |page|
     page.balance_type_code.fit         ''
-    page.chart_code.fit                doc_object.accounting_lines[:source][0].chart_code # We're assuming this exists, of course.
+    page.chart_code.fit                doc_object.accounting_lines[alt][0].chart_code # We're assuming this exists, of course.
     page.fiscal_year.fit               right_now[:year]
     page.fiscal_period.fit             fiscal_period_conversion(right_now[:MON])
     page.account_number.fit            '*'
@@ -161,4 +164,30 @@ And /^I look up the (.*) document in the GL$/ do |document|
     page.pending_entry_approved_indicator_all
     page.search
   end
+end
+
+And /^the (Encumbrance|Disencumbrance|Source|Target|From|To) Accounting Line appears in the (.*) document's (GLPE|GL) entry$/ do |al_type, document, entry_lookup|
+  doc_object = document_object_for(document)
+  alt = AccountingLineObject::get_type_conversion(al_type)
+  step "I lookup the #{al_type} Accounting Line of the #{document} document in the #{entry_lookup}"
+
+  case entry_lookup
+    when 'GLPE'
+      on(GeneralLedgerPendingEntryLookupPage).open_item_via_text(doc_object.accounting_lines[alt].first.line_description, doc_object.document_id)
+    when 'GL'
+      on(GeneralLedgerEntryLookupPage).open_item_via_text(doc_object.accounting_lines[alt].first.line_description, doc_object.document_id)
+    else
+      %w('GLPE', 'GL').any? { |opt| opt.include? entry_lookup }
+  end
+
+  step "the #{al_type} Accounting Line entry matches the #{document} document's entry"
+end
+
+When /^I lookup all entries for the current month in the General Ledger Balance lookup entry$/ do
+  # This assumes you're already on the GLBL entry page somehow
+  on(GeneralLedgerBalanceLookupPage).single_entry_monthly_item(fiscal_period_conversion(right_now[:MON]))
+end
+
+Then /^the General Ledger Balance lookup displays the document ID for the (.*) document$/ do |document|
+  on(GeneralLedgerBalanceLookupPage).item_row(document_object_for(document).document_id).should
 end
