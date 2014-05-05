@@ -97,7 +97,10 @@ And /^I copy a Disbursement Voucher document with Tax Address to persist$/ do
   old_address.should == copied_address
 end
 
-
 Then /^The eMail Address shows up in the Contact Information Tab$/ do
   on(DisbursementVoucherPage).email_address.value.should_not == ''
+end
+
+Then /^The Payee Name shows as "(.*)"$/ do |payee_name|
+  on(PaymentInformationTab).payee_name.should == payee_name
 end

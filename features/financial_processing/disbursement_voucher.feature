@@ -134,7 +134,7 @@ Feature: Disbursement Voucher
     And   I start an empty Disbursement Voucher document
     When  I add the only payee with Payee Id as57 and Reason Code B to the Disbursement Voucher
     Then  The Payee Name shows as "Shapiro, Anne"
-    Then    The eMail Address shows up in the Contact Information Tab
+    Then  The eMail Address shows up in the Contact Information Tab
 
   @KFSQA-709 @hare
   Scenario: KFS User Initiates a Disbursement Voucher document with only a description field
