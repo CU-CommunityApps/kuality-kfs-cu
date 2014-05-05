@@ -75,7 +75,6 @@ And /^I change the Check Amount for the Disbursement Voucher document to (.*)$/ 
 end
 
 When /^I start an empty Disbursement Voucher document with Payment to a Petty Cash Vendor$/ do
-  #TODO : vendor number '41473-0' should be retrieved from service
   @disbursement_voucher = create DisbursementVoucherObject, payee_id: get_aft_parameter_value('DV_PETTY_CASH_VENDOR'), payment_reason_code: 'K - Univ PettyCash Custodian Replenishment'
 end
 
