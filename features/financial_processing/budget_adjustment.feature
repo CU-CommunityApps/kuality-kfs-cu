@@ -71,7 +71,7 @@ Feature: KFS Fiscal Officer Account Copy
     | document            | type code | From file name              | To file name             |
     | Budget Adjustment   | BA        | BA_test_from.csv            | BA_test_to.csv           |
 
-  @wip @KFSQA-670 @cornell @nightly-jobs
+  @KFSQA-670 @cornell @slug @nightly-jobs
   Scenario Outline: CB and BB Balances from BA Import Template updates General Ledger
     Given   I am logged in as a KFS User for the <type code> document
     #djj1
