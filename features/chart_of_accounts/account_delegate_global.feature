@@ -8,7 +8,7 @@ Feature: Account Delegate Global
 
   @KFSQA-568 @hare
   Scenario: Edit and Cancel an Account Delegate Model
-    Given   I am logged in as a KFS Chart User
+    Given   I am logged in as a KFS Chart Administrator
     And     I edit an Account Delegate Model
     When    I cancel the Account Delegate Model document
     Then    I should return to the Main Menu
