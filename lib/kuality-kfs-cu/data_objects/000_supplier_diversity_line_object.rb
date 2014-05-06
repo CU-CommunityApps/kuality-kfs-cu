@@ -30,8 +30,8 @@ class SupplierDiversityLineObject < DataFactory
 
   def edit(opts={})
     raise ArgumentError, 'Supplier Diversity type cannot be updated!' unless opts[:type].nil?
-    on(VendorPage).supplier_diversity_certification_expiration_date(@line_number).fit opts[:certification_expiration_date] unless opts[:certification_expiration_date].nil?
-    on(VendorPage).supplier_diversity_active(@line_number).fit opts[:active] unless opts[:active].nil?
+    on(VendorPage).supplier_diversity_certification_expiration_date(@line_number).fit opts[:certification_expiration_date]
+    on(VendorPage).supplier_diversity_active(@line_number).fit opts[:active]
     update_options(opts)
   end
 

@@ -239,6 +239,7 @@ And /^the Tax Number and Notes are Not Visible on Vendor page$/ do
 end
 
 And /^I change the Phone (\w+) on Vendor Phone tab$/ do |phone_field|
+  puts "Before: #{@vendor.phone_numbers.first.inspect}"
   on VendorPage do |page|
     page.expand_all
     if page.updated_phone_number.exists?
@@ -248,12 +249,17 @@ And /^I change the Phone (\w+) on Vendor Phone tab$/ do |phone_field|
         when 'Extension'
           @vendor.phone_numbers.first.edit extension: rand(100..999)
         when 'Type'
-          @vendor.phone_numbers.first.edit type: 'MOBILE'
+          current_selection = @vendor.phone_numbers.first.type
+          @vendor.phone_numbers.first.edit type: '::random::'
+          while current_selection == @vendor.phone_numbers.first.type
+            @vendor.phone_numbers.first.edit type: '::random::' # Try again if the random selector picked the current value
+          end
       end
     else
       @vendor.phone_numbers.add number: "607-#{rand(100..999)}-#{rand(1000..9999)}", type: 'SALES'
     end
   end
+  puts "After: #{@vendor.phone_numbers.first.inspect}"
 end
 
 And /^I change the Address (\w+) ?(\d)? on Vendor Address tab$/ do |line_or_attention, which_line|
