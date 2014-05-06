@@ -7,6 +7,8 @@ Feature: KFS Fiscal Officer Account Copy
   [KFSQA-629] Bug: Budget Adjustment Import Template incorrectly importing Base Budgets (BB),
               As a KFS User I want to import only BA Base Budget amounts using templates to
               make the budgeting process more efficient.
+  [KFSQA-670] BA Import Template CB and BB Uploads, Cornell University requires CB and BB Balances uploaded through an Import Template to be recorded in the General Ledger.
+
   [KFSQA-729] Cornell University requires that a Budget Adjustment must route to all Fiscal Officers.
 
   @KFSQA-623 @hare
@@ -55,8 +57,8 @@ Feature: KFS Fiscal Officer Account Copy
 # GETTING ERROR FOR NOT ALLOWING BASE ADJUSTMENT FOR YEARS 2014 and 2015 (only available)
     Given   I am logged in as a KFS User for the <type code> document
     And     I start a <document> document for from "<From file name>" file import and to "<To file name>" file import
-    And     On the <document> I import the From Accounting Lines from a csv file
-    And     On the <document> I import the To Accounting Lines from a csv file
+    And     on the <document> I import the From Accounting Lines from a csv file
+    And     on the <document> I import the To Accounting Lines from a csv file
     And     I submit the <document> document
     And     I am logged in as a KFS Fiscal Officer
     # Not sure if FO is the correct user required to blanket approve a BA but 'dh273' is
@@ -68,6 +70,32 @@ Feature: KFS Fiscal Officer Account Copy
   Examples:
     | document            | type code | From file name              | To file name             |
     | Budget Adjustment   | BA        | BA_test_from.csv            | BA_test_to.csv           |
+
+  @KFSQA-670 @cornell @slug @nightly-jobs
+  Scenario Outline: CB and BB Balances from BA Import Template updates General Ledger
+    Given   I am logged in as a KFS User for the <type code> document
+    #djj1
+    And     I start a <document> document for from "<From file name>" file import and to "<To file name>" file import
+    And     on the <document> I import the From Accounting Lines from a csv file
+    And     I capture the From Accounting Lines for the <document>
+    And     on the <document> I import the To Accounting Lines from a csv file
+    And     I capture the To Accounting Lines for the <document>
+    And     I submit the <document> document
+    And     I am logged in as "dh273"
+    When    I view the <document> document
+    And     I blanket approve the Budget Adjustment document
+    And     the Budget Adjustment document goes to FINAL
+    And     Nightly Batch Jobs run
+    And     I am logged in as a KFS User for the <type code> document
+    And     I view the General Ledger Balance From account with balance type code of CB
+    Then    The BA Template Current Amount equals the General Ledger Balance for CB
+    Examples:
+    | document          | type code | From file name      | To file name      |
+    | Budget Adjustment | BA        | BA_test_from.csv    | BA_test_to.csv    |
+    #This for when BA doesn't allow
+#    | Budget Adjustment | BA        | BA_import_from.csv  | BA_import_to.csv  |
+
+
 
 
 
