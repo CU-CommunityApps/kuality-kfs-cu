@@ -3,9 +3,8 @@ When /^I start an empty Labor Journal Voucher document$/ do
 end
 
 And /^I (#{LaborJournalVoucherPage::available_buttons}) a Labor Journal Voucher document$/ do |button|
-  button.gsub!(' ', '_')
   @labor_journal_voucher = create LaborJournalVoucherObject,
-                              press: nil, # We should add the accounting lines before submitting, eh?
+                              press: button.gsub(' ', '_'),
                               initial_lines: [
                                   {
                                       type:             :source,
@@ -22,8 +21,4 @@ And /^I (#{LaborJournalVoucherPage::available_buttons}) a Labor Journal Voucher 
                                       line_description: nil
                                   }
                               ]
-
-  on LaborJournalVoucherPage do |page|
-    page.send(button)
-  end
 end
