@@ -31,7 +31,7 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
             address_2:                 '(127 Matt Street)',
             city:                      'Hanover',
             state:                     'MA',
-            zipcode:                   '02359',
+            postal_code:               '02359',
             country:                   'United States',
             method_of_po_transmission: 'US MAIL'
           }
@@ -73,7 +73,7 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
                 address_2:                 '(127 Matt Street)',
                 city:                      'Hanover',
                 state:                     'MA',
-                zipcode:                   '02359',
+                postal_code:               '02359',
                 country:                   'United States',
                 method_of_po_transmission: 'US MAIL'
               }
@@ -111,7 +111,7 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
                 address_2:                 '25 Boylston St.',
                 city:                      'Boston',
                 state:                     'MA',
-                zipcode:                   '02359',
+                postal_code:               '02359',
                 country:                   'United States',
                 method_of_po_transmission: 'US MAIL'
               }
@@ -138,7 +138,7 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
             address_2:                 '(127 Matt and Dave Street)	',
             city:                      'Hanover',
             state:                     'MA',
-            zipcode:                   '02359',
+            postal_code:               '02359',
             country:                   'United States',
             method_of_po_transmission: 'US MAIL'
           }
@@ -166,7 +166,7 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
                 address_2:                 '(127 Walkway)',
                 city:                      'Hollywood',
                 state:                     'CA',
-                zipcode:                   '91190',
+                postal_code:                   '91190',
                 country:                   'United States',
                 method_of_po_transmission: 'US MAIL'
               }
@@ -388,7 +388,7 @@ And /^I create a DV Vendor$/  do
     address_2:                 '(127 Matt Street)',
     city:                      'Hanover',
     state:                     'MA',
-    zipcode:                   '02359',
+    postal_code:               '02359',
     country:                   'United States',
     set_as_default:            'Yes',
     method_of_po_transmission: ''

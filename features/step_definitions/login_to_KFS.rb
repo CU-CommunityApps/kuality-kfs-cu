@@ -102,7 +102,7 @@ end
 
 Then /^I switch to the user with the next Pending Action in the Route Log$/ do
   new_user = ''
-  on(FinancialProcessingPage) do |page|
+  on FinancialProcessingPage do |page|
     page.expand_all
     page.show_route_log unless page.route_log_shown?
 
@@ -130,7 +130,7 @@ end
 
 Then /^I switch to the user with the next Pending Action in the Route Log for the (.*) document$/ do |document|
   new_user = ''
-  on(page_class_for(document)) do |page|
+  on page_class_for(document) do |page|
     page.expand_all
     page.pnd_act_req_table[1][2].links[0].click
     page.use_new_tab
