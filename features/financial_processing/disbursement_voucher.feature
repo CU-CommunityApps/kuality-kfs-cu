@@ -128,13 +128,13 @@ Feature: Disbursement Voucher
     When    I start an empty Disbursement Voucher document
     Then    The eMail Address shows up in the Contact Information Tab
 
-  @KFSQA-699 @hare @wip
+  @KFSQA-699 @create @dv @hare @cornell
   Scenario: Retrieve a DV Payee with their NetID (Cornell Modification)
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
-    When  I add the only payee with Payee Id as57 and Reason Code B to the Disbursement Voucher
-    Then  The Payee Name shows as "Shapiro, Anne"
-    Then  The eMail Address shows up in the Contact Information Tab
+    And   I add the only payee with Payee Id as57 and Reason Code B to the Disbursement Voucher
+    When  the Payee Name shows as "Shapiro, Anne"
+    Then  the eMail Address shows up in the Contact Information Tab
 
   @KFSQA-709 @hare
   Scenario: KFS User Initiates a Disbursement Voucher document with only a description field

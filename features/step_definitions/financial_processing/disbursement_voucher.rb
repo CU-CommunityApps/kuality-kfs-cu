@@ -25,7 +25,7 @@ And /^I add the only payee with Payee Id (\w+) and Reason Code (\w+) to the Disb
       @disbursement_voucher.payment_reason_code = 'B - Reimbursement for Out-of-Pocket Expenses'
   end
   on (PaymentInformationTab) do |tab|
-    on(PaymentInformationTab).payee_search
+    tab.payee_search
     on PayeeLookup do |plookup|
       plookup.payment_reason_code.fit @disbursement_voucher.payment_reason_code
       plookup.netid.fit               net_id
@@ -97,10 +97,10 @@ And /^I copy a Disbursement Voucher document with Tax Address to persist$/ do
   old_address.should == copied_address
 end
 
-Then /^The eMail Address shows up in the Contact Information Tab$/ do
+Then /^the eMail Address shows up in the Contact Information Tab$/ do
   on(DisbursementVoucherPage).email_address.value.should_not == ''
 end
 
-Then /^The Payee Name shows as "(.*)"$/ do |payee_name|
+Then /^the Payee Name shows as "(.*)"$/ do |payee_name|
   on(PaymentInformationTab).payee_name.should == payee_name
 end
