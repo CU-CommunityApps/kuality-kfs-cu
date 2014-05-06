@@ -8,6 +8,7 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
   new_address = Hash.new
   new_supplier_diversity = Hash.new
   new_contract = Hash.new
+  file_to_attach = ''
   case ownership_type
     when 'Corporation'
       case sub_type
@@ -18,9 +19,9 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
             foreign:              'Yes',
             tax_number_type_ssn:  nil,
             tax_number_type_fein: :set,
-            ownership:            'CORPORATION',
-            attachment_file_name: 'vendor_attachment_test.png',
+            ownership:            'CORPORATION'
           }
+          file_to_attach = 'vendor_attachment_test.png'
           new_supplier_diversity = {
             type:                          'VETERAN OWNED',
             certification_expiration_date: '09/10/2015',
@@ -65,7 +66,7 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
               }
               new_supplier_diversity = {
                 type:                          'VETERAN OWNED',
-                certification_expiration_date: '09/10/2015',
+                certification_expiration_date: '09/10/2015'
               }
               new_address = {
                 type:                      'PO - PURCHASE ORDER',
@@ -86,9 +87,9 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
                 tax_number_type_fein:   :set,
                 ownership:              'CORPORATION',
                 w9_received:            'Yes',
-                w9_received_date:       '02/01/2014',
-                attachment_file_name:   'vendor_attachment_test.png',
+                w9_received_date:       '02/01/2014'
               }
+              file_to_attach = 'vendor_attachment_test.png'
               new_contract = {
                 name:              'Lesh Bass Agreement',
                 description:       'Lesh Bass Agreement, 8 String Bass',
@@ -125,9 +126,9 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
             tax_number_type_fein: :set,
             ownership:            'CORPORATION',
             w9_received:          'Yes',
-            w9_received_date:     '02/01/2014',
-            attachment_file_name: 'vendor_attachment_test.png',
+            w9_received_date:     '02/01/2014'
           }
+          file_to_attach = 'vendor_attachment_test.png'
           new_supplier_diversity = {
             type:                          'VETERAN OWNED',
             certification_expiration_date: '09/10/2015',
@@ -152,13 +153,13 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
                 vendor_type:                'PO - PURCHASE ORDER',
                 vendor_name:                'Ron McKernan Enterprises',
                 foreign:                    'No',
-                attachment_file_name:       'vendor_attachment_test.png',
                 insurance_requirements_complete: 'Yes',
                 cornell_additional_ins_ind:      'Yes'
               }
+              file_to_attach = 'vendor_attachment_test.png'
               new_supplier_diversity = {
                 type:                          'HUBZONE',
-                certification_expiration_date: '09/10/2015',
+                certification_expiration_date: '09/10/2015'
               }
               new_address = {
                 type:                      'PO - PURCHASE ORDER',
@@ -175,6 +176,9 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
   end
   @vendor = create VendorObject, default_fields
   @vendor.update_line_objects_from_page!
+  unless file_to_attach.empty?
+    @vendor.notes_and_attachments_tab.add file: file_to_attach
+  end
   unless new_address.empty?
     if @vendor.addresses.length.zero?
       @vendor.addresses.add new_address
@@ -214,12 +218,6 @@ Then /^the Vendor document should be in my action list$/ do
 end
 
 And /^I edit a Vendor with Vendor Number (.*)$/ do |vendor_number|
-  # visit(MainPage).vendor
-  # on VendorLookupPage do |page|
-  #   page.vendor_number.fit vendor_number
-  #   page.search
-  #   page.edit_item(vendor_number)
-  # end
   step "I lookup a Vendor with Vendor Number #{vendor_number}"
   on VendorPage do |page|
     page.description.fit random_alphanums(40, 'AFT')
@@ -239,7 +237,6 @@ And /^the Tax Number and Notes are Not Visible on Vendor page$/ do
 end
 
 And /^I change the Phone (\w+) on Vendor Phone tab$/ do |phone_field|
-  puts "Before: #{@vendor.phone_numbers.first.inspect}"
   on VendorPage do |page|
     page.expand_all
     if page.updated_phone_number.exists?
@@ -259,7 +256,6 @@ And /^I change the Phone (\w+) on Vendor Phone tab$/ do |phone_field|
       @vendor.phone_numbers.add number: "607-#{rand(100..999)}-#{rand(1000..9999)}", type: 'SALES'
     end
   end
-  puts "After: #{@vendor.phone_numbers.first.inspect}"
 end
 
 And /^I change the Address (\w+) ?(\d)? on Vendor Address tab$/ do |line_or_attention, which_line|
@@ -382,11 +378,10 @@ And /^I create a DV Vendor$/  do
                    tax_number_type_fein:        :set,
                    ownership:                  'CORPORATION',
                    w9_received:                'Yes',
-                   w9_received_date:           yesterday[:date_w_slashes],
-                   attachment_file_name:       'vendor_edit_attachment_2.png'
+                   w9_received_date:           yesterday[:date_w_slashes]
   new_supplier_diversity = {
       type:                          'HUBZONE',
-      certification_expiration_date: tomorrow[:date_w_slashes],
+      certification_expiration_date: tomorrow[:date_w_slashes]
   }
   new_address = {
     type:                      'RM - REMIT',
@@ -400,6 +395,7 @@ And /^I create a DV Vendor$/  do
     method_of_po_transmission: ''
   }
   @vendor.update_line_objects_from_page!
+  @vendor.notes_and_attachments_tab.add file: 'vendor_edit_attachment_2.png'
   unless new_address.empty?
     if @vendor.addresses.length.zero?
       @vendor.addresses.add new_address
@@ -438,10 +434,8 @@ And /^the Address changes persist$/ do
 end
 
 And /^I change Remit Address and the Foreign Tax Address$/ do
-  #on VendorPage do |page|
-    @vendor.addresses[0].edit address_1: random_alphanums(30, 'AFT')
-    @vendor.addresses[1].edit address_2: random_alphanums(30, 'AFT')
-  #end
+  @vendor.addresses[0].edit address_1: random_alphanums(30, 'AFT')
+  @vendor.addresses[1].edit address_2: random_alphanums(30, 'AFT')
 end
 
 And /^I lookup a Vendor with Vendor Number (.*)$/ do |vendor_number|
