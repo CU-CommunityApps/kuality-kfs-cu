@@ -8,7 +8,7 @@ Then /^an error should say (.*)$/ do |error|
   $current_page.errors.should include errors[error]
 end
 
-Then /^The document should have no errors$/ do
+Then /^the document should have no errors$/ do
   $current_page.errors.should == []
 end
 

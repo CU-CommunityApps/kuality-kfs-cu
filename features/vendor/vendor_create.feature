@@ -35,7 +35,7 @@ Feature: Vendor Create
   [KFSQA-776] I want to create a DV vendor with foreign draft as the default payment method. Per Cornell policy,
               on subsequent lookups, The initiator will not be allowed to view the Tax ID and Attachments for this vendor.
 
-  @KFSQA-638 @cornell @tortoise @wipA
+  @KFSQA-638 @cornell @tortoise
   Scenario: I want to create a vendor with ownership type INDIVIDUAL
     Given   I am logged in as a Vendor Initiator
     When    I start an empty Vendor document
@@ -50,7 +50,7 @@ Feature: Vendor Create
     When    I am logged in as a Vendor Initiator
     Then    the Vendor document should be in my action list
 
-  @KFSQA-635 @cornell @tortoise @wipA
+  @KFSQA-635 @cornell @tortoise
   Scenario: I want to create a vendor with ownership type CORPORATION that is NON-FOREIGN
     Given   I am logged in as a Vendor Contract Editor(cu)
     When    I create a Corporation and Non-Foreign Vendor with Contract and Insurance
@@ -65,7 +65,7 @@ Feature: Vendor Create
     When    I am logged in as a Vendor Contract Editor(cu)
     Then    the Vendor document should be in my action list
 
-  @KFSQA-633 @cornell @tortoise @wipA
+  @KFSQA-633 @cornell @tortoise
   Scenario: I want to create a vendor with ownership type CORPORATION that is e-SHOP
     Given   I am logged in as a Vendor Initiator
     When    I create a Corporation and e-SHOP Vendor
@@ -80,7 +80,7 @@ Feature: Vendor Create
     When    I am logged in as a Vendor Initiator
     Then    the Vendor document should be in my action list
 
-  @KFSQA-634 @cornell @tortoise @wipA
+  @KFSQA-634 @cornell @tortoise
   Scenario: I want to create a vendor with ownership type CORPORATION that is Foreign
     Given   I am logged in as a Vendor Initiator
     When    I create a Corporation and Foreign Vendor
@@ -95,7 +95,7 @@ Feature: Vendor Create
     When    I am logged in as a Vendor Initiator
     Then    the Vendor document should be in my action list
 
-  @KFSQA-636 @cornell @tortoise @wipA
+  @KFSQA-636 @cornell @tortoise
   Scenario: I want to create a vendor with ownership type CORPORATION that is NON-FOREIGN with Contract
     Given   I am logged in as a Vendor Contract Editor(cu)
     When    I create a Corporation and Non-Foreign Vendor with Contract
@@ -110,7 +110,7 @@ Feature: Vendor Create
     When    I am logged in as a Vendor Contract Editor(cu)
     Then    the Vendor document should be in my action list
 
-  @KFSQA-637 @cornell @tortoise @wipA
+  @KFSQA-637 @cornell @tortoise
   Scenario: I want to create a vendor with ownership type INDIVIDUAL that is NON-FOREIGN with Insurance
     Given   I am logged in as a Vendor Initiator
     When    I create an Individual and Non-Foreign Vendor with Insurance
@@ -125,7 +125,7 @@ Feature: Vendor Create
     When    I am logged in as a Vendor Initiator
     Then    the Vendor document should be in my action list
 
-  @KFSQA-774 @KFSQA-775 @cornell @slug @wipA
+  @KFSQA-774 @KFSQA-775 @cornell @slug
   Scenario Outline: I want to create a DV vendor with ACH/Check or Wire as the default payment method.
     Given   I am logged in as a Vendor Initiator
     When    I create a DV Vendor
@@ -145,7 +145,7 @@ Feature: Vendor Create
     | P                      |
     | W                      |
 
-  @KFSQA-776 @cornell @tortoise @wipA
+  @KFSQA-776 @cornell @tortoise
   Scenario: I want to create a DV vendor with foreign draft as the default payment method.
     Given   I am logged in as a Vendor Initiator
     When    I create a DV Vendor
