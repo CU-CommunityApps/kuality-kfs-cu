@@ -8,7 +8,7 @@ Feature: Vendor Edit
               the vendor reviewer and shows the vendor address generated field 
               on the inquiry screen and the attachment are still attached.
 
-  @KFSQA-755 @cornell @slug
+  @KFSQA-755 @cornell @slug @E2E @VendorCreate
   Scenario: I want to edit a vendor with ownership type INDIVIDUAL
     # "rlc56" can't view notes
     Given   I am logged in as "rlc56"
@@ -42,7 +42,7 @@ Feature: Vendor Edit
     Then    the Tax Number and Notes are Not Visible on Vendor page
     And     the Address and Phone Number changes persist
 
-  @KFSQA-773 @cornell @slug
+  @KFSQA-773 @cornell @slug @E2E @VendorCreate
   Scenario: PO Vendor Edit, with Expired Insurance.
     # "ccs1" can blanket approve
     Given   I am logged in as "ccs1"
@@ -72,7 +72,7 @@ Feature: Vendor Edit
     When    I edit a Vendor with Vendor Number 12587-1
     Then    the changes to Vendor document have persisted
 
-  @KFSQA-839 @wip
+  @KFSQA-839 @Edit @Routing @smoke @wip
   Scenario: FTC/BSC edit of the vendor shows the vendor address generated field and the attachments are attached
     Given I am logged in as FTC/BSC member User
     And   I edit a random PO Vendor
