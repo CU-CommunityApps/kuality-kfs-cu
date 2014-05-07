@@ -204,8 +204,6 @@ Feature: Disbursement Voucher
     And   I submit the Disbursement Voucher document
     When  the Disbursement Voucher document goes to ENROUTE
     Then  The Payment Information address equals the overwritten address information
-    When  I copy the Disbursement Voucher document
-    Then  the copied DV payment address equals the selected address
 
   @KFSQA-710 @sloth
   Scenario: Verify using current mileage rate based on dates
