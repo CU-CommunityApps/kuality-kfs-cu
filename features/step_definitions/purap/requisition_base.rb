@@ -26,7 +26,7 @@ Given  /^I INITIATE A REQS with following:$/ do |table|
   # so far it used 6540, 6560, 6570 which are all EX type (Expense Expenditure)
   object_code = 6540
   step "I create the Requisition document with:", table(%{
-      | Vendor Number       | #{@vendor_number}   |
+      | Vendor Number       | #{@vendor_number}  |
       | Item Quantity       | #{item_qty}        |
       | Item Cost           | 1000               |
       | Item Commodity Code | #{commodity_code}  |
