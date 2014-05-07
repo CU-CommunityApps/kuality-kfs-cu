@@ -4,32 +4,22 @@ Given  /^I INITIATE A REQS with following:$/ do |table|
   step "I login as a PURAP eSHop user"
   # TODO : more work here to get all the parameters right
   if arguments['Vendor Type'].nil? || arguments['Vendor Type'] != 'Blank'
-    puts 'vendor type ','REQS_' + (arguments['Vendor Type'].nil? ? 'NONB2B' : arguments['Vendor Type'].upcase + '_VENDOR')
-     #@vendor_number = get_aft_parameter_value('REQS_' + (arguments['Vendor Type'].nil? ? 'NONB2B' : arguments['Vendor Type'].upcase) + '_VENDOR')
-     @vendor_number = '27015-0' #NonB2B
-    #@vendor_number = '39210-0' #foreign vendor
+    @vendor_number = get_aft_parameter_value('REQS_' + (arguments['Vendor Type'].nil? ? 'NONB2B' : arguments['Vendor Type'].upcase) + '_VENDOR')
   end
   add_vendor = arguments['Add Vendor On REQS'].nil? ? 'Yes' : arguments['Vendor Type']
   positive_approve = arguments['Positive Approval'].nil? ? 'Unchecked' : arguments['Positive Approval']
-   #commodity_code = get_aft_parameter_value('REQS_' + (arguments['Commodity Code'].nil? ? 'REGULAR' : arguments['Commodity Code'].upcase)+"_COMMODITY")
-  commodity_code = '10100000' # sensitive
-  #commodity_code = '14111703'  # regular
-  #account_number = get_aft_parameter_value('REQS_' + (arguments['Account Type'].nil? ? 'NONGRANT' : arguments['Account Type'].upcase) + '_ACCOUNT') # from service or parameter
-  #account_number = '1278003' # this is grant
-  account_number = '1093603' # nongrant account ?
-  #apo_amount = get_parameter_values('KFS-PURAP', 'AUTOMATIC_PURCHASE_ORDER_DEFAULT_LIMIT_AMOUNT', 'Requisition')[0].to_i
-  apo_amount = 10000
-  #apo_amount = 5000000
+  commodity_code = get_aft_parameter_value('REQS_' + (arguments['Commodity Code'].nil? ? 'REGULAR' : arguments['Commodity Code'].upcase)+"_COMMODITY")
+  account_number = get_aft_parameter_value('REQS_' + (arguments['Account Type'].nil? ? 'NONGRANT' : arguments['Account Type'].upcase) + '_ACCOUNT') # from service or parameter
+  apo_amount = get_parameter_values('KFS-PURAP', 'AUTOMATIC_PURCHASE_ORDER_DEFAULT_LIMIT_AMOUNT', 'Requisition')[0].to_i
   amount = arguments['Amount']
   @level = arguments['Level'].nil? ? 0 : arguments['Level'].to_i
   item_qty = 1
   if amount.nil? || amount == 'LT APO'
     item_qty = apo_amount/1000 - 1
   else
-    case amount
-      when 'GT APO'
+    if amount == 'GT APO'
         item_qty = apo_amount/1000 + 1
-      else
+    else
         item_qty = amount.to_i/1000 + 1
     end
   end
@@ -198,32 +188,21 @@ end
 Then /^the (.*) document routes to the correct individuals based on the org review levels$/ do |document|
   reqs_org_reviewers_level_1 = Array.new
   reqs_org_reviewers_level_2 = Array.new
-  po_base_org_reviewers = Array.new
-  po_reviewer_500k = ''
   po_reviewer_5m = ''
   if @level == 1
-    #reqs_org_reviewers_level_1 = get_principal_name_for_role('KFS-SYS', 'ORG 0100 Level 1 Review')
-    reqs_org_reviewers_level_1 = "map86,jjm33,dhb226".split(",")
+    reqs_org_reviewers_level_1 = get_principal_name_for_role('KFS-SYS', 'ORG 0100 Level 1 Review')
   else
     if @level >= 2
-      #reqs_org_reviewers_level_1 = get_principal_name_for_role('KFS-SYS', 'ORG 0100 Level 2 Review')
-      reqs_org_reviewers_level_2 = "mhf3,kjb4,map86,jjm33,dhb226".split(",")
-      #po_reviewer_500k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
-      po_reviewer_500k = 'jmd11'
-      #po_reviewer_5m = get_aft_parameter_value('PO_BASE_ORG_REVIEW_5M')
-      po_reviewer_5m = 'kdn1'
+      reqs_org_reviewers_level_2 = get_principal_name_for_role('KFS-SYS', 'ORG 0100 Level 2 Review')
     end
   end
 
   if (document == 'Purchase Order')
     puts 'base org review level ', @base_org_review_level
     @base_org_review_level.should == @level
-    ##po_reviewer_500k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
-    #po_reviewer_500k = 'jmd11'
-    ##po_reviewer_5m = get_aft_parameter_value('PO_BASE_ORG_REVIEW_5M')
-    #po_reviewer_5m = 'kdn1'
-    #po_reviewer_100k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_100K').split(',')
-    po_reviewer_100k = "cj242,mgw3,twr2".split(",")
+    po_reviewer_500k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
+    po_reviewer_5m = get_aft_parameter_value('PO_BASE_ORG_REVIEW_5M')
+    po_reviewer_100k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_100K').split(',')
 
     case @level
       when 1
@@ -242,16 +221,16 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
     end
   else if (document == 'Requisition' || document == 'Payment Request')
          puts 'route check', @org_review_users, reqs_org_reviewers_level_1,reqs_org_reviewers_level_2,@org_review_users & reqs_org_reviewers_level_1
-           case @level
-             when 1
-               (@org_review_users & reqs_org_reviewers_level_1).length.should >= 1
-             when 2
-               (@org_review_users & reqs_org_reviewers_level_2).length.should >= 1
-             when 3
-               (@org_review_users & reqs_org_reviewers_level_2).length.should >= 1
+         case @level
+           when 1
+             (@org_review_users & reqs_org_reviewers_level_1).length.should >= 1
+           when 2
+             (@org_review_users & reqs_org_reviewers_level_2).length.should >= 1
+           when 3
+             (@org_review_users & reqs_org_reviewers_level_2).length.should >= 1
 
-           end
-        end
+         end
+       end
   end
 
 end

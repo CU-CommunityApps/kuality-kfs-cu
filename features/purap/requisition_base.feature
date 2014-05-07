@@ -31,12 +31,6 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     |Level              | <level>     |
 #    |Default PM         | P           |
     # default PM can ve implemented after alternate PM is moved to upgrade
-#    |APO            | GT          |
-    # Vendor Type : Foreign, External, Internal
-    # Account Type : Grant, ?.
-    # Commodity Code : Regular, Sensitive
-    # Amount : LT APO, GT APO, 100000, 500000, 5000000
-    #
   And  I EXTRACT THE REQS TO SQ
   When I INITIATE A PREQS
   Then I FORMAT AND PROCESS THE CHECK WITH PDP
@@ -46,7 +40,3 @@ Feature: PURAP manual entry greater than 500 but less than 25000
   | 500000     | 2        |
   | 5000000    | 3        |
 
-#  Given I Login as a PDP Format Disbursement Processor
-#  And   I format Disbursement
-#  And   I select continue on Format Disbursement Summary
-#  And   a Format Summary Lookup displays
