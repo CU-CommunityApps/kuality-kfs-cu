@@ -276,7 +276,9 @@ And /^I attach an Invoice Image$/ do
   on PaymentRequestPage do |page|
     page.note_text.fit random_alphanums(40, 'AFT-NoteText')
     page.attachment_type.fit 'Invoice Image'
-    page.attach_notes_file.set($file_folder+@payment_request.attachment_file_name)
+    #page.attach_notes_file.set($file_folder+@payment_request.attachment_file_name)
+    #TODO : do not commit this path this is a temporarily fix for chrome bug.
+    page.attach_notes_file.set("C:\\java\\project_wrk\\kuality-kfs-cu\\lib\\resources\\"+@payment_request.attachment_file_name)
 
     page.add_note
     page.attach_notes_file_1.should exist #verify that note is indeed added
@@ -372,7 +374,9 @@ And /^I add an Attachment to the Requisition document$/ do
   on RequisitionPage do |page|
     page.note_text.fit random_alphanums(40, 'AFT-NoteText')
     page.send_to_vendor.fit 'Yes'
-    page.attach_notes_file.set($file_folder+@requisition.attachment_file_name)
+    #page.attach_notes_file.set($file_folder+@requisition.attachment_file_name)
+    #TODO : do not commit this path this is a temporarily fix for chrome bug.
+    page.attach_notes_file.set("C:\\java\\project_wrk\\kuality-kfs-cu\\lib\\resources\\"+@requisition.attachment_file_name)
 
     page.add_note
     page.attach_notes_file_1.should exist #verify that note is indeed added
@@ -443,7 +447,6 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
     new_user = ''
     on(page_class_for(document)) do |page|
       page.expand_all
-      puts 'doc status',page.document_status
       if (page.document_status != 'FINAL' && page.pnd_act_req_table[1][1].text.include?('APPROVE'))
         page.pnd_act_req_table[1][2].links[0].click
         page.use_new_tab

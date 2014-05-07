@@ -3,8 +3,8 @@
   debug = "#{default} DEBUG=true"
   clean_tags = '--tags ~@draft --tags ~@wip --tags ~@pending'
   clean_default = "#{default} #{clean_tags}"
-  clean_no_nightly = "#{clean_default} --tags ~@nightly-jobs"
-  clean_nightly = "#{clean_default} --tags @nightly-jobs"
+  clean_no_nightly = "#{clean_default} --tags ~@nightly-jobs --tags ~@utility"
+  clean_nightly = "#{clean_default} --tags @nightly-jobs --tags ~@utility"
   json_output = '--format json -o ../kuality-kfs-cu-output'
   split_num = format( '%#02d', (ENV['TEST_ENV_NUMBER'] == '' ? 1 : ENV['TEST_ENV_NUMBER']).to_i )
   output_split_json = "#{json_output}.split#{split_num}.json"
@@ -27,7 +27,7 @@ headless_json: HEADLESS=true <%= clean_default %> <%= json_output %>.json # Same
 # but are expected to be run using parallel_cucumber and will generate json files.
 # Naturally, this means there's only one headless version here.
 
-parallel_master: <%= clean_default %> <%= output_split_json %>
+parallel_master: <%= clean_default %> --tags ~@utility <%= output_split_json %>
 parallel_master_no_nightly: <%= clean_no_nightly %> <%= output_split_json %>
 parallel_headless: HEADLESS=true <%= clean_no_nightly %> <%= output_split_json %>
 headless_json_nightly: HEADLESS=true <%= clean_nightly %> <%= json_output %>.split00.json # Same as headless_json, but only runs nightly-jobs

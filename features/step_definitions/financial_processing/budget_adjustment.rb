@@ -197,7 +197,6 @@ Then /^the Route Log displays a (From|To) Fiscal Officer$/ do |fo_type|
     page.pnd_act_req_table[first_fo_row][ro_col].should exist
     found_fo_cell = page.pnd_act_req_table[first_fo_row][ro_col]
 
-    # We need to find the netid by following the link in the FO cell.
     found_fo_cell.links.first.click
     page.use_new_tab
     fiscal_officer = on(PersonPage).get_user
@@ -208,6 +207,8 @@ Then /^the Route Log displays a (From|To) Fiscal Officer$/ do |fo_type|
         @from_fiscal_officer = fiscal_officer
       when 'To'
         @to_fiscal_officer = fiscal_officer
+      else
+        puts 'INVALID:: Needs to be From or To'
     end
   end
 end
@@ -218,5 +219,69 @@ When /^I am logged in as the (From|To) Fiscal Officer$/ do |fo_type|
       step "I am logged in as \"#{@from_fiscal_officer}\""
     when 'To'
       step "I am logged in as \"#{@to_fiscal_officer}\""
+    else
+      puts 'INVALID:: Needs to be From or To'
+  end
+end
+
+And /^I capture the (CB|BB) balance amount on the GLB for:$/ do  |balance_type_code, table|
+  updates = table.rows_hash
+
+  visit(MainPage).general_ledger_balance
+
+  on GeneralLedgerBalanceLookupPage do |page|
+    page.chart_code.fit updates['chart code']
+    page.account_number.fit updates['account number']
+    page.object_code.fit updates['object code']
+    page.balance_type_code.fit updates['balance type code']
+    page.search
+
+    case balance_type_code
+      when 'CB'
+        @cb_start_amount = page.get_cell_value_by_index(10)
+      when 'BB'
+        @bb_start_amount = page.get_cell_value_by_index(10)
+      else
+        puts 'This is not a handled Balance Type Code'
+    end
+
+  end
+
+end
+
+And /^I capture the (From|To) Accounting Lines for the Budget Adjustment$/ do |fo_type|
+  case fo_type
+    when 'From'
+      on BudgetAdjustmentPage do |page|
+        @source_account_data = page.pull_existing_line_values(1)
+      end
+    when 'To'
+      on BudgetAdjustmentPage do |page|
+        @target_account_data = page.pull_existing_line_values('target', 1)
+      end
+    else
+      puts 'INVALID:: Needs to be From or To'
+  end
+
+end
+
+
+And /^I view the General Ledger Balance From account with balance type code of (.*)$/ do |bal_type_code|
+  visit(MainPage).general_ledger_balance
+  on GeneralLedgerBalanceLookupPage do |page|
+    page.chart_code.fit        @budget_adjustment.accounting_lines[:source][0].chart_code
+    page.account_number.fit    @budget_adjustment.accounting_lines[:source][0].account_number
+    page.balance_type_code.fit bal_type_code
+    page.including_pending_ledger_entry_all.set
+    page.search
+    page.select_monthly_item(@budget_adjustment.accounting_lines[:source][0].object, fiscal_period_conversion(current_month))
+  end
+end
+
+
+
+Then /^The BA Template Current Amount equals the General Ledger Balance for CB$/ do
+  on GeneralLedgerEntryLookupPage do |page|
+    page.table(id: 'row').text.should include(@source_account_data[:current_amount])
   end
 end
