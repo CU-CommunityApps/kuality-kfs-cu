@@ -439,6 +439,8 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
 
   # TODO : Should we collect the app doc status to make sure that this process did go thru all the route nodes ?
   x = 0 # in case something wrong , limit to 10
+  @base_org_review_level = 0
+  @org_review_users = Array.new
   while true && x < 10
     new_user = ''
     on(page_class_for(document)) do |page|
@@ -474,7 +476,15 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
             #TODO : wait till Alternate PM is implemented
           end
         end
-
+      else
+        if (document == 'Purchase Order')
+          if (on(page_class_for(document)).app_doc_status == 'Awaiting Base Org Review')
+            @base_org_review_level += 1
+           end
+        end
+      end
+      if (on(page_class_for(document)).app_doc_status == 'Awaiting Base Org Review' || on(page_class_for(document)).app_doc_status == 'Awaiting Chart Approval')
+        @org_review_users.push(new_user)
       end
       step "I approve the #{document} document"
       step "the #{document} document goes to one of the following statuses:", table(%{
@@ -488,4 +498,7 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
     end
     x += 1
   end
+
+  step "the #{document} document routes to the correct individuals based on the org review levels"
+
 end

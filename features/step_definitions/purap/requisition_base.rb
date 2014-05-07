@@ -12,21 +12,21 @@ Given  /^I INITIATE A REQS with following:$/ do |table|
   account_number = get_aft_parameter_value('REQS_' + (arguments['Account Type'].nil? ? 'NONGRANT' : arguments['Account Type'].upcase) + '_ACCOUNT') # from service or parameter
   apo_amount = get_parameter_values('KFS-PURAP', 'AUTOMATIC_PURCHASE_ORDER_DEFAULT_LIMIT_AMOUNT', 'Requisition')[0].to_i
   amount = arguments['Amount']
+  @level = arguments['Level'].nil? ? 0 : arguments['Level'].to_i
   item_qty = 1
   if amount.nil? || amount == 'LT APO'
     item_qty = apo_amount/1000 - 1
   else
-    case amount
-      when 'GT APO'
+    if amount == 'GT APO'
         item_qty = apo_amount/1000 + 1
-      else
+    else
         item_qty = amount.to_i/1000 + 1
     end
   end
   # so far it used 6540, 6560, 6570 which are all EX type (Expense Expenditure)
   object_code = 6540
   step "I create the Requisition document with:", table(%{
-      | Vendor Number       | #{@vendor_number}   |
+      | Vendor Number       | #{@vendor_number}  |
       | Item Quantity       | #{item_qty}        |
       | Item Cost           | 1000               |
       | Item Commodity Code | #{commodity_code}  |
@@ -179,4 +179,54 @@ And /^a Format Summary Lookup displays$/ do
   on FormatSummaryLookupPage do |page|
 
   end
+end
+
+Then /^the (.*) document routes to the correct individuals based on the org review levels$/ do |document|
+  reqs_org_reviewers_level_1 = Array.new
+  reqs_org_reviewers_level_2 = Array.new
+  po_reviewer_5m = ''
+  if @level == 1
+    reqs_org_reviewers_level_1 = get_principal_name_for_role('KFS-SYS', 'ORG 0100 Level 1 Review')
+  else
+    if @level >= 2
+      reqs_org_reviewers_level_2 = get_principal_name_for_role('KFS-SYS', 'ORG 0100 Level 2 Review')
+    end
+  end
+
+  if (document == 'Purchase Order')
+    puts 'base org review level ', @base_org_review_level
+    @base_org_review_level.should == @level
+    po_reviewer_500k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
+    po_reviewer_5m = get_aft_parameter_value('PO_BASE_ORG_REVIEW_5M')
+    po_reviewer_100k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_100K').split(',')
+
+    case @level
+      when 1
+        (@org_review_users & po_reviewer_100k).length.should >= 1
+      when 2
+        (@org_review_users & po_reviewer_100k).length.should >= 1
+        #@org_review_users.should include get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
+        @org_review_users.should include po_reviewer_500k
+      when 3
+        (@org_review_users & po_reviewer_100k).length.should >= 1
+        #@org_review_users.should include get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
+        #@org_review_users.should include get_aft_parameter_value('PO_BASE_ORG_REVIEW_5M')
+        @org_review_users.should include po_reviewer_500k
+        @org_review_users.should include po_reviewer_5m
+
+    end
+  else if (document == 'Requisition' || document == 'Payment Request')
+         puts 'route check', @org_review_users, reqs_org_reviewers_level_1,reqs_org_reviewers_level_2,@org_review_users & reqs_org_reviewers_level_1
+         case @level
+           when 1
+             (@org_review_users & reqs_org_reviewers_level_1).length.should >= 1
+           when 2
+             (@org_review_users & reqs_org_reviewers_level_2).length.should >= 1
+           when 3
+             (@org_review_users & reqs_org_reviewers_level_2).length.should >= 1
+
+         end
+       end
+  end
+
 end
