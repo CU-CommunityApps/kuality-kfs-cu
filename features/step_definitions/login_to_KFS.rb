@@ -76,6 +76,8 @@ Given /^I am logged in as a KFS User for the (.*) document$/ do |eDoc|
       visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
     when 'JV-3'
       visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+    when 'LLJV'
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
     when 'ND'
       visit(BackdoorLoginPage).login_as('kpg1') #TODO get from role service
     when 'PE'
