@@ -499,6 +499,8 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
     x += 1
   end
 
-  step "the #{document} document routes to the correct individuals based on the org review levels"
+  if @level > 0
+    step "the #{document} document routes to the correct individuals based on the org review levels"
+  end
 
 end

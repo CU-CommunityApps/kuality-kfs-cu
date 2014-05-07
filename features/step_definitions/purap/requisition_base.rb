@@ -194,7 +194,6 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
   end
 
   if (document == 'Purchase Order')
-    puts 'base org review level ', @base_org_review_level
     @base_org_review_level.should == @level
     po_reviewer_500k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
     po_reviewer_5m = get_aft_parameter_value('PO_BASE_ORG_REVIEW_5M')
