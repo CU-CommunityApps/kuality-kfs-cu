@@ -5,7 +5,7 @@ Given  /^I INITIATE A REQS with following:$/ do |table|
   # TODO : more work here to get all the parameters right
   if arguments['Vendor Type'].nil? || arguments['Vendor Type'] != 'Blank'
     puts 'vendor type ','REQS_' + (arguments['Vendor Type'].nil? ? 'NONB2B' : arguments['Vendor Type'].upcase + '_VENDOR')
-     #@vendor_number = get_aft_parameter_value('REQS_' + arguments['Vendor Type'].nil? ? 'NONB2B' : arguments['Vendor Type'].upcase + '_VENDOR')
+     #@vendor_number = get_aft_parameter_value('REQS_' + (arguments['Vendor Type'].nil? ? 'NONB2B' : arguments['Vendor Type'].upcase) + '_VENDOR')
      @vendor_number = '27015-0' #NonB2B
     #@vendor_number = '39210-0' #foreign vendor
   end
@@ -193,4 +193,65 @@ And /^a Format Summary Lookup displays$/ do
   on FormatSummaryLookupPage do |page|
 
   end
+end
+
+Then /^the (.*) document routes to the correct individuals based on the org review levels$/ do |document|
+  reqs_org_reviewers_level_1 = Array.new
+  reqs_org_reviewers_level_2 = Array.new
+  po_base_org_reviewers = Array.new
+  po_reviewer_500k = ''
+  po_reviewer_5m = ''
+  if @level == 1
+    #reqs_org_reviewers_level_1 = get_principal_name_for_role('KFS-SYS', 'ORG 0100 Level 1 Review')
+    reqs_org_reviewers_level_1 = "map86,jjm33,dhb226".split(",")
+  else
+    if @level >= 2
+      #reqs_org_reviewers_level_1 = get_principal_name_for_role('KFS-SYS', 'ORG 0100 Level 2 Review')
+      reqs_org_reviewers_level_2 = "mhf3,kjb4,map86,jjm33,dhb226".split(",")
+      #po_reviewer_500k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
+      po_reviewer_500k = 'jmd11'
+      #po_reviewer_5m = get_aft_parameter_value('PO_BASE_ORG_REVIEW_5M')
+      po_reviewer_5m = 'kdn1'
+    end
+  end
+
+  if (document == 'Purchase Order')
+    puts 'base org review level ', @base_org_review_level
+    @base_org_review_level.should == @level
+    ##po_reviewer_500k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
+    #po_reviewer_500k = 'jmd11'
+    ##po_reviewer_5m = get_aft_parameter_value('PO_BASE_ORG_REVIEW_5M')
+    #po_reviewer_5m = 'kdn1'
+    #po_reviewer_100k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_100K').split(',')
+    po_reviewer_100k = "cj242,mgw3,twr2".split(",")
+
+    case @level
+      when 1
+        (@org_review_users & po_reviewer_100k).length.should >= 1
+      when 2
+        (@org_review_users & po_reviewer_100k).length.should >= 1
+        #@org_review_users.should include get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
+        @org_review_users.should include po_reviewer_500k
+      when 3
+        (@org_review_users & po_reviewer_100k).length.should >= 1
+        #@org_review_users.should include get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
+        #@org_review_users.should include get_aft_parameter_value('PO_BASE_ORG_REVIEW_5M')
+        @org_review_users.should include po_reviewer_500k
+        @org_review_users.should include po_reviewer_5m
+
+    end
+  else if (document == 'Requisition' || document == 'Payment Request')
+         puts 'route check', @org_review_users, reqs_org_reviewers_level_1,reqs_org_reviewers_level_2,@org_review_users & reqs_org_reviewers_level_1
+           case @level
+             when 1
+               (@org_review_users & reqs_org_reviewers_level_1).length.should >= 1
+             when 2
+               (@org_review_users & reqs_org_reviewers_level_2).length.should >= 1
+             when 3
+               (@org_review_users & reqs_org_reviewers_level_2).length.should >= 1
+
+           end
+        end
+  end
+
 end
