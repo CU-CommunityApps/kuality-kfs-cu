@@ -204,18 +204,14 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
         (@org_review_users & po_reviewer_100k).length.should >= 1
       when 2
         (@org_review_users & po_reviewer_100k).length.should >= 1
-        #@org_review_users.should include get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
         @org_review_users.should include po_reviewer_500k
       when 3
         (@org_review_users & po_reviewer_100k).length.should >= 1
-        #@org_review_users.should include get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
-        #@org_review_users.should include get_aft_parameter_value('PO_BASE_ORG_REVIEW_5M')
         @org_review_users.should include po_reviewer_500k
         @org_review_users.should include po_reviewer_5m
 
     end
   else if (document == 'Requisition' || document == 'Payment Request')
-         puts 'route check', @org_review_users, reqs_org_reviewers_level_1,reqs_org_reviewers_level_2,@org_review_users & reqs_org_reviewers_level_1
          case @level
            when 1
              (@org_review_users & reqs_org_reviewers_level_1).length.should >= 1
