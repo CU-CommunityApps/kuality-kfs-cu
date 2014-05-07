@@ -131,7 +131,7 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
           file_to_attach = 'vendor_attachment_test.png'
           new_supplier_diversity = {
             type:                          'VETERAN OWNED',
-            certification_expiration_date: '09/10/2015',
+            certification_expiration_date: '09/10/2015'
           }
           new_address = {
             type:                      'PO - PURCHASE ORDER',
@@ -330,7 +330,7 @@ And /^I add an Address to a Vendor with following fields:$/ do |table|
 end
 
 And /^I update the General Liability with expired date$/ do
-  @changed_liability = {} unless !@changed_liability.nil?
+  @changed_liability = {} if @changed_liability.nil?
   on VendorPage do |page|
     page.expand_all
     page.insurance_requirements_complete.fit 'Yes'

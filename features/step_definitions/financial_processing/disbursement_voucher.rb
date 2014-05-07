@@ -224,7 +224,7 @@ And /^I uncheck Special Handling on Payment Information tab$/ do
 end
 
 And /^the Special Handling is still unchecked on Payment Information tab$/ do
-  on(PaymentInformationTab).other_considerations_special_handling.set?.should
+  on(PaymentInformationTab).other_considerations_special_handling.set?.false?.should
 end
 
 And /^I search and retrieve a DV Payee ID (\w+) with Reason Code (\w)$/ do |net_id, reason_code|
@@ -320,7 +320,7 @@ And /^I update a random Bank Account to Disbursement Voucher Document$/ do
 end
 
 And /^I can NOT update the W-9\/W-8BEN Completed field on the Payment Information tab$/ do
-  on(PaymentInformationTab).other_considerations_w9_completed.enabled?.should
+  on(PaymentInformationTab).other_considerations_w9_completed.enabled?.false?.should
 end
 
 And /^I update the Postal Code on the Payment Information tab to (.*)$/ do |postal_code|
