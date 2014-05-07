@@ -440,6 +440,7 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
   # TODO : Should we collect the app doc status to make sure that this process did go thru all the route nodes ?
   x = 0 # in case something wrong , limit to 10
   base_org_review_level = 0
+  users = Array.new
   while true && x < 10
     new_user = ''
     on(page_class_for(document)) do |page|
@@ -465,6 +466,7 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
     end
 
     if new_user != ''
+      users.push(new_user)
       step "I am logged in as \"#{new_user}\""
       step "I view the #{document} document on my action list"
       if (document == 'Payment Request')
@@ -480,7 +482,7 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
         if (document == 'Purchase Order')
           if (on(page_class_for(document)).app_doc_status == 'Awaiting Base Org Review')
             base_org_review_level += 1
-          end
+           end
         end
       end
       step "I approve the #{document} document"
@@ -499,6 +501,18 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
   if (document == 'Purchase Order')
     puts 'base org review level ', base_org_review_level
     base_org_review_level.should == @level
+    #reviewer_500k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
+    reviewer_500k = 'jmd11'
+    #reviewer_5m = get_aft_parameter_value('PO_BASE_ORG_REVIEW_5M')
+    reviewer_5m = 'kdn1'
+    if @level == 2
+      users.should include reviewer_500k
+    else
+      if @level == 3
+        users.should include reviewer_500k
+        users.should include reviewer_5m
+      end
+    end
   end
 
 end
