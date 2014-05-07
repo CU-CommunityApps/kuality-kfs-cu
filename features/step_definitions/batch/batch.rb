@@ -69,4 +69,62 @@ And /^I run Fax Pending Documents$/ do
   run_fax_pending_doc(true)
 end
 
+And /^I process Receiving for Payment Requests$/ do
+  run_receiving_payment_request(true)
+end
 
+And /^I extract Electronic Invoices$/ do
+  run_electronic_invoice_extract(true)
+end
+
+And /^I extract Regular PREQS to PDP for Payment$/ do
+  run_pur_pre_disburse_extract(true)
+end
+
+And /^I extract Immediate PREQS to PDP for Payment$/ do
+  run_pur_pre_disburse_immediate_extract(true)
+end
+
+And /^I approve Line Items$/ do
+  run_approve_line_item_receiving(true)
+end
+
+And /^I close POS wtih Zero Balanecs$/ do
+  run_auto_close_recurring_order(true)
+end
+
+And /^I load PREQ into PDP$/ do
+  run_pdp_load_payment(true)
+end
+
+And /^I generate the ACH XML File$/ do
+  run_pdp_extract_ach_payment(true)
+end
+
+And /^I generate the Check XML File$/ do
+  run_pdp_extract_check(true)
+end
+
+And /^I generate the Cancelled Check XML File$/ do
+  run_pdp_extract_canceled_check(true)
+end
+
+And /^I send EMAIL Notices to ACH Payees$/ do
+  run_pdp_send_ach_advice_notification(true)
+end
+
+And /^I process Cancels and Paids$/ do
+  run_pdp_cancel_and_paid(true)
+end
+
+And /^I generate the GL Files from PDP$/ do
+  run_pdp_extract_gl_transaction(true)
+end
+
+And /^I populate the ACH Bank Table$/ do
+  run_pdp_load_fed_reserve_bank_data(true)
+end
+
+And /^I clear out PDP Temporary Tables$/ do
+  run_pdp_clear_pending_transaction(true)
+end

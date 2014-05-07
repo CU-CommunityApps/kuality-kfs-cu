@@ -182,3 +182,9 @@ Given /^I am logged in as a KFS Parameter Change Approver$/ do
   #visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KR-NS', 'Parameter Approver (cu) KFS')) # TODO: Get role from service
   visit(BackdoorLoginPage).login_as('ccs1')
 end
+
+
+Given /^I Login as a PDP Format Disbursement Processor$/ do
+  visit(BackdoorLoginPage).login_as('mo14') #TODO get from role service
+  #visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PDP', 'Processor'))
+end
