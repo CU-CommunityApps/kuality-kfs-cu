@@ -199,7 +199,7 @@ Feature: Disbursement Voucher
     And   I approve the Disbursement Voucher document
     And   the Disbursement Voucher document goes to FINAL
 
-  @KFSQA-717 @tortoise @wip
+  @KFSQA-717 @tortoise
   Scenario: Disbursement Voucher document allow usage of Revolving Fund (Petty Cash) Payment Types
     Given I am logged in as a KFS User
     When  I start an empty Disbursement Voucher document
