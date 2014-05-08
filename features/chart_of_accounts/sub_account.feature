@@ -16,7 +16,7 @@ Feature: Sub Account
     When  I tab away from the Account Number field
     Then  The Indirect Cost Rate ID field should not be null
 
-  @KFSQA-591 @hare @wip
+  @KFSQA-591 @hare
   Scenario: Create a Sub-Account with Sub-Account Type CS and verity routing to CG Processor.
     Given   I am logged in as a KFS User
     And     I Create a Sub-Account with Sub-Account Type CS

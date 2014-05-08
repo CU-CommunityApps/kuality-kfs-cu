@@ -34,7 +34,7 @@ Feature: Vendor Create
   policy, on subsequent lookups, The initiator will not be allowed to view the Tax ID and
   Attachments for this vendor.
 
-  @KFSQA-638 @cornell @tortoise
+  @KFSQA-638 @cornell @tortoise @wip
   Scenario: I want to create a vendor with ownership type INDIVIDUAL
     Given   I am logged in as a Vendor Initiator
     When    I start an empty Vendor document

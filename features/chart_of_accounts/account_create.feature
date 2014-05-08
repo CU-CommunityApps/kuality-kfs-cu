@@ -17,7 +17,7 @@ Feature: KFS Fiscal Officer Account Creation
       | PROCESSED |
       | FINAL     |
 
-  @KFSQA-554 @hare @wip
+  @KFSQA-554 @hare
   Scenario: KFS User Initiates an Account document with only a description field
     Given I am logged in as a KFS User
     When  I save an Account document with only the Description field populated
