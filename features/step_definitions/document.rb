@@ -104,3 +104,7 @@ And /^I remember the (.*) document number$/ do |document|
     @remembered_document_id = page.document_id
   end
 end
+
+Then /^The value for (.*) field is "(.*)"$/ do |field_name, field_value|
+  $current_page.send(StringFactory.damballa(field_name)).should==field_value
+end

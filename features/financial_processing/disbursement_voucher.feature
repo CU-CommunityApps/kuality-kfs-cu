@@ -14,10 +14,14 @@ Feature: Disbursement Voucher
 
   [KFSQA-708]
 
+  [KFSQA-699] Retrieve DV payee with NetID
+
   [KFSQA-709] Because it saves time, I as a KFS User should be able to
   initiate a Disbursement Voucher document with just the description.
 
   [KFSQA-700] Allow usage of Revolving Fund (Petty Cash) DV Payment Types.
+
+  [KFSQA-717] Address entered directly on DV is not saved when doc is submitted
 
   [KFSQA-710] Verify using current mileage rate based on dates.
 
@@ -39,6 +43,8 @@ Feature: Disbursement Voucher
   [KFSQA-702] FO can do a search on the account and verify the payee id still displays on the DV. Approve it to final.
 
   [KFSQA-721] Preclude Revolving Vendors getting a B Payment Reason Code.
+
+  [KFSQA-705] Payee should not be able to approve (as Fiscal Officer) a payment to themselves.
 
   @KFSQA-681 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
@@ -131,6 +137,14 @@ Feature: Disbursement Voucher
     When    I start an empty Disbursement Voucher document
     Then    The eMail Address shows up in the Contact Information Tab
 
+  @KFSQA-699 @create @dv @hare @cornell
+  Scenario: Retrieve a DV Payee with their NetID (Cornell Modification)
+    Given I am logged in as a KFS User for the DV document
+    And   I start an empty Disbursement Voucher document
+    And   I add the only payee with Payee Id as57 and Reason Code B to the Disbursement Voucher
+    When  the Payee Name shows as "Shapiro, Anne"
+    Then  the eMail Address shows up in the Contact Information Tab
+
   @KFSQA-709 @hare
   Scenario: KFS User Initiates a Disbursement Voucher document with only a description field
     Given I am logged in as a KFS User
@@ -195,8 +209,22 @@ Feature: Disbursement Voucher
     And   I view the Disbursement Voucher document
     And   I approve the Disbursement Voucher document
     And   the Disbursement Voucher document goes to FINAL
-    When  I copy the Disbursement Voucher document
-    Then  the copied DV payment address equals the selected address
+
+  @KFSQA-717 @tortoise
+  Scenario: Disbursement Voucher document allow usage of Revolving Fund (Petty Cash) Payment Types
+    Given I am logged in as a KFS User
+    When  I start an empty Disbursement Voucher document
+    And   I add a random payee the Disbursement Voucher
+    And   I change the Payee address
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G003704        |
+      | Object Code  | 6540           |
+      | Amount       | 10             |
+      | Description  | DV12 Test....  |
+    And   I change the Check Amount for the Disbursement Voucher document to 100
+    And   I submit the Disbursement Voucher document
+    When  the Disbursement Voucher document goes to ENROUTE
+    Then  The Payment Information address equals the overwritten address information
 
   @KFSQA-710 @sloth
   Scenario: Verify using current mileage rate based on dates
@@ -400,7 +428,7 @@ Feature: Disbursement Voucher
 
   @KFSQA-711 @cornell @coral
   Scenario: Disbursement Voucher foreign draft with non resident tax and workflow changes for Account, Object Code, and Amount.
-    Given I am logged in as a KFS User
+    Given I am logged in as a Vendor Initiator
     When  I edit a Vendor with Vendor Number 5328-1
     And   I add an Address to a Vendor with following fields:
       | Address Type   | RM - REMIT        |
@@ -444,8 +472,6 @@ Feature: Disbursement Voucher
     And   I view the Disbursement Voucher document
     And   I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to FINAL
-
-
 
   @KFSQA-702 @cornell @tortoise
   Scenario:  FO can do a search on the account and verify the payee id still displays on the DV. Approve it to final.
@@ -493,3 +519,20 @@ Feature: Disbursement Voucher
     And   I submit the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to ENROUTE
 
+
+  @KFSQA-705 @tortoise @cornell
+  Scenario: Payee should not be able to approve (as Fiscal Officer) a payment to themselves
+    Given I am logged in as a KFS User for the DV document
+    And   I start an empty Disbursement Voucher document
+    And   I search and retrieve a DV Payee ID kmt1 with Reason Code B
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G254700             |
+      | Object Code  | 6100                |
+      | Amount       | 10                  |
+      | Description  | Line Test Number 1  |
+    And   I submit the Disbursement Voucher document
+    And   the Disbursement Voucher document goes to ENROUTE
+    And   I am logged in as "kmt1"
+    And   I view the Disbursement Voucher document
+    When  I approve the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
