@@ -13,6 +13,7 @@ Given  /^I INITIATE A REQS with following:$/ do |table|
   apo_amount = get_parameter_values('KFS-PURAP', 'AUTOMATIC_PURCHASE_ORDER_DEFAULT_LIMIT_AMOUNT', 'Requisition')[0].to_i
   amount = arguments['Amount']
   @level = arguments['Level'].nil? ? 0 : arguments['Level'].to_i
+  @sensitive_commodity = !arguments['Commodity Code'].nil? && arguments['Commodity Code'] == 'Sensitive'
   @commodity_review_routing_check = !arguments['Routing Check'].nil? && arguments['Routing Check'] == 'Commodity'
   @org_review_routing_check = @level > 0 && !arguments['Routing Check'].nil? && arguments['Routing Check'] == 'Base Org'
   item_qty = 1
@@ -240,7 +241,11 @@ And /^I validate Commodity Review Routing for (.*) document$/ do |document|
     if (document == 'Requisition')
       reqs_animal_reviewers = get_aft_parameter_value('REQS_ANIMAL_REVIEW_10100000').split(',')
       puts 'reqs commodity ',@commodity_review_users
-      (@commodity_review_users & reqs_animal_reviewers).length.should >= 1
+      if @sensitive_commodity
+        (@commodity_review_users & reqs_animal_reviewers).length.should >= 1
+      else
+        @commodity_review_users.length.should == 0
+      end
     end
   end
 end
