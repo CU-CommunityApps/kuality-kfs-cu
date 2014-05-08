@@ -62,6 +62,7 @@ And /^users outside the Route Log can not search and retrieve the REQS$/ do
     page.document_id.fit @requisition.document_id
     #page.document_id.fit '5358712'
     page.search
+    sleep 2
     if !page.lookup_div.parent.text.include?('No values match this search.')
       # if search found, then can not open
       page.open_item(@requisition.document_id)
