@@ -44,18 +44,24 @@ Feature: REQS, PO, PREQ,PDP
   | 5000000    | 3        |
 
   @KFSQA-855 @BaseFunction @REQS @PO @PREQ @PDP @Routing @pending @coral @wip
-  Scenario: PUR-10  remove commodity review from PO
+  Scenario Outline: PUR-10  remove commodity review from PO
     Given I INITIATE A REQS with following:
       |Vendor Type        | NonB2B      |
       |Add Vendor On REQS | No          |
       |Positive Approval  | Unchecked   |
       |Account Type       | NonGrant    |
-      |Commodity Code     | Sensitive   |
-      |Amount             | GT APO      |
+      |Commodity Code     | <commodity> |
+      |Amount             | <amount>    |
       |Routing Check      | Commodity   |
 #    |Default PM         | P           |
   # default PM can ve implemented after alternate PM is moved to upgrade
     And  I EXTRACT THE REQS TO SQ
     When I INITIATE A PREQS
     Then I FORMAT AND PROCESS THE CHECK WITH PDP
+  Examples:
+    | amount     | commodity    |
+    | GT APO     | Sensitive    |
+    | LT APO     | Sensitive    |
+    | GT APO     | Regular      |
+    | LT APO     | Regular      |
 

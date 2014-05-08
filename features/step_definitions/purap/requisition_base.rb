@@ -13,7 +13,7 @@ Given  /^I INITIATE A REQS with following:$/ do |table|
   apo_amount = get_parameter_values('KFS-PURAP', 'AUTOMATIC_PURCHASE_ORDER_DEFAULT_LIMIT_AMOUNT', 'Requisition')[0].to_i
   amount = arguments['Amount']
   @level = arguments['Level'].nil? ? 0 : arguments['Level'].to_i
-  @commodity_review_routing_check = !arguments['Commodity Code'].nil? && !arguments['Routing Check'].nil? && arguments['Commodity Code'] == 'Sensitive' && arguments['Routing Check'] == 'Commodity'
+  @commodity_review_routing_check = !arguments['Routing Check'].nil? && arguments['Routing Check'] == 'Commodity'
   @org_review_routing_check = @level > 0 && !arguments['Routing Check'].nil? && arguments['Routing Check'] == 'Base Org'
   item_qty = 1
   if amount.nil? || amount == 'LT APO'
