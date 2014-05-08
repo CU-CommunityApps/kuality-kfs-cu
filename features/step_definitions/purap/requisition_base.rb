@@ -13,6 +13,8 @@ Given  /^I INITIATE A REQS with following:$/ do |table|
   apo_amount = get_parameter_values('KFS-PURAP', 'AUTOMATIC_PURCHASE_ORDER_DEFAULT_LIMIT_AMOUNT', 'Requisition')[0].to_i
   amount = arguments['Amount']
   @level = arguments['Level'].nil? ? 0 : arguments['Level'].to_i
+  @commodity_review_routing_check = !arguments['Commodity Code'].nil? && !arguments['Routing Check'].nil? && arguments['Commodity Code'] == 'Sensitive' && arguments['Routing Check'] == 'Commodity'
+  @org_review_routing_check = @level > 0 && !arguments['Routing Check'].nil? && arguments['Routing Check'] == 'Base Org'
   item_qty = 1
   if amount.nil? || amount == 'LT APO'
     item_qty = apo_amount/1000 - 1
@@ -20,7 +22,7 @@ Given  /^I INITIATE A REQS with following:$/ do |table|
     if amount == 'GT APO'
         item_qty = apo_amount/1000 + 1
     else
-        item_qty = amount.to_i/1000 + 1
+        item_qty = amount.to_i/1000
     end
   end
   # so far it used 6540, 6560, 6570 which are all EX type (Expense Expenditure)
@@ -194,6 +196,7 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
   end
 
   if (document == 'Purchase Order')
+    puts 'base org review level ', @base_org_review_level
     @base_org_review_level.should == @level
     po_reviewer_500k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
     po_reviewer_5m = get_aft_parameter_value('PO_BASE_ORG_REVIEW_5M')
@@ -212,6 +215,7 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
 
     end
   else if (document == 'Requisition' || document == 'Payment Request')
+         puts 'reqs base org  ',@org_review_users
          case @level
            when 1
              (@org_review_users & reqs_org_reviewers_level_1).length.should >= 1
@@ -224,4 +228,18 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
        end
   end
 
+end
+
+And /^I validate Commodity Review Routing for (.*) document$/ do |document|
+  # TODO : may need for POA in the future.
+  if (document == 'Purchase Order')
+    puts 'po commodity ',@commodity_review_users
+    @commodity_review_users.length.should == 0
+  else
+    if (document == 'Requisition')
+      reqs_animal_reviewers = get_aft_parameter_value('REQS_ANIMAL_REVIEW_10100000').split(',')
+      puts 'reqs commodity ',@commodity_review_users
+      (@commodity_review_users & reqs_animal_reviewers).length.should >= 1
+    end
+  end
 end
