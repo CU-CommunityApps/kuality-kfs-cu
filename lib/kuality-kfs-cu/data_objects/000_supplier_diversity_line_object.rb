@@ -10,7 +10,7 @@ class SupplierDiversityLineObject < DataFactory
     @browser = browser
 
     defaults = {
-      type:                          '',
+      type:                          '::random::',
       certification_expiration_date: tomorrow[:date_w_slashes],
       active:                        :set
     }
@@ -20,7 +20,17 @@ class SupplierDiversityLineObject < DataFactory
 
   def create
     on VendorPage do |vp|
-      vp.new_supplier_diversity_type.fit                          @type
+      if !@type.nil? && @type.empty?
+        vp.new_supplier_diversity_type.pick!                      ''
+      else
+        vp.new_supplier_diversity_type.pick!                      @type
+        while @type.empty?
+          # This will only happen when we try to pick a random one and it selects the
+          # empty type. We want it to actually pick a valid one if we're going to add it.
+          @type = '::random::'
+          vp.new_supplier_diversity_type.pick!                    @type
+        end
+      end
       vp.new_supplier_diversity_active.fit                        @active
       vp.new_supplier_diversity_certification_expiration_date.fit @certification_expiration_date
       fill_out_extended_attributes

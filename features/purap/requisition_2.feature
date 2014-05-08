@@ -11,7 +11,7 @@ Feature: Purap REQS 2 Building Blocks
     Given I login as a KFS user to create an REQS
     And   I create the Requisition document with:
     | vendor number       | 4471-0   |
-    | item quanity        | 7.5      |
+    | item quantity       | 7.5      |
     | item cost           | 1000     |
     | item commodity code | 12142203 |
     | item catalog number | 10101157 |
@@ -45,7 +45,7 @@ Feature: Purap REQS 2 Building Blocks
     Given I login as a KFS user to create an REQS
     And   I create the Requisition document with:
       | vendor number       | 4471-0           |
-      | item quanity        | <item_quantity>  |
+      | item quantity       | <item_quantity>  |
       | item cost           | 1000             |
       | item commodity code | 12142203         |
       | item catalog number | 10101157         |

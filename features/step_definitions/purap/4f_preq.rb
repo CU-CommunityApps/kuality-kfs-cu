@@ -8,7 +8,7 @@ And /^I create the Requisition document with:$/  do |table|
   @requisition = create RequisitionObject, description: random_alphanums(40, 'AFT'),
                         payment_request_positive_approval_required: updates['payment request'],
                         vendor_number:        updates['vendor number'],
-                        item_quantity:        updates['item quanity'],
+                        item_quantity:        updates['item quantity'],
                         item_unit_cost:       updates['item cost'],
                         item_commodity_code:  updates['item commodity code'],
                         item_account_number:  updates['account number'],

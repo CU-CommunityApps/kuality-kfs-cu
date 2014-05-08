@@ -45,6 +45,15 @@ And /^I note how many attachments the (.*) document has already$/ do |document|
   @attachments_count = on(page_class_for(document)).notes_and_attachments_count
 end
 
-And /^the file is attached to the (.*) document$/ do |document|
-  on(page_class_for(document)).notes_and_attachments_count.should == @attachments_count + 1
+And /^the (.*) document's Notes Tab displays the added attachment$/ do |document|
+  on page_class_for(document) do |page|
+    page.notes_and_attachments_count.should == @attachments_count + 1
+
+    i = page.notes_and_attachments_count - 1
+    last_attachment = document_object_for(document).notes_and_attachments_tab.last
+
+    file_matches = page.submitted_attached_file_name(i).match(/#{last_attachment.file}/m) unless (last_attachment.file.nil? || last_attachment.file.empty?)
+    note_matches = page.submitted_note_text(i).match(last_attachment.note_text) unless (last_attachment.note_text.nil? || last_attachment.note_text.empty?)
+    (!file_matches.nil? && !note_matches.nil?).true?.should
+  end
 end

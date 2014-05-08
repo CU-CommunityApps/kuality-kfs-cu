@@ -453,8 +453,10 @@ And /^I lookup a random PO Vendor$/ do
 end
 
 And /^I edit a random PO Vendor$/ do
-  step 'I lookup a random PO Vendor'
+  #step 'I lookup a random PO Vendor'
+  step 'I lookup a Vendor with Vendor Number 27015-0'
   @vendor = make VendorObject
+  on(VendorPage).description.fit @vendor.description
   @vendor.absorb(:old)
   @document_id = @vendor.document_id
 end
@@ -471,3 +473,6 @@ And /^I add a Supplier Diversity to the Vendor document$/ do
                                             # For some reason, we still need to provide an empty hash.
 end
 
+Then /^the Address Tab displays Vendor Address Generated Identifiers for each Address$/ do
+  pending
+end
