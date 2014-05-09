@@ -188,25 +188,21 @@ Feature: Vendor Create
     When    I view the Vendor document
     Then    I can not view the Tax ID and Attachments on Vendor page
 
-    @KFSQA-840 @cornell @Create @E2E @Routing @smoke
+    @KFSQA-840 @cornell @Create @E2E @Routing @smoke @wip
     Scenario: Creating a new vendor to test cornell specific mods, separation of duties, and vendor address and attachments persist.
-      Given I am logged in as a KFS User
-      When  I create a new PO Vendor as kme44
+      Given I am logged in as a Vendor Initiator
+      When  I start a Purchase Order Vendor document
       And   I fill in the required fields for the new Vendor
       And   I fill in the Cornell-specific fields for the new Vendor
       And   I add an attachment to the Vendor document
       And   I submit the Vendor document
       Then  I should get an error saying "Date cannot be in the future"
-      When  I submit current date
+      When  I change the submission date to today
+      And   I submit the Vendor document
       Then  the Vendor document goes to ENROUTE
-      Given I am logged in as a Vendor Reviewer
-      And   I view the Vendor document
-      Then  kme44 is not an approver in the Future Actions table
-      Given I am logged in as a Vendor Approver
+      And   the current user is not an approver in the Future Actions table
+      Given I route the Vendor document to FINAL by clicking approve for each request
+      And   I am logged in as a Vendor Initiator
       When  I view the Vendor document
-      And   I finalize the document
-      Then  the Vendor document goes to FINAL
-      Given I login as a KFS User
-      And   I view the Vendor document
       Then  the Address changes persist
       And   the Notes and Attachment changes persist
