@@ -1,7 +1,7 @@
 #overriding kuality-kfs object
 class AddressLineObject
 
-  attr_accessor :method_of_po_transmission
+  attr_accessor :method_of_po_transmission, :vendor_address_generated_identifier
 
   def fill_out_extended_attributes
     @method_of_po_transmission = 'US MAIL' if @method_of_po_transmission.nil? # This'll give us a default value for now.
@@ -10,7 +10,8 @@ class AddressLineObject
 
   def update_extended_attributes(opts={})
     on(VendorPage).update_method_of_po_transmission(@line_number).pick! opts[:method_of_po_transmission]
-    @method_of_po_transmission = opts[:method_of_po_transmission]
+    @method_of_po_transmission = opts[:method_of_po_transmission] unless opts[:method_of_po_transmission].nil?
+    @vendor_address_generated_identifier = opts[:vendor_address_generated_identifier] unless opts[:vendor_address_generated_identifier].nil? # We're simply tracking this, if provided
   end
 
 end
@@ -25,8 +26,16 @@ class AddressLineObjectCollection
 
     on VendorPage do |b|
       case target
-        when :old; result = { method_of_po_transmission: b.old_method_of_po_transmission(i) }
-        when :new; result = { method_of_po_transmission: b.update_method_of_po_transmission(i).selected_options.first.text }
+        when :old
+          result = {
+            method_of_po_transmission: b.old_method_of_po_transmission(i),
+            vendor_address_generated_identifier: b.old_vendor_address_generated_identifier(i)
+          }
+        when :new
+          result = {
+            method_of_po_transmission: b.update_method_of_po_transmission(i).selected_options.first.text,
+            vendor_address_generated_identifier: b.new_vendor_address_generated_identifier(i)
+          }
       end
     end
 

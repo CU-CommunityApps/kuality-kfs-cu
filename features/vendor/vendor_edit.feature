@@ -75,16 +75,15 @@ Feature: Vendor Edit
   @KFSQA-839 @VendorEdit @Routing @smoke @wip
   Scenario: FTC/BSC edit of the vendor shows the vendor address generated field and the attachments are attached
     Given I am logged in as a Vendor Initiator
-    And   I edit a random PO Vendor
+    And   I edit a PO Vendor
     When  I add a Supplier Diversity to the Vendor document
     And   I add a Search Alias to the Vendor document
     And   I note how many attachments the Vendor document has already
     And   I add an attachment to the Vendor document
-#    And   I inspect the Vendor document
-#    And   I stop here
     And   I submit the Vendor document
     Then  the next pending action for the Vendor document is an APPROVE from a KFS-VND Reviewer
-    Given I am logged in as a Vendor Attachment viewer (cu)
-    When  I view the Vendor document
-    #Then  the Address Tab displays Vendor Address Generated Identifiers for each Address
+    Given I route the Vendor document to FINAL by clicking approve for each request
+    And   I am logged in as a Vendor Attachment viewer (cu)
+    When  I open the Vendor from the Vendor document
+    Then  the Address Tab displays Vendor Address Generated Identifiers for each Address
     And   the Vendor document's Notes Tab displays the added attachment

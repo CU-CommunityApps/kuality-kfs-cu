@@ -61,7 +61,17 @@ class VendorPage
   element(:method_of_po_transmission) { |b| b.addresses_tab.select(id: 'document.newMaintainableObject.add.vendorAddresses.extension.purchaseOrderTransmissionMethodCode') }
   alias_method :new_method_of_po_transmission, :method_of_po_transmission
   element(:update_method_of_po_transmission) { |i=0, b| b.addresses_tab.select(id: "document.newMaintainableObject.vendorAddresses[#{i}].extension.purchaseOrderTransmissionMethodCode") }
-  element(:old_method_of_po_transmission) { |i=0, b| b.addresses_tab.span(id: "document.oldMaintainableObject.vendorAddresses[#{i}].extension.purchaseOrderTransmissionMethodCode.div").text.strip }
+  value(:old_method_of_po_transmission) { |i=0, b| b.addresses_tab.span(id: "document.oldMaintainableObject.vendorAddresses[#{i}].extension.purchaseOrderTransmissionMethodCode.div").text.strip }
+
+  value(:vendor_address_generated_identifier) do |i=0, b|
+    b.addresses_tab.span(id: "vendorAddresses[#{i}].extension.vendorAddressGeneratedIdentifier.div")
+                   .text
+                   .strip if b.addresses_tab
+                              .span(id: "vendorAddresses[#{i}].extension.vendorAddressGeneratedIdentifier.div")
+                              .exists? # This only shows up on the "Read-Only" Notes tab
+  end
+  alias_method :new_vendor_address_generated_identifier, :vendor_address_generated_identifier # These are auto-generated, and immutable
+  alias_method :old_vendor_address_generated_identifier, :vendor_address_generated_identifier
 
   # Supplier Diversity
   element(:supplier_diversity_tab) { |b| b.frm.div(id: 'tab-SupplierDiversity-div') }

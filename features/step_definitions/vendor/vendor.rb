@@ -448,13 +448,21 @@ And /^I lookup a Vendor with Vendor Number (.*)$/ do |vendor_number|
   end
 end
 
-And /^I lookup a random PO Vendor$/ do
-  step 'I lookup a Vendor with Vendor Number  ' # Eventually, we should set this to a provided PO Vendor
+And /^I open the Vendor from the Vendor document$/ do
+  visit(MainPage).vendor
+  on VendorLookupPage do |page|
+    page.vendor_number.fit @vendor.vendor_number
+    page.search
+    page.open_item_via_text @vendor.vendor_name, @vendor.vendor_name # This should throw a fail if the item isn't found.
+  end
 end
 
-And /^I edit a random PO Vendor$/ do
-  #step 'I lookup a random PO Vendor'
-  step 'I lookup a Vendor with Vendor Number 27015-0'
+And /^I lookup a PO Vendor$/ do
+  step "I lookup a Vendor with Vendor Number #{get_aft_parameter_value(ParameterConstants::DEFAULT_VENDOR_NUMBER)}"
+end
+
+And /^I edit a PO Vendor$/ do
+  step 'I lookup a PO Vendor'
   @vendor = make VendorObject
   on(VendorPage).description.fit @vendor.description
   @vendor.absorb(:old)
@@ -474,5 +482,10 @@ And /^I add a Supplier Diversity to the Vendor document$/ do
 end
 
 Then /^the Address Tab displays Vendor Address Generated Identifiers for each Address$/ do
-  pending
+  on VendorPage do |vp|
+    @vendor.addresses.each do |addr|
+      vp.vendor_address_generated_identifier(addr.line_number).nil?.should_not
+      addr.vendor_address_generated_identifier = vp.vendor_address_generated_identifier(addr.line_number) # Let's load this in, just in case
+    end
+  end
 end

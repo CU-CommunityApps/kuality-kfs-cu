@@ -23,8 +23,8 @@ end
 When /^I route the (.*) document to (.*) by clicking (.*) for each request$/ do |document, target_status, button|
   step "I view the #{document} document"
 
-  unless on(KFSBasePage).document_status == target_status
-    step 'I switch to the user with the next Pending Action in the Route Log'
+  unless on(page_class_for(document)).document_status == target_status
+    step "I switch to the user with the next Pending Action in the Route Log for the #{document} document"
     step "I view the #{document} document"
     step "I #{button} the #{document} document if it is not already FINAL"
   end
@@ -66,4 +66,3 @@ Then /^I switch to the user with the next Pending Action in the Route Log for th
 
   step "I am logged in as \"#{new_user}\""
 end
-
