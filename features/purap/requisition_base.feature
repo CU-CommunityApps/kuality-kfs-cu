@@ -6,6 +6,8 @@ Feature: REQS, PO, PREQ,PDP
 
   [KFSQA-855] PUR-10  remove commodity review from PO
 
+  [KFSQA-830] Alt Pay and PDP SETUP. This is a process run every night to clear out PURAP and PDP before testing.
+
   @KFSQA-853 @BaseFunction @REQS @PO @PREQ @PDP @Routing @pending @coral
   Scenario: PUR-5 Sensitive Commodity Data Flag enh
     Given I INITIATE A REQS with following:
@@ -21,7 +23,7 @@ Feature: REQS, PO, PREQ,PDP
     When I INITIATE A PREQS
     Then I FORMAT AND PROCESS THE CHECK WITH PDP
 
-  @KFSQA-854 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral @pending @wip
+  @KFSQA-854 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral @pending
   Scenario Outline: POs Follow Routing per Organization Review (ORG 0100)
   Given I INITIATE A REQS with following:
     |Vendor Type        | NonB2B      |
@@ -43,7 +45,7 @@ Feature: REQS, PO, PREQ,PDP
   | 500000     | 2        |
   | 5000000    | 3        |
 
-  @KFSQA-855 @BaseFunction @REQS @PO @PREQ @PDP @Routing @pending @coral @wip
+  @KFSQA-855 @BaseFunction @REQS @PO @PREQ @PDP @Routing @pending @coral
   Scenario Outline: PUR-10  remove commodity review from PO
     Given I INITIATE A REQS with following:
       |Vendor Type        | NonB2B      |
@@ -65,3 +67,6 @@ Feature: REQS, PO, PREQ,PDP
     | GT APO     | Regular      |
     | LT APO     | Regular      |
 
+  @KFSQA-830 @BaseFunction @PURAP @PDP @SETUP @pending @coral @wip
+  Scenario: Alt Pay and PDP SETUP
+    Given I FORMAT AND PROCESS THE CHECK WITH PDP

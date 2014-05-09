@@ -132,10 +132,12 @@ Then /^I FORMAT AND PROCESS THE CHECK WITH PDP$/ do
     And   I close POS wtih Zero Balanecs
     And   I load PREQ into PDP
   }
-  # format checks
+  format checks
   steps %Q{
     Given I Login as a PDP Format Disbursement Processor
     And   I format Disbursement
+    And   I select continue on Format Disbursement Summary
+    And   a Format Summary Lookup displays
 }
     #And   I select continue on Format Disbursement Summary
     #And   a Format Summary Lookup displays
@@ -143,6 +145,7 @@ Then /^I FORMAT AND PROCESS THE CHECK WITH PDP$/ do
 
   # generate output files batch jobs
   steps %Q{
+    Given I am logged in as a KFS Operations
     And   I generate the ACH XML File
     And   I generate the Check XML File
     And   I generate the Cancelled Check XML File
@@ -170,12 +173,24 @@ And /^I format Disbursement$/ do
     page.begin_format
     sleep 20
   end
+  x = 0 # TODO incase some error.  may want to check error too
+  while on(KFSBasePage).doc_title.eql?('Format Disbursements') && x < 20
+    puts 'sleep disb ', x
+    sleep 10
+    x += 1
+  end
 end
 
 And /^I select continue on Format Disbursement Summary$/ do
   on(FormatDisbursementSummaryPage).continue_format
   # this will take a while
-  sleep 60
+  sleep 30
+  x = 0 # TODO incase some error.  may want to check error too
+  while on(KFSBasePage).doc_title.eql?('Format Disbursements Summary') && x < 20
+    puts 'sleep disb sum ', x
+    sleep 10
+    x += 1
+  end
 end
 
 And /^a Format Summary Lookup displays$/ do
