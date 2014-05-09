@@ -4,9 +4,14 @@ Feature: Vendor Edit
 
   [KFSQA-773] PO Vendor Edit, with Expired Insurance.
   
-  [KFSQA-839] Verify that a FTC/BSC can edit the vendor record it routes to
-              the vendor reviewer and shows the vendor address generated field 
-              on the inquiry screen and the attachment are still attached.
+  [KFSQA-839] Cornell modified the routing of Vendor eDocs to always include a second review.
+              Whenever Create-New or Lookup-Edit (Role CU Vendor Initiator) change a vendor
+              record --- a second reviewer (assigned the role Vendor Reviewer Omit Initiator)
+              needs to approve the eDoc. Additionally, Cornell has added roles to
+              1) View attachments ---Vendor Attachment viewer (cu), and,
+              2) Update the Contract Tab --- Vendor Contract Editor (cu).
+              Moreover, Cornell added (as display on addresses) the KFS internal
+              data element named Vendor Address Generated Identifier.
 
   @KFSQA-755 @cornell @slug @E2E @VendorEdit
   Scenario: I want to edit a vendor with ownership type INDIVIDUAL
@@ -73,7 +78,7 @@ Feature: Vendor Edit
     Then    the changes to Vendor document have persisted
 
   @KFSQA-839 @cornell @VendorEdit @Routing @smoke @wip
-  Scenario: FTC/BSC edit of the vendor shows the vendor address generated field and the attachments are attached
+  Scenario: Edit a vendor and ensure routing to the second reviewer. Confirm display of Vendor Address Generated Identifier. Confirm previously added attachments persist.
     Given I am logged in as a Vendor Initiator
     And   I edit a PO Vendor
     When  I add a Supplier Diversity to the Vendor document
