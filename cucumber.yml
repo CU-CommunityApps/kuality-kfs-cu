@@ -3,8 +3,8 @@
   debug = "#{default} DEBUG=true"
   clean_tags = '--tags ~@draft --tags ~@wip --tags ~@pending'
   clean_default = "#{default} #{clean_tags}"
-  clean_no_nightly = "#{clean_default} --tags ~@nightly-jobs --tags ~@utility"
-  clean_nightly = "#{clean_default} --tags @nightly-jobs --tags ~@utility"
+  clean_no_nightly = "#{clean_default} --tags ~@nightly-jobs --tags ~@utility --tags ~@test-highlights-bug"
+  clean_nightly = "#{clean_default} --tags @nightly-jobs --tags ~@utility --tags ~@test-highlights-bug"
   json_output = '--format json -o ../kuality-kfs-cu-output'
   split_num = format( '%#02d', (ENV['TEST_ENV_NUMBER'] == '' ? 1 : ENV['TEST_ENV_NUMBER']).to_i )
   output_split_json = "#{json_output}.split#{split_num}.json"

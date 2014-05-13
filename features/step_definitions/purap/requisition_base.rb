@@ -6,27 +6,30 @@ Given  /^I INITIATE A REQS with following:$/ do |table|
   if arguments['Vendor Type'].nil? || arguments['Vendor Type'] != 'Blank'
     @vendor_number = get_aft_parameter_value('REQS_' + (arguments['Vendor Type'].nil? ? 'NONB2B' : arguments['Vendor Type'].upcase) + '_VENDOR')
   end
-  add_vendor = arguments['Add Vendor On REQS'].nil? ? 'Yes' : arguments['Vendor Type']
+  add_vendor = arguments['Add Vendor On REQS'].nil? ? 'Yes' : arguments['Add Vendor On REQS']
   positive_approve = arguments['Positive Approval'].nil? ? 'Unchecked' : arguments['Positive Approval']
   commodity_code = get_aft_parameter_value('REQS_' + (arguments['Commodity Code'].nil? ? 'REGULAR' : arguments['Commodity Code'].upcase)+"_COMMODITY")
   account_number = get_aft_parameter_value('REQS_' + (arguments['Account Type'].nil? ? 'NONGRANT' : arguments['Account Type'].upcase) + '_ACCOUNT') # from service or parameter
   apo_amount = get_parameter_values('KFS-PURAP', 'AUTOMATIC_PURCHASE_ORDER_DEFAULT_LIMIT_AMOUNT', 'Requisition')[0].to_i
   amount = arguments['Amount']
+  @level = arguments['Level'].nil? ? 0 : arguments['Level'].to_i
+  @sensitive_commodity = !arguments['Commodity Code'].nil? && arguments['Commodity Code'] == 'Sensitive'
+  @commodity_review_routing_check = !arguments['Routing Check'].nil? && arguments['Routing Check'] == 'Commodity'
+  @org_review_routing_check = @level > 0 && !arguments['Routing Check'].nil? && arguments['Routing Check'] == 'Base Org'
   item_qty = 1
   if amount.nil? || amount == 'LT APO'
     item_qty = apo_amount/1000 - 1
   else
-    case amount
-      when 'GT APO'
+    if amount == 'GT APO'
         item_qty = apo_amount/1000 + 1
-      else
-        item_qty = amount.to_i/1000 + 1
+    else
+        item_qty = amount.to_i/1000
     end
   end
   # so far it used 6540, 6560, 6570 which are all EX type (Expense Expenditure)
   object_code = 6540
   step "I create the Requisition document with:", table(%{
-      | Vendor Number       | #{@vendor_number}   |
+      | Vendor Number       | #{@vendor_number}  |
       | Item Quantity       | #{item_qty}        |
       | Item Cost           | 1000               |
       | Item Commodity Code | #{commodity_code}  |
@@ -60,6 +63,7 @@ And /^users outside the Route Log can not search and retrieve the REQS$/ do
     page.document_id.fit @requisition.document_id
     #page.document_id.fit '5358712'
     page.search
+    sleep 2
     if !page.lookup_div.parent.text.include?('No values match this search.')
       # if search found, then can not open
       page.open_item(@requisition.document_id)
@@ -178,5 +182,71 @@ And /^a Format Summary Lookup displays$/ do
   # TODO : not sure what to check
   on FormatSummaryLookupPage do |page|
 
+  end
+end
+
+Then /^the (.*) document routes to the correct individuals based on the org review levels$/ do |document|
+  reqs_org_reviewers_level_1 = Array.new
+  reqs_org_reviewers_level_2 = Array.new
+  po_reviewer_5m = ''
+  if @level == 1
+    reqs_org_reviewers_level_1 = get_principal_name_for_role('KFS-SYS', 'ORG 0100 Level 1 Review')
+  else
+    if @level >= 2
+      reqs_org_reviewers_level_2 = get_principal_name_for_role('KFS-SYS', 'ORG 0100 Level 2 Review')
+    end
+  end
+
+  if (document == 'Purchase Order')
+    puts 'base org review level ', @base_org_review_level
+    @base_org_review_level.should == @level
+    po_reviewer_500k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
+    po_reviewer_5m = get_aft_parameter_value('PO_BASE_ORG_REVIEW_5M')
+    po_reviewer_100k = get_principal_name_for_group('3000106')
+
+    case @level
+      when 1
+        (@org_review_users & po_reviewer_100k).length.should >= 1
+      when 2
+        (@org_review_users & po_reviewer_100k).length.should >= 1
+        @org_review_users.should include po_reviewer_500k
+      when 3
+        (@org_review_users & po_reviewer_100k).length.should >= 1
+        @org_review_users.should include po_reviewer_500k
+        @org_review_users.should include po_reviewer_5m
+
+    end
+  else if (document == 'Requisition' || document == 'Payment Request')
+         puts 'reqs base org  ',@org_review_users
+         case @level
+           when 1
+             (@org_review_users & reqs_org_reviewers_level_1).length.should >= 1
+           when 2
+             (@org_review_users & reqs_org_reviewers_level_2).length.should >= 1
+           when 3
+             (@org_review_users & reqs_org_reviewers_level_2).length.should >= 1
+
+         end
+       end
+  end
+
+end
+
+And /^I validate Commodity Review Routing for (.*) document$/ do |document|
+  # TODO : may need for POA in the future.
+  if (document == 'Purchase Order')
+    puts 'po commodity ',@commodity_review_users
+    @commodity_review_users.length.should == 0
+  else
+    if (document == 'Requisition')
+      # TODO : reviewers should come from groupservice when it is ready
+      reqs_animal_reviewers = get_principal_name_for_group('3000083')
+      puts 'reqs commodity ',@commodity_review_users
+      if @sensitive_commodity
+        (@commodity_review_users & reqs_animal_reviewers).length.should >= 1
+      else
+        @commodity_review_users.length.should == 0
+      end
+    end
   end
 end
