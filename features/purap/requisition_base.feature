@@ -19,9 +19,8 @@ Feature: REQS, PO, PREQ,PDP
   # default PM can ve implemented after alternate PM is moved to upgrade
     And  I EXTRACT THE REQS TO SQ
     When I INITIATE A PREQS
-    Then I FORMAT AND PROCESS THE CHECK WITH PDP
 
-  @KFSQA-854 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral @pending @wip
+  @KFSQA-854 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral @pending
   Scenario Outline: POs Follow Routing per Organization Review (ORG 0100)
   Given I INITIATE A REQS with following:
     |Vendor Type        | NonB2B      |
@@ -36,7 +35,6 @@ Feature: REQS, PO, PREQ,PDP
     # default PM can ve implemented after alternate PM is moved to upgrade
   And  I EXTRACT THE REQS TO SQ
   When I INITIATE A PREQS
-  Then I FORMAT AND PROCESS THE CHECK WITH PDP
   Examples:
   | amount     | level    |
   | 100000     | 1        |
@@ -57,7 +55,6 @@ Feature: REQS, PO, PREQ,PDP
   # default PM can ve implemented after alternate PM is moved to upgrade
     And  I EXTRACT THE REQS TO SQ
     When I INITIATE A PREQS
-    Then I FORMAT AND PROCESS THE CHECK WITH PDP
   Examples:
     | amount     | commodity    |
     | GT APO     | Sensitive    |
