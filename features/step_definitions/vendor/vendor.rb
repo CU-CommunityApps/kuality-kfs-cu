@@ -190,7 +190,7 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
     if @vendor.supplier_diversities.length.zero?
       @vendor.supplier_diversities.add new_supplier_diversity
     else
-      @vendor.supplier_diversities.first.edit new_supplier_diversity.delete(:type)
+      @vendor.supplier_diversities.first.edit new_supplier_diversity.delete_if{ |k,v| k == :type }
     end
   end
   unless new_contract.empty?
@@ -407,7 +407,7 @@ And /^I create a DV Vendor$/  do
     if @vendor.supplier_diversities.length.zero?
       @vendor.supplier_diversities.add new_supplier_diversity
     else
-      @vendor.supplier_diversities.first.edit new_supplier_diversity.delete(:type)
+      @vendor.supplier_diversities.first.edit new_supplier_diversity.delete_if{ |k,v| k == :type }
     end
   end
 
