@@ -30,7 +30,7 @@ Feature: REQS, PO, PREQ,PDP
     |Amount             | <amount>    |
     |Level              | <level>     |
 #    |Default PM         | P           |
-    # default PM can ve implemented after alternate PM is moved to upgrade
+    # default PM can be implemented after alternate PM is moved to upgrade
   And  I EXTRACT THE REQS TO SQ
   When I INITIATE A PREQS
   Then I FORMAT AND PROCESS THE CHECK WITH PDP

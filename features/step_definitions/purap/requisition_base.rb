@@ -197,7 +197,7 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
     @base_org_review_level.should == @level
     po_reviewer_500k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
     po_reviewer_5m = get_aft_parameter_value('PO_BASE_ORG_REVIEW_5M')
-    po_reviewer_100k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_100K').split(',')
+    po_reviewer_100k = get_principal_name_for_group('3000106').split(',')
 
     case @level
       when 1
