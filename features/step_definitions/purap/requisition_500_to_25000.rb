@@ -110,7 +110,7 @@ end
     on (PurchaseOrderPage) do |page|
       page.vendor_search
       on VendorLookupPage do |vlookup|
-        vendor_number = '39210-0' # TODO : this vendor number should be from a parameter
+        vendor_number = get_aft_parameter_value(ParameterConstants::REQS_FOREIGN_VENDOR)
         vlookup.vendor_number.fit vendor_number
         vlookup.search
         vlookup.return_value(vendor_number)
