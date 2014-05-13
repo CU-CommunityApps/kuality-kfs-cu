@@ -17,7 +17,6 @@ Feature: REQS, PO, PREQ,PDP
   # default PM can ve implemented after alternate PM is moved to upgrade
     And  I EXTRACT THE REQS TO SQ
     When I INITIATE A PREQS
-    Then I FORMAT AND PROCESS THE CHECK WITH PDP
 
   @KFSQA-854 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral @pending @wip
   Scenario Outline: POs Follow Routing per Organization Review (ORG 0100)
@@ -33,7 +32,6 @@ Feature: REQS, PO, PREQ,PDP
     # default PM can be implemented after alternate PM is moved to upgrade
   And  I EXTRACT THE REQS TO SQ
   When I INITIATE A PREQS
-  Then I FORMAT AND PROCESS THE CHECK WITH PDP
   Examples:
   | amount     | level    |
   | 100000     | 1        |
