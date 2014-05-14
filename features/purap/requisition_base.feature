@@ -41,7 +41,7 @@ Feature: REQS, PO, PREQ,PDP
   | 500000     | 2        |
   | 5000000    | 3        |
 
-  @KFSQA-855 @BaseFunction @REQS @PO @PREQ @PDP @Routing @pending @coral @wip
+  @KFSQA-855 @BaseFunction @REQS @PO @PREQ @PDP @Routing @pending @coral
   Scenario Outline: PUR-10  remove commodity review from PO
     Given I INITIATE A REQS with following:
       |Vendor Type        | NonB2B      |
