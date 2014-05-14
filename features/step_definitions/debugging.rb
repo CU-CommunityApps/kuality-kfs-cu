@@ -13,12 +13,16 @@ And /^I stop here$/ do
   pending
 end
 
+And /^I inspect the (.*) document$/ do |document|
+  puts document_object_for(document).inspect
+end
+
 When /^I visit the '(.*)' page$/  do   |goto_page|
   go_to_page = goto_page.downcase.gsub!(' ', '_')
   visit(MainPage).send(go_to_page)
 end
 
-And(/^I print out all "(field|textarea|button|select|checkbox|radio|link)" on the page$/) do |item_type|
+And /^I print out all "(field|textarea|button|select|checkbox|radio|link)" on the page$/ do |item_type|
   # For page object creation
   on MainPage do |page|
     case item_type
@@ -54,7 +58,7 @@ And(/^I print out all "(field|textarea|button|select|checkbox|radio|link)" on th
   end
 end #print all
 
-And(/^I print out all "(field|textarea|button|select|checkbox|radio|link)" on the page without frame$/) do |item_type|
+And /^I print out all "(field|textarea|button|select|checkbox|radio|link)" on the page without frame$/ do |item_type|
   # For page object creation
   on MainPage do |page|
     case item_type
@@ -89,3 +93,14 @@ And(/^I print out all "(field|textarea|button|select|checkbox|radio|link)" on th
     end
   end
 end #print all
+
+And /^I open the document with ID (\d+)$/ do |document_id|
+  visit(MainPage).doc_search
+  on DocumentSearch do |search|
+    search.document_type.fit ''
+    search.document_id.fit   document_id
+    search.search
+    search.wait_for_search_results
+    search.open_doc document_id
+  end
+end

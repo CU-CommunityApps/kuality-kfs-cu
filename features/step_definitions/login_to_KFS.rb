@@ -108,44 +108,6 @@ Given /^I am logged in as a KFS Manager for the (.*) document$/ do |eDoc|
   end
 end
 
-Then /^I switch to the user with the next Pending Action in the Route Log$/ do
-  new_user = ''
-  on(FinancialProcessingPage) do |page|
-    page.expand_all
-    page.pnd_act_req_table[1][2].links[0].click
-    page.use_new_tab
-    page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].should exist
-    page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].text.empty?.should_not
-    new_user = page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].text
-    page.close_children
-  end
-
-  step "I am logged in as \"#{new_user}\""
-end
-Then /^I switch to the user with the next Pending Action in the Route Log for the (.*) document$/ do |document|
-  # TODO : it will be good if a member of 'group' approver can be selected.  For example :  'Group Name: Radioactive Review'
-  new_user = ''
-  on(page_class_for(document)) do |page|
-    page.expand_all
-    page.pnd_act_req_table[1][2].links[0].click
-    page.use_new_tab
-    page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].should exist
-    page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].text.empty?.should_not
-    if (page.frm.div(id: 'tab-Overview-div').tables[0][1].text.include?('Principal Name:'))
-       new_user = page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].text
-    else
-      # TODO : this is for group.  any other alternative ?
-      mbr_tr = page.frm.select(id: 'document.members[0].memberTypeCode').parent.parent.parent
-      new_user = mbr_tr[4].text
-    end
-
-    page.close_children
-  end
-
-  step "I am logged in as \"#{new_user}\""
-end
-
-
 Given /^I am logged in as a Disbursement Manager$/ do
   visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-FP', 'Disbursement Manager'))
 end
@@ -178,6 +140,22 @@ end
 
 Given /^I am logged in as a Commodity Reviewer$/ do
   visit(BackdoorLoginPage).login_as('am28') #TODO get from role service
+end
+
+Given /^I am logged in as FTC\/BSC member User$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'FTC/BSC members'))
+end
+
+Given /^I am logged in as a Vendor Contract Editor\(cu\)$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'Vendor Contract Editor(cu)'))
+end
+
+Given /^I am logged in as a (.*) principal in namespace (.*)$/ do |role, namespace|
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role(role, namespace))
+end
+
+Given /^I am logged in as a Vendor Attachment viewer \(cu\)$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-VND', 'Vendor Attachment viewer (cu)'))
 end
 
 Given /^I login as a Accounts Payable Processor to create a PREQ$/ do

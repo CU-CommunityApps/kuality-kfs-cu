@@ -226,6 +226,22 @@ Feature: Disbursement Voucher
     When  the Disbursement Voucher document goes to ENROUTE
     Then  The Payment Information address equals the overwritten address information
 
+  @KFSQA-717 @tortoise
+  Scenario: Disbursement Voucher document allow usage of Revolving Fund (Petty Cash) Payment Types
+    Given I am logged in as a KFS User
+    When  I start an empty Disbursement Voucher document
+    And   I add a random payee the Disbursement Voucher
+    And   I change the Payee address
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | G003704        |
+      | Object Code  | 6540           |
+      | Amount       | 10             |
+      | Description  | DV12 Test....  |
+    And   I change the Check Amount for the Disbursement Voucher document to 100
+    And   I submit the Disbursement Voucher document
+    When  the Disbursement Voucher document goes to ENROUTE
+    Then  The Payment Information address equals the overwritten address information
+
   @KFSQA-710 @sloth
   Scenario: Verify using current mileage rate based on dates
     Given I am logged in as a KFS User
@@ -433,6 +449,7 @@ Feature: Disbursement Voucher
     And   I add an Address to a Vendor with following fields:
       | Address Type   | RM - REMIT        |
       | Address 1      | 3430 McTavish St  |
+      | Address 2      | Pick Me           |
       | City           | Montreal, Quebec  |
       | Zip Code       | H3A_1X9           |
       | Country        | Canada            |
