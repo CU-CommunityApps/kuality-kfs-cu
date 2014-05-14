@@ -1,5 +1,5 @@
 Given /^I am logged in as a KFS Technical Administrator$/ do
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Technical Administrator'))
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-SYS', 'Technical Administrator'))
 end
 
 Given /^I am logged in as a KFS Operations$/ do
@@ -7,7 +7,7 @@ Given /^I am logged in as a KFS Operations$/ do
 end
 
 Given /^I am logged in as a Vendor Reviewer$/ do
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-VND', 'Reviewer'))
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-VND', 'Reviewer'))
 end
 
 Given /^I am logged in as a Vendor Initiator$/ do
@@ -15,11 +15,17 @@ Given /^I am logged in as a Vendor Initiator$/ do
 end
 
 Given /^I am logged in as a KFS Fiscal Officer$/ do
-  visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+  visit(BackdoorLoginPage).login_as(get_aft_parameter_value(ParameterConstants::DEFAULT_FISCAL_OFFICER))
 end
 
-Given /^I am logged in as a KFS User$/  do
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'User'))
+Given /^I am logged in as a KFS Fiscal Officer for account number (.*)$/ do |account_number|
+  account_info = get_kuali_business_object('KFS-COA','Account','accountNumber=' + account_number)
+  fiscal_officer_principal_name = account_info['accountFiscalOfficerUser.principalName']
+  visit(BackdoorLoginPage).login_as(fiscal_officer_principal_name)
+end
+
+Given /^I am logged in as a KFS User$/ do
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-SYS', 'User'))
 end
 
 Given /^I am logged in as "([^"]*)"$/ do |user_id|
@@ -27,27 +33,27 @@ Given /^I am logged in as "([^"]*)"$/ do |user_id|
 end
 
 Given /^I am logged in as a KFS Chart Manager$/ do
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Chart Manager'))
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-SYS', 'Chart Manager'))
 end
 
 Given /^I am logged in as a KFS Chart Administrator$/ do
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Chart Administrator (cu)'))
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-SYS', 'Chart Administrator (cu)'))
 end
 
 Given /^I am logged in as a KFS Cash Manager$/ do
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-FP', 'Cash Manager'))
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-FP', 'Cash Manager'))
 end
 
 Given /^I am logged in as a KFS Contracts & Grants Processor$/ do
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Contracts & Grants Processor'))
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-SYS', 'Contracts & Grants Processor'))
 end
 
 Given /^I am logged in as a KFS Parameter Change Administrator$/ do
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KR-NS', 'Parameter Approver (cu)'))
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KR-NS', 'Parameter Approver (cu)'))
 end
 
 Given /^I am logged in as a KFS System Manager$/ do
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Manager'))
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-SYS', 'Manager'))
 end
 
 Given /^I am logged in as a KFS User for the (.*) document$/ do |eDoc|
@@ -76,6 +82,8 @@ Given /^I am logged in as a KFS User for the (.*) document$/ do |eDoc|
       visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
     when 'JV-3'
       visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
+    when 'LLJV'
+      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
     when 'ND'
       visit(BackdoorLoginPage).login_as('kpg1') #TODO get from role service
     when 'PE'
@@ -101,19 +109,33 @@ Given /^I am logged in as a KFS Manager for the (.*) document$/ do |eDoc|
 end
 
 Given /^I am logged in as a Disbursement Manager$/ do
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-FP', 'Disbursement Manager'))
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-FP', 'Disbursement Manager'))
 end
 
 Given /^I am logged in as a Tax Manager$/ do
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Tax Manager'))
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-SYS', 'Tax Manager'))
 end
 
 Given /^I am logged in as a Disbursement Method Reviewer$/ do
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-FP', 'Disbursement Method Reviewer'))
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-FP', 'Disbursement Method Reviewer'))
 end
 
 Given /^I login as a KFS user to create an REQS$/ do
   visit(BackdoorLoginPage).login_as('der9') #TODO get from role service
+end
+
+Given /^I login as a PURAP eSHop user$/ do
+  # der9
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'eShop User (cu)'))
+end
+
+And /^I am logged in as a PURAP Contract Manager$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'Contract Manager'))
+end
+
+Given /^I am logged in as a Purchasing Processor$/ do
+  # ml284
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'Purchasing Processor'))
 end
 
 Given /^I am logged in as a Commodity Reviewer$/ do
@@ -136,3 +158,17 @@ Given /^I am logged in as a Vendor Attachment viewer \(cu\)$/ do
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-VND', 'Vendor Attachment viewer (cu)'))
 end
 
+Given /^I login as a Accounts Payable Processor to create a PREQ$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'Accounts Payable Processor'))
+end
+
+Given /^I am logged in as a KFS Parameter Change Approver$/ do
+  #visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KR-NS', 'Parameter Approver (cu) KFS')) # TODO: Get role from service
+  visit(BackdoorLoginPage).login_as('ccs1')
+end
+
+
+Given /^I Login as a PDP Format Disbursement Processor$/ do
+  visit(BackdoorLoginPage).login_as('mo14') #TODO get from role service
+  #visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PDP', 'Processor'))
+end

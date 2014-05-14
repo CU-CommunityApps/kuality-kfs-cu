@@ -21,7 +21,7 @@ Feature: Sub Account
     Given   I am logged in as a KFS User
     And     I Create a Sub-Account with Sub-Account Type CS
     And     I submit the Sub-Account document
-    And     I am logged in as the FO of the Account
+    And     I am logged in as the FO of the Sub-Account
     And     The Sub-Account document should be in my action list
     And     I view the Sub-Account document
     And     I approve the Sub-Account document

@@ -3,8 +3,8 @@
   debug = "#{default} DEBUG=true"
   clean_tags = '--tags ~@draft --tags ~@wip --tags ~@pending'
   clean_default = "#{default} #{clean_tags}"
-  clean_no_nightly = "#{clean_default} --tags ~@nightly-jobs"
-  clean_nightly = "#{clean_default} --tags @nightly-jobs"
+  clean_no_nightly = "#{clean_default} --tags ~@nightly-jobs --tags ~@utility --tags ~@test-highlights-bug"
+  clean_nightly = "#{clean_default} --tags @nightly-jobs --tags ~@utility --tags ~@test-highlights-bug"
   json_output = '--format json -o ../kuality-kfs-cu-output'
   split_num = format( '%#02d', (ENV['TEST_ENV_NUMBER'] == '' ? 1 : ENV['TEST_ENV_NUMBER']).to_i )
   output_split_json = "#{json_output}.split#{split_num}.json"
@@ -14,7 +14,7 @@ default: <%= default %>                                                   # Run 
 debug: <%= debug %>                                                       # Run all jobs, with the DEBUG flag on
 hare: <%= clean_default %> --tags @hare                                   # Only run @hare-class Scenarios
 tortoise: <%= clean_default %> --tags @tortoise                           # Only run @tortoise-class Scenarios
-tortoise_and_hare: <%= clean_default %> --tags @hare,@tortoise            # Only run @hare- and @tortoise-class Scenarios
+tortoise_and_hare: <%= clean_default %> --tags @hare,@tortoise            # Only run @hare- or @tortoise-class Scenarios
 slug: <%= clean_default %> --tags @slug                                   # Only run @slug-class Scenarios
 coral: <%= clean_default %> --tags @coral                                 # Only run @coral-class Scenarios
 nightly_jobs: <%= clean_nightly %>                                        # Only run Scenarios that Run Nightly Jobs
@@ -27,7 +27,8 @@ headless_json: HEADLESS=true <%= clean_default %> <%= json_output %>.json # Same
 # but are expected to be run using parallel_cucumber and will generate json files.
 # Naturally, this means there's only one headless version here.
 
-parallel_master: <%= clean_default %> <%= output_split_json %>
+parallel_master: <%= clean_default %> --tags ~@utility <%= output_split_json %>
 parallel_master_no_nightly: <%= clean_no_nightly %> <%= output_split_json %>
 parallel_headless: HEADLESS=true <%= clean_no_nightly %> <%= output_split_json %>
 headless_json_nightly: HEADLESS=true <%= clean_nightly %> <%= json_output %>.split00.json # Same as headless_json, but only runs nightly-jobs
+clear_batch: <%= clean_default %> --tags @nightly-jobs --tags @utility    # Only run utility jobs related to the nightly batch

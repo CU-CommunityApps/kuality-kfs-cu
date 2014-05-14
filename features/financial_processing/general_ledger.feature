@@ -43,6 +43,7 @@ Feature: General Ledger
     | Non-Check Disbursement             | ND      | G013300        |                |
     | Pre-Encumbrance                    | PE      | G003704        |                |
     | Transfer Of Funds                  | TF      | A763306        | A763900        |
+  #TODO grab accounts from parameter
 
   @KFSQA-649 @smoke @nightly-jobs @tortoise
   Scenario Outline: Accounting Line Description from eDoc updates General Ledger. These eDocs' accounts don't clone nicely.
@@ -69,16 +70,19 @@ Feature: General Ledger
       | eDoc              | docType | source_account | target_account |
       | Budget Adjustment | BA      | G003704        | G003704        |
       | Service Billing   | SB      | U243700        | G013300        |
+  #TODO grab account from parameter
 
-  @KFSQA-649 @smoke @nightly-jobs @tortoise
+  @KFSQA-649 @smoke @nightly-jobs @tortoise @broken
   Scenario: Accounting Line Description from eDoc updates General Ledger
     Given I am logged in as a KFS Manager for the DV document
     And   I clone Account 1490000 with the following changes:
       | Name        | Disbursement Voucher Test Account S |
       | Chart Code  | IT                                  |
       | Description | Disbursement Voucher Test Account S |
+    #TODO KYLE try using the default account for DV
     And   I am logged in as a KFS User for the DV document
     When  I start an empty Disbursement Voucher document with Payment to Vendor 12076-0 and Reason Code B
+    #TODO loookup/calculate this
     And   I add balanced Accounting Lines to the Disbursement Voucher document
     And   I save the Disbursement Voucher document
     Then  I submit the Disbursement Voucher document

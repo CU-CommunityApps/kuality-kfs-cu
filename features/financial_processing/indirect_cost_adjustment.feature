@@ -34,7 +34,7 @@ Feature: Indirect Cost Adjustment
       | FINAL     |
 
     Given Nightly Batch Jobs run
-    And   I am logged in as a KFS System Administrator
+    And   I am logged in as a KFS Technical Administrator
     When  I lookup the document ID for the Indirect Cost Adjustment document from the General Ledger
     Then  the Grant Template Accounting Line Description for Indirect Cost Adjustment equals the General Ledger entry
     And   the Receipt Template Accounting Line Description for Indirect Cost Adjustment equals the General Ledger entry

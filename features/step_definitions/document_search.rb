@@ -6,7 +6,7 @@ end
 
 And /^I search for all (.*) documents$/ do |doc_type|
   visit DocumentSearch do |page|
-    page.date_created_from.fit '01/01/2014'
+    page.date_created_from.fit '01/01/2014' #TODO fix - calculate!?
     page.document_type.fit doc_type
     page.search
   end

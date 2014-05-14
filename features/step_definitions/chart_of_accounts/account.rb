@@ -8,7 +8,7 @@ And /^I copy an Account$/ do
   on(AccountLookupPage).copy_random
   on AccountPage do |page|
     page.description.fit 'AFT testing copy'
-    page.chart_code.fit 'IT' #TODO get from config
+    page.chart_code.fit get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
     page.number.fit random_alphanums(4, 'AFT')
     @account = make AccountObject
     @account.chart_code = page.chart_code.text
@@ -44,14 +44,14 @@ end
 And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
   visit(MainPage).account
   on AccountLookupPage do |page|
-    page.subfund_program_code.set 'BOARD'
+    page.subfund_program_code.set 'BOARD' #TODO config
     page.search
     page.edit_random
   end
   on AccountPage do |page|
     @account = make AccountObject
     page.description.set random_alphanums(40, 'AFT')
-    page.subfund_program_code.set 'board'
+    page.subfund_program_code.set 'board' #TODO config
     page.save
   end
 end
@@ -116,28 +116,28 @@ When /^I save an Account document with only the ([^"]*) field populated$/ do |fi
       chart_code:           get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
       number:               random_alphanums(7),
       name:                 random_alphanums(10),
-      organization_code:               '01G0',
-      campus_code:          get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_CODE),
+      organization_code:    '01G0',#TODO config?
+      campus_code:          get_aft_parameter_value(ParameterConstants::DEFAULT_CAMPUS_CODE),
       effective_date:       '01/01/2010',
-      postal_code:          get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_POSTAL_CODE),
-      city:                 get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_CITY),
-      state:                get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_STATE),
-      address:              get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_ADDRESS),
-      type_code:            get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_TYPE_CODE),
-      sub_fund_group_code:     'ADMSYS',
-      higher_ed_funct_code:   '4000',
-      restricted_status_code: 'U - Unrestricted',
-      fo_principal_name:    get_aft_parameter_values(ParameterConstants::DEFAULT_FISCAL_OFFICER),#'dh273',
-      supervisor_principal_name:  'ccs1',
-      manager_principal_name: 'aap98',
-      budget_record_level_code: 'C - Consolidation',
-      sufficient_funds_code:    'C - Consolidation',
-      expense_guideline_text: 'expense guideline text',
-      income_guideline_txt:   'incomde guideline text',
-      purpose_text:           'purpose text',
-      income_stream_financial_cost_code:  'IT - Ithaca Campus',
-      income_stream_account_number:     '1000710',
-      labor_benefit_rate_cat_code:      'CC'
+      postal_code:          get_random_postal_code('*'),
+      city:                 get_generic_city,
+      state:                get_random_state_code,
+      address:              get_generic_address_1,
+      type_code:            get_aft_parameter_value(ParameterConstants::DEFAULT_CAMPUS_TYPE_CODE),
+      sub_fund_group_code:  'ADMSYS',#TODO config?
+      higher_ed_funct_code: '4000',#TODO config?
+      restricted_status_code:     'U - Unrestricted',#TODO config?
+      fo_principal_name:          get_aft_parameter_value(ParameterConstants::DEFAULT_FISCAL_OFFICER),
+      supervisor_principal_name:  get_aft_parameter_value(ParameterConstants::DEFAULT_SUPERVISOR),
+      manager_principal_name: get_aft_parameter_value(ParameterConstants::DEFAULT_MANAGER),
+      budget_record_level_code:   'C - Consolidation',#TODO config?
+      sufficient_funds_code:      'C - Consolidation',#TODO config?
+      expense_guideline_text:     'expense guideline text',
+      income_guideline_txt: 'incomde guideline text',
+      purpose_text:         'purpose text',
+      income_stream_financial_cost_code: get_aft_parameter_value(ParameterConstants::DEFAULT_INCOME_STREAM_COST_CODE),
+      income_stream_account_number:      get_aft_parameter_value(ParameterConstants::DEFAULT_INCOME_STREAM_ACCOUNT_NUMBER),
+      labor_benefit_rate_cat_code:      'CC'#TODO config?
   }
 
   # TODO: Make the Account document creation with a single field step more flexible.
@@ -164,7 +164,7 @@ And /^I edit an Account$/ do
 end
 
 When /^I input a lowercase Major Reporting Category Code value$/  do
-  on(AccountPage).major_reporting_category_code.fit 'FACULTY' #TODO parameterize
+  on(AccountPage).major_reporting_category_code.fit 'faculty'
 end
 
 And /^I create an Account with an Appropriation Account Number of (.*) and Sub-Fund Program Code of (.*)/ do |appropriation_accountNumber, subfund_program_code|
@@ -196,14 +196,16 @@ And /^I close the Account$/ do
   random_continuation_account_number = on(AccountLookupPage).get_random_account_number
   # Now, let's try to close that account
   on AccountLookupPage do |page|
+    page.chart_code.fit     @account.chart_code
     page.account_number.fit @account.number
+    page.closed_no.set # There's no point in doing this if the account is already closed. Probably want an error, if a search with this setting fails.
     page.search
     page.edit_random # should only select the guy we want, after all
   end
   on AccountPage do |page|
     page.description.fit                 "Closing Account #{@account.number}"
     page.continuation_account_number.fit random_continuation_account_number
-    page.continuation_chart_code.fit     'IT - Ithaca Campus'
+    page.continuation_chart_code.fit     'IT - Ithaca Campus' #TODO config
     page.account_expiration_date.fit     page.effective_date.value
     page.closed.set
   end
@@ -239,56 +241,36 @@ Then /^an empty error should appear$/ do
 end
 
 And /^I clone a random Account with the following changes:$/ do |table|
-  puts get_parameter_values('KFS-AR', 'CONTACTS_TEXT')
-  puts get_parameter_values('KFS-AR', 'ALLOW_SALES_TAX_LIABILITY_ADJUSTMENT_IND').inspect
-  puts get_parameter_values('KFS-AR', 'INVOICE_RECURRENCE_INTERVALS').inspect
-  updates = table.rows_hash
-
-  visit(MainPage).account
-  on AccountLookupPage do |page|
-    page.search
-    page.copy_random
-  end
-  on AccountPage do |page|
-    @document_id = page.document_id
-    @account = make AccountObject, description: updates['Description'],
-                                   name:        updates['Name'],
-                                   chart_code:  updates['Chart Code'],
-                                   number:      random_alphanums(7),
-                                   document_id: page.document_id
-    page.description.fit @account.description
-    page.name.fit @account.name
-    page.chart_code.fit @account.chart_code
-    page.number.fit @account.number
-    page.blanket_approve
-  end
+  step "I clone Account nil with the following changes:", table
 end
 
 And /^I clone Account (.*) with the following changes:$/ do |account_number, table|
   unless account_number.empty?
+    account_number = account_number == 'nil' ? nil : account_number
     updates = table.rows_hash
     updates.delete_if { |k,v| v.empty? }
     updates['Indirect Cost Recovery Active Indicator'] = updates['Indirect Cost Recovery Active Indicator'].to_sym unless updates['Indirect Cost Recovery Active Indicator'].nil?
 
     visit(MainPage).account
     on AccountLookupPage do |page|
-      page.chart_code.fit     'IT'
+      page.chart_code.fit     'IT' #TODO config
       page.account_number.fit account_number
       page.search
+      page.wait_for_search_results
       page.copy_random
     end
     on AccountPage do |page|
       @document_id = page.document_id
       @account = make AccountObject, description: updates['Description'],
-                                     name:        updates['Name'],
-                                     chart_code:  updates['Chart Code'],
-                                     number:      random_alphanums(7),
-                                     document_id: page.document_id,
-                                     indirect_cost_recovery_chart_of_accounts_code: updates['Indirect Cost Recovery Chart Of Accounts Code'],
-                                     indirect_cost_recovery_account_number:         updates['Indirect Cost Recovery Account Number'],
-                                     indirect_cost_recovery_account_line_percent:   updates['Indirect Cost Recovery Account Line Percent'],
-                                     indirect_cost_recovery_active_indicator:       updates['Indirect Cost Recovery Active Indicator'],
-                                     press: nil
+                      name:        updates['Name'],
+                      chart_code:  updates['Chart Code'],
+                      number:      random_alphanums(7),
+                      document_id: page.document_id,
+                      indirect_cost_recovery_chart_of_accounts_code: updates['Indirect Cost Recovery Chart Of Accounts Code'],
+                      indirect_cost_recovery_account_number:         updates['Indirect Cost Recovery Account Number'],
+                      indirect_cost_recovery_account_line_percent:   updates['Indirect Cost Recovery Account Line Percent'],
+                      indirect_cost_recovery_active_indicator:       updates['Indirect Cost Recovery Active Indicator'],
+                      press: nil
       page.description.fit @account.description
       page.name.fit        @account.name
       page.chart_code.fit  @account.chart_code
@@ -341,7 +323,7 @@ And /^I use these Accounts:$/ do |table|
   on AccountLookupPage do |page|
     existing_accounts.each do |account_number|
       # FIXME: These values should be set by a service.
-      page.chart_code.fit     ParameterConstants::DEFAULT_CHART_CODE
+      page.chart_code.fit     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
       page.account_number.fit account_number
       page.search
 
