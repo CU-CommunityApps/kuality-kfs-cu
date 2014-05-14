@@ -2,6 +2,7 @@ class SupplierDiversityLineObject < DataFactory
 
   include DateFactory
   include StringFactory
+  include GlobalConfig
 
   attr_accessor   :line_number,
                   :type, :certification_expiration_date, :active
