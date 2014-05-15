@@ -215,14 +215,6 @@ And /^I fill out the Special Handling tab with the following fields:$/ do |table
   end
 end
 
-And /^I add note '(.*)' to the Disbursement Voucher document$/ do |note_text|
-  # FIXME: This should use the NotesAndAttachments object/methods
-  on DisbursementVoucherPage do |page|
-    page.note_text.fit note_text
-    page.add_note
-  end
-end
-
 And /^I uncheck Special Handling on Payment Information tab$/ do
   on(PaymentInformationTab).other_considerations_special_handling.clear
   on SpecialHandlingTab do |tab|
