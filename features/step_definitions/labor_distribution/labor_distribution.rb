@@ -4,7 +4,7 @@ end
 
 
 And /^I search and retrieve Ledger Balance entry$/ do
-  on(LaborDistributionPage).search
+  on(LaborDistributionPage).import_search
   on LedgerBalanceLookupPage do |lblookup|
     lblookup.check_first_month
     lblookup.return_selected
