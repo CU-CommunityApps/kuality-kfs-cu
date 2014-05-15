@@ -4,12 +4,10 @@ end
 
 
 And /^I search and retrieve Ledger Balance entry$/ do
-  on LaborDistributionPage do |page|
-    page.import_search
-    on LedgerBalanceLookupPage do |lblookup|
-      lblookup.check_first_month
-      lblookup.return_selected
-    end
+  on(LaborDistributionPage).search
+  on LedgerBalanceLookupPage do |lblookup|
+    lblookup.check_first_month
+    lblookup.return_selected
   end
 end
 
