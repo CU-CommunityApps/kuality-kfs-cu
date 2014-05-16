@@ -47,11 +47,17 @@ Given  /^I CREATE A SALARY EXPENSE TRANSFER with following:$/ do |table|
   to_account_number = arguments['To Account']
   steps %Q{ Given I Login as a Salary Transfer Initiator
             And   I start an empty Salary Expense Transfer document
-            And   I select employee '#{user_name}'
-            And   I search and retrieve Ledger Balance entry
+  }
+  if !arguments['Employee'].nil?
+      step "I select employee '#{user_name}'"
+  end
+  steps %Q{ And   I search and retrieve Ledger Balance entry
             And   I copy source account to target account
-            And   I change target account number to '#{to_account_number}'
-            And   I submit the Salary Expense Transfer document
+  }
+  if !arguments['To Account'].nil?
+     step "I change target account number to '#{to_account_number}'"
+  end
+  steps %Q{ And   I submit the Salary Expense Transfer document
             And   the Salary Expense Transfer document goes to ENROUTE
    }
   x = 0 # force it out after 10, in  case something goes wrong
