@@ -172,3 +172,9 @@ Given /^I Login as a PDP Format Disbursement Processor$/ do
   visit(BackdoorLoginPage).login_as('mo14') #TODO get from role service
   #visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PDP', 'Processor'))
 end
+
+Given /^I Login as a Salary Transfer Initiator$/ do
+  visit(BackdoorLoginPage).login_as('rae28')
+  #TODO get from role service. Some member in Salary Transfer Initiator (cu)' can't view ledger balance results
+  #visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-LD', 'Salary Transfer Initiator (cu)'))
+end
