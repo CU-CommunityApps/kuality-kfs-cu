@@ -74,3 +74,40 @@ Given  /^I CREATE A SALARY EXPENSE TRANSFER with following:$/ do |table|
   step   "the Salary Expense Transfer document goes to FINAL"
 
 end
+
+Given  /^I CREATE A BENEFIT EXPENSE TRANSFER with following:$/ do |table|
+  arguments = table.rows_hash
+  steps %Q{ Given I Login as a Benefit Transfer Initiator
+            And   I start an empty Benefit Expense Transfer document
+  }
+  if !arguments['From Account'].nil?
+    step "I set transfer from account number to '#{arguments['From Account']}' on Benefit Expense Transfer document"
+  end
+  steps %Q{ And   I search and retrieve Ledger Balance entry
+            And   I copy source account to target account
+  }
+
+  if !arguments['To Account'].nil?
+    step "I change target account number to '#{arguments['To Account']}'"
+  end
+  steps %Q{ And   I submit the Benefit Expense Transfer document
+            And   the Benefit Expense Transfer document goes to ENROUTE
+   }
+  x = 0 # force it out after 10, in  case something goes wrong
+  while on(BenefitExpenseTransferPage).document_status != 'FINAL' && x < 10
+    x += 1
+    step "I switch to the user with the next Pending Action in the Route Log for the Benefit Expense Transfer document"
+    step "I view the Benefit Expense Transfer document"
+    step "I approve the Benefit Expense Transfer document"
+    step "the Benefit Expense Transfer document goes to one of the following statuses:", table(%{
+        | ENROUTE   |
+        | FINAL     |
+      })
+  end
+  step   "the Benefit Expense Transfer document goes to FINAL"
+
+end
+
+And /^I set transfer from account number to '(.*)' on Benefit Expense Transfer document$/ do |account_number|
+  on(BenefitExpenseTransferPage).account_number.fit account_number
+end

@@ -178,3 +178,8 @@ Given /^I Login as a Salary Transfer Initiator$/ do
   #TODO get from role service. Some member in Salary Transfer Initiator (cu)' can't view ledger balance results
   #visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-LD', 'Salary Transfer Initiator (cu)'))
 end
+
+Given /^I Login as a Benefit Transfer Initiator$/ do
+  #visit(BackdoorLoginPage).login_as('rae28') #TODO get from role service
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-LD', 'BT Initiator (cu)'))
+end
