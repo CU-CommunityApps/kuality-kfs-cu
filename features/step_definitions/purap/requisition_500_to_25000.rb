@@ -198,8 +198,21 @@ Then /^in Pending Action Requests an FYI is sent to FO and Initiator$/ do
   on PurchaseOrderPage do |page|
     page.headerinfo_table.wait_until_present
     page.expand_all
-    page.pending_action_annotation_1.include? 'Fiscal Officer'
-    page.pending_action_annotation_2.include? 'Initiator'
+    fyi_initiator = 0
+    fyi_fo = 0
+    (1..page.pnd_act_req_table.rows.length - 2).each do |i|
+      if page.pnd_act_req_table[i][1].text.include?('FYI')
+        if page.pnd_act_req_table[i][4].text.include? 'Fiscal Officer'
+          fyi_fo += 1
+        else
+          if page.pnd_act_req_table[i][4].text.include? 'Initiator'
+            fyi_initiator += 1
+           end
+        end
+      end
+    end
+    fyi_initiator.should >= 1
+    fyi_fo.should >= 1
   end
 end
 
