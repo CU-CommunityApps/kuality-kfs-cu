@@ -10,7 +10,7 @@ Feature: Account Close
       | Name        | Test Account             |
       | Chart Code  | IT                       |
       | Description | [KFSQA-551] Test Account |
-    Given I am logged in as a KFS User
+    Given I am logged in as a KFS Chart Administrator
     When  I blanket approve a Pre-Encumbrance Document that encumbers the random Account
     Then  the Pre-Encumbrance posts a GL Entry with one of the following statuses
       | PENDING   |

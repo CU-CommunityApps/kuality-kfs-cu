@@ -14,10 +14,10 @@ Feature: Pre-Encumbrance
       | Name        | Test Account             |
       | Chart Code  | IT                       |
       | Description | [KFSQA-654] Test Account |
-    Given I am logged in as a KFS Chart Administrator
-    When  I blanket approve a Pre-Encumbrance Document that encumbers the random Account
+    And   I am logged in as a KFS Chart Administrator
+    And   I blanket approve a Pre-Encumbrance Document that encumbers the random Account
     And   the Pre-Encumbrance document goes to FINAL
-    And   I do an Open Encumbrances lookup for the Pre-Encumbrance document with Balance Type PE and Include All Pending Entries
+    When  I do an Open Encumbrances lookup for the Pre-Encumbrance document with Balance Type PE and Include All Pending Entries
     Then  the Lookup should return results
 
   @KFSQA-739 @sloth
