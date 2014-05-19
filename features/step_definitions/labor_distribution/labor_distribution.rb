@@ -28,7 +28,7 @@ When /^I start an empty Salary Expense Transfer document$/ do
 end
 
 
-Then /^I RUN THE NIGHTLY LABOR BATCH PROCESSES $/ do
+Then /^I RUN THE NIGHTLY LABOR BATCH PROCESSES$/ do
   steps %Q{
     Given I am logged in as a KFS Operations
     And I run the Labor Enterprise Feed Process
