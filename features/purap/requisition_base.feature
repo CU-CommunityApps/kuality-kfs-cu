@@ -8,7 +8,7 @@ Feature: REQS, PO, PREQ,PDP
 
   [KFSQA-858] PUR-4 POA Changes to routing and permissions
 
-  @KFSQA-853 @BaseFunction @REQS @PO @PREQ @PDP @Routing @pending @coral
+  @KFSQA-853 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral
   Scenario: PUR-5 Sensitive Commodity Data Flag enh
     Given I INITIATE A REQS with following:
       |Vendor Type        | NonB2B      |
@@ -22,7 +22,7 @@ Feature: REQS, PO, PREQ,PDP
     And  I EXTRACT THE REQS TO SQ
     When I INITIATE A PREQS
 
-  @KFSQA-854 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral @pending
+  @KFSQA-854 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral
   Scenario Outline: POs Follow Routing per Organization Review (ORG 0100)
   Given I INITIATE A REQS with following:
     |Vendor Type        | NonB2B      |
@@ -43,7 +43,7 @@ Feature: REQS, PO, PREQ,PDP
   | 500000     | 2        |
   | 5000000    | 3        |
 
-  @KFSQA-855 @BaseFunction @REQS @PO @PREQ @PDP @Routing @pending @coral
+  @KFSQA-855 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral
   Scenario Outline: PUR-10  remove commodity review from PO
     Given I INITIATE A REQS with following:
       |Vendor Type        | NonB2B      |
@@ -65,7 +65,7 @@ Feature: REQS, PO, PREQ,PDP
     | LT APO     | Regular      |
 
 
-  @KFSQA-858 @BaseFunction @POA @PDP @pending @coral @wip
+  @KFSQA-858 @BaseFunction @POA @PDP @coral
   Scenario: PUR-4 POA Changes to routing and permissions
     Given I INITIATE A REQS with following:
       |Vendor Type        | NonB2B      |
