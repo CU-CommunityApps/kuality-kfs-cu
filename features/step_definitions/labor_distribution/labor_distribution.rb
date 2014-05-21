@@ -92,19 +92,9 @@ Given  /^I CREATE A BENEFIT EXPENSE TRANSFER with following:$/ do |table|
   end
   steps %Q{ And   I submit the Benefit Expense Transfer document
             And   the Benefit Expense Transfer document goes to ENROUTE
-   }
-  x = 0 # force it out after 10, in  case something goes wrong
-  while on(BenefitExpenseTransferPage).document_status != 'FINAL' && x < 10
-    x += 1
-    step "I switch to the user with the next Pending Action in the Route Log for the Benefit Expense Transfer document"
-    step "I view the Benefit Expense Transfer document"
-    step "I approve the Benefit Expense Transfer document"
-    step "the Benefit Expense Transfer document goes to one of the following statuses:", table(%{
-        | ENROUTE   |
-        | FINAL     |
-      })
-  end
-  step   "the Benefit Expense Transfer document goes to FINAL"
+            And   I route the Benefit Expense Transfer document to FINAL by clicking approve for each request
+            Then  the Benefit Expense Transfer document goes to FINAL
+      }
 
 end
 
