@@ -1,12 +1,12 @@
 
 Given  /^I INITIATE A REQS with following:$/ do |table|
   arguments = table.rows_hash
-  step "I login as a PURAP eSHop user"
+  step "I login as a KFS user to create an REQS"
   # TODO : more work here to get all the parameters right
   if arguments['Vendor Type'].nil? || arguments['Vendor Type'] != 'Blank'
     @vendor_number = get_aft_parameter_value('REQS_' + (arguments['Vendor Type'].nil? ? 'NONB2B' : arguments['Vendor Type'].upcase) + '_VENDOR')
   end
-  add_vendor = arguments['Add Vendor On REQS'].nil? ? 'Yes' : arguments['Add Vendor On REQS']
+  @add_vendor_on_reqs = arguments['Add Vendor On REQS'].nil? ? 'Yes' : arguments['Add Vendor On REQS']
   positive_approve = arguments['Positive Approval'].nil? ? 'Unchecked' : arguments['Positive Approval']
   commodity_code = get_aft_parameter_value('REQS_' + (arguments['Commodity Code'].nil? ? 'REGULAR' : arguments['Commodity Code'].upcase)+"_COMMODITY")
   account_number = get_aft_parameter_value('REQS_' + (arguments['Account Type'].nil? ? 'NONGRANT' : arguments['Account Type'].upcase) + '_ACCOUNT') # from service or parameter
@@ -37,7 +37,7 @@ Given  /^I INITIATE A REQS with following:$/ do |table|
       | Object Code         | #{object_code}     |
       | Percent             | 100                |
   })
-  if !@vendor_number.nil? && add_vendor == 'Yes'
+  if !@vendor_number.nil? && @add_vendor_on_reqs == 'Yes'
     @requisition.add_vendor_to_req(@vendor_number)
   end
   if positive_approve == 'Checked'
@@ -76,31 +76,47 @@ end
 And /^I EXTRACT THE REQS TO SQ$/ do
 
   steps %Q{  And I am logged in as a Purchasing Processor
-             And I submit a Contract Manager Assignment of '10' for the Requisition
-             And I am logged in as a PURAP Contract Manager
              And I retrieve the Requisition document
-             And the View Related Documents Tab PO Status displays
-             And the Purchase Order Number is unmasked
-             And I Complete Selecting Vendor #{@vendor_number}
-             And I enter a Vendor Choice of 'Lowest Price'
-             And I calculate and verify the GLPE tab
-             And I submit the Purchase Order document
-        }
-  step "the Purchase Order document goes to one of the following statuses:", table(%{
-      | ENROUTE   |
-      | FINAL     |
-    })
-  steps %Q{  And  I switch to the user with the next Pending Action in the Route Log to approve Purchase Order document to Final
-             And the Purchase Order document goes to FINAL
-             Then in Pending Action Requests an FYI is sent to FO and Initiator
-             And the Purchase Order Doc Status is Open
-             Given I am logged in as "db18"
+             And I check Related Documents Tab on Requisition Document
+         }
+   if !@auto_gen_po.nil? && !@auto_gen_po
+     step "I assign Contract Manager and approve Purchase Order Document to Final"
+   end
+   steps %Q{  Given I am logged in as "db18"
              And   I visit the "e-SHOP" page
              And   I view the Purchase Order document via e-SHOP
              Then  the Document Status displayed 'Completed'
              And   the Delivery Instructions displayed equals what came from the PO
              And   the Attachments for Supplier came from the PO
              }
+end
+
+And /^I assign Contract Manager and approve Purchase Order Document to Final$/ do
+
+  steps %Q{  And I am logged in as a Purchasing Processor
+             And I submit a Contract Manager Assignment of '10' for the Requisition
+             And I am logged in as a PURAP Contract Manager
+             And I retrieve the Requisition document
+             And the View Related Documents Tab PO Status displays
+             And the Purchase Order Number is unmasked
+   }
+  if @add_vendor_on_reqs != 'Yes'
+      step "I Complete Selecting Vendor #{@vendor_number}"
+  end
+  steps %Q{  And I enter a Vendor Choice of 'Lowest Price'
+             And I calculate and verify the GLPE tab
+             And I submit the Purchase Order document
+          }
+    step "the Purchase Order document goes to one of the following statuses:", table(%{
+      | ENROUTE   |
+      | FINAL     |
+    })
+    steps %Q{  And  I switch to the user with the next Pending Action in the Route Log to approve Purchase Order document to Final
+               And  the Purchase Order document goes to FINAL
+               Then in Pending Action Requests an FYI is sent to FO and Initiator
+               And  the Purchase Order Doc Status is Open
+    }
+
 end
 
 When /^I INITIATE A PREQS$/ do
@@ -249,4 +265,49 @@ And /^I validate Commodity Review Routing for (.*) document$/ do |document|
       end
     end
   end
+end
+
+And /^the POA Routes to the FO$/ do
+  @fo_users.length.should >= 1
+end
+
+And /^I amend the Purchase Order$/ do
+  on(PurchaseOrderPage).amendPo
+  on AmendPOReasonPage do |page|
+    page.reason.fit random_alphanums(40, 'AFT-amendreason')
+    page.amend
+  end
+  sleep 3
+  @purchase_order_amendment = create PurchaseOrderAmendmentObject
+end
+
+When /^I INITIATE A POA$/ do
+
+  puts 'reqs initiator ',@requisition_initiator
+  steps %Q{
+    Given I am logged in as "#{@requisition_initiator}"
+    And   I view the Purchase Order document
+    And   I amend the Purchase Order
+    And   I calculate and verify the GLPE tab
+    And   I submit the Purchase Order Amendment document
+    Then the Purchase Order Amendment document goes to ENROUTE
+
+    And  I switch to the user with the next Pending Action in the Route Log to approve Purchase Order Amendment document to Final
+    Then the Purchase Order Amendment document goes to FINAL
+  }
+end
+
+And /^I check Related Documents Tab on Requisition Document$/ do
+  on RequisitionPage do |page|
+    page.show_related_documents
+    if page.view_related_doc.length > 1
+      @auto_gen_po = true
+      page.close_related_documents
+      step "the View Related Documents Tab PO Status displays"
+    else
+      @auto_gen_po = false
+    end
+  end
+
+
 end
