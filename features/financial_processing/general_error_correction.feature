@@ -16,6 +16,7 @@ Feature: General Error Correction
       | Number       | G254700 |
       | Object Code  | 1210    |
       | Amount       | 100     |
+  #TODO grab chart, account and object code from parameter
     And     I blanket approve the General Error Correction document
     And     the General Error Correction document goes to FINAL
     And     I am logged in as a KFS Fiscal Officer

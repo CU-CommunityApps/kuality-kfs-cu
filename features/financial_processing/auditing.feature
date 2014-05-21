@@ -75,6 +75,7 @@ Feature: FP Auditing
   @KFSQA-631 @cornell @tortoise
   Scenario Outline: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for All with basic from and to accounting lines
     Given   I am logged in as "<initiator>"
+    #TODO login based on doc type
     And     I start an empty <document> document
     And     I add a From accounting line to the <document> document with:
             | from account number |<from account number>|
@@ -87,6 +88,7 @@ Feature: FP Auditing
     And     I submit the <document> document
     And     the <document> document goes to ENROUTE
     And     I am logged in as "<approver>"
+    #TODO login as the next person in the route log
     And     I view the <document> document
     And     on the <document> document I modify the <From or To> Object Code line item <line item> to be <modify object code>
     And     I save the <document> document
@@ -96,6 +98,11 @@ Feature: FP Auditing
 |  Distribution Of Income And Expense | sag3     | djj1    | G003704           | 4480           | 255.55     | G013300           | 4480          | 255.55    | From       |  0       | 4486                |
 |  Internal Billing                   | djj1     | sag3    | G003704           | 4023           | 950000.67  | G013300           | 4023          | 950000.67 | To         |  0       | 4024                |
 |  Transfer Of Funds                  | mdw84    | hc224   | A763306           | 8070           | 250        | A763900           | 7070          | 250       | To         |  0       | 8070                |
+    #TODO create params for source and target account
+    #TODO use param service to find object code for each edoc type (not a new param)
+    #TODO that param returns a list of denies which we can use to lookup like this: Object Type Code = "!AS!EE"
+    #TODO need to do same with object sub types and levels
+    #TODO create params for secondary object code for each edoc type
 
 
   @KFSQA-747 @cornell @tortoise
@@ -123,4 +130,5 @@ Feature: FP Auditing
     | document                           | initiator | fiscal_officer | source_account | target_account  | source_amount | target_amount |
     | Disbursement Voucher               | rlc56     | djj1           | G003704        |                 | 100           |               |
     | Indirect Cost Adjustment           | ccs1      | djj1           | G003704        | GACLOSE         | 100           | 100           |
+    #TODO create params for source and target account and object code for each edoc type and grab FO from service
 

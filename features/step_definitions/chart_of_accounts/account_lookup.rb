@@ -49,9 +49,9 @@ When /^I lookup an Account with (.*)$/ do |field_name|
   on AccountLookupPage do |page|
     case
       when field_name == 'Account Manager Principal Name '
-        page.acct_manager_principal_name.set 'nja3' #TODO get from config
+        page.acct_manager_principal_name.set 'nja3' #TODO get from ROLE SERVICE
       when field_name == 'Account Supervisor Principal Name'
-        page.acct_supervisor_principal_name.set 'jcs28' #TODO get from config
+        page.acct_supervisor_principal_name.set 'jcs28' #TODO get from ROLE SERVICE
     end
     page.search
   end

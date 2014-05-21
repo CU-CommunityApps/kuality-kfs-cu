@@ -22,19 +22,19 @@ Feature: KFS Fiscal Officer Account Copy
 
   @KFSQA-628 @hare
   Scenario: IT is the default value for Budget Adjustment Chart Values
-    Given  I am logged in as a KFS Fiscal Officer
+    Given I am logged in as a KFS Fiscal Officer
     When  I open the Budget Adjustment document page
     Then  I verify that Chart Value defaults to IT
 
   @KFSQA-628 @cornell @hare
   Scenario: Budget Adjustment routing and approval by From and To FO
-    Given   I am logged in as a KFS User for the BA document
-    And    I submit a balanced Budget Adjustment document
-    Then   the Budget Adjustment document goes to ENROUTE
-    And    I am logged in as "djj1"
-    And    I view the Budget Adjustment document
-    When   I approve the Budget Adjustment document
-    Then   the Budget Adjustment document goes to FINAL
+    Given I am logged in as a KFS User for the BA document
+    And   I submit a balanced Budget Adjustment document
+    And   the Budget Adjustment document goes to ENROUTE
+    And   I am logged in as "djj1"
+    And   I view the Budget Adjustment document
+    When  I approve the Budget Adjustment document
+    Then  the Budget Adjustment document goes to FINAL
 
   @KFSQA-628 @cornell @nightly-jobs @tortoise @broken!
   Scenario: General ledger balance displays correctly for a Budget Adjustment after nightly batch is run

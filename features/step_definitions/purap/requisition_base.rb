@@ -218,8 +218,7 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
     @base_org_review_level.should == @level
     po_reviewer_500k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
     po_reviewer_5m = get_aft_parameter_value('PO_BASE_ORG_REVIEW_5M')
-    # TODO : po_reviewer_100k should come from groupservice when it is ready
-    po_reviewer_100k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_100K').split(',')
+    po_reviewer_100k = get_principal_name_for_group('3000106')
 
     case @level
       when 1
@@ -257,7 +256,7 @@ And /^I validate Commodity Review Routing for (.*) document$/ do |document|
   else
     if (document == 'Requisition')
       # TODO : reviewers should come from groupservice when it is ready
-      reqs_animal_reviewers = get_aft_parameter_value('REQS_ANIMAL_REVIEW_10100000').split(',')
+      reqs_animal_reviewers = get_principal_name_for_group('3000083')
       puts 'reqs commodity ',@commodity_review_users
       if @sensitive_commodity
         (@commodity_review_users & reqs_animal_reviewers).length.should >= 1

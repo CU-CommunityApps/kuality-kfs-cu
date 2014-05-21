@@ -14,10 +14,10 @@ Feature: Pre-Encumbrance
       | Name        | Test Account             |
       | Chart Code  | IT                       |
       | Description | [KFSQA-654] Test Account |
-    Given I am logged in as a KFS Chart Administrator
-    When  I blanket approve a Pre-Encumbrance Document that encumbers the random Account
+    And   I am logged in as a KFS Chart Administrator
+    And   I blanket approve a Pre-Encumbrance Document that encumbers the random Account
     And   the Pre-Encumbrance document goes to FINAL
-    And   I do an Open Encumbrances lookup for the Pre-Encumbrance document with Balance Type PE and Include All Pending Entries
+    When  I do an Open Encumbrances lookup for the Pre-Encumbrance document with Balance Type PE and Include All Pending Entries
     Then  the Lookup should return results
 
   @KFSQA-739 @sloth
@@ -112,12 +112,13 @@ Feature: Pre-Encumbrance
   @KFSQA-753 @nightly-jobs @cornell @tortoise
   Scenario: Generate Proper Offsets Using a PE to generate an Encumbrance
     Given I am logged in as a KFS User
-    When  I submit a Pre-Encumbrance document that encumbers Account G003704
+    And   I submit a Pre-Encumbrance document that encumbers Account G003704
     And   the Object Codes for the Pre-Encumbrance document appear in the document's GLPE entry
+    And   I am logged in as a KFS Chart Manager
     And   I view the Pre-Encumbrance document
     And   I blanket approve the Pre-Encumbrance document
-    Then  the Pre-Encumbrance document goes to FINAL
+    And   the Pre-Encumbrance document goes to FINAL
     And   the Pre-Encumbrance document has matching GL and GLPE offsets
-    Given Nightly Batch Jobs run
-    And   I am logged in as a KFS User
+    And   Nightly Batch Jobs run
+    When  I am logged in as a KFS User
     Then  the Pre-Encumbrance document GL Entry Lookup matches the document's GL entry

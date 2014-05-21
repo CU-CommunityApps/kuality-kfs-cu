@@ -8,9 +8,10 @@ end
 
 Then /^my cursor is on the (.*) field$/ do |title|
   case title
-    when 'Attach File'
-      puts @browser.frm.input(id: 'attachmentFile').inspect
-      @browser.frm.input(id: 'attachmentFile').focused?
+  when 'Attach File'
+    @browser.frm.input(id: 'attachmentFile').focused?
+  else
+    pending "The action for #{title} has not yet been defined for this step."
   end
 end
 

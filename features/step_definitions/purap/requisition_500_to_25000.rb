@@ -200,8 +200,21 @@ Then /^in Pending Action Requests an FYI is sent to FO and Initiator$/ do
   on PurchaseOrderPage do |page|
     page.headerinfo_table.wait_until_present
     page.expand_all
-    page.pending_action_annotation_1.include? 'Fiscal Officer'
-    page.pending_action_annotation_2.include? 'Initiator'
+    fyi_initiator = 0
+    fyi_fo = 0
+    (1..page.pnd_act_req_table.rows.length - 2).each do |i|
+      if page.pnd_act_req_table[i][1].text.include?('FYI')
+        if page.pnd_act_req_table[i][4].text.include? 'Fiscal Officer'
+          fyi_fo += 1
+        else
+          if page.pnd_act_req_table[i][4].text.include? 'Initiator'
+            fyi_initiator += 1
+           end
+        end
+      end
+    end
+    fyi_initiator.should >= 1
+    fyi_fo.should >= 1
   end
 end
 
@@ -449,18 +462,24 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
     new_user = ''
     on(page_class_for(document)) do |page|
       page.expand_all
-      if (page.document_status != 'FINAL' && page.pnd_act_req_table[1][1].text.include?('APPROVE'))
-        if (!page.pnd_act_req_table[1][2].text.include?('Multiple'))
-          page.pnd_act_req_table[1][2].links[0].click
-          page.use_new_tab
-          new_user = page.new_user
-          page.close_children
-        else
-          # for Multiple
-          page.show_multiple
-          page.multiple_link_first_approver
-          page.use_new_tab
-          new_user = page.new_user
+      if (page.document_status != 'FINAL')
+        (0..page.pnd_act_req_table.rows.length - 3).each do |i|
+          idx = i + 1
+          if page.pnd_act_req_table[idx][1].text.include?('APPROVE')
+            if (!page.pnd_act_req_table[idx][2].text.include?('Multiple'))
+              page.pnd_act_req_table[idx][2].links[0].click
+              page.use_new_tab
+              new_user = page.new_user
+            else
+              # for Multiple
+              page.show_multiple
+              page.multiple_link_first_approver
+              page.use_new_tab
+              new_user = page.new_user
+            end
+            page.close_children
+            break
+          end
         end
       else
         break

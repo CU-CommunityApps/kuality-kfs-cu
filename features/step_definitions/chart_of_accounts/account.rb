@@ -8,7 +8,7 @@ And /^I copy an Account$/ do
   on(AccountLookupPage).copy_random
   on AccountPage do |page|
     page.description.fit 'AFT testing copy'
-    page.chart_code.fit 'IT' #TODO get from config
+    page.chart_code.fit get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
     page.number.fit random_alphanums(4, 'AFT')
     @account = make AccountObject
     @account.chart_code = page.chart_code.text
@@ -44,14 +44,14 @@ end
 And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
   visit(MainPage).account
   on AccountLookupPage do |page|
-    page.subfund_program_code.set 'BOARD'
+    page.subfund_program_code.set 'BOARD' #TODO config
     page.search
     page.edit_random
   end
   on AccountPage do |page|
     @account = make AccountObject
     page.description.set random_alphanums(40, 'AFT')
-    page.subfund_program_code.set 'board'
+    page.subfund_program_code.set 'board' #TODO config
     page.save
   end
 end
@@ -116,28 +116,28 @@ When /^I save an Account document with only the ([^"]*) field populated$/ do |fi
       chart_code:           get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
       number:               random_alphanums(7),
       name:                 random_alphanums(10),
-      organization_code:               '01G0',
-      campus_code:          get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_CODE),
+      organization_code:    '01G0',#TODO config?
+      campus_code:          get_aft_parameter_value(ParameterConstants::DEFAULT_CAMPUS_CODE),
       effective_date:       '01/01/2010',
-      postal_code:          get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_POSTAL_CODE),
-      city:                 get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_CITY),
-      state:                get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_STATE),
-      address:              get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_ADDRESS),
-      type_code:            get_aft_parameter_values(ParameterConstants::DEFAULT_CAMPUS_TYPE_CODE),
-      sub_fund_group_code:     'ADMSYS',
-      higher_ed_funct_code:   '4000',
-      restricted_status_code: 'U - Unrestricted',
-      fo_principal_name:    get_aft_parameter_values(ParameterConstants::DEFAULT_FISCAL_OFFICER),#'dh273',
-      supervisor_principal_name:  'ccs1',
-      manager_principal_name: 'aap98',
-      budget_record_level_code: 'C - Consolidation',
-      sufficient_funds_code:    'C - Consolidation',
-      expense_guideline_text: 'expense guideline text',
-      income_guideline_txt:   'incomde guideline text',
-      purpose_text:           'purpose text',
-      income_stream_financial_cost_code:  'IT - Ithaca Campus',
-      income_stream_account_number:     '1000710',
-      labor_benefit_rate_cat_code:      'CC'
+      postal_code:          get_random_postal_code('*'),
+      city:                 get_generic_city,
+      state:                get_random_state_code,
+      address:              get_generic_address_1,
+      type_code:            get_aft_parameter_value(ParameterConstants::DEFAULT_CAMPUS_TYPE_CODE),
+      sub_fund_group_code:  'ADMSYS',#TODO config?
+      higher_ed_funct_code: '4000',#TODO config?
+      restricted_status_code:     'U - Unrestricted',#TODO config?
+      fo_principal_name:          get_aft_parameter_value(ParameterConstants::DEFAULT_FISCAL_OFFICER),
+      supervisor_principal_name:  get_aft_parameter_value(ParameterConstants::DEFAULT_SUPERVISOR),
+      manager_principal_name: get_aft_parameter_value(ParameterConstants::DEFAULT_MANAGER),
+      budget_record_level_code:   'C - Consolidation',#TODO config?
+      sufficient_funds_code:      'C - Consolidation',#TODO config?
+      expense_guideline_text:     'expense guideline text',
+      income_guideline_txt: 'incomde guideline text',
+      purpose_text:         'purpose text',
+      income_stream_financial_cost_code: get_aft_parameter_value(ParameterConstants::DEFAULT_INCOME_STREAM_COST_CODE),
+      income_stream_account_number:      get_aft_parameter_value(ParameterConstants::DEFAULT_INCOME_STREAM_ACCOUNT_NUMBER),
+      labor_benefit_rate_cat_code:      'CC'#TODO config?
   }
 
   # TODO: Make the Account document creation with a single field step more flexible.
@@ -164,7 +164,7 @@ And /^I edit an Account$/ do
 end
 
 When /^I input a lowercase Major Reporting Category Code value$/  do
-  on(AccountPage).major_reporting_category_code.fit 'FACULTY' #TODO parameterize
+  on(AccountPage).major_reporting_category_code.fit 'faculty'
 end
 
 And /^I create an Account with an Appropriation Account Number of (.*) and Sub-Fund Program Code of (.*)/ do |appropriation_accountNumber, subfund_program_code|
@@ -205,7 +205,7 @@ And /^I close the Account$/ do
   on AccountPage do |page|
     page.description.fit                 "Closing Account #{@account.number}"
     page.continuation_account_number.fit random_continuation_account_number
-    page.continuation_chart_code.fit     'IT - Ithaca Campus'
+    page.continuation_chart_code.fit     'IT - Ithaca Campus' #TODO config
     page.account_expiration_date.fit     page.effective_date.value
     page.closed.set
   end
@@ -253,8 +253,8 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
 
     visit(MainPage).account
     on AccountLookupPage do |page|
-      page.chart_code.fit     'IT'
-      page.account_number.fit account_number unless account_number.nil?
+      page.chart_code.fit     'IT' #TODO config
+      page.account_number.fit account_number
       page.search
       page.wait_for_search_results
       page.copy_random

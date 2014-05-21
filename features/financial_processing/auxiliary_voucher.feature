@@ -18,5 +18,5 @@ Feature: KFS Fiscal Officer Account Copy
     And     I start an empty Auxiliary Voucher document
     And     I add credit and debit accounting lines with two different sub funds
     When    I submit the Auxiliary Voucher document
-    Then    The document should have no errors
+    Then    the document should have no errors
     And     the auxiliary Voucher document goes to ENROUTE
