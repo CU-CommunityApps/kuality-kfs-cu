@@ -7,7 +7,7 @@ Given /^I am logged in as a KFS Operations$/ do
 end
 
 Given /^I am logged in as a Vendor Reviewer$/ do
-  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-VND', 'Reviewer'))
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-VND', 'Reviewer Omit Initiator'))
 end
 
 Given /^I am logged in as a Vendor Initiator$/ do
