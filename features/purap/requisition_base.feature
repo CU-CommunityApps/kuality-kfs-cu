@@ -6,6 +6,8 @@ Feature: REQS, PO, PREQ,PDP
 
   [KFSQA-855] PUR-10  remove commodity review from PO
 
+  [KFSQA-858] PUR-4 POA Changes to routing and permissions
+
   @KFSQA-853 @BaseFunction @REQS @PO @PREQ @PDP @Routing @pending @coral
   Scenario: PUR-5 Sensitive Commodity Data Flag enh
     Given I INITIATE A REQS with following:
@@ -61,4 +63,21 @@ Feature: REQS, PO, PREQ,PDP
     | LT APO     | Sensitive    |
     | GT APO     | Regular      |
     | LT APO     | Regular      |
+
+
+  @KFSQA-858 @BaseFunction @POA @PDP @pending @coral @wip
+  Scenario: PUR-4 POA Changes to routing and permissions
+    Given I INITIATE A REQS with following:
+      |Vendor Type        | NonB2B      |
+      |Add Vendor On REQS | Yes         |
+      |Positive Approval  | Unchecked   |
+      |Account Type       | NonGrant    |
+      |Commodity Code     | Regular     |
+      |Amount             | LT APO      |
+#    |Default PM         | P           |
+  # default PM can ve implemented after alternate PM is moved to upgrade
+    And  I EXTRACT THE REQS TO SQ
+    And  I INITIATE A POA
+    Then the POA Routes to the FO
+    And  I INITIATE A PREQS
 

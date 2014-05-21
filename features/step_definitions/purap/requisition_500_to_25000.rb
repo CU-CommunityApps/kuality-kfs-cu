@@ -33,6 +33,7 @@ And /^I view the (.*) document on my action list$/ do |document|
   if document.eql?('Requisition')
     on RequisitionPage do |page|
       @requisition_id = page.requisition_id
+      @requisition_initiator = page.initiator
     end
   end
 
@@ -73,8 +74,9 @@ And /^the View Related Documents Tab PO Status displays$/ do
     @purchase_order_number = page.purchase_order_number
     # verify unmasked and 'UNAPPROVED'
     page.purchase_order_number.should_not include '*****' # unmasked
-    page.po_unapprove.should include 'UNAPPROVED'
-    #puts 'po link', page.po_unapprove
+    if !@auto_gen_po.nil? && !@auto_gen_po
+      page.po_unapprove.should include 'UNAPPROVED'
+    end
     page.purchase_order_number_link
 
     sleep 10
@@ -110,7 +112,7 @@ end
     on (PurchaseOrderPage) do |page|
       page.vendor_search
       on VendorLookupPage do |vlookup|
-        vendor_number = get_aft_parameter_value(ParameterConstants::REQS_FOREIGN_VENDOR)
+        vendor_number = '39210-0' # TODO : this vendor number should be from a parameter
         vlookup.vendor_number.fit vendor_number
         vlookup.search
         vlookup.return_value(vendor_number)
@@ -198,8 +200,21 @@ Then /^in Pending Action Requests an FYI is sent to FO and Initiator$/ do
   on PurchaseOrderPage do |page|
     page.headerinfo_table.wait_until_present
     page.expand_all
-    page.pending_action_annotation_1.include? 'Fiscal Officer'
-    page.pending_action_annotation_2.include? 'Initiator'
+    fyi_initiator = 0
+    fyi_fo = 0
+    (1..page.pnd_act_req_table.rows.length - 2).each do |i|
+      if page.pnd_act_req_table[i][1].text.include?('FYI')
+        if page.pnd_act_req_table[i][4].text.include? 'Fiscal Officer'
+          fyi_fo += 1
+        else
+          if page.pnd_act_req_table[i][4].text.include? 'Initiator'
+            fyi_initiator += 1
+           end
+        end
+      end
+    end
+    fyi_initiator.should >= 1
+    fyi_fo.should >= 1
   end
 end
 
@@ -442,6 +457,7 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
   @base_org_review_level = 0
   @org_review_users = Array.new
   @commodity_review_users = Array.new
+  @fo_users = Array.new
   while true && x < 10
     new_user = ''
     on(page_class_for(document)) do |page|
@@ -450,16 +466,16 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
         (0..page.pnd_act_req_table.rows.length - 3).each do |i|
           idx = i + 1
           if page.pnd_act_req_table[idx][1].text.include?('APPROVE')
-            page.pnd_act_req_table[idx][2].links[0].click
-            page.use_new_tab
-            page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].should exist
-            page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].text.empty?.should_not
-            if (page.frm.div(id: 'tab-Overview-div').tables[0][1].text.include?('Principal Name:'))
-              new_user = page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].text
+            if (!page.pnd_act_req_table[idx][2].text.include?('Multiple'))
+              page.pnd_act_req_table[idx][2].links[0].click
+              page.use_new_tab
+              new_user = page.new_user
             else
-              # TODO : this is for group.  any other alternative ?
-              mbr_tr = page.frm.select(id: 'document.members[0].memberTypeCode').parent.parent.parent
-              new_user = mbr_tr[4].text
+              # for Multiple
+              page.show_multiple
+              page.multiple_link_first_approver
+              page.use_new_tab
+              new_user = page.new_user
             end
             page.close_children
             break
@@ -489,6 +505,10 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
       else
         if (on(page_class_for(document)).app_doc_status == 'Awaiting Commodity Review' || on(page_class_for(document)).app_doc_status == 'Awaiting Commodity Code Approval')
           @commodity_review_users.push(new_user)
+        else
+          if (on(page_class_for(document)).app_doc_status == 'Awaiting Fiscal Officer')
+             @fo_users.push(new_user)
+          end
         end
       end
       step "I approve the #{document} document"
