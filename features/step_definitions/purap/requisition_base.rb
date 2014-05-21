@@ -282,13 +282,35 @@ And /^I amend the Purchase Order$/ do
 end
 
 When /^I INITIATE A POA$/ do
+  step "I INITIATE A POA with following:", table(%{
+      | Default       |  |
+  })
+end
 
-  puts 'reqs initiator ',@requisition_initiator
+When /^I INITIATE A POA with following:$/ do |table|
+  arguments = table.rows_hash
+
   steps %Q{
     Given I am logged in as "#{@requisition_initiator}"
     And   I view the Purchase Order document
     And   I amend the Purchase Order
-    And   I calculate and verify the GLPE tab
+  }
+  if !arguments['Item Quantity'].nil? && arguments['Item Quantity'].to_f > 0
+    @poa_item_amount = arguments['Item Quantity'].to_f * arguments['Item Cost'].to_f
+    step "I add an item to Purchase Order Amendment with:", table(%{
+      | Item Quantity       | #{arguments['Item Quantity']}        |
+      | Item Cost           | #{arguments['Item Cost']}            |
+      | Item Commodity Code | #{@requisition.item_commodity_code} |
+      | Account Number      | #{@requisition.item_account_number}  |
+      | Object Code         | #{@requisition.item_object_code}     |
+      | Percent             | 100                                  |
+  })
+    step "I calculate and verify the GLPE tab with no entries"
+  else
+    step "I calculate and verify the GLPE tab"
+  end
+
+  steps %Q{
     And   I submit the Purchase Order Amendment document
     Then the Purchase Order Amendment document goes to ENROUTE
 
@@ -310,4 +332,50 @@ And /^I check Related Documents Tab on Requisition Document$/ do
   end
 
 
+end
+
+And /^I add an item to Purchase Order Amendment with:$/ do |table|
+  arguments = table.rows_hash
+  on PurchaseOrderAmendmentPage do |page|
+    page.item_quantity.fit arguments['Item Quantity']
+    page.item_commodity_code.fit arguments['Item Commodity Code']
+    page.item_description.fit random_alphanums(15, 'AFT Item')
+    page.item_unit_cost.fit arguments['Item Cost']
+    page.item_uom.fit @requisition.item_uom
+    page.item_add
+
+    #Add Accounting line
+    page.expand_all
+    page.account_number(1).fit arguments['Account Number']
+    page.object_code(1).fit arguments['Object Code']
+    page.percent(1).fit arguments['Percent']
+    page.add_account(1)
+
+  end
+
+end
+
+
+And /^I calculate and verify the GLPE tab with no entries$/ do
+  on PurchaseOrderAmendmentPage do |page|
+    page.calculate
+    #page.show_glpe
+
+    page.glpe_results_table.text.include? 'There are currently no General Ledger Pending Entries associated with this Transaction Processing document.'
+
+  end
+end
+
+Then /^the Purchase Order Amendment document's GLPE tab shows the new item amount$/ do
+  on PurchaseOrderAmendmentPage do |page|
+    page.show_glpe
+
+    puts 'requisition ',@requisition.item_account_number,@requisition.item_uom
+    puts ' POA glpe ',page.glpe_results_table.text, page.glpe_results_table[2][11].text, @poa_item_amount
+    page.glpe_results_table.rows.length.should == 3
+    page.glpe_results_table.text.should include @requisition.item_account_number
+    page.glpe_results_table[1][11].text.to_f.should == @poa_item_amount
+    page.glpe_results_table[2][11].text.to_f.should == @poa_item_amount
+
+  end
 end
