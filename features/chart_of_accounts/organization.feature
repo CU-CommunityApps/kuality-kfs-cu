@@ -21,10 +21,10 @@ Feature: Organization
   @KFSQA-582 @nightly-jobs @sloth
   Scenario: Inactivate an Organization Code having all closed accounts.
     Given I am logged in as a KFS Chart Manager
-    When  I inactivate an Organization Code with closed accounts
+    And   I inactivate an Organization Code with closed accounts
     And   Nightly Batch Jobs run
-    Given I am logged in as a KFS Chart Manager
-    And   I view the Organization document
+    And   I am logged in as a KFS Chart Manager
+    When  I view the Organization document
     Then  the Organization document goes to one of the following statuses:
       | PROCESSED |
       | FINAL     |
