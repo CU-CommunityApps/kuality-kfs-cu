@@ -119,7 +119,7 @@ And /^I assign Contract Manager and approve Purchase Order Document to Final$/ d
 
 end
 
-When /^I INITIATE A PREQS$/ do
+When /^I INITIATE A PREQ$/ do
   steps %Q{
     Given I login as a Accounts Payable Processor to create a PREQ
     And   I fill out the PREQ initiation page and continue
