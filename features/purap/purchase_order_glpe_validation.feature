@@ -3,7 +3,7 @@ Feature: Cancel Purchase Order
   [KFSQA-873] KFSMI-5422, KFSMIT-5703, KFSMI-5743	KITI-3024	KFSUPGRADE-294 Implement KFSMI-5422, KFSMI-5703 and KFSMI-5743 All in regards to GL Entries incorrect	KFSPTS-674, KFSPTS-785
   Accounts Payable, Purchasing, GL Entries PO Cancel, R, Create a REQS/PO -as FO cancel, very the GL entries are correct. The test below cancels a PO during approval.
 
-  @wip @KFSQA-873 @PO @PURAP
+  @KFSQA-873 @PO @PURAP @tortoise
   Scenario: Cancel a Purchase Order and verify the GLPE.
    Given  I login as a PURAP eSHop user
    And I create the Requisition document with:
