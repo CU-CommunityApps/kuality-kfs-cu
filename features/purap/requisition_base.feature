@@ -8,6 +8,8 @@ Feature: REQS, PO, PREQ,PDP
 
   [KFSQA-858] PUR-4 POA Changes to routing and permissions
 
+  [KFSQA-882] GLPEs are wrong on Purchase Order Amendments (POAs)
+
   @KFSQA-853 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral
   Scenario: PUR-5 Sensitive Commodity Data Flag enh
     Given I INITIATE A REQS with following:
@@ -81,3 +83,19 @@ Feature: REQS, PO, PREQ,PDP
     Then the POA Routes to the FO
     And  I INITIATE A PREQ
 
+  @KFSQA-882 @BaseFunction @POA @PO @coral
+  Scenario: GLPEs are wrong on Purchase Order Amendments (POAs)
+    Given I INITIATE A REQS with following:
+      |Vendor Type        | NonB2B      |
+      |Add Vendor On REQS | Yes         |
+      |Positive Approval  | Unchecked   |
+      |Account Type       | NonGrant    |
+      |Commodity Code     | Regular     |
+      |Amount             | GT APO      |
+#    |Default PM         | P           |
+  # default PM can ve implemented after alternate PM is moved to upgrade
+    And  I EXTRACT THE REQS TO SQ
+    And  I INITIATE A POA with following:
+      |Item Quantity   | 1       |
+      |Item Cost       | 100     |
+    Then the Purchase Order Amendment document's GLPE tab shows the new item amount
