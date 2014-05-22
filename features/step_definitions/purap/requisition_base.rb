@@ -1,12 +1,12 @@
 
 Given  /^I INITIATE A REQS with following:$/ do |table|
   arguments = table.rows_hash
-  step "I login as a PURAP eSHop user"
+  step "I login as a KFS user to create an REQS"
   # TODO : more work here to get all the parameters right
   if arguments['Vendor Type'].nil? || arguments['Vendor Type'] != 'Blank'
     @vendor_number = get_aft_parameter_value('REQS_' + (arguments['Vendor Type'].nil? ? 'NONB2B' : arguments['Vendor Type'].upcase) + '_VENDOR')
   end
-  add_vendor = arguments['Add Vendor On REQS'].nil? ? 'Yes' : arguments['Add Vendor On REQS']
+  @add_vendor_on_reqs = arguments['Add Vendor On REQS'].nil? ? 'Yes' : arguments['Add Vendor On REQS']
   positive_approve = arguments['Positive Approval'].nil? ? 'Unchecked' : arguments['Positive Approval']
   commodity_code = get_aft_parameter_value('REQS_' + (arguments['Commodity Code'].nil? ? 'REGULAR' : arguments['Commodity Code'].upcase)+"_COMMODITY")
   account_number = get_aft_parameter_value('REQS_' + (arguments['Account Type'].nil? ? 'NONGRANT' : arguments['Account Type'].upcase) + '_ACCOUNT') # from service or parameter
@@ -37,7 +37,7 @@ Given  /^I INITIATE A REQS with following:$/ do |table|
       | Object Code         | #{object_code}     |
       | Percent             | 100                |
   })
-  if !@vendor_number.nil? && add_vendor == 'Yes'
+  if !@vendor_number.nil? && @add_vendor_on_reqs == 'Yes'
     @requisition.add_vendor_to_req(@vendor_number)
   end
   if positive_approve == 'Checked'
@@ -76,25 +76,13 @@ end
 And /^I EXTRACT THE REQS TO SQ$/ do
 
   steps %Q{  And I am logged in as a Purchasing Processor
-             And I submit a Contract Manager Assignment of '10' for the Requisition
-             And I am logged in as a PURAP Contract Manager
              And I retrieve the Requisition document
-             And the View Related Documents Tab PO Status displays
-             And the Purchase Order Number is unmasked
-             And I Complete Selecting Vendor #{@vendor_number}
-             And I enter a Vendor Choice of 'Lowest Price'
-             And I calculate and verify the GLPE tab
-             And I submit the Purchase Order document
-        }
-  step "the Purchase Order document goes to one of the following statuses:", table(%{
-      | ENROUTE   |
-      | FINAL     |
-    })
-  steps %Q{  And  I switch to the user with the next Pending Action in the Route Log to approve Purchase Order document to Final
-             And the Purchase Order document goes to FINAL
-             Then in Pending Action Requests an FYI is sent to FO and Initiator
-             And the Purchase Order Doc Status is Open
-             Given I am logged in as "db18"
+             And I check Related Documents Tab on Requisition Document
+         }
+   if !@auto_gen_po.nil? && !@auto_gen_po
+     step "I assign Contract Manager and approve Purchase Order Document to Final"
+   end
+   steps %Q{  Given I am logged in as "db18"
              And   I visit the "e-SHOP" page
              And   I view the Purchase Order document via e-SHOP
              Then  the Document Status displayed 'Completed'
@@ -103,7 +91,35 @@ And /^I EXTRACT THE REQS TO SQ$/ do
              }
 end
 
-When /^I INITIATE A PREQS$/ do
+And /^I assign Contract Manager and approve Purchase Order Document to Final$/ do
+
+  steps %Q{  And I am logged in as a Purchasing Processor
+             And I submit a Contract Manager Assignment of '10' for the Requisition
+             And I am logged in as a PURAP Contract Manager
+             And I retrieve the Requisition document
+             And the View Related Documents Tab PO Status displays
+             And the Purchase Order Number is unmasked
+   }
+  if @add_vendor_on_reqs != 'Yes'
+      step "I Complete Selecting Vendor #{@vendor_number}"
+  end
+  steps %Q{  And I enter a Vendor Choice of 'Lowest Price'
+             And I calculate and verify the GLPE tab
+             And I submit the Purchase Order document
+          }
+    step "the Purchase Order document goes to one of the following statuses:", table(%{
+      | ENROUTE   |
+      | FINAL     |
+    })
+    steps %Q{  And  I switch to the user with the next Pending Action in the Route Log to approve Purchase Order document to Final
+               And  the Purchase Order document goes to FINAL
+               Then in Pending Action Requests an FYI is sent to FO and Initiator
+               And  the Purchase Order Doc Status is Open
+    }
+
+end
+
+When /^I INITIATE A PREQ$/ do
   steps %Q{
     Given I login as a Accounts Payable Processor to create a PREQ
     And   I fill out the PREQ initiation page and continue
@@ -248,5 +264,118 @@ And /^I validate Commodity Review Routing for (.*) document$/ do |document|
         @commodity_review_users.length.should == 0
       end
     end
+  end
+end
+
+And /^the POA Routes to the FO$/ do
+  @fo_users.length.should >= 1
+end
+
+And /^I amend the Purchase Order$/ do
+  on(PurchaseOrderPage).amendPo
+  on AmendPOReasonPage do |page|
+    page.reason.fit random_alphanums(40, 'AFT-amendreason')
+    page.amend
+  end
+  sleep 3
+  @purchase_order_amendment = create PurchaseOrderAmendmentObject
+end
+
+When /^I INITIATE A POA$/ do
+  step "I INITIATE A POA with following:", table(%{
+      | Default       |  |
+  })
+end
+
+When /^I INITIATE A POA with following:$/ do |table|
+  arguments = table.rows_hash
+
+  steps %Q{
+    Given I am logged in as "#{@requisition_initiator}"
+    And   I view the Purchase Order document
+    And   I amend the Purchase Order
+  }
+  if !arguments['Item Quantity'].nil? && arguments['Item Quantity'].to_f > 0
+    @poa_item_amount = arguments['Item Quantity'].to_f * arguments['Item Cost'].to_f
+    step "I add an item to Purchase Order Amendment with:", table(%{
+      | Item Quantity       | #{arguments['Item Quantity']}        |
+      | Item Cost           | #{arguments['Item Cost']}            |
+      | Item Commodity Code | #{@requisition.item_commodity_code} |
+      | Account Number      | #{@requisition.item_account_number}  |
+      | Object Code         | #{@requisition.item_object_code}     |
+      | Percent             | 100                                  |
+  })
+    step "I calculate and verify the GLPE tab with no entries"
+  else
+    step "I calculate and verify the GLPE tab"
+  end
+
+  steps %Q{
+    And   I submit the Purchase Order Amendment document
+    Then the Purchase Order Amendment document goes to ENROUTE
+
+    And  I switch to the user with the next Pending Action in the Route Log to approve Purchase Order Amendment document to Final
+    Then the Purchase Order Amendment document goes to FINAL
+  }
+end
+
+And /^I check Related Documents Tab on Requisition Document$/ do
+  on RequisitionPage do |page|
+    page.show_related_documents
+    if page.view_related_doc.length > 1
+      @auto_gen_po = true
+      page.close_related_documents
+      step "the View Related Documents Tab PO Status displays"
+    else
+      @auto_gen_po = false
+    end
+  end
+
+
+end
+
+And /^I add an item to Purchase Order Amendment with:$/ do |table|
+  arguments = table.rows_hash
+  on PurchaseOrderAmendmentPage do |page|
+    page.item_quantity.fit arguments['Item Quantity']
+    page.item_commodity_code.fit arguments['Item Commodity Code']
+    page.item_description.fit random_alphanums(15, 'AFT Item')
+    page.item_unit_cost.fit arguments['Item Cost']
+    page.item_uom.fit @requisition.item_uom
+    page.item_add
+
+    #Add Accounting line
+    page.expand_all
+    page.account_number(1).fit arguments['Account Number']
+    page.object_code(1).fit arguments['Object Code']
+    page.percent(1).fit arguments['Percent']
+    page.add_account(1)
+
+  end
+
+end
+
+
+And /^I calculate and verify the GLPE tab with no entries$/ do
+  on PurchaseOrderAmendmentPage do |page|
+    page.calculate
+    #page.show_glpe
+
+    page.glpe_results_table.text.include? 'There are currently no General Ledger Pending Entries associated with this Transaction Processing document.'
+
+  end
+end
+
+Then /^the Purchase Order Amendment document's GLPE tab shows the new item amount$/ do
+  on PurchaseOrderAmendmentPage do |page|
+    page.show_glpe
+
+    puts 'requisition ',@requisition.item_account_number,@requisition.item_uom
+    puts ' POA glpe ',page.glpe_results_table.text, page.glpe_results_table[2][11].text, @poa_item_amount
+    page.glpe_results_table.rows.length.should == 3
+    page.glpe_results_table.text.should include @requisition.item_account_number
+    page.glpe_results_table[1][11].text.to_f.should == @poa_item_amount
+    page.glpe_results_table[2][11].text.to_f.should == @poa_item_amount
+
   end
 end

@@ -7,7 +7,7 @@ Given /^I am logged in as a KFS Operations$/ do
 end
 
 Given /^I am logged in as a Vendor Reviewer$/ do
-  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-VND', 'Reviewer'))
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-VND', 'Reviewer Omit Initiator'))
 end
 
 Given /^I am logged in as a Vendor Initiator$/ do
@@ -171,4 +171,14 @@ end
 Given /^I Login as a PDP Format Disbursement Processor$/ do
   visit(BackdoorLoginPage).login_as('mo14') #TODO get from role service
   #visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PDP', 'Processor'))
+end
+
+Given /^I Login as a Salary Transfer Initiator$/ do
+  #visit(BackdoorLoginPage).login_as('rae28')
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-LD', 'Labor Distribution Manager (cu)'))
+end
+
+Given /^I Login as a Benefit Transfer Initiator$/ do
+  #visit(BackdoorLoginPage).login_as('rae28') #TODO get from role service
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-LD', 'BT Initiator (cu)'))
 end
