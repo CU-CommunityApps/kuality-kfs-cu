@@ -11,6 +11,9 @@ Feature: Labor Distribution
     Given  I CREATE A SALARY EXPENSE TRANSFER with following:
       |Employee    | dw68      |
       |To Account  | A453101   |
+    And   I RUN THE NIGHTLY LABOR BATCH PROCESSES
+    And   I Login as a Salary Transfer Initiator
+    Then  the labor ledger pending entry for employee '1013939' is empty
 
   @KFSQA-984 @BaseFunction @BT @tortoise
   Scenario: Base Function : I CREATE A BENEFIT EXPENSE TRANSFER
