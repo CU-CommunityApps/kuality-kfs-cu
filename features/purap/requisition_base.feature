@@ -8,6 +8,7 @@ Feature: REQS, PO, PREQ,PDP
 
   [KFSQA-858] PUR-4 POA Changes to routing and permissions
 
+  @KFSQA-853 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral
   [KFSQA-882] GLPEs are wrong on Purchase Order Amendments (POAs)
 
   @KFSQA-853 @BaseFunction @REQS @PO @PREQ @PDP @Routing @pending @coral
@@ -45,7 +46,7 @@ Feature: REQS, PO, PREQ,PDP
   | 500000     | 2        |
   | 5000000    | 3        |
 
-  @KFSQA-855 @BaseFunction @REQS @PO @PREQ @PDP @Routing @pending @coral
+  @KFSQA-855 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral
   Scenario Outline: PUR-10  remove commodity review from PO
     Given I INITIATE A REQS with following:
       |Vendor Type        | NonB2B      |
@@ -67,7 +68,7 @@ Feature: REQS, PO, PREQ,PDP
     | LT APO     | Regular      |
 
 
-  @KFSQA-858 @BaseFunction @POA @PDP @pending @coral
+  @KFSQA-858 @BaseFunction @POA @PDP @coral
   Scenario: PUR-4 POA Changes to routing and permissions
     Given I INITIATE A REQS with following:
       |Vendor Type        | NonB2B      |
