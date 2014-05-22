@@ -128,3 +128,32 @@ end
 And /^I clear out PDP Temporary Tables$/ do
   run_pdp_clear_pending_transaction(true)
 end
+
+
+And /^I run the Labor Enterprise Feed Process$/ do
+  run_labor_enterprise_feed(true)
+end
+
+And /^I run the Labor Nightly Out Process$/ do
+  run_labor_nightly_out(true)
+end
+
+And /^I run the Labor Scrubber Process$/ do
+  run_labor_scrubber(true)
+end
+
+And /^I run the Labor Poster Process$/ do
+  run_labor_poster(true)
+end
+
+And /^I run the Labor Balancing Job$/ do
+  run_labor_balance(true)
+end
+
+And /^I run the Labor Feed Job$/ do
+  run_labor_feed(true)
+end
+
+And /^I run the Labor Clear Pending Entries Job$/ do
+  run_labor_clear_pending_entries(true)
+end
