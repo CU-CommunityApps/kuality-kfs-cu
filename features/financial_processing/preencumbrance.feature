@@ -6,7 +6,10 @@ Feature: Pre-Encumbrance
   [KFSQA-664] Cornell has modified KFS to allow for revenue object codes on the PE form. Allow revenue on Pre-Encumbrance.
   [KFSQA-753] Cornell University needs to process pre-encumbrances with expense
               object codes and verify proper offsets are used.
-  [smoke]
+  [KFSQA-988] Submit a pre-encumbrance edoc to encumber and disencumber on the same document using an existing
+              encumbrance to disencumber and create new encumbrance using fixed monthly schedule.
+              Verify you must save edoc before submission to generate reversal dates, review scheduled reversal
+              dates on pending entries tab before submitting, and perform lookup on open encumbrance screen to verify accuracy.
 
   @KFSQA-654 @sloth
   Scenario: Open Encumbrances Lookup will display pending entries from PE eDoc
@@ -123,3 +126,36 @@ Feature: Pre-Encumbrance
     And   Nightly Batch Jobs run
     When  I am logged in as a KFS User
     Then  the Pre-Encumbrance document GL Entry Lookup matches the document's GL entry
+
+  @KFSQA-988 @FP @PreEncumbrance @smoke @wip
+  Scenario: Submit a pre-encumbrance to disencumber and pre-encumber on the same document.
+    Given I am logged in as "user", role 54 (or FTC/BSC role 100000157 )
+    When I create a pre-encumbrance doc
+    And enter a description
+    And enter chart
+    And account
+    And object code
+    And amount
+    And enter disencumber type (monthly)
+    And enter count
+    And enter partial amount equal to sum of amount divided by count
+    And enter start date
+    And enter chart
+    And account
+    And object code
+    And amount
+    And reference number of existing encumbrance for this account
+    And submit document
+    And receive error (This document needs to be saved before submit)
+    And click Save
+    And review pending entries tab for accuracy
+    Then document status becomes 'enroute'
+
+    When I open the general ledger open encumbrances inquiry
+    And enter default fiscal year
+    And enter chart
+    And enter account
+    And enter PE balance type
+    And set "include pending ledger entry" to "all"
+    And click search
+    Then the edoc information appears correctly on the list
