@@ -21,7 +21,7 @@ Feature: Labor Distribution
       |From Account  | A464100   |
       |To Account    | A453101   |
 
-  @KFSQA-985 @BaseFunction @wip
+  @KFSQA-985 @BaseFunction @tortoise
   Scenario: Base Function for labor nightly batch process.
     Given I RUN THE NIGHTLY LABOR BATCH PROCESSES
     And   I Login as a Salary Transfer Initiator
