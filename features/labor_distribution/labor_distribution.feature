@@ -17,6 +17,7 @@ Feature: Labor Distribution
     Given  I CREATE A BENEFIT EXPENSE TRANSFER with following:
       |From Account  | A464100   |
       |To Account    | A453101   |
+
   @KFSQA-985 @BaseFunction @wip
   Scenario: Base Function for labor nightly batch process.
     Given I RUN THE NIGHTLY LABOR BATCH PROCESSES
