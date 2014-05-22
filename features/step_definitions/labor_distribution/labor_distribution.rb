@@ -37,7 +37,8 @@ Then /^I RUN THE NIGHTLY LABOR BATCH PROCESSES$/ do
     And I run the Labor Poster Process
     And I run the Labor Balancing Job
     And I run the Labor Feed Job
-    And I run the Labor Clear Pending Entries Job   }
+    And I run the Labor Clear Pending Entries Job
+   }
 
   # GL nightly is deferred; See QA-830
   #step "I run the GL Nightly Processes"
@@ -55,5 +56,17 @@ And /^I run the GL Nightly Processes$/ do
     And   I populate the ACH Bank Table
     And   I clear out PDP Temporary Tables
  }
+
+end
+
+Then /^the labor ledger pending entry for employee '(.*)' is empty$/ do |empl_id|
+  visit(MainPage).labor_ledger_pending_entry
+  on LaborLedgerPendingEntryLookupPage do |page|
+    page.fiscal_year.fit ''
+    page.empl_id.fit empl_id
+    page.search
+    page.wait_for_search_results
+    page.frm.divs(id: 'view_div')[0].text.should include 'No values match this search.'
+  end
 
 end
