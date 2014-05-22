@@ -44,7 +44,8 @@ Then /^I switch to the user with the next Pending Action in the Route Log for th
 
       page.pnd_act_req_table_multi_requested_of.links.first.click
     else
-      page.pnd_act_req_table_requested_of.links.first.click
+      #page.pnd_act_req_table_requested_of.links.first.click
+      page.first_pending_approve
     end
 
     page.use_new_tab
