@@ -8,10 +8,9 @@ Feature: REQS, PO, PREQ,PDP
 
   [KFSQA-858] PUR-4 POA Changes to routing and permissions
 
-  @KFSQA-853 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral
   [KFSQA-882] GLPEs are wrong on Purchase Order Amendments (POAs)
 
-  @KFSQA-853 @BaseFunction @REQS @PO @PREQ @PDP @Routing @pending @coral
+  @KFSQA-853 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral
   Scenario: PUR-5 Sensitive Commodity Data Flag enh
     Given I INITIATE A REQS with following:
       |Vendor Type        | NonB2B      |
@@ -25,7 +24,7 @@ Feature: REQS, PO, PREQ,PDP
     And  I EXTRACT THE REQS TO SQ
     When I INITIATE A PREQ
 
-  @KFSQA-854 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral @pending
+  @KFSQA-854 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral
   Scenario Outline: POs Follow Routing per Organization Review (ORG 0100)
   Given I INITIATE A REQS with following:
     |Vendor Type        | NonB2B      |
@@ -84,7 +83,7 @@ Feature: REQS, PO, PREQ,PDP
     Then the POA Routes to the FO
     And  I INITIATE A PREQ
 
-  @KFSQA-882 @BaseFunction @POA @PO @pending @coral @wip
+  @KFSQA-882 @BaseFunction @POA @PO @coral
   Scenario: GLPEs are wrong on Purchase Order Amendments (POAs)
     Given I INITIATE A REQS with following:
       |Vendor Type        | NonB2B      |
