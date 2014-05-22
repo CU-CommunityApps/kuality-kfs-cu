@@ -172,3 +172,8 @@ Given /^I Login as a PDP Format Disbursement Processor$/ do
   visit(BackdoorLoginPage).login_as('mo14') #TODO get from role service
   #visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PDP', 'Processor'))
 end
+
+Given /^I Login as a Salary Transfer Initiator$/ do
+  #visit(BackdoorLoginPage).login_as('rae28')
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-LD', 'Labor Distribution Manager (cu)'))
+end
