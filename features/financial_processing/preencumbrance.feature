@@ -6,6 +6,7 @@ Feature: Pre-Encumbrance
   [KFSQA-664] Cornell has modified KFS to allow for revenue object codes on the PE form. Allow revenue on Pre-Encumbrance.
   [KFSQA-753] Cornell University needs to process pre-encumbrances with expense
               object codes and verify proper offsets are used.
+  [smoke]
 
   @KFSQA-654 @sloth
   Scenario: Open Encumbrances Lookup will display pending entries from PE eDoc
