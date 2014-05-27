@@ -52,11 +52,12 @@ Given  /^I INITIATE A REQS with following:$/ do |table|
 
             And  I switch to the user with the next Pending Action in the Route Log to approve Requisition document to Final
             Then the Requisition document goes to FINAL
-            And  users outside the Route Log can not search and retrieve the REQS
+
 }
-end
+end   #end INITIATE A REQS
 
 And /^users outside the Route Log can not search and retrieve the REQS$/ do
+  #removed this step from the base create a REQ, this should not be tested every time we run base. if needed for test will make unique test for this
   step "I am logged in as \"mrw258\"" # TODO : need a better way to figure out who can't view REQS
   visit(MainPage).requisitions
   on DocumentSearch do |page|
@@ -74,7 +75,6 @@ And /^users outside the Route Log can not search and retrieve the REQS$/ do
 end
 
 And /^I EXTRACT THE REQS TO SQ$/ do
-
   steps %Q{  And I am logged in as a Purchasing Processor
              And I retrieve the Requisition document
              And I check Related Documents Tab on Requisition Document
@@ -170,7 +170,6 @@ Then /^I FORMAT AND PROCESS THE CHECK WITH PDP$/ do
  }
 end
 
-
 And /^I format Disbursement$/ do
   on MaintenancePage do |page|
     visit(MaintenancePage).format_checks_ach
@@ -245,7 +244,6 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
          end
        end
   end
-
 end
 
 And /^I validate Commodity Review Routing for (.*) document$/ do |document|
@@ -330,8 +328,6 @@ And /^I check Related Documents Tab on Requisition Document$/ do
       @auto_gen_po = false
     end
   end
-
-
 end
 
 And /^I add an item to Purchase Order Amendment with:$/ do |table|
@@ -350,21 +346,30 @@ And /^I add an item to Purchase Order Amendment with:$/ do |table|
     page.object_code(1).fit arguments['Object Code']
     page.percent(1).fit arguments['Percent']
     page.add_account(1)
-
   end
-
 end
-
 
 And /^I calculate and verify the GLPE tab with no entries$/ do
   on PurchaseOrderAmendmentPage do |page|
     page.calculate
-    #page.show_glpe
-
     page.glpe_results_table.text.include? 'There are currently no General Ledger Pending Entries associated with this Transaction Processing document.'
-
   end
 end
+
+# And /^I capture the PO number$/ do
+#   on RequisitionPage do |page|
+#   @req_number = page.po_number
+#   puts 'req num'
+#   puts @req_number.inspect
+#
+#   page.show_related_documents
+#   sleep 2
+#   # @po_number = page.purchase_order_number
+#   puts 'the po number is'
+#   # puts @po_number.inspect
+#
+#   end
+# end
 
 Then /^the Purchase Order Amendment document's GLPE tab shows the new item amount$/ do
   on PurchaseOrderAmendmentPage do |page|
