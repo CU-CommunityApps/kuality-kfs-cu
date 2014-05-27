@@ -35,10 +35,9 @@ Feature: Disbursement Voucher
 
   [KFSQA-677] Disbursement Voucher foreign draft with non resident tax, special handling, and workflow changes for Account, Object Code, and Amount.
 
-  [KFSQA-711] Foreign Check and NRA Tax GLPE
-     As a KFS User I will pay vendors in foreign monies if requested , because Cornell does business
-     outside the United States. I also want to change the document during workflow. as reviewers may
-     need to change the document. Object Code, and Amount.
+  [KFSQA-711] Foreign Check and NRA Tax GLPE. As a KFS User I will pay vendors in foreign monies if requested , because
+              Cornell does business outside the United States. I also want to change the document during workflow. as
+              reviewers may need to change the document. Object Code, and Amount.
 
   [KFSQA-702] FO can do a search on the account and verify the payee id still displays on the DV. Approve it to final.
 
@@ -153,7 +152,7 @@ Feature: Disbursement Voucher
     Then  the Disbursement Voucher document goes to SAVED
 
   @KFSQA-700 @tortoise
-  Scenario: Disbursement Voucher document allow usage of Revolving Fund (Petty Cash) Payment Types
+  Scenario: Allow usage of Revolving Fund (Petty Cash) DV Payment Types.
     Given I am logged in as a KFS User
     And   I start an empty Disbursement Voucher document with Payment to a Petty Cash Vendor
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
@@ -173,7 +172,7 @@ Feature: Disbursement Voucher
     Then  the Disbursement Voucher document goes to FINAL
 
   @KFSQA-713 @sloth
-  Scenario: Disbursement Voucher, Check, Wildcard payee search, Non Employee PP Travel Expenses
+  Scenario: Disbursement Voucher, Check, Wildcard payee search, Non Employee PP Travel Expenses, part 1
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document with Payment to Employee arm2
     #TODO look this employee up based on ?? attribute
@@ -192,7 +191,7 @@ Feature: Disbursement Voucher
     Then  the Disbursement Voucher document goes to FINAL
 
   @KFSQA-719 @sloth
-  Scenario: Disbursement Voucher, Check, Wildcard payee search, Non Employee PP Travel Expenses
+  Scenario: Disbursement Voucher, Check, Wildcard payee search, Non Employee PP Travel Expenses, part 2
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
     And   I add a random vendor payee to the Disbursement Voucher
@@ -209,22 +208,6 @@ Feature: Disbursement Voucher
     And   I view the Disbursement Voucher document
     And   I approve the Disbursement Voucher document
     And   the Disbursement Voucher document goes to FINAL
-
-  @KFSQA-717 @tortoise
-  Scenario: Disbursement Voucher document allow usage of Revolving Fund (Petty Cash) Payment Types
-    Given I am logged in as a KFS User
-    When  I start an empty Disbursement Voucher document
-    And   I add a random payee the Disbursement Voucher
-    And   I change the Payee address
-    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
-      | Number       | G003704        |
-      | Object Code  | 6540           |
-      | Amount       | 10             |
-      | Description  | DV12 Test....  |
-    And   I change the Check Amount for the Disbursement Voucher document to 100
-    And   I submit the Disbursement Voucher document
-    When  the Disbursement Voucher document goes to ENROUTE
-    Then  The Payment Information address equals the overwritten address information
 
   @KFSQA-717 @tortoise
   Scenario: Disbursement Voucher document allow usage of Revolving Fund (Petty Cash) Payment Types
@@ -443,7 +426,7 @@ Feature: Disbursement Voucher
     Then  the Disbursement Voucher document goes to FINAL
 
   @KFSQA-711 @cornell @coral
-  Scenario: Disbursement Voucher foreign draft with non resident tax and workflow changes for Account, Object Code, and Amount.
+  Scenario: Foreign Check and NRA Tax GLPE
     Given I am logged in as a Vendor Initiator
     When  I edit a Vendor with Vendor Number 5328-1
     And   I add an Address to a Vendor with following fields:

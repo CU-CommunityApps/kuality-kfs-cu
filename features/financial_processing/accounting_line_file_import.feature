@@ -27,7 +27,7 @@ Feature: import csv for accounting lines on multiple documents
     | Journal Voucher        | JV-1    | JV-1_offset_bal_type_import.csv  |
 
   @KFSQA-643 @cornell @nightly-jobs
-  Scenario Outline: Checking General Ledger for Accounting Line Description using Import Template without blanket approve
+  Scenario Outline: Checking General Ledger for Accounting Line Description using Import Template without blanket approval
     Given   I am logged in as a KFS User for the <type code> document
     And     I start a <document> document for "<file name>" file import
     And     on the <document> I import the From Accounting Lines from a csv file

@@ -3,6 +3,8 @@ Feature: Pre-Encumbrance
   [KFSQA-654] Open Encumbrances Lookup not displaying pending entries generated from the PE eDoc.
   [KFSQA-739] Background: Cornell University needs to process pre-encumbrances with expense object
               codes and verify the Accounting Line persists to the GL
+  [KFSQA-740] Enter a Disencumbrance on a PE. Test routing and approvals. Nightly batch jobs run.
+              Check entry of eDoc equals GLPE. Test Entry of eDoc equals GL Postings
   [KFSQA-664] Cornell has modified KFS to allow for revenue object codes on the PE form. Allow revenue on Pre-Encumbrance.
   [KFSQA-753] Cornell University needs to process pre-encumbrances with expense
               object codes and verify proper offsets are used.
@@ -42,7 +44,7 @@ Feature: Pre-Encumbrance
     Then    the Pre-Encumbrance document accounting lines equal the General Ledger entries
 
   @KFSQA-740 @sloth
-  Scenario: E2E - PE Created, Approved and Accounting Line persists and updates GL
+  Scenario: Disencumbrance E2E
     Given   I am logged in as a KFS User for the PE document
     And     I start an empty Pre-Encumbrance document
     And     I add a Source Accounting Line to the Pre-Encumbrance document with the following:

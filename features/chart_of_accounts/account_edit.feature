@@ -18,28 +18,28 @@ Feature: Account Edit
               because I still want any enroute documents to be approved.
 
   @KFSQA-593 @hare
-  Scenario: Edit an Account with an invalid Sub-Fund Program Code
+  Scenario: Edit an Account with an invalid Sub-Fund Program Code, part 1
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account with a Sub-Fund Group Code of PLCAPT
     When  I enter a Sub-Fund Program Code of XXXX
     Then  an error in the Account Maintenance tab should say "Sub-Fund Program Code XXXX is not associated with Sub-Fund Group Code PLCAPT."
 
   @KFSQA-593 @hare
-  Scenario: Edit an Account with an invalid Sub-Fund Program Code
+  Scenario: Edit an Account with an invalid Sub-Fund Program Code, part 2
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account with a Sub-Fund Group Code of PLCAPT
     When  I enter XXXXXXX as an invalid Major Reporting Category Code
     Then  an error in the Account Maintenance tab should say "Major Reporting Category Code (XXXXXXX) does not exist."
 
   @KFSQA-593 @hare
-  Scenario: Edit an Account with an invalid Sub-Fund Program Code
+  Scenario: Edit an Account with an invalid Sub-Fund Program Code, part 3
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account with a Sub-Fund Group Code of PLCAPT
     When  I enter XXXXXXX as an invalid Appropriation Account Number
     Then  an error in the Account Maintenance tab should say "Appropriation Account Number XXXXXXX is not associated with Sub-Fund Group Code PLCAPT."
 
   @KFSQA-593 @hare
-  Scenario: Edit an Account with an invalid Sub-Fund Program Code
+  Scenario: Edit an Account with an invalid Sub-Fund Program Code, part 4
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account with a Sub-Fund Group Code of PLCAPT
     When  I enter XX as an invalid Labor Benefit Rate Category Code
