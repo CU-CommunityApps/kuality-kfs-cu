@@ -27,7 +27,10 @@ Given  /^I INITIATE A REQS with following:$/ do |table|
     end
   end
   # so far it used 6540, 6560, 6570 which are all EX type (Expense Expenditure)
-  object_code = 6540
+  object_code =  get_aft_parameter_value(ParameterConstants::REQS_EX_OBJECT_CODE)
+  if !arguments['CA System Type'].nil?
+    object_code = get_aft_parameter_value(ParameterConstants::REQS_CA_OBJECT_CODE)
+  end
   step "I create the Requisition document with:", table(%{
       | Vendor Number       | #{@vendor_number}  |
       | Item Quantity       | #{item_qty}        |
@@ -42,6 +45,12 @@ Given  /^I INITIATE A REQS with following:$/ do |table|
   end
   if positive_approve == 'Checked'
     step  "I select the Payment Request Positive Approval Required"
+  end
+  if !arguments['CA System Type'].nil?
+    step "I fill in Capital Asset tab on Requisition document with:", table(%{
+      | CA System Type       | #{arguments['CA System Type']}  |
+      | CA System State      | #{arguments['CA System State']} |
+  })
   end
   steps %Q{ And I add an Attachment to the Requisition document
             And I enter Delivery Instructions and Notes to Vendor
@@ -378,4 +387,27 @@ Then /^the Purchase Order Amendment document's GLPE tab shows the new item amoun
     page.glpe_results_table[2][11].text.to_f.should == @poa_item_amount
 
   end
+end
+
+And /^I fill in Capital Asset tab on Requisition document with:$/ do |table|
+  #TODO : different type/state has different data input after select
+  system_params = table.rows_hash
+  on RequisitionPage do |page|
+    page.expand_all
+    page.system_type.fit system_params['CA System Type']
+    page.system_state.fit system_params['CA System State']
+    page.select
+  end
+
+  sleep 5
+  on RequisitionPage do |page|
+    #page.asset_system_description.fit random_alphanums(40, 'AFT CA desc')
+    #page.manufacturer.fit random_alphanums(15, 'AFT manuf')
+    page.model_number.fit '2014 Bella Model'
+    #page.asset_number.fit '1'
+    page.transaction_type_code.fit 'New'
+    page.same_as_vendor
+  end
+
+
 end

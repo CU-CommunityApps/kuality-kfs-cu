@@ -10,6 +10,8 @@ Feature: REQS, PO, PREQ,PDP
 
   [KFSQA-882] GLPEs are wrong on Purchase Order Amendments (POAs)
 
+  [KFSQA-994] I CREATE A CAPITAL ASSET REQS E2E (Individual Assets/New)
+
   @KFSQA-853 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral
   Scenario: PUR-5 Sensitive Commodity Data Flag enh
     Given I INITIATE A REQS with following:
@@ -99,3 +101,19 @@ Feature: REQS, PO, PREQ,PDP
       |Item Quantity   | 1       |
       |Item Cost       | 100     |
     Then the Purchase Order Amendment document's GLPE tab shows the new item amount
+
+  @KFSQA-994 @E2E @REQS @PO @PREQ @PDP @pending @coral @wip
+  Scenario: I CREATE A CAPITAL ASSET REQS E2E (Individual Assets/New)
+    Given I INITIATE A REQS with following:
+      |Vendor Type        | NonB2B           |
+      |Add Vendor On REQS | Yes              |
+      |Positive Approval  | Unchecked        |
+      |Account Type       | NonGrant         |
+      |Amount             | 1000             |
+      |CA System Type     | Individual Assets|
+      |CA System State    | New System       |
+
+#    |Default PM         | P           |
+# default PM can ve implemented after alternate PM is moved to upgrade
+    And  I EXTRACT THE REQS TO SQ
+    When I INITIATE A PREQ
