@@ -11,7 +11,7 @@ Feature: Global Account
   [KFSQA-618] As a KFS Fiscal Officer I need to create an account with a Major Reporting Category Code field
               because I need to manage in-year financial activity, fund balances and year-end reporting.
 
-  @KFSQA-604 @hare @wip1
+  @KFSQA-604 @hare
   Scenario: KFS User lookup on Major Reporting Category Code
     Given I am logged in as a KFS Fiscal Officer
     When  I save an Account Global Maintenance document
