@@ -51,7 +51,7 @@ Feature: Vendor Edit
     Then    the Tax Number and Notes are Not Visible on Vendor page
     And     the Address and Phone Number changes persist
 
-  @KFSQA-773 @cornell @slug @E2E @VendorEdit
+  @KFSQA-773 @cornell @slug @E2E @VendorEdit @wip1
   Scenario: PO Vendor Edit, with Expired Insurance.
     # "ccs1" can blanket approve
     Given   I am logged in as "ccs1"
