@@ -198,8 +198,11 @@ end
 
 Then /^in Pending Action Requests an FYI is sent to FO and Initiator$/ do
   on PurchaseOrderPage do |page|
+    page.reload # Sometimes the pending table doesn't show up immediately.
     page.headerinfo_table.wait_until_present
     page.expand_all
+    page.refresh_route_log # Sometimes the pending table doesn't show up immediately.
+    page.show_pending_action_requests if page.pending_action_requests_hidden?
     fyi_initiator = 0
     fyi_fo = 0
     (1..page.pnd_act_req_table.rows.length - 2).each do |i|
