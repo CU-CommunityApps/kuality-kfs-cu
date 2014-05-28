@@ -1,4 +1,4 @@
-Feature: KFS Fiscal Officer Account Copy
+Feature: Auxiliary Voucher
 
   [KFSQA-646] No Parm Checking for Object Codes on AV
   [KFSQA-627] I want to create an Auxiliary Voucher posting accounting lines across Sub-Fund Group Codes because of Cornell SOP.
