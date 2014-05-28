@@ -1,4 +1,4 @@
-Feature: KFS Fiscal Officer Account Copy
+Feature: Budget Adjustment
 
   [KFSQA-623] CF: Budget Adjustment eDoc to balance entries by Account. As a KFS User
               I want to create a Budget Adjustment but preclude entries from crossing Accounts because of Cornell budget policies.
