@@ -9,7 +9,7 @@ Feature: Pre-Encumbrance
   [KFSQA-753] Cornell University needs to process pre-encumbrances with expense
               object codes and verify proper offsets are used.
 
-  @KFSQA-654 @sloth
+  @KFSQA-654 @FP @PE @GL-QUERY @sloth
   Scenario: Open Encumbrances Lookup will display pending entries from PE eDoc
     Given I am logged in as a KFS Chart Manager
     And   I clone a random Account with the following changes:
@@ -22,7 +22,7 @@ Feature: Pre-Encumbrance
     When  I do an Open Encumbrances lookup for the Pre-Encumbrance document with Balance Type PE and Include All Pending Entries
     Then  the Lookup should return results
 
-  @KFSQA-739 @sloth
+  @KFSQA-739 @FP @PE @sloth
   Scenario: E2E - PE Created, Approved and Accounting Line persists and updates GL
     Given   I am logged in as a KFS User for the PE document
     And     I start an empty Pre-Encumbrance document
@@ -43,7 +43,7 @@ Feature: Pre-Encumbrance
     When    I am logged in as a KFS Chart Manager
     Then    the Pre-Encumbrance document accounting lines equal the General Ledger entries
 
-  @KFSQA-740 @sloth
+  @KFSQA-740 @FP @PE @sloth
   Scenario: Disencumbrance E2E
     Given   I am logged in as a KFS User for the PE document
     And     I start an empty Pre-Encumbrance document
@@ -83,7 +83,7 @@ Feature: Pre-Encumbrance
     When    I am logged in as a KFS Chart Manager
     Then    The outstanding encumbrance for account G003704 and object code 6100 is 800
 
-  @KFSQA-664 @nightly-jobs @cornell @slug
+  @KFSQA-664 @FP @PE @nightly-jobs @cornell @slug
   Scenario: Process a Pre-Encumbrance using a revenue object code.
     Given   I am logged in as a KFS System Manager
     When    I update the OBJECT_TYPES Parameter for the Pre-Encumbrance component in the KFS-FP namespace with the following values:
@@ -111,7 +111,7 @@ Feature: Pre-Encumbrance
       | Parameter Value | EX |
     And     I finalize the Parameter document
 
-  @KFSQA-753 @nightly-jobs @cornell @tortoise
+  @KFSQA-753 @FP @PE @nightly-jobs @cornell @tortoise
   Scenario: Generate Proper Offsets Using a PE to generate an Encumbrance
     Given I am logged in as a KFS User
     And   I submit a Pre-Encumbrance document that encumbers Account G003704

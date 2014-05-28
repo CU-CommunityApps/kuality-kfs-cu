@@ -77,7 +77,7 @@ Feature: Purap REQS 2 Building Blocks
       | 1278003           | 6570        | 4.9           |
       | R589854           | 6540        | 7.5           |
 
-  @KFSQA-737 @KFSQA-738 @E2E @PURAP @REQS @RecurringOrder @cornell @slug
+  @KFSQA-737 @KFSQA-738 @E2E @PURAP @REQS @cornell @slug
   Scenario Outline: Create -- non eShop - recurring payment, C&G account, not Commodity
     Given I login as a KFS user to create an REQS
     And   I create the Requisition document with:

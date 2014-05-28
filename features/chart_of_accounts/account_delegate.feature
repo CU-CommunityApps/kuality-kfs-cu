@@ -2,7 +2,7 @@ Feature: Account Delegate Create
 
   [KFSQA-567] As a KFS User I want the Account Delegate dollar limits to not auto-populate because I want to be sure I enter them myself.
 
-  @KFSQA-567 @hare
+  @KFSQA-567 @AcctDelegate @KFSPTS-827 @hare
   Scenario: Create an Account Delegate
     Given I am logged in as a KFS Fiscal Officer
     When  I save an Account Delegate document
