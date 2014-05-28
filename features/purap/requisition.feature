@@ -7,5 +7,6 @@ Feature: Requistion
   Given I initiate a Requisition document
   And   I add an Award Account
   And   I enter items that total less than the DOLLAR_THRESHOLD_REQUIRING_AWARD_REVIEW parameter
+  And   I submit the Requisition document
   When  I route the Requisition document to FINAL by clicking approve for each request
   Then  the RequiresAwardReview Node is skipped
