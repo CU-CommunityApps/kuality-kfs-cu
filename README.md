@@ -19,3 +19,4 @@ Installation
 
 You may want to set up your run configurations to use the Cucumber profiles included
 in the project. They can be found in [./cucumber.yml](./cucumber.yml)
+
