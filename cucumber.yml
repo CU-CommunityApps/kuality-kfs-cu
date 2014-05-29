@@ -1,5 +1,5 @@
 <%
-  default = '-r features --format pretty --color'
+  default = '-r features -r ../kuality-kfs/features --format pretty --color'
   debug = "#{default} DEBUG=true"
   clean_tags = '--tags ~@draft --tags ~@wip --tags ~@pending'
   clean_default = "#{default} #{clean_tags}"

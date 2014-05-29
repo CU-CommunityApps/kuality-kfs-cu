@@ -70,12 +70,6 @@ Then /^the (.*) document goes to one of the following statuses:$/ do |document, 
   on(page_class_for(document)) { |page| required_statuses.raw.flatten.should include page.document_status }
 end
 
-And /^I (#{BasePage::available_buttons}) the document$/ do |button|
-  button.gsub!(' ', '_')
-  on(KFSBasePage).send(button)
-  on(YesOrNoPage).yes if button == 'cancel'
-end
-
 And /^I recall the financial document$/ do
   on(KFSBasePage).recall_current_document
   on RecallPage do |page|

@@ -26,10 +26,6 @@ Given /^I am logged in as "([^"]*)"$/ do |user_id|
   visit(BackdoorLoginPage).login_as(user_id)
 end
 
-Given /^I am logged in as a KFS Chart Manager$/ do
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Chart Manager'))
-end
-
 Given /^I am logged in as a KFS Chart Administrator$/ do
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Chart Administrator (cu)'))
 end
