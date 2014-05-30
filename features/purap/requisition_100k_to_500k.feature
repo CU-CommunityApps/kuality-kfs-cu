@@ -138,7 +138,7 @@ Feature: Purap Preq Building Blocks
   Scenario: PURAP E2E-004d PREQ - Manual Entry, >$500, <$5000, Internal Vendor
     Given I login as a KFS user to create an REQS
     And I create the Requisition document with:
-      | Item Quantity       | 201        |
+      | Item Quantity       | 201      |
       | Item Cost           | 1000     |
       | Item Commodity Code | 12142203 |
       | Item Catalog Number | 10101157 |

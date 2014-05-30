@@ -1,5 +1,6 @@
 And /^I create the Requisition document with:$/  do |table|
   updates = table.rows_hash
+  puts 'vendor ',updates['Vendor Number']
   @requisition = create RequisitionObject, payment_request_positive_approval_required: updates['payment request'],
                         payment_request_positive_approval_required: updates['payment request'],
                         vendor_number:        updates['Vendor Number'],
@@ -32,6 +33,7 @@ And /^I view the (.*) document on my action list$/ do |document|
   if document.eql?('Requisition')
     on RequisitionPage do |page|
       @requisition_id = page.requisition_id
+      @requisition_initiator = page.initiator
     end
   end
 
@@ -72,8 +74,9 @@ And /^the View Related Documents Tab PO Status displays$/ do
     @purchase_order_number = page.purchase_order_number
     # verify unmasked and 'UNAPPROVED'
     page.purchase_order_number.should_not include '*****' # unmasked
-    page.po_unapprove.should include 'UNAPPROVED'
-    #puts 'po link', page.po_unapprove
+    if !@auto_gen_po.nil? && !@auto_gen_po
+      page.po_unapprove.should include 'UNAPPROVED'
+    end
     page.purchase_order_number_link
 
     sleep 10
@@ -195,10 +198,26 @@ end
 
 Then /^in Pending Action Requests an FYI is sent to FO and Initiator$/ do
   on PurchaseOrderPage do |page|
+    page.reload # Sometimes the pending table doesn't show up immediately.
     page.headerinfo_table.wait_until_present
     page.expand_all
-    page.pending_action_annotation_1.include? 'Fiscal Officer'
-    page.pending_action_annotation_2.include? 'Initiator'
+    page.refresh_route_log # Sometimes the pending table doesn't show up immediately.
+    page.show_pending_action_requests if page.pending_action_requests_hidden?
+    fyi_initiator = 0
+    fyi_fo = 0
+    (1..page.pnd_act_req_table.rows.length - 2).each do |i|
+      if page.pnd_act_req_table[i][1].text.include?('FYI')
+        if page.pnd_act_req_table[i][4].text.include? 'Fiscal Officer'
+          fyi_fo += 1
+        else
+          if page.pnd_act_req_table[i][4].text.include? 'Initiator'
+            fyi_initiator += 1
+           end
+        end
+      end
+    end
+    fyi_initiator.should >= 1
+    fyi_fo.should >= 1
   end
 end
 
@@ -424,6 +443,95 @@ And /^I Complete Selecting an External Vendor$/ do
       vlookup.vendor_number.fit vendor_number
       vlookup.search
       vlookup.return_value(vendor_number)
+    end
+  end
+
+end
+
+# started QA-853 work
+And /^I create an empty Requisition document$/  do
+  @requisition = create RequisitionObject
+end
+
+Then /^I switch to the user with the next Pending Action in the Route Log to approve (.*) document to Final$/ do |document|
+
+  # TODO : Should we collect the app doc status to make sure that this process did go thru all the route nodes ?
+  x = 0 # in case something wrong , limit to 10
+  @base_org_review_level = 0
+  @org_review_users = Array.new
+  @commodity_review_users = Array.new
+  @fo_users = Array.new
+  while true && x < 10
+    new_user = ''
+    on(page_class_for(document)) do |page|
+      page.expand_all
+      if (page.document_status != 'FINAL')
+        (0..page.pnd_act_req_table.rows.length - 3).each do |i|
+          idx = i + 1
+          if page.pnd_act_req_table[idx][1].text.include?('APPROVE')
+            if (!page.pnd_act_req_table[idx][2].text.include?('Multiple'))
+              page.pnd_act_req_table[idx][2].links[0].click
+              page.use_new_tab
+              new_user = page.new_user
+            else
+              # for Multiple
+              page.show_multiple
+              page.multiple_link_first_approver
+              page.use_new_tab
+              new_user = page.new_user
+            end
+            page.close_children
+            break
+          end
+        end
+      else
+        break
+      end
+    end
+
+    if new_user != ''
+      step "I am logged in as \"#{new_user}\""
+      step "I view the #{document} document on my action list"
+      if (document == 'Payment Request')
+        if (on(page_class_for(document)).app_doc_status == 'Awaiting Tax Approval')
+          step  "I update the Tax Tab"
+          step  "I calculate PREQ"
+        else
+          if (on(page_class_for(document)).app_doc_status == 'Awaiting Treasury Manager Approval')
+            #TODO : wait till Alternate PM is implemented
+          end
+        end
+      end
+      if (on(page_class_for(document)).app_doc_status == 'Awaiting Base Org Review' || on(page_class_for(document)).app_doc_status == 'Awaiting Chart Approval')
+        @base_org_review_level += 1
+        @org_review_users.push(new_user)
+      else
+        if (on(page_class_for(document)).app_doc_status == 'Awaiting Commodity Review' || on(page_class_for(document)).app_doc_status == 'Awaiting Commodity Code Approval')
+          @commodity_review_users.push(new_user)
+        else
+          if (on(page_class_for(document)).app_doc_status == 'Awaiting Fiscal Officer')
+             @fo_users.push(new_user)
+          end
+        end
+      end
+      step "I approve the #{document} document"
+      step "the #{document} document goes to one of the following statuses:", table(%{
+        | ENROUTE   |
+        | FINAL     |
+      })
+    end
+
+    if on(page_class_for(document)).document_status == 'FINAL'
+        break
+    end
+    x += 1
+  end
+
+  if @org_review_routing_check
+    step "the #{document} document routes to the correct individuals based on the org review levels"
+  else
+    if @commodity_review_routing_check
+      step "I validate Commodity Review Routing for #{document} document"
     end
   end
 

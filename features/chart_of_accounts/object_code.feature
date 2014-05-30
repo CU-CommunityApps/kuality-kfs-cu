@@ -6,15 +6,17 @@ Feature: Object Code
   [KFSQA-580] Object Code Global dropping values of Reports To Object Code. As a KFS Chart Manager I want to
               enter an Object Code Global and know it will update the Reports to Object Code with my input
               because this will eliminate subsequent manual rework.
+  [KFSQA-596] Create a new Object Code, add the new field, bad value, submit, verify incorrect value produces
+              error, enter new field correct, submit and verify it is populated
 
-  @KFSQA-594 @hare
+  @KFSQA-594 @cornell @ObjCode @KFSPTS-931 @hare
   Scenario: Create an Object Code and Object Code Global and Blanket Approve it.
     Given   I am logged in as a KFS Chart Manager
     And     I save an Object Code document
     When    I blanket approve the Object Code document
     Then    I should see the Object Code document in the object code search results
 
-  @KFSQA-594 @hare
+  @KFSQA-594 @cornell @ObjCode @KFSPTS-931 @hare
   Scenario: Create an Object Code with an invalid CR Reporting Code and get an error message
     Given   I am logged in as a KFS Chart Manager
     And     I edit an Object Code document with object code 6500
@@ -22,7 +24,7 @@ Feature: Object Code
     When    I blanket approve the Object Code document
     Then    The object code should show an error that says "CG Reporting Code (ZZZZ) for Chart Code (IT) does not exist."
 
-  @KFSQA-580 @sloth
+  @KFSQA-580 @Bug @ObjCode @KFSPTS-915 @sloth
   Scenario: Verify Object Code updates Reports to Object Code
     Given   I am logged in as a KFS Chart Manager
     And     I edit an Object Code document with object code 1110
@@ -31,10 +33,10 @@ Feature: Object Code
     When    I Lookup the Object Code 1110
     Then    The Lookup should display the Reports to Object Code
 
-  @KFSQA-596 @hare
+  @KFSQA-596 @cornell @COA @ObjCode @KFSPTS-1753 @hare
   Scenario: Edit an Object Code and update the Financial Object Code Description
     Given   I am logged in as a KFS Chart Manager
     And     I edit an Object Code document
     And     I update the Financial Object Code Description
     When    I blanket approve the Object Code document
-    Then    The document should have no errors
+    Then    the document should have no errors

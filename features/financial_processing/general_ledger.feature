@@ -4,7 +4,7 @@ Feature: General Ledger
   [KFSQA-647] Cornell needs a to ensure that all eight Main Menu->Balance Inquiries-->General Ledger are working.
 
   @KFSQA-649 @smoke @nightly-jobs @coral
-  Scenario Outline: Accounting Line Description from eDoc updates General Ledger
+  Scenario Outline: Accounting Line Description from eDoc updates General Ledger, part 1
     Given I am logged in as a KFS Manager for the <docType> document
     And   I clone Account <source_account> with the following changes:
       | Name        | <eDoc> Test Account S |
@@ -43,9 +43,10 @@ Feature: General Ledger
     | Non-Check Disbursement             | ND      | G013300        |                |
     | Pre-Encumbrance                    | PE      | G003704        |                |
     | Transfer Of Funds                  | TF      | A763306        | A763900        |
+  #TODO grab accounts from parameter
 
   @KFSQA-649 @smoke @nightly-jobs @tortoise
-  Scenario Outline: Accounting Line Description from eDoc updates General Ledger. These eDocs' accounts don't clone nicely.
+  Scenario Outline: Accounting Line Description from eDoc updates General Ledger, part 4. These eDocs' accounts don't clone nicely.
     Given I am logged in as a KFS Manager for the <docType> document
     And   I use these Accounts:
       | <source_account> |
@@ -69,16 +70,19 @@ Feature: General Ledger
       | eDoc              | docType | source_account | target_account |
       | Budget Adjustment | BA      | G003704        | G003704        |
       | Service Billing   | SB      | U243700        | G013300        |
+  #TODO grab account from parameter
 
-  @KFSQA-649 @smoke @nightly-jobs @tortoise
-  Scenario: Accounting Line Description from eDoc updates General Ledger
+  @KFSQA-649 @smoke @nightly-jobs @tortoise @broken
+  Scenario: Accounting Line Description from eDoc updates General Ledger, part 2
     Given I am logged in as a KFS Manager for the DV document
     And   I clone Account 1490000 with the following changes:
       | Name        | Disbursement Voucher Test Account S |
       | Chart Code  | IT                                  |
       | Description | Disbursement Voucher Test Account S |
+    #TODO KYLE try using the default account for DV
     And   I am logged in as a KFS User for the DV document
     When  I start an empty Disbursement Voucher document with Payment to Vendor 12076-0 and Reason Code B
+    #TODO loookup/calculate this
     And   I add balanced Accounting Lines to the Disbursement Voucher document
     And   I save the Disbursement Voucher document
     Then  I submit the Disbursement Voucher document
@@ -95,7 +99,7 @@ Feature: General Ledger
     Then  the Accounting Line Description for the Disbursement Voucher document equals the General Ledger Accounting Line Description
 
   @KFSQA-649 @smoke @nightly-jobs @tortoise
-  Scenario: Accounting Line Description from eDoc updates General Ledger
+  Scenario: Accounting Line Description from eDoc updates General Ledger, part 3
     Given I am logged in as a KFS Manager for the ICA document
     And   I clone Account 1093600 with the following changes:
       | Name                                          | Indirect Cost Adjustment Test Account S |

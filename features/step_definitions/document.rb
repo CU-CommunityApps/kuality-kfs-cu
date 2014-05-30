@@ -25,9 +25,8 @@ When /^I view the (.*) document$/ do |document|
 end
 
 When /^I (#{BasePage::available_buttons}) the (.*) document$/ do |button, document|
-  doc_object = snake_case document
   button.gsub!(' ', '_')
-  get(doc_object).send(button)
+  document_object_for(document).send(button)
   on(YesOrNoPage).yes if button == 'cancel'
   sleep 10 if (button == 'blanket approve' || button == 'approve' || 'submit')
 end
@@ -97,10 +96,17 @@ Then /^the document status is (.*)/ do |doc_status|
 end
 
 And /^I remember the (.*) document number$/ do |document|
-  doc_object = snake_case document
-  page_klass = Kernel.const_get(get(doc_object).class.to_s.gsub(/(.*)Object$/,'\1Page'))
+  @remembered_document_id = on(page_class_for(document)).document_id
+end
 
-  on page_klass do |page|
-    @remembered_document_id = page.document_id
-  end
+Then /^The value for (.*) field is "(.*)"$/ do |field_name, field_value|
+  $current_page.send(StringFactory.damballa(field_name)).should==field_value
+end
+
+And /^I collapse all tabs$/ do
+  on(KFSBasePage).collapse_all
+end
+
+And /^I expand all tabs$/ do
+  on(KFSBasePage).expand_all
 end

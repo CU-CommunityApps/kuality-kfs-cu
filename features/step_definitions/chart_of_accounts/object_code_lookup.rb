@@ -20,7 +20,7 @@ And /^I lookup an Object Code with that Object Sub Type$/ do
   visit(MainPage).object_code
   on ObjectCodeLookupPage do |page|
     while true
-      page.chart_code.fit 'IT - Ithaca Campus'
+      page.chart_code.fit 'IT - Ithaca Campus' #TODO config
       page.object_sub_type_code.fit @parameter_values.sample
       page.search
       break if page.results_table != []

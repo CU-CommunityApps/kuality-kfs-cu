@@ -25,7 +25,7 @@ And /^I add the only payee with Payee Id (\w+) and Reason Code (\w+) to the Disb
       @disbursement_voucher.payment_reason_code = 'B - Reimbursement for Out-of-Pocket Expenses'
   end
   on (PaymentInformationTab) do |tab|
-    on(PaymentInformationTab).payee_search
+    tab.payee_search
     on PayeeLookup do |plookup|
       plookup.payment_reason_code.fit @disbursement_voucher.payment_reason_code
       plookup.netid.fit               net_id
@@ -86,7 +86,7 @@ And /^I copy a Disbursement Voucher document with Tax Address to persist$/ do
     old_address = [tab.address_1_value, tab.address_2_value.strip, tab.city_value, tab.state_value, tab.country_value, tab.postal_code_value]
   }
 
-  get("disbursement_voucher").send("copy_current_document")
+  get('disbursement_voucher').send('copy_current_document')
 
   # validate the Tax Address is copied over
   copied_address = []
@@ -117,7 +117,7 @@ end
 
 And /^I add a Pre-Paid Travel Expense$/ do
   on(FinancialProcessingPage).expand_all
-  on (PrePaidTravelExpensesTab) do |tab|
+  on PrePaidTravelExpensesTab do |tab|
     tab.name.fit            'test'
     tab.department_code.fit 'test'
     tab.req_instate.fit     'test'
@@ -127,7 +127,7 @@ And /^I add a Pre-Paid Travel Expense$/ do
 end
 
 And /^I enter the Total Mileage of (\d+\.?\d*) in Travel Tab$/ do |mileage|
-  on (DisbursementVoucherPage) {|page| page.car_mileage.fit mileage}
+  on(DisbursementVoucherPage).car_mileage.fit mileage
 end
 
 And /^the calculated Amount in the Travel Tab should match following Total Amount for each specified Start Date:$/ do |table|
@@ -147,8 +147,8 @@ And /^I add a random vendor payee to the Disbursement Voucher$/ do
   on (PaymentInformationTab) do |tab|
     tab.payee_search
     on PayeeLookup do |plookup|
-      plookup.payment_reason_code.fit 'B - Reimbursement for Out-of-Pocket Expenses'
-      plookup.vendor_name.fit         'Academy of Management'
+      plookup.payment_reason_code.fit 'B - Reimbursement for Out-of-Pocket Expenses' #TODO config
+      plookup.vendor_name.fit         'Academy of Management' #TODO LL fix (talk to Kyle)
       plookup.search
       plookup.return_random
       sleep 1
@@ -215,25 +215,16 @@ And /^I fill out the Special Handling tab with the following fields:$/ do |table
   end
 end
 
-And /^I add note '(.*)' to the Disbursement Voucher document$/ do |note_text|
-  on DisbursementVoucherPage do |page|
-    page.note_text.fit note_text
-    page.add_note
-  end
-end
-
 And /^I uncheck Special Handling on Payment Information tab$/ do
-  on (PaymentInformationTab) do |tab|
-    tab.other_considerations_special_handling.clear
-    on(SpecialHandlingTab) do |tab|
-      tab.person_name.value.should == ''
-      tab.address_1.value.should == ''
-    end
+  on(PaymentInformationTab).other_considerations_special_handling.clear
+  on SpecialHandlingTab do |tab|
+    tab.person_name.value.should == ''
+    tab.address_1.value.should == ''
   end
 end
 
 And /^the Special Handling is still unchecked on Payment Information tab$/ do
-  on (PaymentInformationTab) {|tab| tab.other_considerations_special_handling.set?.should == false}
+  on(PaymentInformationTab).other_considerations_special_handling.set?.false?.should
 end
 
 And /^I search and retrieve a DV Payee ID (\w+) with Reason Code (\w)$/ do |net_id, reason_code|
@@ -241,7 +232,7 @@ And /^I search and retrieve a DV Payee ID (\w+) with Reason Code (\w)$/ do |net_
     when 'B'
       @disbursement_voucher.payment_reason_code = 'B - Reimbursement for Out-of-Pocket Expenses'
   end
-  on (PaymentInformationTab) do |tab|
+  on PaymentInformationTab do |tab|
     tab.payee_search
     on PayeeLookup do |plookup|
       plookup.payment_reason_code.fit @disbursement_voucher.payment_reason_code
@@ -258,7 +249,7 @@ And /^I add a DV foreign vendor (\d+-\d+) with Reason Code (\w)$/ do |vendor_num
     when 'B'
       @disbursement_voucher.payment_reason_code = 'B - Reimbursement for Out-of-Pocket Expenses'
   end
-  on (PaymentInformationTab) do |tab|
+  on PaymentInformationTab do |tab|
     tab.payee_search
     on PayeeLookup do |plookup|
       plookup.payment_reason_code.fit @disbursement_voucher.payment_reason_code
@@ -273,11 +264,11 @@ And /^I add a DV foreign vendor (\d+-\d+) with Reason Code (\w)$/ do |vendor_num
 end
 
 And /^I complete the Foreign Draft Tab$/ do
-  on (PaymentInformationTab) do |tab|
+  on PaymentInformationTab do |tab|
     tab.payment_method.fit  'F - Foreign Draft'
     tab.alert.ok if tab.alert.exists? # popup after select 'Foreign draft'
   end
-  on (DisbursementVoucherPage) do |page|
+  on DisbursementVoucherPage do |page|
     page.expand_all
     page.foreign_draft_in_foreign_currency.set
     page.currency_type.fit 'Canadian $'
@@ -285,32 +276,31 @@ And /^I complete the Foreign Draft Tab$/ do
 end
 
 And /^I change the Check Amount on the Payment Information tab to (.*)$/ do |amount|
-  on (PaymentInformationTab) {|tab| tab.check_amount.fit amount}
+  on(PaymentInformationTab).check_amount.fit amount
 end
 
 And /^I change the Account (\w+) ?(\w+)? for Accounting Line (\d+) to (\w+) on the (.*)$/ do |account_field, account_field_1, line_number, new_value, document|
   line_idx = line_number.to_i - 1
   case account_field
     when 'Number'
-      on (AccountingLine) {|line| line.update_source_account_number(line_idx).fit new_value}
+      on(AccountingLine).update_source_account_number(line_idx).fit new_value
     when 'Amount'
-      on (AccountingLine) {|line| line.update_source_amount(line_idx).fit new_value}
+      on(AccountingLine).update_source_amount(line_idx).fit new_value
     when 'Object'
-      on (AccountingLine) {|line| line.update_source_object_code(line_idx).fit new_value}
+      on(AccountingLine).update_source_object_code(line_idx).fit new_value
     when 'Organization'
-      on (AccountingLine) {|line| line.update_source_organization_reference_id(line_idx).fit  new_value}
+      on(AccountingLine).update_source_organization_reference_id(line_idx).fit new_value
   end
 
 end
 
 Then /^I complete the Nonresident Alien Tax Tab and generate accounting line for Tax$/ do
-  on (DisbursementVoucherPage) {|page| page.expand_all}
-
-    on (NonresidentAlienTaxTab) do |tab|
-    tab.income_class_code.fit       'R - Royalty'
-    tab.federal_income_tax_pct.fit  '30'
-    tab.state_income_tax_pct.fit    '0'
-    tab.postal_country_code.fit     'Canada'
+  on(DisbursementVoucherPage).expand_all
+  on NonresidentAlienTaxTab do |tab|
+    tab.income_class_code.fit      'R - Royalty'
+    tab.federal_income_tax_pct.fit '30'
+    tab.state_income_tax_pct.fit   '0'
+    tab.postal_country_code.fit    'Canada'
     tab.generate_line
   end
 end
@@ -322,25 +312,23 @@ When /^I select Disbursement Voucher document from my Action List$/ do
 end
 
 And /^I update a random Bank Account to Disbursement Voucher Document$/ do
-  on (DisbursementVoucherPage) do |page|
-    page.bank_search
-    on BankLookupPage do |blookup|
-      blookup.search
-      blookup.return_random
-    end
+  on(DisbursementVoucherPage).bank_search
+  on BankLookupPage do |blookup|
+    blookup.search
+    blookup.return_random
   end
 end
 
 And /^I can NOT update the W-9\/W-8BEN Completed field on the Payment Information tab$/ do
-  on (PaymentInformationTab) {|tab| tab.other_considerations_w9_completed.enabled?.should == false}
+  on(PaymentInformationTab).other_considerations_w9_completed.enabled?.false?.should
 end
 
 And /^I update the Postal Code on the Payment Information tab to (.*)$/ do |postal_code|
-  on (PaymentInformationTab) {|tab| tab.postal_code.fit  postal_code}
+  on(PaymentInformationTab).postal_code.fit postal_code
 end
 
 And /^the Special Handling tab is open$/ do
-  on (SpecialHandlingTab) {|tab| tab.close_special_handling.should exist}
+  on(SpecialHandlingTab).close_special_handling.should exist
 end
 
 And /^I search and retrieve Payee '(.*)' with Reason Code (\w)$/ do |vendor_name, reason_code|
@@ -367,34 +355,27 @@ And /^I search and retrieve DV foreign vendor (\d+-\d+) with Reason Code (\w)$/ 
     when 'B'
       @disbursement_voucher.payment_reason_code = 'B - Reimbursement for Out-of-Pocket Expenses'
   end
-  on (PaymentInformationTab) do |tab|
-    tab.payee_search
-    on PayeeLookup do |plookup|
-      plookup.payment_reason_code.fit @disbursement_voucher.payment_reason_code
-      plookup.vendor_number.fit         vendor_number
-      plookup.search
-      plookup.return_value(vendor_number)
-    end
+  on(PaymentInformationTab).payee_search
+  on PayeeLookup do |plookup|
+    plookup.payment_reason_code.fit @disbursement_voucher.payment_reason_code
+    plookup.vendor_number.fit       vendor_number
+    plookup.search
+    plookup.return_value(vendor_number)
   end
 end
 
 And /^I select the added Remit Address$/ do
-  on VendorAddressLookup do |valookup|
-    valookup.return_value(@vendor.address_2)
-  end
-  on (PaymentInformationTab) do |tab|
+  on(VendorAddressLookup).return_value(@added_address.address_2)
+  on PaymentInformationTab do |tab|
     @disbursement_voucher.fill_in_payment_info(tab)
-    tab.payment_method.fit  'F - Foreign Draft'
+    tab.payment_method.fit 'F - Foreign Draft'
     tab.alert.ok if tab.alert.exists? # popup after select 'Foreign draft'
   end
-
 end
 
 And /^the GLPE contains Taxes withheld amount of (.*)$/ do |tax_amount|
-  on (DisbursementVoucherPage) {|page| page.expand_all}
-  on (GeneralLedgerPendingEntryTab) do |tab|
-    tab.amount_array.should include(tax_amount)
-  end
+  on(DisbursementVoucherPage).expand_all
+  on(GeneralLedgerPendingEntryTab).amount_array.should include tax_amount
 end
 
 And /^I search Account and cancel on Account Lookup$/ do
@@ -403,7 +384,7 @@ And /^I search Account and cancel on Account Lookup$/ do
 end
 
 And /^the Payee Id still displays on Disbursement Voucher$/ do
-  on (PaymentInformationTab) {|tab| tab.payee_id_value.should include (@disbursement_voucher.payee_id)}
+  on(PaymentInformationTab).payee_id_value.should include @disbursement_voucher.payee_id
 end
 
 And /^I search Petty Cash vendor (\d+-\d+) with Reason Code (\w)$/ do |vendor_number, reason_code|
@@ -422,7 +403,7 @@ And /^I search Petty Cash vendor (\d+-\d+) with Reason Code (\w)$/ do |vendor_nu
 end
 
 Then /^I should get a Reason Code error saying "([^"]*)"$/ do |error_msg|
-  on (PayeeLookup) {|plookup| plookup.left_errmsg_text.should include error_msg}
+  on(PayeeLookup).left_errmsg_text.should include error_msg
 end
 
 And /^I change Reason Code to (\w) for Payee search and select$/ do |reason_code|
@@ -430,7 +411,7 @@ And /^I change Reason Code to (\w) for Payee search and select$/ do |reason_code
     when 'K'
       @disbursement_voucher.payment_reason_code = 'K - Univ PettyCash Custodian Replenishment'
   end
-  on (PaymentInformationTab) do |tab|
+  on PaymentInformationTab do |tab|
     on PayeeLookup do |plookup|
       @disbursement_voucher.payee_id = plookup.vendor_number.value
       plookup.payment_reason_code.fit @disbursement_voucher.payment_reason_code
@@ -446,11 +427,11 @@ end
 
 And /^I select a vendor payee to the (.*) document$/ do |document|
   if document.eql?('Disbursement Voucher')
-    on (PaymentInformationTab) do |tab|
+    on PaymentInformationTab do |tab|
       tab.payee_search
       on PayeeLookup do |plookup|
         plookup.payment_reason_code.fit 'B - Reimbursement for Out-of-Pocket Expenses'
-        plookup.vendor_name.fit         '*staple*'
+        plookup.vendor_name.fit         '*staple*' #TODO config for B2B vendor - should step definition name be more specific?
         plookup.search
         plookup.return_value_links.first.click
         sleep 1
