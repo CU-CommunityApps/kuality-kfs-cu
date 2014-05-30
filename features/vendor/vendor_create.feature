@@ -183,7 +183,15 @@ Feature: Vendor Create
     @KFSQA-840 @cornell @Create @E2E @Routing @smoke @wip
     Scenario: Creating a new vendor to test cornell specific mods, separation of duties, and vendor address and attachments persist.
       Given I am logged in as a Vendor Initiator
-      When  I start a Purchase Order Vendor document
+      When  I start a Purchase Order Vendor document with the following fields:
+        | Vendor Type       | PO - PURCHASE ORDER |
+        | Vendor First Name | First Name          |
+        | Vendor Last Name  | Last Name           |
+        | Foreign           | No                  |
+        | Tax Number Type   | set                 |
+        | Ownership         | CORPORATION         |
+        | W9 Received       | Yes                 |
+        | W9 Received Date  | tomorrow            |
       And   I fill in the required fields for the new Vendor
       And   I fill in the Cornell-specific fields for the new Vendor
       And   I add an attachment to the Vendor document

@@ -373,7 +373,6 @@ And /^I create a DV Vendor$/  do
                    vendor_last_name:           'Twenty**************',
                    vendor_first_name:          'Twenty-Three***********',
                    foreign:                    'No',
-                   tax_number:                 "999#{rand(9)}#{rand(1..9)}#{rand(1..9999).to_s.rjust(4, '0')}",
                    tax_number_type_ssn:         nil,
                    tax_number_type_fein:        :set,
                    ownership:                  'CORPORATION',
@@ -491,7 +490,47 @@ Then /^the Address Tab displays Vendor Address Generated Identifiers for each Ad
   end
 end
 
-
 When /^I change the (.*) document's (.*) to today$/ do |document, date_field|
+  on(page_class_for(document)).send(snake_case(date_field)).fit right_now[:date_w_slashes]
+end
+
+
+When /^I start a Purchase Order Vendor document with the following fields:$/ do |fields|
+  fields = fields.to_data_object_attr
+  fields[:w9_received_date] = to_standard_date(fields[:w9_received_date]) unless fields[:w9_received_date].nil?
+
+  @vendor = create VendorObject, fields
+
+  # new_supplier_diversity = {
+  #     type:                          'HUBZONE',
+  #     certification_expiration_date: tomorrow[:date_w_slashes]
+  # }
+  # new_address = {
+  #     type:                      'RM - REMIT',
+  #     address_1:                 'PO Box 54777',
+  #     address_2:                 '(127 Matt Street)',
+  #     city:                      'Hanover',
+  #     state:                     'MA',
+  #     postal_code:               '02359',
+  #     country:                   'United States',
+  #     set_as_default:            'Yes',
+  #     method_of_po_transmission: ''
+  # }
+  # @vendor.update_line_objects_from_page!
+  # @vendor.notes_and_attachments_tab.add file: 'vendor_edit_attachment_2.png'
+  # unless new_address.empty?
+  #   if @vendor.addresses.length.zero?
+  #     @vendor.addresses.add new_address
+  #   else
+  #     @vendor.addresses.first.edit new_address
+  #   end
+  # end
+  # unless new_supplier_diversity.empty?
+  #   if @vendor.supplier_diversities.length.zero?
+  #     @vendor.supplier_diversities.add new_supplier_diversity
+  #   else
+  #     @vendor.supplier_diversities.first.edit new_supplier_diversity.delete_if{ |k,v| k == :type }
+  #   end
+  # end
   pending
 end
