@@ -381,3 +381,8 @@ And /^I change Remit Address and the Foreign Tax Address$/ do
     @changed_addr.merge!(updated_2nd_address_2: page.updated_2nd_address_2.value)
   end
 end
+
+
+When /^I change the (.*) document's (.*) to today$/ do |document, date_field|
+  pending
+end

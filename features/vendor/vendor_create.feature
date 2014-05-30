@@ -197,7 +197,7 @@ Feature: Vendor Create
       And   I add an attachment to the Vendor document
       And   I submit the Vendor document
       Then  I should get an error saying "Date cannot be in the future"
-      When  I change the submission date to today
+      When  I change the Vendor document's W9 Received Date to today
       And   I submit the Vendor document
       Then  the Vendor document goes to ENROUTE
       And   the current user is not an approver in the Future Actions table
