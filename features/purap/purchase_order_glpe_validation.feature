@@ -41,5 +41,5 @@ Feature: GLPE validation tests for Purchase Orders
     And   Nightly Batch Jobs run
     And   I am logged in as a PURAP Contract Manager
     And   I view the Purchase Order using the Document ID
-    And   I Void The Purchase Order
+    And   I void The Purchase Order
     And   The GLPE from the Purchase Order are reversed by the void

@@ -55,7 +55,7 @@ And /^I view the Purchase Order using the Document ID$/ do
   end
 end
 
-And /^I Void The Purchase Order$/ do
+And /^I void The Purchase Order$/ do
   on PurchaseOrderPage do |page|
     page.void_order
   end
