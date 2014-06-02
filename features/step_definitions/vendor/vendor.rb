@@ -223,7 +223,7 @@ And /^I edit a Vendor with Vendor Number (.*)$/ do |vendor_number|
     page.description.fit random_alphanums(40, 'AFT')
     @vendor = make VendorObject, description: page.description.text.strip,
                                  document_id: page.document_id
-    @vendor.update_line_objects_from_page!
+    @vendor.absorb :old
     @document_id = @vendor.document_id
   end
 end

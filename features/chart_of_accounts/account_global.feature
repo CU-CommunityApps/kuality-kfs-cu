@@ -11,26 +11,26 @@ Feature: Global Account
   [KFSQA-618] As a KFS Fiscal Officer I need to create an account with a Major Reporting Category Code field
               because I need to manage in-year financial activity, fund balances and year-end reporting.
 
-  @KFSQA-604 @hare
+  @KFSQA-604 @cornell @AcctGlobal @KFSPTS-578 @hare
   Scenario: KFS User lookup on Major Reporting Category Code
     Given I am logged in as a KFS Fiscal Officer
     When  I save an Account Global Maintenance document
     And   I perform a Major Reporting Category Code Lookup
     Then  I should see a list of Major Reporting Category Codes
 
-  @KFSQA-572 @sloth
+  @KFSQA-572 @cornell @AcctGlobal @KFSPTS-710 @sloth
   Scenario: Create Account Global Maintenance document with Major Reporting Category Code
     Given I am logged in as a KFS Chart Manager
     When  I submit a Account Global Maintenance document with a Major Reporting Category Code of FACULTY
     Then  the Account Global document goes to FINAL
 
-  @KFSQA-577 @sloth
+  @KFSQA-577 @cornell @AcctGlobal @AcctCreate @KFSPTS-628 @sloth
   Scenario: Create an Account Global using an organization hierarchy
     Given I am logged in as a KFS Chart Manager
     When  I submit an Account Global Maintenance document with multiple accounting lines
     Then  the Account Global document goes to FINAL
 
-  @KFSQA-618 @sloth
+  @KFSQA-618 @cornell @AcctCreate @KITI-2869 @sloth
   Scenario: KFS Chart Manager create an Account Global Maintenance document with a invalid Major Reporting Category Code
     Given I am logged in as a KFS Chart Manager
     When  I submit a Account Global Maintenance document with a Major Reporting Category Code of INVALID
@@ -39,7 +39,7 @@ Feature: Global Account
     And   I submit the Account Global document
     Then  the Account Global document goes to FINAL
 
-  @KFSQA-571 @sloth
+  @KFSQA-571 @Bug @AcctGlobal @KFSMI-8612 @sloth
   Scenario: Create Account Global eDoc with blank fields
     Given I am logged in as a KFS Chart Manager
     When  I submit an Account Global Maintenance document with these fields blank:

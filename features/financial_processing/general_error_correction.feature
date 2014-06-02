@@ -2,7 +2,7 @@ Feature: General Error Correction
 
   [KFSQA-653] I want to create a GEC error correction without getting an error message
 
-  @KFSQA-653 @sloth
+  @KFSQA-653 @FP @GEC @sloth
   Scenario: Reject Approver Account changes unless they are the Fiscal Officer
     Given   I am logged in as a KFS Fiscal Officer
     And     I start a General Error Correction document

@@ -3,7 +3,7 @@ Feature: Indirect Cost Adjustment
   [KFSQA-655] The ICA document is not populating the Indirect Cost Recovery chart specified on the account.
   [KFSQA-750] ICA Accounting Line Description from Import Template updates General Ledger
 
-  @KFSQA-655 @nightly-jobs @tortoise @needs-clean-up
+  @KFSQA-655 @CG @nightly-jobs @tortoise @needs-clean-up
   Scenario: Populate an ICA document with the Indirect Cost Recovery chart specified on the account.
     Given   I am logged in as a KFS User
     And     I start an empty Indirect Cost Adjustment document
@@ -22,7 +22,7 @@ Feature: Indirect Cost Adjustment
     When    I lookup the document ID for the Indirect Cost Adjustment document from the General Ledger
     Then    the Accounting Line Description for the Indirect Cost Adjustment document equals the General Ledger Accounting Line Description
 
-  @KFSQA-750 @nightly-jobs
+  @KFSQA-750 @ICA @Import-Templates @nightly-jobs
   Scenario: Cornell University requires an Accounting Line Description uploaded through an Import Template to be recorded in the General Ledger.
     Given I am logged in as a KFS User for the ICA document
     When  I start an empty Indirect Cost Adjustment document

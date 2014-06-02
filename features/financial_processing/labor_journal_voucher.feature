@@ -1,8 +1,10 @@
 Feature: Internal Billing
 
-  [KFSQA-662] To properly control Labor Ledger entries, Cornell University modified the LLJV with approval node LLJVApproval. Cornell roles for Labor Distribution Manager (cu) will initiate the eDoc and LLJV Approver (cu) will approve it.
+  [KFSQA-662] To properly control Labor Ledger entries, Cornell University modified the LLJV with
+              approval node LLJVApproval. Cornell roles for Labor Distribution Manager (cu) will
+              initiate the eDoc and LLJV Approver (cu) will approve it.
 
-  @KFSQA-662 @fp @lljv @hare
+  @KFSQA-662 @FP @LLJV @BaseFunction @cornell @hare
   Scenario: Ensure the LLJVApproval node works.
     Given I am logged in as a KFS User for the LLJV document
     And   I submit a Labor Journal Voucher document

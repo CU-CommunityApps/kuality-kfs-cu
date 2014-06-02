@@ -4,13 +4,13 @@ Feature: Organization Review
 
   [KFSQA-584] As a KFS Chart Manager, the Organization Review document should route to final.
 
-  @KFSQA-583 @hare
+  @KFSQA-583 @Bug @OrgMaint @KFSMI-9622 @hare
   Scenario: Select an Organization Review to get to the Organization Review Role screen
     Given   I am logged in as a KFS Chart Manager
     And     I edit an Organization Review
     Then    the Organization Review Role document goes to SAVED
 
-  @KFSQA-584 @sloth
+  @KFSQA-584 @Bug @Routing @OrgReview @KFSMI-10435 @sloth
   Scenario: Create an Organization Review, Blanket Approve it, have it go to Final.
     Given   I am logged in as a KFS Chart Manager
     And     I save an Organization Review Role document
