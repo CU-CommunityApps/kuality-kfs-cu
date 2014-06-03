@@ -1,27 +1,27 @@
 When /^I (#{PreEncumbrancePage::available_buttons}) a Pre\-Encumbrance Document that encumbers the random Account$/ do |button|
   # Note: You must have captured the account number of the random account in a previous step to use this step.
   @pre_encumbrance = create PreEncumbranceObject, press: button.gsub(' ', '_'),
-                                              initial_lines: [{
-                                                  type:           :source,
-                                                  account_number: @account.number,
-                                                  chart_code:     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
-                                                  object:         '6100',
-                                                  amount:         '0.01'
-                                              }]
+                            initial_lines: [{
+                                                type:           :source,
+                                                account_number: @account.number,
+                                                chart_code:     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
+                                                object:         '6100',
+                                                amount:         '0.01'
+                                            }]
   step 'I add the encumbrance to the stack'
 end
 
 When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance document that encumbers Account (.*)$/ do |button, account_number|
   # Note: You must have captured the account number of the random account in a previous step to use this step.
   @pre_encumbrance = create PreEncumbranceObject, press: :save,
-                                                  initial_lines: [{
-                                                                      type:             :source,
-                                                                      account_number:   account_number,
-                                                                      chart_code:       get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
-                                                                      object:           '6540',
-                                                                      amount:           '200',
-                                                                      line_description: 'Test 753 Encumbrance'
-                                                                  }]
+                            initial_lines: [{
+                                                type:             :source,
+                                                account_number:   account_number,
+                                                chart_code:       get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
+                                                object:           '6540',
+                                                amount:           '200',
+                                                line_description: 'Test 753 Encumbrance'
+                                            }]
   on(PreEncumbrancePage).send(button.gsub(' ', '_'))
   step 'I add the encumbrance to the stack'
   sleep 10
@@ -41,14 +41,14 @@ When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance Document t
 
   # Note: You must have captured the account number of the random account in a previous step to use this step.
   @pre_encumbrance = create PreEncumbranceObject, press: button.gsub(' ', '_'),
-                                                 initial_lines: [{
-                                                   type:             :target,
-                                                   account_number:   @account_number,
-                                                   reference_number: encumbrance_reference_number,
-                                                   chart_code:       get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
-                                                   object:           '6100',
-                                                   amount:           '0.01'
-                                                 }]
+                            initial_lines: [{
+                                                type:             :target,
+                                                account_number:   @account_number,
+                                                reference_number: encumbrance_reference_number,
+                                                chart_code:       get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
+                                                object:           '6100',
+                                                amount:           '0.01'
+                                            }]
   step 'I add the disencumbrance to the stack'
 end
 
@@ -96,4 +96,58 @@ And /^I add the (encumbrance|disencumbrance) to the stack$/ do |type|
   else
     @pre_encumbrances[type.to_sym] << @pre_encumbrance
   end
+end
+
+# When (/^I do an Open Encumbrances lookup for the Account just used with Balance Type (.*) for (No|Approved|All) Pending Entries and (Include|Exclude) Zeroed Out Encumbrances:$/) do |balance_type, pending_option, zeroed_option, table|
+Then (/^Open Encumbrance Lookup Results for the Account just used with Balance Type (.*) for (No|Approved|All) Pending Entries and (Include|Exclude) Zeroed Out Encumbrances should display the disencumbered amount in both open and closed amounts with outstanding amount zero:$/) do |balance_type, pending_option, zeroed_option, table|
+  account_used_info = table.rows_hash
+  account_used_info.delete_if { |k,v| v.empty? }
+
+  visit(MainPage).open_encumbrances
+  on OpenEncumbranceLookupPage do |page|
+#    page.doc_number.set @pre_encumbrance.document_id
+    page.chart_code.set get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
+    page.account_number.set account_used_info['Number']
+    page.balance_type_code.set balance_type
+    if pending_option == 'Approved'
+      page.active_indicator_approved.set
+    elsif pending_option == 'All'
+      page.active_indicator_all.set
+    else
+      page.active_indicator_no.set
+    end
+    if zeroed_option == 'Include'
+      page.including_zeroed_out_encumbrances_include.set
+    else
+      page.including_zeroed_out_encumbrances_exclude.set
+    end
+    page.search
+
+    DOCUMENT_NUMBER = 9
+    DESCRIPTION_COLUMN = 10
+    OPEN_AMOUNT = 11
+    CLOSED_AMOUNT = 12
+    OUTSTANDING_AMOUNT = 13
+    TRANSACTION_DATE = 14
+    #determine whether data returned by search is what we expected
+    disencumbered_valid = false
+    new_encumbered_valid = false
+
+    # The open encumbrance lookup should display the disencumbered amount in both open and closed amounts with outstanding amount zero.
+    # The open encumbrance lookup should display the total encumbrance amount in the open amount column for the new encumbrance.
+    # Since some of the accounts may have other encumbrances listed, the description on the pre-encumbrance edoc will match the
+    # description on the lookup, to identify the line on which the dollars outlined above should appear.
+    page.results_table.rest.each do |row|
+      if row[DOCUMENT_NUMBER].text.strip == @retained_document_id and row[OPEN_AMOUNT].text.strip == account_used_info['Disencumbered Amount'] and row[CLOSED_AMOUNT].text.strip == account_used_info['Disencumbered Amount'] and row[OUTSTANDING_AMOUNT].text.strip == account_used_info['Outstanding Amount']
+        disencumbered_valid = true
+      elsif row[DOCUMENT_NUMBER].text.strip == @remembered_document_id and  row[OPEN_AMOUNT].text.strip == account_used_info['Disencumbered Amount']
+        new_encumbered_valid = true
+      else
+        #do nothing
+      end
+    end
+    results = disencumbered_valid and new_encumbered_valid
+    results.should be true
+  end
+
 end

@@ -129,33 +129,53 @@ Feature: Pre-Encumbrance
 
   @KFSQA-988 @FP @PreEncumbrance @smoke @wip
   Scenario: Submit a pre-encumbrance to disencumber and pre-encumber on the same document.
-    Given I am logged in as "user", role 54 (or FTC/BSC role 100000157 )
-    When I create a pre-encumbrance doc
-    And enter a description
-    And enter chart
-    And account
-    And object code
-    And amount
-    And enter disencumber type (monthly)
-    And enter count
-    And enter partial amount equal to sum of amount divided by count
-    And enter start date
-    And enter chart
-    And account
-    And object code
-    And amount
-    And reference number of existing encumbrance for this account
-    And submit document
-    And receive error (This document needs to be saved before submit)
-    And click Save
-    And review pending entries tab for accuracy
-    Then document status becomes 'enroute'
-
-    When I open the general ledger open encumbrances inquiry
-    And enter default fiscal year
-    And enter chart
-    And enter account
-    And enter PE balance type
-    And set "include pending ledger entry" to "all"
-    And click search
-    Then the edoc information appears correctly on the list
+    #create the pre-encumbrance that will be disencumbered by this test
+    Given I am logged in as a KFS User for the PE document
+    When  I start an empty Pre-Encumbrance document
+    And   I add a Source Accounting Line to the Pre-Encumbrance document with the following:
+      | Chart Code   | IT      |
+      | Number       | 1002000 |
+      | Object Code  | 6100    |
+      | Amount       | 100.00  |
+    And   I retain the Pre-Encumbrance document number from this transaction
+    And   I save the Pre-Encumbrance document
+    And   the Pre-Encumbrance document accounting lines equal the General Ledger Pending entries
+    And   I submit the Pre-Encumbrance document
+    When  I am logged in as a KFS Chart Administrator
+    And   I view the Pre-Encumbrance document
+    And   I blanket approve the Pre-Encumbrance document
+    Then  the Pre-Encumbrance document goes to one of the following statuses:
+      | PROCESSED |
+      | FINAL     |
+    #create the pre-encumbrance that will test the encumber and disencumber
+    When  I am logged in as a KFS User for the PE document
+    And   I start an empty Pre-Encumbrance document
+    And   I add a Source Accounting Line to the Pre-Encumbrance document with the following:
+      | Chart Code                | IT         |
+      | Number                    | 1002000    |
+      | Object Code               | 6100       |
+      | Amount                    | 200.00     |
+      | Auto Disencumber Type     | monthly    |
+      | Partial Transaction Count | 2          |
+      | Partial Amount            | 100        |
+      # | Start Date | right_now[:date_w_slashes]  value set closer to processing since date cannot occur before today |
+    And   I add a Target Accounting Line to the Pre-Encumbrance document with the following:
+      | Chart Code       | IT      |
+      | Number           | 1002000 |
+      | Object Code      | 6100    |
+      | Amount           | 100     |
+      # |reference_number  | was saved to variable from first source accounting line add |
+    And   I remember the Pre-Encumbrance document number
+    And   I submit the Pre-Encumbrance document
+    Then  I should get an error that starts with "This Document needs to be saved before Submit"
+    And   I save the Pre-Encumbrance document
+    And   the Pre-Encumbrance document accounting lines equal the General Ledger Pending entries
+    And   I submit the Pre-Encumbrance document
+    And   the Pre-Encumbrance document goes to one of the following statuses:
+      | ENROUTE |
+      | SAVED   |
+    Then Open Encumbrance Lookup Results for the Account just used with Balance Type PE for All Pending Entries and Include Zeroed Out Encumbrances should display the disencumbered amount in both open and closed amounts with outstanding amount zero:
+      | Number                 | 1002000 |
+      | Disencumbered Amount   | 100.00  |
+      | Outstanding Amount     |   0.00  |
+      | Encumbered Amount      | 200.00  |

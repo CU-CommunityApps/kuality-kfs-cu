@@ -99,6 +99,10 @@ And /^I remember the (.*) document number$/ do |document|
   @remembered_document_id = on(page_class_for(document)).document_id
 end
 
+And /^I retain the (.*) document number from this transaction$/ do |document|
+  @retained_document_id = on(page_class_for(document)).document_id
+end
+
 Then /^The value for (.*) field is "(.*)"$/ do |field_name, field_value|
   $current_page.send(StringFactory.damballa(field_name)).should==field_value
 end

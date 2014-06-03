@@ -234,6 +234,14 @@ And /^I add a (Source|Target|From|To) Accounting Line to the (.*) document with 
               new_source_line.merge!({
                                          object: '6100'
                                      })
+              if accounting_line_info.has_key?'Auto Disencumber Type'
+                new_source_line.merge!({
+                                         auto_disencumber_type:     accounting_line_info['Auto Disencumber Type'],
+                                         partial_transaction_count: accounting_line_info['Partial Transaction Count'],
+                                         partial_amount:            accounting_line_info['Partial Amount'],
+                                         start_date:                right_now[:date_w_slashes]
+                                      })
+              end
             when 'Internal Billing', 'Service Billing'
               new_source_line.merge!({
                                          object: '4023'
