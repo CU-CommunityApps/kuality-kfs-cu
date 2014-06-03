@@ -5,9 +5,6 @@ end
 When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Vendor( with .*)?$/ do |ownership_type, sub_type, tab_1|
   tab_1.gsub!(/^ with /, '') unless tab_1.nil?
   default_fields = Hash.new
-  new_address = Hash.new
-  new_supplier_diversity = Hash.new
-  new_contract = Hash.new
   file_to_attach = ''
   case ownership_type
     when 'Corporation'
@@ -19,23 +16,23 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
             foreign:              'Yes',
             tax_number_type_ssn:  nil,
             tax_number_type_fein: :set,
-            ownership:            'CORPORATION'
+            ownership:            'CORPORATION',
+            initial_supplier_diversities: [{
+                                             type:                          'VETERAN OWNED',
+                                             certification_expiration_date: '09/10/2015',
+                                            }],
+            initial_addresses: [{
+                                  type:                      'PO - PURCHASE ORDER',
+                                  address_1:                 'PO Box 5466',
+                                  address_2:                 '(127 Matt Street)',
+                                  city:                      'Hanover',
+                                  state:                     'MA',
+                                  postal_code:               '02359',
+                                  country:                   'United States',
+                                  method_of_po_transmission: 'US MAIL'
+                                }]
           }
           file_to_attach = 'vendor_attachment_test.png'
-          new_supplier_diversity = {
-            type:                          'VETERAN OWNED',
-            certification_expiration_date: '09/10/2015',
-          }
-          new_address = {
-            type:                      'PO - PURCHASE ORDER',
-            address_1:                 'PO Box 5466',
-            address_2:                 '(127 Matt Street)',
-            city:                      'Hanover',
-            state:                     'MA',
-            postal_code:               '02359',
-            country:                   'United States',
-            method_of_po_transmission: 'US MAIL'
-          }
         when 'Non-Foreign'
           case tab_1
             when 'Contract and Insurance' #KFSQA-635
@@ -50,33 +47,33 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
                 w9_received_date:                '02/01/2014',
                 attachment_file_name:            'vendor_attachment_test.png',
                 insurance_requirements_complete: 'Yes',
-                cornell_additional_ins_ind:      'Yes'
-              }
-              new_contract = {
-                name:              'MH Drums',
-                description:       'MH Drums Master Agreement',
-                campus_code:       get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
-                begin_date:        '02/05/2014',
-                end_date:          '02/05/2016',
-                manager:           'Scott Otey',
-                po_cost_source:    'Pricing Agreement',
-                b2b:               'No',
-                payment_terms:     'Net 5 Days',
-                default_apo_limit: '100000'
-              }
-              new_supplier_diversity = {
-                type:                          'VETERAN OWNED',
-                certification_expiration_date: '09/10/2015'
-              }
-              new_address = {
-                type:                      'PO - PURCHASE ORDER',
-                address_1:                 'PO Box 54777',
-                address_2:                 '(127 Matt Street)',
-                city:                      'Hanover',
-                state:                     'MA',
-                postal_code:               '02359',
-                country:                   'United States',
-                method_of_po_transmission: 'US MAIL'
+                cornell_additional_ins_ind:      'Yes',
+                initial_contracts: [{
+                                      name:              'MH Drums',
+                                      description:       'MH Drums Master Agreement',
+                                      campus_code:       get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
+                                      begin_date:        '02/05/2014',
+                                      end_date:          '02/05/2016',
+                                      manager:           'Scott Otey',
+                                      po_cost_source:    'Pricing Agreement',
+                                      b2b:               'No',
+                                      payment_terms:     'Net 5 Days',
+                                      default_apo_limit: '100000'
+                                    }],
+                initial_supplier_diversities: [{
+                                                 type:                          'VETERAN OWNED',
+                                                 certification_expiration_date: '09/10/2015'
+                                               }],
+                initial_addresses: [{
+                                      type:                      'PO - PURCHASE ORDER',
+                                      address_1:                 'PO Box 54777',
+                                      address_2:                 '(127 Matt Street)',
+                                      city:                      'Hanover',
+                                      state:                     'MA',
+                                      postal_code:               '02359',
+                                      country:                   'United States',
+                                      method_of_po_transmission: 'US MAIL'
+                                    }]
               }
             when 'Contract' #KFSQA-636
               default_fields = {
@@ -87,36 +84,37 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
                 tax_number_type_fein:   :set,
                 ownership:              'CORPORATION',
                 w9_received:            'Yes',
-                w9_received_date:       '02/01/2014'
+                w9_received_date:       '02/01/2014',
+                initial_contracts: [{
+                                      name:              'Lesh Bass Agreement',
+                                      description:       'Lesh Bass Agreement, 8 String Bass',
+                                      campus_code:       get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
+                                      begin_date:        '02/05/2014',
+                                      end_date:          '02/05/2016',
+                                      manager:           'Scott Otey',
+                                      po_cost_source:    'Pricing Agreement',
+                                      b2b:               'No',
+                                      payment_terms:     'Net 5 Days',
+                                      default_apo_limit: '100000'
+                                    }],
+                initial_supplier_diversities: [{
+                                                 type:                          'VETERAN OWNED',
+                                                 certification_expiration_date: '09/10/2015',
+                                               }],
+                initial_addresses: [{
+                                      type:                      'PO - PURCHASE ORDER',
+                                      address_1:                 'PO Box 54777',
+                                      address_2:                 '25 Boylston St.',
+                                      city:                      'Boston',
+                                      state:                     'MA',
+                                      postal_code:               '02359',
+                                      country:                   'United States',
+                                      method_of_po_transmission: 'US MAIL'
+                                    }]
               }
               file_to_attach = 'vendor_attachment_test.png'
-              new_contract = {
-                name:              'Lesh Bass Agreement',
-                description:       'Lesh Bass Agreement, 8 String Bass',
-                campus_code:       get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
-                begin_date:        '02/05/2014',
-                end_date:          '02/05/2016',
-                manager:           'Scott Otey',
-                po_cost_source:    'Pricing Agreement',
-                b2b:               'No',
-                payment_terms:     'Net 5 Days',
-                default_apo_limit: '100000'
-              }
-              new_supplier_diversity = {
-                type:                          'VETERAN OWNED',
-                certification_expiration_date: '09/10/2015',
-              }
-              new_address = {
-                type:                      'PO - PURCHASE ORDER',
-                address_1:                 'PO Box 54777',
-                address_2:                 '25 Boylston St.',
-                city:                      'Boston',
-                state:                     'MA',
-                postal_code:               '02359',
-                country:                   'United States',
-                method_of_po_transmission: 'US MAIL'
-              }
-
+            else
+              pending "Supplied with-suffix (#{tab_1}) inputs have not been defined yet."
           end
         when 'e-SHOP'  # KFSQA-633
           default_fields = {
@@ -126,23 +124,25 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
             tax_number_type_fein: :set,
             ownership:            'CORPORATION',
             w9_received:          'Yes',
-            w9_received_date:     '02/01/2014'
+            w9_received_date:     '02/01/2014',
+            initial_supplier_diversities: [{
+                                             type:                          'VETERAN OWNED',
+                                             certification_expiration_date: '09/10/2015'
+                                           }],
+            initial_addresses: [{
+                                  type:                      'PO - PURCHASE ORDER',
+                                  address_1:                 'PO Box 63RF',
+                                  address_2:                 '(127 Matt and Dave Street)	',
+                                  city:                      'Hanover',
+                                  state:                     'MA',
+                                  postal_code:               '02359',
+                                  country:                   'United States',
+                                  method_of_po_transmission: 'US MAIL'
+                                }]
           }
           file_to_attach = 'vendor_attachment_test.png'
-          new_supplier_diversity = {
-            type:                          'VETERAN OWNED',
-            certification_expiration_date: '09/10/2015'
-          }
-          new_address = {
-            type:                      'PO - PURCHASE ORDER',
-            address_1:                 'PO Box 63RF',
-            address_2:                 '(127 Matt and Dave Street)	',
-            city:                      'Hanover',
-            state:                     'MA',
-            postal_code:               '02359',
-            country:                   'United States',
-            method_of_po_transmission: 'US MAIL'
-          }
+        else
+          pending "Supplied ownership sub type (#{sub_type}) inputs have not been defined yet."
       end
     when 'Individual'
       case sub_type
@@ -154,52 +154,36 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
                 vendor_name:                'Ron McKernan Enterprises',
                 foreign:                    'No',
                 insurance_requirements_complete: 'Yes',
-                cornell_additional_ins_ind:      'Yes'
+                cornell_additional_ins_ind:      'Yes',
+                initial_supplier_diversities: [{
+                                                 type:                          'HUBZONE',
+                                                 certification_expiration_date: '09/10/2015'
+                                               }],
+                initial_addresses: [{
+                                      type:                      'PO - PURCHASE ORDER',
+                                      address_1:                 '66 Sunset Blvd',
+                                      address_2:                 '(127 Walkway)',
+                                      city:                      'Hollywood',
+                                      state:                     'CA',
+                                      postal_code:                   '91190',
+                                      country:                   'United States',
+                                      method_of_po_transmission: 'US MAIL'
+                                    }]
               }
               file_to_attach = 'vendor_attachment_test.png'
-              new_supplier_diversity = {
-                type:                          'HUBZONE',
-                certification_expiration_date: '09/10/2015'
-              }
-              new_address = {
-                type:                      'PO - PURCHASE ORDER',
-                address_1:                 '66 Sunset Blvd',
-                address_2:                 '(127 Walkway)',
-                city:                      'Hollywood',
-                state:                     'CA',
-                postal_code:                   '91190',
-                country:                   'United States',
-                method_of_po_transmission: 'US MAIL'
-              }
+            else
+              pending "Supplied with-suffix (#{tab_1}) inputs have not been defined yet."
           end
+        else
+          pending "Supplied ownership sub type (#{sub_type}) inputs have not been defined yet."
       end
+    else
+      pending "Supplied ownership type (#{ownership_type}) inputs have not been defined yet."
   end
   @vendor = create VendorObject, default_fields
   @vendor.update_line_objects_from_page!
-  unless file_to_attach.empty?
-    @vendor.notes_and_attachments_tab.add file: file_to_attach
-  end
-  unless new_address.empty?
-    if @vendor.addresses.length.zero?
-      @vendor.addresses.add new_address
-    else
-      @vendor.addresses.first.edit new_address
-    end
-  end
-  unless new_supplier_diversity.empty?
-    if @vendor.supplier_diversities.length.zero?
-      @vendor.supplier_diversities.add new_supplier_diversity
-    else
-      @vendor.supplier_diversities.first.edit new_supplier_diversity.delete_if{ |k,v| k == :type }
-    end
-  end
-  unless new_contract.empty?
-    if @vendor.contracts.length.zero?
-      @vendor.contracts.add new_contract
-    else
-      @vendor.contracts.first.edit new_contract
-    end
-  end
+  @vendor.notes_and_attachments_tab.add file: file_to_attach unless file_to_attach.empty?
+
 
 end
 
@@ -377,38 +361,24 @@ And /^I create a DV Vendor$/  do
                    tax_number_type_fein:        :set,
                    ownership:                  'CORPORATION',
                    w9_received:                'Yes',
-                   w9_received_date:           yesterday[:date_w_slashes]
-  new_supplier_diversity = {
-      type:                          'HUBZONE',
-      certification_expiration_date: tomorrow[:date_w_slashes]
-  }
-  new_address = {
-    type:                      'RM - REMIT',
-    address_1:                 'PO Box 54777',
-    address_2:                 '(127 Matt Street)',
-    city:                      'Hanover',
-    state:                     'MA',
-    postal_code:               '02359',
-    country:                   'United States',
-    set_as_default:            'Yes',
-    method_of_po_transmission: ''
-  }
+                   w9_received_date:           yesterday[:date_w_slashes],
+                   initial_supplier_diversities: [{
+                                                    type:                          'HUBZONE',
+                                                    certification_expiration_date: tomorrow[:date_w_slashes]
+                                                  }],
+                   initial_addresses: [{
+                                         type:                      'RM - REMIT',
+                                         address_1:                 'PO Box 54777',
+                                         address_2:                 '(127 Matt Street)',
+                                         city:                      'Hanover',
+                                         state:                     'MA',
+                                         postal_code:               '02359',
+                                         country:                   'United States',
+                                         set_as_default:            'Yes',
+                                         method_of_po_transmission: ''
+                                       }]
   @vendor.update_line_objects_from_page!
   @vendor.notes_and_attachments_tab.add file: 'vendor_edit_attachment_2.png'
-  unless new_address.empty?
-    if @vendor.addresses.length.zero?
-      @vendor.addresses.add new_address
-    else
-      @vendor.addresses.first.edit new_address
-    end
-  end
-  unless new_supplier_diversity.empty?
-    if @vendor.supplier_diversities.length.zero?
-      @vendor.supplier_diversities.add new_supplier_diversity
-    else
-      @vendor.supplier_diversities.first.edit new_supplier_diversity.delete_if{ |k,v| k == :type }
-    end
-  end
 
 end
 
@@ -497,40 +467,21 @@ end
 
 When /^I start a Purchase Order Vendor document with the following fields:$/ do |fields|
   fields = fields.to_data_object_attr
+  raise ArgumentError, 'Invalid Tax Number Type provided!' unless (fields[:tax_number_type].upcase == 'FEIN' ||
+                                                                   fields[:tax_number_type].upcase == 'SSN' ||
+                                                                   fields[:tax_number_type].upcase == 'NONE')
+
+  unless fields[:tax_number_type].nil?
+    fields["tax_number_type_#{fields[:tax_number_type].downcase}".to_sym] = :set
+    fields[:tax_number_type_fein] = nil if fields[:tax_number_type_fein].nil?
+    fields[:tax_number_type_ssn] = nil if fields[:tax_number_type_ssn].nil?
+    fields[:tax_number_type_none] = nil if fields[:tax_number_type_none].nil?
+    fields.delete_if { |k, v| k == :tax_number_type }
+  end
+
   fields[:w9_received_date] = to_standard_date(fields[:w9_received_date]) unless fields[:w9_received_date].nil?
 
   @vendor = create VendorObject, fields
 
-  # new_supplier_diversity = {
-  #     type:                          'HUBZONE',
-  #     certification_expiration_date: tomorrow[:date_w_slashes]
-  # }
-  # new_address = {
-  #     type:                      'RM - REMIT',
-  #     address_1:                 'PO Box 54777',
-  #     address_2:                 '(127 Matt Street)',
-  #     city:                      'Hanover',
-  #     state:                     'MA',
-  #     postal_code:               '02359',
-  #     country:                   'United States',
-  #     set_as_default:            'Yes',
-  #     method_of_po_transmission: ''
-  # }
-  # @vendor.update_line_objects_from_page!
-  # @vendor.notes_and_attachments_tab.add file: 'vendor_edit_attachment_2.png'
-  # unless new_address.empty?
-  #   if @vendor.addresses.length.zero?
-  #     @vendor.addresses.add new_address
-  #   else
-  #     @vendor.addresses.first.edit new_address
-  #   end
-  # end
-  # unless new_supplier_diversity.empty?
-  #   if @vendor.supplier_diversities.length.zero?
-  #     @vendor.supplier_diversities.add new_supplier_diversity
-  #   else
-  #     @vendor.supplier_diversities.first.edit new_supplier_diversity.delete_if{ |k,v| k == :type }
-  #   end
-  # end
-  pending
+  pending @vendor.inspect
 end

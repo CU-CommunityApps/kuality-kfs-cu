@@ -133,7 +133,7 @@ Feature: Vendor Create
     When    I am logged in as a Vendor Initiator
     Then    the Vendor document should be in my action list
 
-  @KFSQA-774 @KFSQA-775 @cornell @slug @E2E @VendorCreate
+  @KFSQA-774 @KFSQA-775 @cornell @slug @E2E @VendorCreate @wipN
   Scenario Outline: I want to create a DV vendor with ACH/Check or Wire as the default payment method.
     Given   I am logged in as a Vendor Initiator
     When    I create a DV Vendor
@@ -153,7 +153,7 @@ Feature: Vendor Create
     | P                      |
     | W                      |
 
-  @KFSQA-776 @cornell @tortoise @E2E @VendorCreate
+  @KFSQA-776 @cornell @tortoise @E2E @VendorCreate @wipN
   Scenario: I want to create a DV vendor with foreign draft as the default payment method.
     Given   I am logged in as a Vendor Initiator
     When    I create a DV Vendor
@@ -180,7 +180,7 @@ Feature: Vendor Create
     When    I view the Vendor document
     Then    I can not view the Tax ID and Attachments on Vendor page
 
-    @KFSQA-840 @cornell @Create @E2E @Routing @smoke @wip
+    @KFSQA-840 @cornell @Create @E2E @Routing @smoke @wip1
     Scenario: Creating a new vendor to test cornell specific mods, separation of duties, and vendor address and attachments persist.
       Given I am logged in as a Vendor Initiator
       When  I start a Purchase Order Vendor document with the following fields:
@@ -188,7 +188,7 @@ Feature: Vendor Create
         | Vendor First Name | First Name          |
         | Vendor Last Name  | Last Name           |
         | Foreign           | No                  |
-        | Tax Number Type   | set                 |
+        | Tax Number Type   | FEIN                |
         | Ownership         | CORPORATION         |
         | W9 Received       | Yes                 |
         | W9 Received Date  | tomorrow            |
