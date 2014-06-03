@@ -157,3 +157,24 @@ end
 And /^I run the Labor Clear Pending Entries Job$/ do
   run_labor_clear_pending_entries(true)
 end
+
+And /^I collect the Capital Asset Documents$/ do
+  run_nightly_out(true)
+end
+
+And /^I create the Plant Fund Entries$/ do
+  run_scrubber(true)
+end
+
+And /^I move the Plant Fund Entries to Posted Entries$/ do
+  run_poster(true)
+end
+
+And /^I clear Pending Entries$/ do
+  run_clear_pending_entries(true)
+end
+
+And /^I create entries for CAB$/ do
+  run_cab_extract(true)
+end
+

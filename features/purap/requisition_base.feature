@@ -117,3 +117,7 @@ Feature: REQS, PO, PREQ,PDP
 # default PM can ve implemented after alternate PM is moved to upgrade
     And  I EXTRACT THE REQS TO SQ
     When I INITIATE A PREQ
+    And  I RUN THE NIGHTLY CAPITAL ASSET JOBS
+    Given I am logged in as "eap2"
+    And   I lookup a Capital Asset to process
+    And   I select and create asset

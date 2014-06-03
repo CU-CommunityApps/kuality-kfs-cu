@@ -411,3 +411,34 @@ And /^I fill in Capital Asset tab on Requisition document with:$/ do |table|
 
 
 end
+
+Then /^I RUN THE NIGHTLY CAPITAL ASSET JOBS$/ do
+  steps %Q{
+    Given I am logged in as a KFS Operations
+    And I collect the Capital Asset Documents
+    And I create the Plant Fund Entries
+    And I move the Plant Fund Entries to Posted Entries
+    And I clear Pending Entries
+    And I create entries for CAB
+   }
+
+end
+
+
+And /^I lookup a Capital Asset to process$/ do
+  visit(MainPage).capital_asset_builder_ap_transactions
+  on CabPurapLookupPage do |page|
+    page.preq_number.fit '410297'
+    page.po_number.fit '301122'
+    page.search
+    page.process('410297')
+  end
+
+end
+
+And /^I select and create asset$/ do
+  on PurapTransactionPage do |page|
+    page.split_qty.fit '1'
+  end
+
+end
