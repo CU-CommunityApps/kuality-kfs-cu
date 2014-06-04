@@ -114,7 +114,7 @@ Feature: Purap REQS 2 Building Blocks
   |                                     |
   | VARIABLE SCHEDULE, VARIABLE AMOUNT  |
 
-  @wip @KFSQA-863 @PURAP @REQS @tortoise
+  @KFSQA-863 @PURAP @REQS @tortoise @Routing
   Scenario: Create requisition with two accounting lines and verify routing goes to Org reviewer after the FO
     Given I login as a KFS user to create an REQS
     And   I create the Requisition document with:
@@ -140,13 +140,25 @@ Feature: Purap REQS 2 Building Blocks
       | Object Code         | 6570             |
       | Percent             | 100              |
     And   I calculate my Requisition document
-    And   I submit the Requisition document
+    When  I submit the Requisition document
     Then  the Requisition document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
     And   I view the Requisition document on my action list
+    And   the Requisition status is 'Awaiting Fiscal Officer'
     And   I approve the Requisition document
     Then  the Requisition document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
     And   I view the Requisition document on my action list
-    And   I approve the Requisition document
+    Then  the Requisition status is 'Awaiting Fiscal Officer'
+    When  I approve the Requisition document
     Then  the Requisition document goes to ENROUTE
+    And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
+    And   I view the Requisition document on my action list
+    Then  the Requisition status is 'Awaiting Base Org Review'
+    When  I approve the Requisition document
+    Then  the Requisition document goes to ENROUTE
+    And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
+    And   I view the Requisition document on my action list
+    Then  the Requisition status is 'Awaiting C and G Approval'
+    When  I approve the Requisition document
+    Then  the Requisition document goes to FINAL

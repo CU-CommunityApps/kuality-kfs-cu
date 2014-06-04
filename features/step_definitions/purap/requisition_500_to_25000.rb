@@ -48,6 +48,10 @@ And /^I calculate my Requisition document$/ do
   sleep 3
 end
 
+And /^the Requisition status is '(.*)'$/ do |req_status|
+  on(RequisitionPage).requisition_status.should include req_status
+end
+
 And /^I view the (.*) document on my action list$/ do |document|
   visit(MainPage).action_list
   on ActionList do |page|
