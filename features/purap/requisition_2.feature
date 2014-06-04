@@ -10,6 +10,8 @@ Feature: Purap REQS 2 Building Blocks
 
   [KFSQA-738] PURAP E2E REQS - Create -- non eShop- with Recurring Payment, C&G, not Commodity
 
+  [KFSQA-863] Requisition routing with multiple line items
+
   @KFSQA-733 @E2E @PURAP @REQS @cornell @tortoise
   Scenario: Create -- non eShop with C&G, Commodity routing
     Given I login as a KFS user to create an REQS
@@ -112,7 +114,7 @@ Feature: Purap REQS 2 Building Blocks
   |                                     |
   | VARIABLE SCHEDULE, VARIABLE AMOUNT  |
 
-  @wip @KFSQA-863 @PURAP @REQS
+  @wip @KFSQA-863 @PURAP @REQS @tortoise
   Scenario: Create requisition with two accounting lines and verify routing goes to Org reviewer after the FO
     Given I login as a KFS user to create an REQS
     And   I create the Requisition document with:
