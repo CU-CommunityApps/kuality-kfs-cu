@@ -114,7 +114,7 @@ Feature: Purap REQS 2 Building Blocks
   |                                     |
   | VARIABLE SCHEDULE, VARIABLE AMOUNT  |
 
-  @KFSQA-863 @PURAP @REQS @tortoise @Routing
+  @KFSQA-863 @PURAP @REQS @Routing @slug
   Scenario: Create requisition with two accounting lines and verify routing goes to Org reviewer after the FO
     Given I login as a KFS user to create an REQS
     And   I create the Requisition document with:
