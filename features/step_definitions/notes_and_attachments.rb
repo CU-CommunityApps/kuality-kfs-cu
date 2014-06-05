@@ -77,6 +77,10 @@ And /^the (.*) document's Notes and Attachments Tab displays the added attachmen
   end
 end
 
+And /^the (.*) document's Notes and Attachments Tab has (\d+) more attachments? than before$/ do |document, count|
+  on(page_class_for(document)).notes_and_attachments_count.should == @attachments_count + count.to_i
+end
+
 And /^the (.*) document's Notes Tab displays the added attachment$/ do |document|
   on page_class_for(document) do |page|
     page.ro_notes_count.should == @attachments_count + 1

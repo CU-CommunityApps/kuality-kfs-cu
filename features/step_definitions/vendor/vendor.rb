@@ -460,8 +460,13 @@ Then /^the Address Tab displays Vendor Address Generated Identifiers for each Ad
   end
 end
 
-When /^I change the (.*) document's (.*) to today$/ do |document, date_field|
-  on(page_class_for(document)).send(snake_case(date_field)).fit right_now[:date_w_slashes]
+When /^I change the (.*) document's (.*) field to today$/ do |document, date_field|
+  new_date = right_now[:date_w_slashes]
+  on(page_class_for(document)).send(snake_case(date_field)).fit new_date
+  document_object_for(document).set(date_field, new_date)
+
+  on(page_class_for(document)).send(snake_case(date_field)).value.should == new_date
+  document_object_for(document).send(snake_case(date_field)).should == new_date
 end
 
 
@@ -481,7 +486,33 @@ When /^I start a Purchase Order Vendor document with the following fields:$/ do 
 
   fields[:w9_received_date] = to_standard_date(fields[:w9_received_date]) unless fields[:w9_received_date].nil?
 
-  @vendor = create VendorObject, fields
+  fields[:initial_addresses] = [{
+                                  type:                      'PO - PURCHASE ORDER',
+                                  address_1:                 '123 Main Street',
+                                  address_2:                 '',
+                                  attention:                 '',
+                                  url:                       '',
+                                  fax:                       '',
+                                  province:                  '',
+                                  city:                      'Ithaca',
+                                  state:                     'NY',
+                                  postal_code:               '14850',
+                                  country:                   'United States',
+                                  email:                     'ksa23@cornell.edu',
+                                  set_as_default:            'Yes',
+                                  active:                    :set,
+                                  method_of_po_transmission: 'E-MAIL'
+                                }] if fields[:initial_addresses].nil?
 
-  pending @vendor.inspect
+  @vendor = create VendorObject, fields
+end
+
+Then /^the default Purchase Order Vendor address\(es\) are shown on the (.*) document$/ do |document|
+  # We're only interested in comparing the addresses here, so we'll pull them
+  # from the page and only look at that data. If this step is expanded, we can
+  # modify VendorObject#absorb appropriately and switch to using that method
+  # instead of #update_from_page!
+  vendor_on_page = make VendorObject
+  vendor_on_page.addresses.update_from_page! :readonly
+  vendor_on_page.addresses.eql?(document_object_for(document).addresses).true?.should
 end
