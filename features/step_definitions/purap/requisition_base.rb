@@ -428,10 +428,10 @@ end
 And /^I lookup a Capital Asset to process$/ do
   visit(MainPage).capital_asset_builder_ap_transactions
   on CabPurapLookupPage do |page|
-    page.preq_number.fit '410297'
-    page.po_number.fit '301122'
+    page.preq_number.fit '410274'
+    page.po_number.fit '301084'
     page.search
-    page.process('410297')
+    page.process('410274')
   end
 
 end
