@@ -10,6 +10,8 @@ Feature: Purap REQS 2 Building Blocks
 
   [KFSQA-738] PURAP E2E REQS - Create -- non eShop- with Recurring Payment, C&G, not Commodity
 
+  [KFSQA-863] Requisition routing with multiple line items
+
   @KFSQA-733 @E2E @PURAP @REQS @cornell @tortoise
   Scenario: Create -- non eShop with C&G, Commodity routing
     Given I login as a KFS user to create an REQS
@@ -45,7 +47,7 @@ Feature: Purap REQS 2 Building Blocks
     Then  the Requisition document goes to FINAL
 
   @KFSQA-734 @KFSQA-735 @E2E @PURAP @REQS @cornell @slug
-  Scenario Outline: Create -- non eShop with not C&G amount or account , Commodity routing
+  Scenario Outline: Create -- non eShop with not C&G amount or account, Commodity routing
     Given I login as a KFS user to create an REQS
     And   I create the Requisition document with:
       | Vendor Number       | 4471-0           |
@@ -86,7 +88,7 @@ Feature: Purap REQS 2 Building Blocks
       | Item Cost           | 1000             |
       | Item Commodity Code | 10161500         |
       | Item Catalog Number | 10121800         |
-      | Item Cescription    | Dog Food         |
+      | Item Description    | Dog Food         |
       | Account Number      | 1278003          |
       | Object Code         | 6570             |
       | Percent             | 100              |
@@ -106,7 +108,57 @@ Feature: Purap REQS 2 Building Blocks
     And   I view the Requisition document on my action list
     And   I approve the Requisition document
     Then  the Requisition document goes to FINAL
+  #This is intentionally left blank to test empty recurring_payment_type
   Examples:
   | recurring_payment_type              |
   |                                     |
   | VARIABLE SCHEDULE, VARIABLE AMOUNT  |
+
+  @KFSQA-863 @PURAP @REQS @Routing @slug
+  Scenario: Create requisition with two accounting lines and verify routing goes to Org reviewer after the FO
+    Given I login as a KFS user to create an REQS
+    And   I create the Requisition document with:
+      | Vendor Number       | 4471-0           |
+      | Item Quantity       | 7.5              |
+      | Item Cost           | 1000             |
+      | Item Commodity Code | 10161500         |
+      | Item Catalog Number | 10121800         |
+      | Item Description    | Dog Food         |
+      | Account Number      | 1278003          |
+      | Object Code         | 6570             |
+      | Percent             | 100              |
+    And I add an item to the Requisition document with:
+      | Item Quantity       | 100              |
+      | Item Cost           | 1000             |
+      | Item Unit of Measure| BG               |
+      | Item Commodity Code | 10191507         |
+      | Item Catalog Number | 10121801         |
+      | Item Description    | Bird Repellents  |
+      #Line number because this is a multiple item test
+      | Line Number         | 1                |
+      | Account Number      | 1000817          |
+      | Object Code         | 6570             |
+      | Percent             | 100              |
+    And   I calculate my Requisition document
+    When  I submit the Requisition document
+    Then  the Requisition document goes to ENROUTE
+    And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
+    And   I view the Requisition document on my action list
+    And   the Requisition status is 'Awaiting Fiscal Officer'
+    And   I approve the Requisition document
+    Then  the Requisition document goes to ENROUTE
+    And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
+    And   I view the Requisition document on my action list
+    Then  the Requisition status is 'Awaiting Fiscal Officer'
+    When  I approve the Requisition document
+    Then  the Requisition document goes to ENROUTE
+    And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
+    And   I view the Requisition document on my action list
+    Then  the Requisition status is 'Awaiting Base Org Review'
+    When  I approve the Requisition document
+    Then  the Requisition document goes to ENROUTE
+    And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
+    And   I view the Requisition document on my action list
+    Then  the Requisition status is 'Awaiting C and G Approval'
+    When  I approve the Requisition document
+    Then  the Requisition document goes to FINAL
