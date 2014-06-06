@@ -180,7 +180,7 @@ Feature: Vendor Create
     When    I view the Vendor document
     Then    I can not view the Tax ID and Attachments on Vendor page
 
-    @KFSQA-840 @cornell @Create @E2E @Routing @smoke @wip
+    @KFSQA-840 @cornell @Create @E2E @Routing @smoke @slug @wip
     Scenario: Creating a new vendor to test cornell specific mods, separation of duties, and vendor address and attachments persist.
       Given I am logged in as a Vendor Initiator
       When  I start a Purchase Order Vendor document with the following fields:
