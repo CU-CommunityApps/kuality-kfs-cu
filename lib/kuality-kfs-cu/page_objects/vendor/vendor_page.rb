@@ -62,6 +62,7 @@ class VendorPage
   alias_method :new_method_of_po_transmission, :method_of_po_transmission
   element(:update_method_of_po_transmission) { |i=0, b| b.addresses_tab.select(id: "document.newMaintainableObject.vendorAddresses[#{i}].extension.purchaseOrderTransmissionMethodCode") }
   value(:old_method_of_po_transmission) { |i=0, b| b.addresses_tab.span(id: "document.oldMaintainableObject.vendorAddresses[#{i}].extension.purchaseOrderTransmissionMethodCode.div").text.strip }
+  value(:readonly_method_of_po_transmission) { |i=0, b| b.addresses_tab.span(id: "document.newMaintainableObject.vendorAddresses[#{i}].extension.purchaseOrderTransmissionMethodCode.div").text.strip }
 
   value(:vendor_address_generated_identifier) do |i=0, b|
     b.addresses_tab.span(id: "vendorAddresses[#{i}].extension.vendorAddressGeneratedIdentifier.div")

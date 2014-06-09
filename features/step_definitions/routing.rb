@@ -67,3 +67,11 @@ Then /^I switch to the user with the next Pending Action in the Route Log for th
 
   step "I am logged in as \"#{new_user}\""
 end
+
+And /^the initiator is not an approver in the Future Actions table$/ do
+  on KFSBasePage do |page|
+    page.expand_all
+    page.show_future_action_requests if page.show_future_action_requests_button.exists?
+    page.future_actions_table.rows(text: /APPROVE/m).any? { |r| r.text.include? 'Initiator' }.should_not
+  end
+end

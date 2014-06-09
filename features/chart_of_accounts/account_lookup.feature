@@ -18,20 +18,20 @@ Feature: Account Lookup
     When  I enter an Account Number and search
     Then  The Account is found
 
-  @KFSQA-557 @hare
+  @KFSQA-557 @cornell @KFSMI-7617 @hare
   Scenario: KFS User accesses Account Lookup and views Cornell custom fields
     Given I am logged in as a KFS User
     When  I access Account Lookup
     Then  the Account Lookup page should appear with Cornell custom fields
 
-  @KFSQA-575 @hare
+  @KFSQA-574 @KFSQA-575 @cornell @Bug @AcctMaint @AcctLookup @KFSPTS-1716 @hare
   Scenario: Lookup an Account as a Chart Admin
     Given I am logged in as a KFS Chart Administrator
     And   I access Account Lookup
     When  I search for all accounts
     Then  Accounts should be returned
 
-  @KFSA-574 @hare
+  @KFSQA-574 @KFSQA-575 @cornell @Bug @AcctMaint @AcctLookup @KFSPTS-1716 @hare
   Scenario Outline: Lookup an Account using Cornell specific fields
     Given I am logged in as a KFS Chart Manager
     And   I access Account Lookup
