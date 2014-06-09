@@ -98,14 +98,13 @@ And /^I add the (encumbrance|disencumbrance) to the stack$/ do |type|
   end
 end
 
-# When (/^I do an Open Encumbrances lookup for the Account just used with Balance Type (.*) for (No|Approved|All) Pending Entries and (Include|Exclude) Zeroed Out Encumbrances:$/) do |balance_type, pending_option, zeroed_option, table|
+
 Then (/^Open Encumbrance Lookup Results for the Account just used with Balance Type (.*) for (No|Approved|All) Pending Entries and (Include|Exclude) Zeroed Out Encumbrances should display the disencumbered amount in both open and closed amounts with outstanding amount zero:$/) do |balance_type, pending_option, zeroed_option, table|
   account_used_info = table.rows_hash
   account_used_info.delete_if { |k,v| v.empty? }
 
   visit(MainPage).open_encumbrances
   on OpenEncumbranceLookupPage do |page|
-#    page.doc_number.set @pre_encumbrance.document_id
     page.chart_code.set get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
     page.account_number.set account_used_info['Number']
     page.balance_type_code.set balance_type
@@ -123,12 +122,10 @@ Then (/^Open Encumbrance Lookup Results for the Account just used with Balance T
     end
     page.search
 
-    DOCUMENT_NUMBER = 9
-    DESCRIPTION_COLUMN = 10
-    OPEN_AMOUNT = 11
-    CLOSED_AMOUNT = 12
-    OUTSTANDING_AMOUNT = 13
-    TRANSACTION_DATE = 14
+    doc_num_col = page.results_table.keyed_column_index(:document_number)
+    open_amt_col = page.results_table.keyed_column_index(:open_amount)
+    closed_amt_col = page.results_table.keyed_column_index(:closed_amount)
+    outstanding_amt_col = page.results_table.keyed_column_index(:outstanding_amount)
     #determine whether data returned by search is what we expected
     disencumbered_valid = false
     new_encumbered_valid = false
@@ -138,9 +135,9 @@ Then (/^Open Encumbrance Lookup Results for the Account just used with Balance T
     # Since some of the accounts may have other encumbrances listed, the description on the pre-encumbrance edoc will match the
     # description on the lookup, to identify the line on which the dollars outlined above should appear.
     page.results_table.rest.each do |row|
-      if row[DOCUMENT_NUMBER].text.strip == @retained_document_id and row[OPEN_AMOUNT].text.strip == account_used_info['Disencumbered Amount'] and row[CLOSED_AMOUNT].text.strip == account_used_info['Disencumbered Amount'] and row[OUTSTANDING_AMOUNT].text.strip == account_used_info['Outstanding Amount']
+      if row[doc_num_col].text.strip == @remembered_document_id and row[open_amt_col].text.strip == account_used_info['Disencumbered Amount'] and row[closed_amt_col].text.strip == account_used_info['Disencumbered Amount'] and row[outstanding_amt_col].text.strip == account_used_info['Outstanding Amount']
         disencumbered_valid = true
-      elsif row[DOCUMENT_NUMBER].text.strip == @remembered_document_id and  row[OPEN_AMOUNT].text.strip == account_used_info['Disencumbered Amount']
+      elsif row[doc_num_col].text.strip == @retained_document_id and  row[open_amt_col].text.strip == account_used_info['Disencumbered Amount']
         new_encumbered_valid = true
       else
         #do nothing

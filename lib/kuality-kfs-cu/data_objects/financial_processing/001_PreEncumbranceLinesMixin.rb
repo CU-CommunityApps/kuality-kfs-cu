@@ -13,16 +13,4 @@ module PreEncumbranceLinesMixin
     }.merge(opts)
   end
 
-  def add_line(type, al)
-    @accounting_lines[type].add(al.merge({type: type}))
-  end
-
-  def add_target_line(al)
-    add_line(:target, al)
-  end
-
-  def add_source_line(al)
-    add_line(:source, al)
-  end
-
 end

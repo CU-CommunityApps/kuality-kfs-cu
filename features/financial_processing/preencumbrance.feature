@@ -137,7 +137,7 @@ Feature: Pre-Encumbrance
       | Number       | 1002000 |
       | Object Code  | 6100    |
       | Amount       | 100.00  |
-    And   I retain the Pre-Encumbrance document number from this transaction
+    And   I remember the Pre-Encumbrance document number
     And   I save the Pre-Encumbrance document
     And   the Pre-Encumbrance document accounting lines equal the General Ledger Pending entries
     And   I submit the Pre-Encumbrance document
@@ -157,19 +157,19 @@ Feature: Pre-Encumbrance
       | Amount                    | 200.00     |
       | Auto Disencumber Type     | monthly    |
       | Partial Transaction Count | 2          |
-      | Partial Amount            | 100        |
+      | Partial Amount            | 100.00     |
       # | Start Date | right_now[:date_w_slashes]  value set closer to processing since date cannot occur before today |
     And   I add a Target Accounting Line to the Pre-Encumbrance document with the following:
       | Chart Code       | IT      |
       | Number           | 1002000 |
       | Object Code      | 6100    |
-      | Amount           | 100     |
+      | Amount           | 100.00  |
       # |reference_number  | was saved to variable from first source accounting line add |
-    And   I remember the Pre-Encumbrance document number
+    And   I retain the Pre-Encumbrance document number from this transaction
     And   I submit the Pre-Encumbrance document
     Then  I should get an error that starts with "This Document needs to be saved before Submit"
     And   I save the Pre-Encumbrance document
-    And   the Pre-Encumbrance document accounting lines equal the General Ledger Pending entries
+    And   the General Ledger Pending entries match the accounting lines on the Pre-Encumbrance document
     And   I submit the Pre-Encumbrance document
     And   the Pre-Encumbrance document goes to one of the following statuses:
       | ENROUTE |
