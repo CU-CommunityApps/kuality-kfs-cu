@@ -121,9 +121,7 @@ And /^I assign Contract Manager and approve Purchase Order Document to FINAL$/ d
     And the Purchase Order Number is unmasked
   }
 
-  if @add_vendor_on_reqs != 'Yes'
-    step "I Complete Selecting Vendor #{@vendor_number}"
-  end
+  step "I Complete Selecting Vendor #{@vendor_number}" unless @add_vendor_on_reqs == 'Yes'
 
   steps %Q{
     When I enter a Vendor Choice of 'Lowest Price'

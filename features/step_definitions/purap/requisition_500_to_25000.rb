@@ -226,8 +226,9 @@ end
 
 Then /^in Pending Action Requests an FYI is sent to FO and Initiator$/ do
   on PurchaseOrderPage do |page|
-    page.reload # Sometimes the pending table doesn't show up immediately.
-    page.headerinfo_table.wait_until_present
+    # TODO : it looks like there is no reload button when open PO with final status.  so comment it out for now.  need further check
+    #Watir::Wait::TimeoutError: timed out after 30 seconds, waiting for {:class=>"globalbuttons", :title=>"reload", :tag_name=>"button"} to become present    page.reload # Sometimes the pending table doesn't show up immediately.
+    #page.headerinfo_table.wait_until_present
     page.expand_all
     page.refresh_route_log # Sometimes the pending table doesn't show up immediately.
     page.show_pending_action_requests if page.pending_action_requests_hidden?
