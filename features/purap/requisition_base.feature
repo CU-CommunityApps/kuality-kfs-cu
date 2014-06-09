@@ -1,4 +1,4 @@
-rquaFeature: REQS, PO, PREQ,PDP
+Feature: REQS, PO, PREQ,PDP
 
   [KFSQA-853] PUR-5  Sensitive Commodity Data Flag enh
 
