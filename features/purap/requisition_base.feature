@@ -10,7 +10,6 @@ Feature: REQS, PO, PREQ,PDP
 
   [KFSQA-882] GLPEs are wrong on Purchase Order Amendments (POAs)
 
-  @KFSQA-853 @BaseFunction @Routing @coral
   [KFSQA-994] I CREATE A CAPITAL ASSET REQS E2E (Individual Assets/New)
 
   @KFSQA-853 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral
