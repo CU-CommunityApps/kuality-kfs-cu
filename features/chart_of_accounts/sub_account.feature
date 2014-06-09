@@ -9,14 +9,14 @@ Feature: Sub Account
   [KFSQA-591] As a KFS CG Processor Role I want to Approve Sub-Account Documents with
               Sub-Account Type “CS” because this follows Cornell standard operating policies.
 
-  @KFSQA-590 @hare
+  @KFSQA-590 @SubAcct @Bug @KFSMI-7964 @hare
   Scenario: Verify "null" does not display in the ICR ID field when I create a Sub-Account
     Given I am logged in as a KFS Chart Manager
     And   I save a Sub-Account document
     When  I tab away from the Account Number field
     Then  The Indirect Cost Rate ID field should not be null
 
-  @KFSQA-591 @hare
+  @KFSQA-591 @cornell @SubAcct @KFSPTS-1740 @hare
   Scenario: Create a Sub-Account with Sub-Account Type CS and verity routing to CG Processor.
     Given   I am logged in as a KFS User
     And     I Create a Sub-Account with Sub-Account Type CS
@@ -27,7 +27,7 @@ Feature: Sub Account
     And     I approve the Sub-Account document
     Then    the Sub-Account document goes to FINAL
 
-  @KFSQA-589 @hare @cornell
+  @KFSQA-589 @cornell @SubAcct @Bug @KFSPTS-1753 @hare
   Scenario: Create a Sub-Account with Sub-Account Type CS and ad-hoc approval route it to a member of the Contracts & Grants Processor Role (jis45)
     Given I am logged in as "rlc56"
     And   I submit a Sub-Account through action list routing with adhoc approver user "jis45"

@@ -2,7 +2,7 @@ Feature: Internal Billing
 
   [KFSQA-667] IB e2e Test Business Process (Basic)
 
-  @KFSQA-667 @nightly-jobs @tortoise @needs-clean-up
+  @KFSQA-667 @E2E @FP @IB @nightly-jobs @tortoise @needs-clean-up
   Scenario: Ensure IB e2e Test Business Process (Basic) works
     Given   I am logged in as a KFS User for the Internal Billing document
     And     I start an empty Internal Billing document

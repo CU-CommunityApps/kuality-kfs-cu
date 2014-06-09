@@ -27,6 +27,10 @@ if ENV['HEADLESS']
   headless.start
 end
 
+if ENV['BROWSER']
+  @config[:browser] = ENV['BROWSER'].to_sym
+end
+
 kuality = KualityKFS.new @config[:browser]
 $users = Users.instance
 

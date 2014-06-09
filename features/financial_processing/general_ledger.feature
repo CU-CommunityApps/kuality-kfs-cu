@@ -4,7 +4,7 @@ Feature: General Ledger
   [KFSQA-647] Cornell needs a to ensure that all eight Main Menu->Balance Inquiries-->General Ledger are working.
 
   @KFSQA-649 @smoke @nightly-jobs @coral
-  Scenario Outline: Accounting Line Description from eDoc updates General Ledger
+  Scenario Outline: Accounting Line Description from eDoc updates General Ledger, part 1
     Given I am logged in as a KFS Manager for the <docType> document
     And   I clone Account <source_account> with the following changes:
       | Name        | <eDoc> Test Account S |
@@ -46,7 +46,7 @@ Feature: General Ledger
   #TODO grab accounts from parameter
 
   @KFSQA-649 @smoke @nightly-jobs @tortoise
-  Scenario Outline: Accounting Line Description from eDoc updates General Ledger. These eDocs' accounts don't clone nicely.
+  Scenario Outline: Accounting Line Description from eDoc updates General Ledger, part 4. These eDocs' accounts don't clone nicely.
     Given I am logged in as a KFS Manager for the <docType> document
     And   I use these Accounts:
       | <source_account> |
@@ -73,7 +73,7 @@ Feature: General Ledger
   #TODO grab account from parameter
 
   @KFSQA-649 @smoke @nightly-jobs @tortoise @broken
-  Scenario: Accounting Line Description from eDoc updates General Ledger
+  Scenario: Accounting Line Description from eDoc updates General Ledger, part 2
     Given I am logged in as a KFS Manager for the DV document
     And   I clone Account 1490000 with the following changes:
       | Name        | Disbursement Voucher Test Account S |
@@ -99,7 +99,7 @@ Feature: General Ledger
     Then  the Accounting Line Description for the Disbursement Voucher document equals the General Ledger Accounting Line Description
 
   @KFSQA-649 @smoke @nightly-jobs @tortoise
-  Scenario: Accounting Line Description from eDoc updates General Ledger
+  Scenario: Accounting Line Description from eDoc updates General Ledger, part 3
     Given I am logged in as a KFS Manager for the ICA document
     And   I clone Account 1093600 with the following changes:
       | Name                                          | Indirect Cost Adjustment Test Account S |
