@@ -100,15 +100,11 @@ Feature: REQS, PO, PREQ,PDP
     And   I initiate a Purchase Order Amendment document with the following:
       | Item Quantity | 1   |
       | Item Cost     | 100 |
-    Then the Purchase Order Amendment document's GLPE tab shows the new item amount    And  I EXTRACT THE REQS TO SQ
-    And  I INITIATE A POA with following:
-      |Item Quantity   | 1       |
-      |Item Cost       | 100     |
     Then the Purchase Order Amendment document's GLPE tab shows the new item amount
 
   @KFSQA-994 @E2E @REQS @PO @PREQ @PDP @pending @coral @wip
   Scenario: I CREATE A CAPITAL ASSET REQS E2E (Individual Assets/New)
-    Given I INITIATE A REQS with following:
+    Given I initiate a Requisition document with the following:
       |Vendor Type        | NonB2B           |
       |Add Vendor On REQS | Yes              |
       |Positive Approval  | Unchecked        |
@@ -119,7 +115,7 @@ Feature: REQS, PO, PREQ,PDP
 
 #    |Default PM         | P           |
 # default PM can ve implemented after alternate PM is moved to upgrade
-    And  I EXTRACT THE REQS TO SQ
-    When I INITIATE A PREQ
-    And  I RUN THE NIGHTLY CAPITAL ASSET JOBS
-    And  I BUILD A CAPITAL ASSET FROM AP
+    And  I extract the Requisition document to SciQuest
+    When I initiate a Payment Request document
+    And  I run the nightly Capital Asset jobs
+    And  I build a Capital Asset from AP transaction

@@ -412,7 +412,7 @@ And /^I fill in Capital Asset tab on Requisition document with:$/ do |table|
 
 end
 
-Then /^I RUN THE NIGHTLY CAPITAL ASSET JOBS$/ do
+Then /^I run the nightly Capital Asset jobs$/ do
   steps %Q{
     Given I am logged in as a KFS Operations
     And I collect the Capital Asset Documents
@@ -464,7 +464,7 @@ And /^I complete the existing Asset Location Information$/ do
 end
 
 
-And /^I BUILD A CAPITAL ASSET FROM AP$/ do
+And /^I build a Capital Asset from AP transaction$/ do
   steps %Q{
     Given I Login as an Asset Processor
     And   I lookup a Capital Asset to process
@@ -475,3 +475,4 @@ And /^I BUILD A CAPITAL ASSET FROM AP$/ do
     Then  the Asset Global document goes to FINAL
    }
 end
+
