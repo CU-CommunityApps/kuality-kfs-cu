@@ -399,18 +399,25 @@ And /^I fill in Capital Asset tab on Requisition document with:$/ do |table|
     page.select
   end
 
-  sleep 5
-  on RequisitionPage do |page|
-    #page.asset_system_description.fit random_alphanums(40, 'AFT CA desc')
-    #page.manufacturer.fit random_alphanums(15, 'AFT manuf')
-    page.model_number.fit '2014 Bella Model'
-    #page.asset_number.fit '1'
-    page.transaction_type_code.fit 'New'
-    page.same_as_vendor
+  case system_params['CA System Type']
+    when 'One System'
+      on RequisitionPage do |page|
+        page.model_number.fit '2014 Bella Model'
+        page.transaction_type_code.fit 'New'
+        page.asset_system_description.fit random_alphanums(40, 'AFT CA desc')
+        page.asset_number.fit '1'
+        page.same_as_vendor
+      end
+    when 'Individual Assets'
+      on RequisitionPage do |page|
+        page.model_number.fit '2014 Bella Model'
+        page.transaction_type_code.fit 'New'
+        page.same_as_vendor
+      end
   end
 
-
 end
+
 
 Then /^I RUN THE NIGHTLY CAPITAL ASSET JOBS$/ do
   steps %Q{
