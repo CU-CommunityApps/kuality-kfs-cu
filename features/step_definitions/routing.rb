@@ -22,7 +22,7 @@ end
 
 When /^I route the (.*) document to final$/ do |document|
   step "I view the #{document} document"
-  while !'FINALPROCESSSED'.include?on(page_class_for(document)).document_status
+  until 'FINALPROCESSSED'.include?on(page_class_for(document)).document_status
     step "I switch to the user with the next Pending Action in the Route Log for the #{document} document"
     step "I view the #{document} document"
     step "I approve the #{document} document if it is not already FINAL"

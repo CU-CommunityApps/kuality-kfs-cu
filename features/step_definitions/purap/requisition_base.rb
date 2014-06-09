@@ -370,7 +370,7 @@ And /^I calculate and verify the GLPE tab with no entries$/ do
   end
 end
 
-Then /^the Purchase Order Amendment document's GLPE tab shows the new i tem amount$/ do
+Then /^the Purchase Order Amendment document's GLPE tab shows the new item amount$/ do
   on PurchaseOrderAmendmentPage do |page|
     page.show_glpe
 
@@ -384,16 +384,10 @@ Then /^the Purchase Order Amendment document's GLPE tab shows the new i tem amou
   end
 end
 
-And /^I add an Award Account to the Requisition document$/ do
-  on RequisitionPage do |page|
-
-  end
-end
-
 Then /^Award Review is not in the Requisition document workflow history$/ do
   root_action_requests =  get_root_action_requests(@requisition.document_id).getRootActionRequest().to_a
   root_action_requests.each do |root_action|
-    if !root_action.annotation.nil?
+    unless root_action.annotation.nil?
       root_action.annotation.should_not include 'Contracts'
     end
   end
