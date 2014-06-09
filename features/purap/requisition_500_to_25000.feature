@@ -12,7 +12,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
 
   [KFSQA-766] PURAP E2E-004d PREQ - Manual Entry, >$500, <$5000, Internal Vendor
 
-  @KFSQA-791 @purap @coral
+  @KFSQA-791 @PO @PREQ @REQS @coral
   Scenario: PURAP manual >$500, <$25000 external vendor no wire
     Given I login as a PURAP eSHop user
     And   I create the Requisition document with:
@@ -90,7 +90,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   the Purchase Order Doc Status is Open
 
 
-  @KFSQA-763 @E2E @MultiDay @PO @PREQ @REQS @Routing @PO @auto-approve-preq-job @cornell @coral
+  @KFSQA-763 @E2E @MultiDay @PO @PREQ @REQS @Routing @auto-approve-preq-job @cornell @coral
   Scenario: PURAP E2E-004a PREQ - Manual Entry, >$500 Auto Approve
     Given I login as a PURAP eSHop user
     When  I create the Requisition document with:
@@ -271,7 +271,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   the Payment Request Doc Status is Department-Approved
     And   the Payment Request document's GLPE tab shows the Requisition document submissions
 
-  @KFSQA-766 @Approving @E2E @Encumbrance @MultiDay @PO @PREQ @PendingEntries @cornell @coral
+  @KFSQA-766 @Approving @E2E @Encumbrance @MultiDay @PO @PREQ @PendingEntries @REQS @cornell @coral
   Scenario: PURAP E2E-004d PREQ - Manual Entry, >$500, <$5000, Internal Vendor
     Given I login as a KFS user to create an REQS
     When  I create the Requisition document with:

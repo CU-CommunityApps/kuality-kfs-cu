@@ -10,7 +10,7 @@ Feature: REQS, PO, PREQ,PDP
 
   [KFSQA-882] GLPEs are wrong on Purchase Order Amendments (POAs)
 
-  @KFSQA-853 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral
+  @KFSQA-853 @BaseFunction @Routing @coral
   Scenario: PUR-5 Sensitive Commodity Data Flag enh
     Given I initiate a Requisition document with the following:
       | Vendor Type        | NonB2B    |
@@ -24,7 +24,7 @@ Feature: REQS, PO, PREQ,PDP
     When  I extract the Requisition document to SciQuest
     And   I initiate a Payment Request document
 
-  @KFSQA-854 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral
+  @KFSQA-854 @BaseFunction @Routing @coral
   Scenario Outline: POs Follow Routing per Organization Review (ORG 0100)
     Given I initiate a Requisition document with the following:
       | Vendor Type        | NonB2B    |
@@ -45,7 +45,7 @@ Feature: REQS, PO, PREQ,PDP
     | 500000  | 2     |
     | 5000000 | 3     |
 
-  @KFSQA-855 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral
+  @KFSQA-855 @BaseFunction @Routing @coral
   Scenario Outline: PUR-10  remove commodity review from PO
     Given I initiate a Requisition document with the following:
       | Vendor Type        | NonB2B      |

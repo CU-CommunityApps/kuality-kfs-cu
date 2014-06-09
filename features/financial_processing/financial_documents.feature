@@ -3,7 +3,7 @@ Feature: Financial Documents
   [KFSQA-652] Initiator or qualified document role to recall a routed document. New 5.x feature
   [KFSQA-727] Cornell University requires Chart IT as the default for all FP eDoc Accounting Lines.
 
-  @KFSQA-652 @coral
+  @KFSQA-652 @ALL @FP @coral
   Scenario Outline: Recall enroute Documents
     Given  I am logged in as "<user>"
     #TODO login as user for this document type
@@ -37,7 +37,7 @@ Feature: Financial Documents
     | Transfer Of Funds                  | ccs1  | A763306        | A763900        | 100           | 100           |
   #TODO grab account from parameter
 
-  @KFSQA-727 @tortoise @needs-clean-up
+  @KFSQA-727 @FP @tortoise @needs-clean-up
   Scenario Outline: Accounting Line Defaults to Chart IT
     Given  I am logged in as a KFS User for the <docType> document
     And    I start an empty <eDoc> document

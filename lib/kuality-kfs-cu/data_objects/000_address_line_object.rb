@@ -5,6 +5,7 @@ class AddressLineObject
 
   def fill_out_extended_attributes
     @method_of_po_transmission = 'US MAIL' if @method_of_po_transmission.nil? # This'll give us a default value for now.
+    @vendor_address_generated_identifier = nil
     on(VendorPage) { |vp| fill_out vp, :method_of_po_transmission }
   end
 
@@ -36,6 +37,13 @@ class AddressLineObjectCollection
             method_of_po_transmission: b.update_method_of_po_transmission(i).selected_options.first.text,
             vendor_address_generated_identifier: b.new_vendor_address_generated_identifier(i)
           }
+        when :readonly
+          result = {
+            method_of_po_transmission: b.readonly_method_of_po_transmission(i),
+            vendor_address_generated_identifier: b.old_vendor_address_generated_identifier(i)
+          }
+        else
+          raise ArgumentError, "AddressLineObject does not know how to pull the provided existing address type (#{target})!"
       end
     end
 

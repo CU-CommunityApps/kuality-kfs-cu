@@ -17,13 +17,13 @@ Feature: KFS Fiscal Officer Account Creation
       | PROCESSED |
       | FINAL     |
 
-  @KFSQA-554 @hare
+  @KFSQA-554 @cornell @KFSMI-6160 @hare
   Scenario: KFS User Initiates an Account document with only a description field
     Given I am logged in as a KFS User
     When  I save an Account document with only the Description field populated
     Then  the Account document goes to SAVED
     
-  @KFSQA-606 @hare
+  @KFSQA-606 @Bug @AcctEdit @KFSPTS-119 @hare
   Scenario: Account Edit Sub Fund Program case sensitive test on Submit
     Given I am logged in as a KFS Chart Administrator
     When  I save an Account with a lower case Sub Fund Program

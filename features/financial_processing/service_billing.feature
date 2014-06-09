@@ -2,7 +2,7 @@ Feature: Service Billing
 
   [KFSQA-668] IB e2e Test Business Process (Basic)
 
-  @KFSQA-668 @nightly-jobs
+  @KFSQA-668 @FP @SB @nightly-jobs
   Scenario: SB Authorization Error and E2E
     Given   I am logged in as a KFS User
     And     I attempt to start an empty Service Billing document

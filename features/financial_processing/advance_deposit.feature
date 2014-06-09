@@ -21,7 +21,7 @@ Feature: Advance Deposit
     When  I blanket approve the Advance Deposit document
     Then  the Advance Deposit document goes to FINAL
 
-  @KFSQA-609 @sloth
+  @KFSQA-609 @DVCreate @KFSPTS-1632 @KFSUPGRADE-140 @sloth
   Scenario: AD Copy and Save
     Given I am logged in as a KFS Cash Manager
     And   I search for all AD documents

@@ -32,10 +32,41 @@ And /^I create the Requisition document with an Award Account and items that tot
        })
 end
 
+And /^I add an item to the Requisition document with:$/ do |table|
+  add_item = table.rows_hash
+
+  # Just in case you are adding an accounting line, where no previous line item existed
+  # This line number is used for the Account Line object on the Item,
+  # zero '0' for accounting line on the first item
+  # one '1' for accounting line on the second item. etc...
+  # Note: for multiple accounting lines on one item will need to add page object as that name tag changes
+  # and probably create a different step
+  add_item['Line Number'] = '0'  if add_item['Line Number'].nil?
+
+  on RequisitionPage do |page|
+    page.item_quantity.fit add_item['Item Quantity']
+    page.item_unit_cost.fit add_item['Item Cost']
+    page.item_commodity_code.fit add_item['Item Commodity Code']
+    page.item_catalog_number.fit add_item['Item Catalog Number']
+    page.item_uom.fit add_item['Item Unit of Measure']
+    page.item_description.fit add_item['Item Description'].nil? ? random_alphanums(15, 'AFT') : add_item['Item Description']
+    page.item_add
+
+    page.item_account_number(add_item['Line Number']).fit add_item['Account Number']
+    page.item_object_code(add_item['Line Number']).fit add_item['Object Code']
+    page.item_percent(add_item['Line Number']).fit add_item['Percent']
+    page.item_add_account_line(add_item['Line Number'])
+   end
+end
+
 And /^I calculate my Requisition document$/ do
   on(RequisitionPage).calculate
   #need to let calculate process, no other way to verify calculate is completed
   sleep 3
+end
+
+And /^the Requisition status is '(.*)'$/ do |req_status|
+  on(RequisitionPage).requisition_status.should include req_status
 end
 
 And /^I view the (.*) document on my action list$/ do |document|
@@ -99,8 +130,6 @@ And /^the View Related Documents Tab PO Status displays$/ do
     sleep 10
     @purchase_order = create PurchaseOrderObject
   end
-
-
 end
 
 And /^the Purchase Order Number is unmasked$/ do

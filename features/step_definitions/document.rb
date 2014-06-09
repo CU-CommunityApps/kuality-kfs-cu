@@ -102,3 +102,11 @@ end
 Then /^The value for (.*) field is "(.*)"$/ do |field_name, field_value|
   $current_page.send(StringFactory.damballa(field_name)).should==field_value
 end
+
+And /^I collapse all tabs$/ do
+  on(KFSBasePage).collapse_all
+end
+
+And /^I expand all tabs$/ do
+  on(KFSBasePage).expand_all
+end

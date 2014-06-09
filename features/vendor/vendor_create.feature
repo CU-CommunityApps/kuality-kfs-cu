@@ -35,6 +35,14 @@ Feature: Vendor Create
   [KFSQA-776] I want to create a DV vendor with foreign draft as the default payment method. Per Cornell policy,
               on subsequent lookups, The initiator will not be allowed to view the Tax ID and Attachments for this vendor.
 
+  [KFSQA-840] Creating a vendor as a vendor approver and testing that approvers do not
+              include creator to test separation of duties. Also, testing vendor setup
+              Cornell specific mods [ insurance fields (not set dates in the past ), W-9
+              Received Date (set in future to test date audit feature, date cannot be in future),
+              Default Payment Method, Method of PO Transmission, and Credit Card Merchant Name].
+              Test to ensure CU mods work, separation of duties approval routing works, and Vendor
+              information persists after submission (bug fix)
+
   @KFSQA-638 @cornell @tortoise @E2E @VendorCreate
   Scenario: I want to create a vendor with ownership type INDIVIDUAL
     Given   I am logged in as a Vendor Initiator
@@ -171,3 +179,31 @@ Feature: Vendor Create
     Given   I am logged in as a Vendor Initiator
     When    I view the Vendor document
     Then    I can not view the Tax ID and Attachments on Vendor page
+
+    @KFSQA-840 @cornell @Create @E2E @Routing @smoke @slug
+    Scenario: Creating a new vendor to test cornell specific mods, separation of duties, and vendor address and attachments persist.
+      Given I am logged in as a Vendor Initiator
+      When  I start a Purchase Order Vendor document with the following fields:
+        | Description       | KFSQA-840 Testing   |
+        | Vendor Type       | PO - PURCHASE ORDER |
+        | Vendor First Name | First Name          |
+        | Vendor Last Name  | Last Name           |
+        | Vendor Name       | nil                 |
+        | Foreign           | No                  |
+        | Tax Number Type   | FEIN                |
+        | Ownership         | CORPORATION         |
+        | W9 Received       | Yes                 |
+        | W9 Received Date  | tomorrow            |
+      And   I note how many attachments the Vendor document has already
+      And   I add an attachment to the Vendor document
+      And   I submit the Vendor document
+      Then  I should get an error saying "Date cannot be in the future"
+      When  I change the Vendor document's W9 Received Date field to today
+      And   I submit the Vendor document
+      Then  the Vendor document goes to ENROUTE
+      And   the initiator is not an approver in the Future Actions table
+      Given I route the Vendor document to FINAL by clicking approve for each request
+      And   I am logged in as a Vendor Initiator
+      When  I view the Vendor document
+      Then  the default Purchase Order Vendor address(es) are shown on the Vendor document
+      And   the Vendor document's Notes and Attachments Tab has 1 more attachment than before

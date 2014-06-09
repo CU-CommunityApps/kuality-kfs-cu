@@ -4,7 +4,7 @@ Feature: Sub Object Code Global
               the Sub-Object Global, I want to add multiple account lines using
               using Organizational Codes to be efficient.
 
-  @KSFQA-617 @sloth
+  @KSFQA-617 @cornell @AcctLookup @KITI-2953 @sloth
   Scenario: Create a Sub-Object Code Global using an organization hierarchy
     Given I am logged in as a KFS Chart Manager
     And   I save a Sub-Object Code Global document

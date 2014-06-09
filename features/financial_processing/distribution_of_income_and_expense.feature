@@ -2,7 +2,7 @@ Feature: Distribution of Income and Expense
 
   [KFAQA-648] I want to create a DI with an Accounting Line Change by an FO
 
-  @KFAQA-648 @smoke @sloth @needs-clean-up @broken! @pending
+  @KFAQA-648 @Approving @DI @Edit @smoke @sloth @needs-clean-up @broken! @pending
   Scenario: Reject Approver Account changes unless they are the Fiscal Officer
     Given   I am logged in as a KFS User
     And     I start an empty Distribution Of Income And Expense document

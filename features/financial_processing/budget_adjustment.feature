@@ -11,7 +11,7 @@ Feature: Budget Adjustment
 
   [KFSQA-729] Cornell University requires that a Budget Adjustment must route to all Fiscal Officers.
 
-  @KFSQA-623 @hare
+  @KFSQA-623 @BA @hare
   Scenario: Budget Adjustment not allowed to cross Account Sub-Fund Group Codes
     Given   I am logged in as a KFS User
     And     I start a Budget Adjustment document
@@ -20,13 +20,13 @@ Feature: Budget Adjustment
     When    I submit the Budget Adjustment document
     Then    I should get an error saying "The Budget Adjustment document is not balanced within the account."
 
-  @KFSQA-628 @hare
+  @KFSQA-628 @BA @E2E @hare
   Scenario: IT is the default value for Budget Adjustment Chart Values
     Given I am logged in as a KFS Fiscal Officer
     When  I open the Budget Adjustment document page
     Then  I verify that Chart Value defaults to IT
 
-  @KFSQA-628 @cornell @hare
+  @KFSQA-628 @BA @E2E @cornell @hare
   Scenario: Budget Adjustment routing and approval by From and To FO
     Given I am logged in as a KFS User for the BA document
     And   I submit a balanced Budget Adjustment document
@@ -36,7 +36,7 @@ Feature: Budget Adjustment
     When  I approve the Budget Adjustment document
     Then  the Budget Adjustment document goes to FINAL
 
-  @KFSQA-628 @cornell @nightly-jobs @tortoise @broken!
+  @KFSQA-628 @BA @E2E @cornell @nightly-jobs @tortoise @broken!
   Scenario: General ledger balance displays correctly for a Budget Adjustment after nightly batch is run
     Given   I am logged in as a KFS User for the BA document
     And    I submit a balanced Budget Adjustment document
@@ -52,7 +52,7 @@ Feature: Budget Adjustment
     Then   The To Account Monthly Balance should match the To amount
     And    The line description for the To Account should be displayed
 
-  @KFSQA-629 @tortoise
+  @KFSQA-629 @BA @Bug @tortoise
   Scenario Outline: Upload only Base Budget budget transactions using BA Import Template.
 # GETTING ERROR FOR NOT ALLOWING BASE ADJUSTMENT FOR YEARS 2014 and 2015 (only available)
     Given   I am logged in as a KFS User for the <type code> document
@@ -71,7 +71,7 @@ Feature: Budget Adjustment
     | document            | type code | From file name              | To file name             |
     | Budget Adjustment   | BA        | BA_test_from.csv            | BA_test_to.csv           |
 
-  @KFSQA-670 @cornell @slug @nightly-jobs
+  @KFSQA-670 @BA @cornell @slug @nightly-jobs
   Scenario Outline: CB and BB Balances from BA Import Template updates General Ledger
     Given   I am logged in as a KFS User for the <type code> document
     #djj1
@@ -95,11 +95,7 @@ Feature: Budget Adjustment
     #This for when BA doesn't allow
 #    | Budget Adjustment | BA        | BA_import_from.csv  | BA_import_to.csv  |
 
-
-
-
-
-  @KFSQA-729 @tortoise
+  @KFSQA-729 @BA @tortoise
   Scenario: "To" Fiscal Officer initiates Budget Adjustment; BA routes to "From" Fiscal Officer
     Given I am logged in as a KFS User
     And   I use these Accounts:

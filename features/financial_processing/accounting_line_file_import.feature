@@ -4,7 +4,7 @@ Feature: import csv for accounting lines on multiple documents
               Cornell University requires an Accounting Line Description uploaded through
               an Import Template to be recorded in the General Ledger.
 
-  @KFSQA-643 @cornell @nightly-jobs
+  @KFSQA-643 @AV @JV @ND @Import-Template @cornell @nightly-jobs
   Scenario Outline: Checking General Ledger for Accounting Line Description using from Import Template with blanket approval
     Given   I am logged in as a KFS User for the <type code> document
     And     I start a <document> document for "<file name>" file import
@@ -26,7 +26,7 @@ Feature: import csv for accounting lines on multiple documents
     | Non Check Disbursement | ND      | ND_import.csv                    |
     | Journal Voucher        | JV-1    | JV-1_offset_bal_type_import.csv  |
 
-  @KFSQA-643 @cornell @nightly-jobs
+  @KFSQA-643 @AD @CCR @Import-Template @cornell @nightly-jobs
   Scenario Outline: Checking General Ledger for Accounting Line Description using Import Template without blanket approval
     Given   I am logged in as a KFS User for the <type code> document
     And     I start a <document> document for "<file name>" file import
@@ -41,7 +41,7 @@ Feature: import csv for accounting lines on multiple documents
       | Advance Deposit        | AD      | AD_import.csv                    |
       | Credit Card Receipt    | CCR     | CCR_import.csv                   |
 
-  @KFSQA-643 @cornell @nightly-jobs
+  @KFSQA-643 @BA @DI @GEC @TF @Import-Template @cornell @nightly-jobs
   Scenario Outline: Checking General Ledger for Accounting Line Description using from and to Import Templates with blanket approval
     Given   I am logged in as a KFS User for the <type code> document
     And     I start a <document> document for from "<From file name>" file import and to "<To file name>" file import
@@ -63,7 +63,7 @@ Feature: import csv for accounting lines on multiple documents
     | Transfer of Funds                    | TF        | TF_import_from.csv            | TF_import_to.csv           |
     | Budget Adjustment                    | BA        | BA_import_from.csv            | BA_import_to.csv           |
 
-  @KFSQA-643 @cornell @nightly-jobs
+  @KFSQA-643 @IB @SB @Import-Template @cornell @nightly-jobs
   Scenario Outline: Checking General Ledger for Accounting Line Description using from and to Import Templates without blanket approval
     Given   I am logged in as a KFS User for the <type code> document
     And     I start a <document> document for from "<From file name>" file import and to "<To file name>" file import
