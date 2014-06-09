@@ -1,4 +1,4 @@
-Feature: REQS, PO, PREQ,PDP
+rquaFeature: REQS, PO, PREQ,PDP
 
   [KFSQA-853] PUR-5  Sensitive Commodity Data Flag enh
 
@@ -118,6 +118,4 @@ Feature: REQS, PO, PREQ,PDP
     And  I EXTRACT THE REQS TO SQ
     When I INITIATE A PREQ
     And  I RUN THE NIGHTLY CAPITAL ASSET JOBS
-    Given I am logged in as "eap2"
-    And   I lookup a Capital Asset to process
-    And   I select and create asset
+    And  I BUILD A CAPITAL ASSET FROM AP

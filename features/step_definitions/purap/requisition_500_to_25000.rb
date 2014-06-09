@@ -274,6 +274,7 @@ And  /^I change the Remit To Address$/ do
 end
 And  /^I enter the Qty Invoiced and calculate$/ do
   on(PaymentRequestPage) do |page|
+    @preq_id = page.preq_id
     page.item_qty_invoiced.fit @requisition.item_quantity # same as REQS item qty
     page.item_calculate
   end

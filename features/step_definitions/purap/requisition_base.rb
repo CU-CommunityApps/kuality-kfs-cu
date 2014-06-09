@@ -424,14 +424,15 @@ Then /^I RUN THE NIGHTLY CAPITAL ASSET JOBS$/ do
 
 end
 
-
 And /^I lookup a Capital Asset to process$/ do
   visit(MainPage).capital_asset_builder_ap_transactions
   on CabPurapLookupPage do |page|
-    page.preq_number.fit '410274'
-    page.po_number.fit '301084'
+    page.preq_number.fit @preq_id
+    #page.preq_number.fit '410276'
+    #page.po_number.fit '301084'
     page.search
-    page.process('410274')
+    #page.process('410276')
+    page.process(@preq_id)
   end
 
 end
@@ -439,6 +440,38 @@ end
 And /^I select and create asset$/ do
   on PurapTransactionPage do |page|
     page.split_qty.fit '1'
+    page.line_item_checkbox.set
+    page.create_asset
+    page.use_new_tab
+    page.close_parents
+  end
+  @asset_global = create AssetGlobalObject
+end
+
+And /^I complete the Asset Information Detail tab$/ do
+  on AssetGlobalPage do |page|
+    page.asset_type_code.fit '019'
   end
 
+end
+
+And /^I complete the existing Asset Location Information$/ do
+  on AssetGlobalPage do |page|
+    page.asset_campus.fit 'IT'
+    page.asset_building_code.fit '7000'
+    page.asset_building_room_number.fit 'XXXXXXXX'
+  end
+end
+
+
+And /^I BUILD A CAPITAL ASSET FROM AP$/ do
+  steps %Q{
+    Given I Login as an Asset Processor
+    And   I lookup a Capital Asset to process
+    And   I select and create asset
+    And   I complete the Asset Information Detail tab
+    And   I complete the existing Asset Location Information
+    And   I submit the Asset Global document
+    Then  the Asset Global document goes to FINAL
+   }
 end
