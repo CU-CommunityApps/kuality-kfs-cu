@@ -6,7 +6,7 @@ Feature: FP Auditing
   [KFSQA-747] Display approver eDoc Accounting Line changes in Notes and Attachment Tab for DV and ICA.
 
 
-  @KFSQA-631 @cornell @sloth
+  @KFSQA-631 @BA @cornell @sloth
   Scenario: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for Budget Adjustment
     Given   I am logged in as a KFS User
     When    I start an empty Budget Adjustment document
@@ -19,7 +19,7 @@ Feature: FP Auditing
     And     I save the Budget Adjustment document
     Then    The Notes and Attachment Tab displays "Accounting Line changed from"
 
-  @KFSQA-631 @cornell @sloth
+  @KFSQA-631 @AV @cornell @sloth
   Scenario: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for Auxiliary Voucher
     Given   I am logged in as "scu1"
     And     I start an empty Auxiliary Voucher document
@@ -32,7 +32,7 @@ Feature: FP Auditing
     And     I save the Auxiliary Voucher document
     Then    The Notes and Attachment Tab displays "Accounting Line changed from"
 
-  @KFSQA-631 @cornell @sloth
+  @KFSQA-631 @GEC @cornell @sloth
   Scenario: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for General Error Correction
     Given   I am logged in as "sag3"
     And     I start an empty General Error Correction document
@@ -45,7 +45,7 @@ Feature: FP Auditing
     And     I save the General Error Correction document
     Then    The Notes and Attachment Tab displays "Accounting Line changed from"
 
-  @KFSQA-631 @cornell @hare
+  @KFSQA-631 @PE @cornell @hare
   Scenario: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for Pre-Encumbrance
     Given   I am logged in as "sag3"
     And     I start an empty Pre-Encumbrance document
@@ -59,7 +59,7 @@ Feature: FP Auditing
     And     I save the Pre-Encumbrance document
     Then    The Notes and Attachment Tab displays "Accounting Line changed from"
 
-  @KFSQA-631 @cornell @hare
+  @KFSQA-631 @ND @cornell @hare
   Scenario: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for Non-Check Disbursement
     Given   I am logged in as "rlc56"
     And     I start an empty Non-Check Disbursement document
@@ -72,7 +72,7 @@ Feature: FP Auditing
     And     I save the Non-Check Disbursement document
     Then    The Notes and Attachment Tab displays "Accounting Line changed from"
 
-  @KFSQA-631 @cornell @tortoise
+  @KFSQA-631 @DI @IB @TF @cornell @tortoise
   Scenario Outline: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for All with basic from and to accounting lines
     Given   I am logged in as "<initiator>"
     #TODO login based on doc type
@@ -105,7 +105,7 @@ Feature: FP Auditing
     #TODO create params for secondary object code for each edoc type
 
 
-  @KFSQA-747 @cornell @tortoise
+  @KFSQA-747 @DV @ICA @cornell @tortoise
   Scenario Outline: Display approver eDoc Accounting Line changes in Notes and Attachment Tab
     Given  I am logged in as "<initiator>"
 #for all these eDocs

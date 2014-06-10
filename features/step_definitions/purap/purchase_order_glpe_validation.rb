@@ -36,5 +36,42 @@ And /^I cancel the Purchase Order on the Requisition$/ do
   on(PurchaseOrderPage).cancel
   on(RecallPage).reason.fit 'AFT TEST'
   on(YesOrNoPage).yes
+end
 
+And /^I view the Purchase Order using the Document ID$/ do
+  visit(MainPage).doc_search
+
+  on DocumentSearch do |page|
+    puts 'doc id is:'
+    puts @requisition.document_id.inspect
+    page.document_id_field.fit @requisition.document_id
+    page.search
+    page.open_item(@requisition.document_id)
+
+    on RequisitionPage do |page|
+      page.show_related_documents
+      page.purchase_order_number_link
+    end
+  end
+end
+
+And /^I void The Purchase Order$/ do
+  on PurchaseOrderPage do |page|
+    page.void_order
+  end
+
+  on(RecallPage).reason.fit 'AFT TEST VOID PO'
+  on(YesOrNoPage).yes
+  #this is for the OK which is the same html name tag as the yes button
+  on(YesOrNoPage).yes
+end
+
+
+And /^The GLPE from the Purchase Order are reversed by the void$/ do
+  step "I view the Purchase Order using the Document ID"
+
+  on PurchaseOrderPage do |page|
+    page.show_glpe
+    page.frm.link(text: 'POV').should exist
+  end
 end
