@@ -408,24 +408,42 @@ And /^I fill in Capital Asset tab on Requisition document with:$/ do |table|
 
   case system_params['CA System Type']
     when 'One System'
-      on RequisitionPage do |page|
-        page.model_number.fit '2014 Bella Model'
-        page.transaction_type_code.fit 'New'
-        page.asset_system_description.fit random_alphanums(40, 'AFT CA desc')
-        page.asset_number.fit '1'
-        page.same_as_vendor
+      case system_params['CA System State']
+        when 'New System'
+          on RequisitionPage do |page|
+            page.model_number.fit '2014 Bella Model'
+            page.transaction_type_code.fit 'New'
+            page.asset_system_description.fit random_alphanums(40, 'AFT CA desc')
+            page.asset_number.fit '1'
+            page.same_as_vendor
+          end
+        when 'Modify Existing System'
+          on RequisitionPage do |page|
+            page.add_asset_number.fit @asset_number
+            #page.add_asset_number.fit '504307'
+            page.add_asset
+            page.transaction_type_code.fit 'Modify existing'
+          end
       end
     when 'Individual Assets'
-      on RequisitionPage do |page|
-        page.model_number.fit '2014 Bella Model'
-        page.transaction_type_code.fit 'New'
-        page.same_as_vendor
+      case system_params['CA System State']
+        when 'New System'
+          on RequisitionPage do |page|
+            #page.manufacturer.fit random_alphanums(15, 'AFT manuf')
+            page.model_number.fit '2014 Bella Model'
+            page.transaction_type_code.fit 'New'
+            page.same_as_vendor
+          end
+        when 'Modify Existing System'
+          on RequisitionPage do |page|
+            page.add_asset_number.fit @asset_number
+            #page.add_asset_number.fit '504307'
+            page.add_asset
+            page.transaction_type_code.fit 'Modify existing'
+          end
       end
   end
-
-
 end
-
 Then /^I run the nightly Capital Asset jobs$/ do
   steps %Q{
     Given I am logged in as a KFS Operations
@@ -470,6 +488,7 @@ And /^I complete the existing Asset Location Information$/ do
     page.asset_campus.fit 'IT'
     page.asset_building_code.fit '7000'
     page.asset_building_room_number.fit 'XXXXXXXX'
+    @asset_number = page.asset_number
   end
 end
 
@@ -485,4 +504,27 @@ And /^I build a Capital Asset from AP transaction$/ do
     Then  the Asset Global document goes to FINAL
    }
 end
+
+
+And /^I modify existing Capital Asset from AP transaction and apply payment$/ do
+  steps %Q{
+    Given I Login as an Asset Processor
+    And   I lookup a Capital Asset to process
+    And   I select and apply payment
+    And   I submit the Asset Manual Payment document
+    Then  the Asset Manual Payment document goes to FINAL
+   }
+end
+
+And /^I select and apply payment$/ do
+  on PurapTransactionPage do |page|
+    #page.split_qty.fit '1'
+    page.line_item_checkbox.set
+    page.apply_payment
+    page.use_new_tab
+    page.close_parents
+  end
+  @asset_manual_payment = create AssetManualPaymentObject
+end
+
 
