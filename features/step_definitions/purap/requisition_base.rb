@@ -189,9 +189,7 @@ And /^I format Disbursement$/ do
     page.payment_date.set right_now[:date_w_slashes]
     page.all_payment_type.set
     page.all_payment_distribution.set
-    puts 'fields set'
     page.customer_boxes.each {|check_box| check_box.checked? ? nil : check_box.click }
-    puts 'customer checked'
     page.begin_format
     sleep 20
   end
@@ -223,7 +221,6 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
   end
 
   if (document == 'Purchase Order')
-    puts 'base org review level ', @base_org_review_level
     @base_org_review_level.should == @level
     po_reviewer_500k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
     po_reviewer_5m = get_aft_parameter_value('PO_BASE_ORG_REVIEW_5M')
@@ -242,7 +239,6 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
 
     end
   else if (document == 'Requisition' || document == 'Payment Request')
-         puts 'reqs base org  ',@org_review_users
          case @level
            when 1
              (@org_review_users & reqs_org_reviewers_level_1).length.should >= 1
@@ -260,13 +256,11 @@ end
 And /^I validate Commodity Review Routing for (.*) document$/ do |document|
   # TODO : may need for POA in the future.
   if (document == 'Purchase Order')
-    puts 'po commodity ',@commodity_review_users
     @commodity_review_users.length.should == 0
   else
     if (document == 'Requisition')
       # TODO : reviewers should come from groupservice when it is ready
       reqs_animal_reviewers = get_principal_name_for_group('3000083')
-      puts 'reqs commodity ',@commodity_review_users
       if @sensitive_commodity
         (@commodity_review_users & reqs_animal_reviewers).length.should >= 1
       else
@@ -379,8 +373,6 @@ Then /^the Purchase Order Amendment document's GLPE tab shows the new item amoun
   on PurchaseOrderAmendmentPage do |page|
     page.show_glpe
 
-    puts 'requisition ',@requisition.item_account_number,@requisition.item_uom
-    puts ' POA glpe ',page.glpe_results_table.text, page.glpe_results_table[2][11].text, @poa_item_amount
     page.glpe_results_table.rows.length.should == 3
     page.glpe_results_table.text.should include @requisition.item_account_number
     page.glpe_results_table[1][11].text.to_f.should == @poa_item_amount

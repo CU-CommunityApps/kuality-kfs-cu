@@ -1,6 +1,5 @@
 And /^I create the Requisition document with:$/  do |table|
   updates = table.rows_hash
-  puts 'vendor ',updates['Vendor Number']
   @requisition = create RequisitionObject, payment_request_positive_approval_required: updates['payment request'],
                         payment_request_positive_approval_required: updates['payment request'],
                         vendor_number:        updates['Vendor Number'],
@@ -412,7 +411,6 @@ When /^I visit the "(.*)" page$/  do   |go_to_page|
 end
 
 And /^I enter Payment Information for recurring payment type (.*)$/ do |recurring_payment_type|
-  puts 'recur type',recurring_payment_type
   unless recurring_payment_type.empty?
     on RequisitionPage do |page|
       page.recurring_payment_type.fit recurring_payment_type

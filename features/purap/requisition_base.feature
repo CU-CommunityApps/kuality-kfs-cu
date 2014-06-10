@@ -12,7 +12,7 @@ Feature: REQS, PO, PREQ,PDP
 
   [KFSQA-994] I CREATE A CAPITAL ASSET REQS E2E (Individual Assets/New)
 
-  [KFSQA-995] I CREATE A CAPITAL ASSET REQS E2E (One System/New System)
+  [KFSQA-995] Create a Capital Asset starting with Base Function attributes and change Asset to System Type of One System with a System State of New System. Take the asset from Requisition to APO to PREQ to CAB and to Payment.
 
   @KFSQA-853 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral
   Scenario: PUR-5 Sensitive Commodity Data Flag enh
@@ -104,16 +104,16 @@ Feature: REQS, PO, PREQ,PDP
       |Item Cost       | 100     |
     Then the Purchase Order Amendment document's GLPE tab shows the new item amount
 
-  @KFSQA-994 @KFSQA-995 @E2E @REQS @PO @PREQ @PDP @pending @coral @wip
+  @KFSQA-994 @KFSQA-995 @E2E @REQS @PO @PREQ @PDP @coral @wip
   Scenario Outline: I CREATE A CAPITAL ASSET REQS E2E (Individual Assets/New)/(One System/New System)
     Given I INITIATE A REQS with following:
-      |Vendor Type        | NonB2B             |
-      |Add Vendor On REQS | Yes                |
-      |Positive Approval  | Unchecked          |
-      |Account Type       | NonGrant           |
-      |Amount             | 1000               |
-      |CA System Type     | <CA System Type>   |
-      |CA System State    | <CA System State>  |
+      | Vendor Type        | NonB2B             |
+      | Add Vendor On REQS | Yes                |
+      | Positive Approval  | Unchecked          |
+      | Account Type       | NonGrant           |
+      | Amount             | 1000               |
+      | CA System Type     | <CA System Type>   |
+      | CA System State    | <CA System State>  |
 
  #    |Default PM         | P           |
  # default PM can ve implemented after alternate PM is moved to upgrade
