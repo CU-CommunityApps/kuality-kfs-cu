@@ -15,6 +15,23 @@ And /^I create the Requisition document with:$/  do |table|
 
 end
 
+And /^I create the Requisition document with an Award Account and items that total less than the dollar threshold Requiring Award Review$/ do
+  account_info = get_kuali_business_object('KFS-COA','Account','subFundGroupCode=APFEDL&closed=N&contractsAndGrantsAccountResponsibilityId=5&accountExpirationDate=NULL')
+  award_account_number = account_info['accountNumber'][0]
+  cost_from_param = get_parameter_values('KFS-PURAP', 'DOLLAR_THRESHOLD_REQUIRING_AWARD_REVIEW', 'Requisition')[0].to_i
+  cost_from_param = cost_from_param - 1
+  step 'I create the Requisition document with:',
+       table(%Q{
+         | Vendor Number       | 4471-0                  |
+         | Item Quantity       | 1                       |
+         | Item Cost           | #{cost_from_param}      |
+         | Item Commodity Code | 12142203                |
+         | Account Number      | #{award_account_number} |
+         | Object Code         | 6570                    |
+         | Percent             | 100                     |
+       })
+end
+
 And /^I add an item to the Requisition document with:$/ do |table|
   add_item = table.rows_hash
 
@@ -67,6 +84,7 @@ And /^I view the (.*) document on my action list$/ do |document|
       @requisition_initiator = page.initiator
     end
   end
+
 end
 
 And /^I view the Requisition document from the Requisitions search$/ do

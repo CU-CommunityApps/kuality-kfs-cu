@@ -91,7 +91,7 @@ Feature: Vendor Edit
     And   I add an attachment to the Vendor document
     And   I submit the Vendor document
     Then  the next pending action for the Vendor document is an APPROVE from a KFS-VND Reviewer
-    Given I route the Vendor document to FINAL by clicking approve for each request
+    Given I route the Vendor document to final
     And   I am logged in as a Vendor Attachment viewer (cu)
     When  I open the Vendor from the Vendor document
     Then  the Address Tab displays Vendor Address Generated Identifiers for each Address

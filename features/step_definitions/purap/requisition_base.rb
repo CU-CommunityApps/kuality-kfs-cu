@@ -51,13 +51,6 @@ Given  /^I initiate a Requisition document with the following:$/ do |table|
 
   step 'I select the Payment Request Positive Approval Required' if positive_approve == 'Checked'
 
-  if !arguments['CA System Type'].nil?
-    step "I fill in Capital Asset tab on Requisition document with:", table(%{
-      | CA System Type       | #{arguments['CA System Type']}  |
-      | CA System State      | #{arguments['CA System State']} |
-  })
-  end
-
   steps %q{
     When I add an Attachment to the Requisition document
     And  I enter Delivery Instructions and Notes to Vendor
@@ -304,7 +297,7 @@ When /^I initiate a Purchase Order Amendment document$/ do
   step 'I initiate a Purchase Order Amendment document with the following:', table(%q{| Default |  |})
 end
 
-When /^I INITIATE A POA with following:$/ do |table|
+When /^I initiate a Purchase Order Amendment document with the following:$/ do |table|
   arguments = table.rows_hash
 
   steps %Q{
@@ -392,6 +385,16 @@ Then /^the Purchase Order Amendment document's GLPE tab shows the new item amoun
     page.glpe_results_table[1][11].text.to_f.should == @poa_item_amount
     page.glpe_results_table[2][11].text.to_f.should == @poa_item_amount
   end
+end
+
+Then /^Award Review is not in the Requisition document workflow history$/ do
+  root_action_requests =  get_root_action_requests(@requisition.document_id).getRootActionRequest().to_a
+  root_action_requests.each do |root_action|
+    unless root_action.annotation.nil?
+      root_action.annotation.should_not include 'Contracts'
+    end
+  end
+
 end
 
 And /^I fill in Capital Asset tab on Requisition document with:$/ do |table|

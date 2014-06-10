@@ -20,13 +20,13 @@ And /^the next pending action for the (.*) document is an? (.*) from a (.*)$/ do
   end
 end
 
-When /^I route the (.*) document to (.*) by clicking (.*) for each request$/ do |document, target_status, button|
+When /^I route the (.*) document to final$/ do |document|
   step "I view the #{document} document"
-
-  unless on(page_class_for(document)).document_status == target_status
+  until 'FINALPROCESSSED'.include?on(page_class_for(document)).document_status
     step "I switch to the user with the next Pending Action in the Route Log for the #{document} document"
     step "I view the #{document} document"
-    step "I #{button} the #{document} document if it is not already FINAL"
+    step "I approve the #{document} document if it is not already FINAL"
+    step "I view the #{document} document"
   end
 
 end

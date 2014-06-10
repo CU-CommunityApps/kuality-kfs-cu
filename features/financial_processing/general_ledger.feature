@@ -86,7 +86,7 @@ Feature: General Ledger
     And   I add balanced Accounting Lines to the Disbursement Voucher document
     And   I save the Disbursement Voucher document
     Then  I submit the Disbursement Voucher document
-    When  I route the Disbursement Voucher document to FINAL by clicking approve for each request
+    When  I route the Disbursement Voucher document to final
     Given I am logged in as a KFS Manager for the DV document
     And   I view the Disbursement Voucher document
     And   I blanket approve the Disbursement Voucher document if it is not already FINAL
