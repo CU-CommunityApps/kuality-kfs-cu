@@ -182,3 +182,7 @@ Given /^I Login as a Benefit Transfer Initiator$/ do
   #visit(BackdoorLoginPage).login_as('rae28') #TODO get from role service
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-LD', 'BT Initiator (cu)'))
 end
+
+Given /^I am logged in as an e\-SHOP User$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'eShop User (cu)'))
+end

@@ -383,3 +383,11 @@ Then /^the Purchase Order Amendment document's GLPE tab shows the new item amoun
     page.glpe_results_table[2][11].text.to_f.should == @poa_item_amount
   end
 end
+
+And /^I add these Accounting Lines to the Requisition document:$/ do |table|
+  # table is a table.hashes.keys # => [:chart_code, :account_number, :object, :amount]
+  table.hashes.each do |al_row|
+    puts "Creating an accounting line with the following data: #{al_row.inspect}"
+  end
+  pending
+end
