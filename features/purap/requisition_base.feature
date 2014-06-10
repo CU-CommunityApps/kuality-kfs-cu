@@ -101,7 +101,7 @@ Feature: REQS, PO, PREQ,PDP
       | Item Cost     | 100 |
     Then the Purchase Order Amendment document's GLPE tab shows the new item amount
 
-  @KFSQA-994 @E2E @REQS @PO @PREQ @PDP @pending @coral @wip
+  @KFSQA-994 @E2E @REQS @PO @PREQ @PDP @coral
   Scenario: I CREATE A CAPITAL ASSET REQS E2E (Individual Assets/New)
     Given I initiate a Requisition document with the following:
       |Vendor Type        | NonB2B           |
