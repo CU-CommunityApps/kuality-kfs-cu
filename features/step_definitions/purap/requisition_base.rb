@@ -203,9 +203,7 @@ And /^I format Disbursement$/ do
     page.payment_date.set right_now[:date_w_slashes]
     page.all_payment_type.set
     page.all_payment_distribution.set
-    puts 'fields set'
     page.customer_boxes.each { |check_box| check_box.checked? ? nil : check_box.click }
-    puts 'customer checked'
     page.begin_format
     sleep 20
   end
@@ -237,7 +235,6 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
   end
 
   if document == 'Purchase Order'
-    puts 'base org review level ', @base_org_review_level
 
     @base_org_review_level.should == @level
     po_reviewer_500k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
@@ -256,7 +253,6 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
         @org_review_users.should include po_reviewer_5m
     end
   elsif document == 'Requisition' || document == 'Payment Request'
-    puts 'reqs base org  ', @org_review_users
     case @level
      when 1
        (@org_review_users & reqs_org_reviewers_level_1).length.should >= 1
@@ -272,12 +268,10 @@ end
 And /^I validate Commodity Review Routing for (.*) document$/ do |document|
   # TODO : may need for POA in the future.
   if document == 'Purchase Order'
-    puts 'po commodity ',@commodity_review_users
     @commodity_review_users.length.should == 0
   elsif document == 'Requisition'
     # TODO : reviewers should come from groupservice when it is ready
     reqs_animal_reviewers = get_principal_name_for_group('3000083')
-    puts 'reqs commodity ', @commodity_review_users
     if @sensitive_commodity
       (@commodity_review_users & reqs_animal_reviewers).length.should >= 1
     else
@@ -384,8 +378,6 @@ Then /^the Purchase Order Amendment document's GLPE tab shows the new item amoun
   on PurchaseOrderAmendmentPage do |page|
     page.show_glpe
 
-    puts 'requisition ', @requisition.item_account_number,@requisition.item_uom
-    puts ' POA glpe ', page.glpe_results_table.text, page.glpe_results_table[2][11].text, @poa_item_amount
 
     page.glpe_results_table.rows.length.should == 3
     page.glpe_results_table.text.should include @requisition.item_account_number
@@ -414,14 +406,21 @@ And /^I fill in Capital Asset tab on Requisition document with:$/ do |table|
     page.select
   end
 
-  sleep 5
-  on RequisitionPage do |page|
-    #page.asset_system_description.fit random_alphanums(40, 'AFT CA desc')
-    #page.manufacturer.fit random_alphanums(15, 'AFT manuf')
-    page.model_number.fit '2014 Bella Model'
-    #page.asset_number.fit '1'
-    page.transaction_type_code.fit 'New'
-    page.same_as_vendor
+  case system_params['CA System Type']
+    when 'One System'
+      on RequisitionPage do |page|
+        page.model_number.fit '2014 Bella Model'
+        page.transaction_type_code.fit 'New'
+        page.asset_system_description.fit random_alphanums(40, 'AFT CA desc')
+        page.asset_number.fit '1'
+        page.same_as_vendor
+      end
+    when 'Individual Assets'
+      on RequisitionPage do |page|
+        page.model_number.fit '2014 Bella Model'
+        page.transaction_type_code.fit 'New'
+        page.same_as_vendor
+      end
   end
 
 
@@ -443,10 +442,7 @@ And /^I lookup a Capital Asset to process$/ do
   visit(MainPage).capital_asset_builder_ap_transactions
   on CabPurapLookupPage do |page|
     page.preq_number.fit @preq_id
-    #page.preq_number.fit '410276'
-    #page.po_number.fit '301084'
-    page.search
-    #page.process('410276')
+     page.search
     page.process(@preq_id)
   end
 
@@ -454,7 +450,6 @@ end
 
 And /^I select and create asset$/ do
   on PurapTransactionPage do |page|
-    page.split_qty.fit '1'
     page.line_item_checkbox.set
     page.create_asset
     page.use_new_tab
