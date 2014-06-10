@@ -129,7 +129,7 @@ Feature: Pre-Encumbrance
     When  I am logged in as a KFS User
     Then  the Pre-Encumbrance document GL Entry Lookup matches the document's GL entry
 
-  @KFSQA-988 @FP @PreEncumbrance @smoke @wip
+  @KFSQA-988 @FP @PreEncumbrance @smoke
   Scenario: Submit a pre-encumbrance to disencumber and pre-encumber on the same document.
     #create the pre-encumbrance that will be disencumbered by this test
     Given I am logged in as a KFS User for the PE document
