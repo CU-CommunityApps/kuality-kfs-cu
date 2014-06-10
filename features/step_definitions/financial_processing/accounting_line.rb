@@ -486,13 +486,9 @@ And /^the (Encumbrance|Disencumbrance|Source|Target|From|To) Accounting Line ent
 end
 
 And /^the General Ledger Pending entries match the accounting lines on the (.*) document$/ do |document|
-  # view the document?
-  # open up pending entries
-  # match accounts with GLPEs
   doc_object = get(snake_case(document))
-  page_klass = Kernel.const_get(doc_object.class.to_s.gsub(/(.*)Object$/,'\1Page'))
 
-  on page_klass do |page|
+  on page_class_for(document) do |page|
     page.expand_all
 
     num_encum_source_d = 0
@@ -500,35 +496,35 @@ And /^the General Ledger Pending entries match the accounting lines on the (.*) 
     num_disencum_target_d = 0
     num_disencum_target_c = 0
 
-    all_accounting_lines = doc_object.accounting_lines[:source] + doc_object.accounting_lines[:target]
-    all_accounting_lines.each do |accounting_line|
+    doc_object.accounting_lines.each_value do |al_type|
+      al_type.each do |accounting_line|
 
-      account_number_col = page.glpe_results_table.keyed_column_index(:account_number)
-      amount_col = page.glpe_results_table.keyed_column_index(:amount)
-      dc_col = page.glpe_results_table.keyed_column_index(:d_c)
+        account_number_col = page.glpe_results_table.keyed_column_index(:account_number)
+        amount_col = page.glpe_results_table.keyed_column_index(:amount)
+        dc_col = page.glpe_results_table.keyed_column_index(:d_c)
 
-      page.glpe_results_table.rest.each do |row|
-        #get the reversal date in the correct format for comparison
-        reversal_date_str = row[page.glpe_results_table.keyed_column_index(:doc_reversal_date)].text.strip.to_s
+        page.glpe_results_table.rest.each do |row|
+          #get the reversal date in the correct format for comparison
+          reversal_date_str = row[page.glpe_results_table.keyed_column_index(:doc_reversal_date)].text.strip
 
-        #doc reversal data is empty, pertains to the target/disencumbrance row
-        if row[account_number_col].text.strip == accounting_line.account_number and row[amount_col].text.groom == accounting_line.amount.to_s.groom and reversal_date_str.length == 0
-          if row[dc_col].text.strip == 'D'
-            num_disencum_target_d +=1
-          elsif row[dc_col].text.strip == 'C'
-            num_disencum_target_c +=1
-          end
-        #doc reversal date has a value, pertains to the source/encumbrance line
-        elsif row[account_number_col].text.strip == accounting_line.account_number and row[amount_col].text.groom == accounting_line.partial_amount.to_s.groom and reversal_date_str.length != 0
+          #doc reversal data is empty, pertains to the target/disencumbrance row
+          if row[account_number_col].text.strip == accounting_line.account_number && row[amount_col].text.groom == accounting_line.amount.to_s.groom && reversal_date_str.length == 0
             if row[dc_col].text.strip == 'D'
-              num_encum_source_d +=1
+              num_disencum_target_d +=1
             elsif row[dc_col].text.strip == 'C'
-              num_encum_source_c +=1
+              num_disencum_target_c +=1
             end
+          #doc reversal date has a value, pertains to the source/encumbrance line
+          elsif row[account_number_col].text.strip == accounting_line.account_number && row[amount_col].text.groom == accounting_line.partial_amount.to_s.groom && reversal_date_str.length != 0
+              if row[dc_col].text.strip == 'D'
+                num_encum_source_d +=1
+              elsif row[dc_col].text.strip == 'C'
+                num_encum_source_c +=1
+              end
+          end
         end
       end
     end
-
     num_encum_source_d.should == num_encum_source_c
     num_disencum_target_d.should == num_disencum_target_c
 

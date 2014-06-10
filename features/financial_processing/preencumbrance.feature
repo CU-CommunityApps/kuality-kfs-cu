@@ -176,7 +176,7 @@ Feature: Pre-Encumbrance
     And   the Pre-Encumbrance document goes to one of the following statuses:
       | ENROUTE |
       | SAVED   |
-    Then Open Encumbrance Lookup Results for the Account just used with Balance Type PE for All Pending Entries and Include Zeroed Out Encumbrances should display the disencumbered amount in both open and closed amounts with outstanding amount zero:
+    Then Open Encumbrance Lookup Results for the Account just used with Balance Type PE for All Pending Entries and Include Zeroed Out Encumbrances will display the disencumbered amount in both open and closed amounts with outstanding amount zero:
       | Number                 | 1002000 |
       | Disencumbered Amount   | 100.00  |
       | Outstanding Amount     |   0.00  |

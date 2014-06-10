@@ -98,8 +98,7 @@ And /^I add the (encumbrance|disencumbrance) to the stack$/ do |type|
   end
 end
 
-
-Then (/^Open Encumbrance Lookup Results for the Account just used with Balance Type (.*) for (No|Approved|All) Pending Entries and (Include|Exclude) Zeroed Out Encumbrances should display the disencumbered amount in both open and closed amounts with outstanding amount zero:$/) do |balance_type, pending_option, zeroed_option, table|
+Then /^Open Encumbrance Lookup Results for the Account just used with Balance Type (.*) for (No|Approved|All) Pending Entries and (Include|Exclude) Zeroed Out Encumbrances will display the disencumbered amount in both open and closed amounts with outstanding amount zero:$/ do |balance_type, pending_option, zeroed_option, table|
   account_used_info = table.rows_hash
   account_used_info.delete_if { |k,v| v.empty? }
 
