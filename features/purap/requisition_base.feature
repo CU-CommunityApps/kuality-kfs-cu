@@ -18,6 +18,10 @@ Feature: REQS, PO, PREQ,PDP
               of Individual Assets but with a System State of Modify Existing System. Retrieve the previously created asset for modification. Take
               the asset from Requisition to APO to PREQ to CAB and to Payment.
 
+  [KFSQA-998] First, create a initial Capital Asset with Base Function attributes. Second, create a modification to this asset. Keep the System Type
+              of One System but with a System State of Modify Existing System. Retrieve the previously created asset for modification. Take
+              the asset from Requisition to APO to PREQ to CAB and to Payment.
+
   @KFSQA-853 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral
   Scenario: PUR-5 Sensitive Commodity Data Flag enh
     Given I initiate a Requisition document with the following:
@@ -129,15 +133,15 @@ Feature: REQS, PO, PREQ,PDP
   | Individual Assets  | New System         |
   | One System         | New System         |
 
-  @KFSQA-997 @E2E @REQS @PO @PREQ @PDP @coral @wip
-  Scenario: Modify a Individual Asset REQS E2E (Individual/Modify Existing System)
+  @KFSQA-997 @KFSQS-998 @E2E @REQS @PO @PREQ @PDP @coral @wip
+  Scenario Outline: Modify a Individual Asset REQS E2E (Individual Assets/New) and (One System/New System)
     Given I initiate a Requisition document with the following:
       | Vendor Type        | NonB2B                  |
       | Add Vendor On REQS | Yes                     |
       | Positive Approval  | Unchecked               |
       | Account Type       | NonGrant                |
       | Amount             | 1000                    |
-      | CA System Type     | Individual Assets       |
+      | CA System Type     | <CA System Type>        |
       | CA System State    | New System              |
 
 #    |Default PM         | P           |
@@ -153,7 +157,7 @@ Feature: REQS, PO, PREQ,PDP
       | Positive Approval  | Unchecked               |
       | Account Type       | NonGrant                |
       | Amount             | 1000                    |
-      | CA System Type     | Individual Assets       |
+      | CA System Type     | <CA System Type>        |
       | CA System State    | Modify Existing System  |
 
 #    |Default PM         | P           |
@@ -162,3 +166,7 @@ Feature: REQS, PO, PREQ,PDP
     When I initiate a Payment Request document
     And  I run the nightly Capital Asset jobs
     And  I modify existing Capital Asset from AP transaction and apply payment
+  Examples:
+  | CA System Type     |
+  | Individual Assets  |
+  | One System         |
