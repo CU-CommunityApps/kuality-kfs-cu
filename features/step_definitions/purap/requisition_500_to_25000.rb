@@ -1,6 +1,5 @@
 And /^I create the Requisition document with:$/  do |table|
   updates = table.rows_hash
-  puts 'vendor ',updates['Vendor Number']
   @requisition = create RequisitionObject, payment_request_positive_approval_required: updates['payment request'],
                         payment_request_positive_approval_required: updates['payment request'],
                         vendor_number:        updates['Vendor Number'],
@@ -13,6 +12,23 @@ And /^I create the Requisition document with:$/  do |table|
                         item_object_code:     updates['Object Code'],
                         item_percent:         updates['Percent']
 
+end
+
+And /^I create the Requisition document with an Award Account and items that total less than the dollar threshold Requiring Award Review$/ do
+  account_info = get_kuali_business_object('KFS-COA','Account','subFundGroupCode=APFEDL&closed=N&contractsAndGrantsAccountResponsibilityId=5&accountExpirationDate=NULL')
+  award_account_number = account_info['accountNumber'][0]
+  cost_from_param = get_parameter_values('KFS-PURAP', 'DOLLAR_THRESHOLD_REQUIRING_AWARD_REVIEW', 'Requisition')[0].to_i
+  cost_from_param = cost_from_param - 1
+  step 'I create the Requisition document with:',
+       table(%Q{
+         | Vendor Number       | 4471-0                  |
+         | Item Quantity       | 1                       |
+         | Item Cost           | #{cost_from_param}      |
+         | Item Commodity Code | 12142203                |
+         | Account Number      | #{award_account_number} |
+         | Object Code         | 6570                    |
+         | Percent             | 100                     |
+       })
 end
 
 And /^I add an item to the Requisition document with:$/ do |table|
@@ -67,6 +83,7 @@ And /^I view the (.*) document on my action list$/ do |document|
       @requisition_initiator = page.initiator
     end
   end
+
 end
 
 And /^I view the Requisition document from the Requisitions search$/ do
@@ -226,8 +243,9 @@ end
 
 Then /^in Pending Action Requests an FYI is sent to FO and Initiator$/ do
   on PurchaseOrderPage do |page|
-    page.reload # Sometimes the pending table doesn't show up immediately.
-    page.headerinfo_table.wait_until_present
+    # TODO : it looks like there is no reload button when open PO with final status.  so comment it out for now.  need further check
+    #Watir::Wait::TimeoutError: timed out after 30 seconds, waiting for {:class=>"globalbuttons", :title=>"reload", :tag_name=>"button"} to become present    page.reload # Sometimes the pending table doesn't show up immediately.
+    #page.headerinfo_table.wait_until_present
     page.expand_all
     page.refresh_route_log # Sometimes the pending table doesn't show up immediately.
     page.show_pending_action_requests if page.pending_action_requests_hidden?
@@ -305,6 +323,7 @@ And  /^I change the Remit To Address$/ do
 end
 And  /^I enter the Qty Invoiced and calculate$/ do
   on(PaymentRequestPage) do |page|
+    @preq_id = page.preq_id
     page.item_qty_invoiced.fit @requisition.item_quantity # same as REQS item qty
     page.item_calculate
   end
@@ -442,7 +461,6 @@ When /^I visit the "(.*)" page$/  do   |go_to_page|
 end
 
 And /^I enter Payment Information for recurring payment type (.*)$/ do |recurring_payment_type|
-  puts 'recur type',recurring_payment_type
   unless recurring_payment_type.empty?
     on RequisitionPage do |page|
       page.recurring_payment_type.fit recurring_payment_type

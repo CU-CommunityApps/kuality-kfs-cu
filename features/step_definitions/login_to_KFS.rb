@@ -182,3 +182,8 @@ Given /^I Login as a Benefit Transfer Initiator$/ do
   #visit(BackdoorLoginPage).login_as('rae28') #TODO get from role service
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-LD', 'BT Initiator (cu)'))
 end
+
+Given /^I Login as an Asset Processor$/ do
+  #visit(BackdoorLoginPage).login_as('eap2') #TODO get from role service
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Asset Processor'))
+end
