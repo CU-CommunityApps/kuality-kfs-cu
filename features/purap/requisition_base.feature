@@ -134,7 +134,7 @@ Feature: REQS, PO, PREQ,PDP
   | One System         | New System         |
 
   @KFSQA-997 @KFSQS-998 @E2E @REQS @PO @PREQ @PDP @coral @wip
-  Scenario Outline: Modify a Individual Asset REQS E2E (Individual Assets/New) and (One System/New System)
+  Scenario Outline: Modify an existing Capital Asset REQS E2E (Individual Assets/New) and (One System/New System)
     Given I initiate a Requisition document with the following:
       | Vendor Type        | NonB2B                  |
       | Add Vendor On REQS | Yes                     |
