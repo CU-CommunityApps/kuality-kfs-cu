@@ -27,17 +27,42 @@ And /^I add a note to my e\-SHOP cart$/ do
 end
 
 And /^I submit my e\-SHOP cart$/ do
-  pending 'Need to figure out how to actually submit an e-SHOP cart'
+  on ShopCartPage do |scp|
+    @eshop_cart = make EShopCartObject
+    @eshop_cart.absorb
+    scp.submit_shopping_cart
+  end
+
+  # Surprise! This should kick you out to a Requisition document.
+  on(RequisitionPage).doc_title.should be 'Requistion'
+  @requisition = make RequisitionObject
+  # @requisition.absorb :new # Hopefully, we can #absorb this mutha
 end
 
 Then /^Payment Request Positive Approval Required is checked$/ do
-  pending 'Need to figure out where I go to check if a Payment Request Positive Approval Required message is checked'
+  on(RequisitionPage).payment_request_positive_approval_required.checked?.should
 end
 
 And /^the e\-SHOP cart has an associated Requisition document$/ do
-  pending 'Need to figure out how to verify if an e-SHOP cart has spawned a REQ'
+  # We're actually expecting to be on said Requisition document during this check
+  on(RequisitionPage).description.should == @eshop_cart.cart_name
 end
 
 When /^I go to the e\-SHOP main page$/ do
   visit(MainPage).e_shop
+end
+
+When /^I view my e\-SHOP cart$/ do
+  on(EShopPage).goto_cart
+  on(ShopCartPage) do |scp|
+    scp.supplier_lines.each{|sl| puts sl.text; }
+    puts '======'
+    scp.line_items_for('PerkinElmer Life and Analytical Sciences').each{|r| puts r.text }
+    puts "I want #{scp.line_items_for('PerkinElmer Life and Analytical Sciences')[1].text}"
+
+    puts '======'
+    puts scp.line_items_for('PerkinElmer Life and Analytical Sciences')[1].tds.each{|r| puts r.inspect }
+    #scp.update_product_quantity('PerkinElmer Life and Analytical Sciences', 'N9316232').fit '2'
+  end
+  pending
 end
