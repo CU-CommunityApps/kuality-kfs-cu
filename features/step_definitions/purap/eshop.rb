@@ -55,13 +55,22 @@ end
 When /^I view my e\-SHOP cart$/ do
   on(EShopPage).goto_cart
   on(ShopCartPage) do |scp|
+    s = 'PerkinElmer Life and Analytical Sciences'
     scp.supplier_lines.each{|sl| puts sl.text; }
     puts '======'
-    scp.line_items_for('PerkinElmer Life and Analytical Sciences').each{|r| puts r.text }
-    puts "I want #{scp.line_items_for('PerkinElmer Life and Analytical Sciences')[1].text}"
+    puts scp.line_items_table_for(s).header_keys.keep_if{ |k| k != :'' }
+    puts '======'
+
+    puts scp.line_items_for(s)[0].tds.to_a.keep_if{ |r| !r.text.empty? }.collect{|td| td.text}
 
     puts '======'
-    puts scp.line_items_for('PerkinElmer Life and Analytical Sciences')[1].tds.each{|r| puts r.inspect }
+    puts scp.line_item_values('PerkinElmer Life and Analytical Sciences', 0)
+    puts '======'
+    #puts scp.line_item_values('Staples', 0)
+
+    scp.delete_product('PerkinElmer Life and Analytical Sciences', 0)
+    # puts scp.line_item_values('PerkinElmer Life and Analytical Sciences', 1).inspect
+
     #scp.update_product_quantity('PerkinElmer Life and Analytical Sciences', 'N9316232').fit '2'
   end
   pending
