@@ -129,7 +129,7 @@ Feature: REQS, PO, PREQ,PDP
   | Individual Assets  | New System         |
   | One System         | New System         |
 
-  @KFSQA-997 @E2E @REQS @PO @PREQ @PDP @coral @wip
+  @KFSQA-997 @E2E @REQS @PO @PREQ @PDP @coral
   Scenario: Modify a Individual Asset REQS E2E (Individual/Modify Existing System)
     Given I initiate a Requisition document with the following:
       | Vendor Type        | NonB2B                  |
