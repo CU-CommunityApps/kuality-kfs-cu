@@ -472,7 +472,7 @@ end
 And /^I complete the Asset Information Detail tab$/ do
   on AssetGlobalPage do |page|
     page.asset_type_code.fit '019'
-    page.manufacturer.fit 'Jones Landscaping' unless !page.manufacturer.value.strip.empty?
+    page.manufacturer.fit 'Jones Landscaping' if page.manufacturer.value.strip.empty?
 
   end
 
