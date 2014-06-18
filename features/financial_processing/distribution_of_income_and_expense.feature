@@ -29,23 +29,14 @@ Feature: Distribution of Income and Expense
 
   @KFSQA-1006 @DI @E2E @slug @cornell @wip
   Scenario: I credit an expenditure from a source account and create an asset into the target account.
-    Given   I am logged in as a KFS User for the DI document
-    And     I start an empty Distribution Of Income And Expense document
-    And     I add a Source Accounting Line to the Distribution Of Income And Expense document with the following:
-      | Chart Code   | IT      |
-      | Number       | 1003005 |
-      | Object Code  | 6540    |
-      | Amount       | 8000    |
-    And     I add a Target Accounting Line to the Distribution Of Income And Expense document with the following:
-      | Chart Code   | IT      |
-      | Number       | 1003010 |
-      | Object Code  | 3630    |
-      | Amount       | 8000    |
-    And     I select accounting line and create Capital Asset
-    And     I distribute Capital Asset amount
-    And     I add a tag and location for Capital Asset
-    And     I submit the Distribution Of Income And Expense document
-    And     the Distribution Of Income And Expense document goes to ENROUTE
-    And     I route the Distribution Of Income And Expense document to final
+    Given   I create Distribution Of Income And Expense with following:
+      | From Chart        | IT      |
+      | From Account      | 1003005 |
+      | From Object Code  | 6540    |
+      | Amount            | 8000    |
+      | To Chart          | IT      |
+      | To Account        | 1003010 |
+      | To Object Code    | 3630    |
+      | Capital Asset     | Yes     |
     And     I run the nightly Capital Asset jobs
     And     I build a Capital Asset from the General Ledger

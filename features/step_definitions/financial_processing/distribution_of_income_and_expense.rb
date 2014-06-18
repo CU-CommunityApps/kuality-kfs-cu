@@ -98,3 +98,37 @@ And /^I create asset from General Ledger Processing$/ do
   on(GeneralLedgerProcessingPage).create_asset
   @asset_global = create AssetGlobalObject
 end
+
+Given  /^I create Distribution Of Income And Expense with following:$/ do |table|
+  arguments = table.rows_hash
+  steps %Q{ Given   I am logged in as a KFS User for the DI document
+            And     I start an empty Distribution Of Income And Expense document
+  }
+  step 'I add a Source Accounting Line to the Distribution Of Income And Expense document with the following:',
+       table(%Q{
+              | Chart Code   | #{arguments['From Chart']}       |
+              | Number       | #{arguments['From Account']}     |
+              | Object Code  | #{arguments['From Object Code']} |
+              | Amount       | #{arguments['Amount']}           |
+         })
+  step 'I add a Target Accounting Line to the Distribution Of Income And Expense document with the following:',
+       table(%Q{
+              | Chart Code   | #{arguments['To Chart']}         |
+              | Number       | #{arguments['To Account']}       |
+              | Object Code  | #{arguments['To Object Code']}   |
+              | Amount       | #{arguments['Amount']}           |
+         })
+
+  if !arguments['Capital Asset'].nil? && arguments['Capital Asset'] == 'Yes'
+    steps %Q{ And     I select accounting line and create Capital Asset
+              And     I distribute Capital Asset amount
+              And     I add a tag and location for Capital Asset
+  }
+  end
+
+  steps %Q{ And     I submit the Distribution Of Income And Expense document
+            And     the Distribution Of Income And Expense document goes to ENROUTE
+            And     I route the Distribution Of Income And Expense document to final
+      }
+
+end
