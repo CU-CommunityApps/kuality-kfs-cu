@@ -85,7 +85,7 @@ end
 
 And /^I lookup a Capital Asset from GL transaction to process$/ do
   visit(MainPage).capital_asset_builder_gl_transactions
-  on CabGlLookupPage do |page|
+  on CABGeneralLedgerEntryLookupPage do |page|
     page.account_number.fit @asset_account_number
     page.search
     page.process(@asset_account_number)
