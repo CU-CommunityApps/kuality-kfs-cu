@@ -48,7 +48,6 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
                 ownership:                       'CORPORATION',
                 w9_received:                     'Yes',
                 w9_received_date:                '02/01/2014',
-                attachment_file_name:            'vendor_attachment_test.png',
                 insurance_requirements_complete: 'Yes',
                 cornell_additional_ins_ind:      'Yes'
               }

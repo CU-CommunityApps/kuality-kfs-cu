@@ -369,15 +369,16 @@ end
 And   /^the Delivery Instructions displayed equals what came from the PO$/ do
   on ShopCatalogPage do |page|
     page.doc_po_link
-    page.doc_summary[1].text.should include "Note to Supplier\n" + @requisition.vendor_notes
-    page.doc_summary[3].text.should include "Delivery Instructions " + @requisition.delivery_instructions
+    page.doc_summary[1].text.should include "Note to Supplier\n#{@requisition.vendor_notes}"
+    page.doc_summary[3].text.should include "Delivery Instructions #{@requisition.delivery_instructions}"
   end
 end
 
-And   /^the Attachments for Supplier came from the PO$/ do
+And /^the Attachments for Supplier came from the PO$/ do
+  pending 'THIS STEP DOES NOT USE NOTES AND ATTACHMENTS CORRECTLY.'
   on ShopCatalogPage do |page|
     page.attachments_link
-    page.search_results[1].text.should include @requisition.attachment_file_name
+    page.search_results[1].text.should include @requisition.attachment_file_name # FIXME: This doesn't use Notes and Attachments correctly
   end
 end
 
@@ -415,10 +416,11 @@ And /^I verified the GLPE on Payment Request page with the following:$/ do |tabl
 end
 
 And /^I add an Attachment to the Requisition document$/ do
+  pending 'THIS STEP DOES NOT USE NOTES AND ATTACHMENTS CORRECTLY.'
   on RequisitionPage do |page|
     page.note_text.fit random_alphanums(40, 'AFT-NoteText')
     page.send_to_vendor.fit 'Yes'
-    page.attach_notes_file.set($file_folder+@requisition.attachment_file_name)
+    page.attach_notes_file.set($file_folder+@requisition.attachment_file_name) # FIXME: This doesn't use Notes and Attachments correctly at all
 
     page.add_note
     page.attach_notes_file_1.should exist #verify that note is indeed added
