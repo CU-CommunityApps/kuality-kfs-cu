@@ -14,6 +14,7 @@ Feature: eSHOP Create
     When  I go to the e-SHOP main page
     And   I search for an e-SHOP item with a Non-Sensitive Commodity Code
     And   I add e-SHOP items to my cart until the cart total reaches the Business to Business Total Amount For Automatic Purchase Order limit
+    And   I view my e-SHOP cart
     And   I add a note to my e-SHOP cart
     And   I submit my e-SHOP cart
     Then  Payment Request Positive Approval Required is checked

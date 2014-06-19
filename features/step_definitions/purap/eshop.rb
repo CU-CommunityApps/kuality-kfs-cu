@@ -20,32 +20,28 @@ And /^I add e\-SHOP items to my cart until the cart total reaches the Business t
 end
 
 And /^I add a note to my e\-SHOP cart$/ do
-  # You must already be in the e-SHOP section of KFS
-  on(EShopPage).goto_cart
-  on(ShopCartPage).add_note_to_cart 'Wow! That is a sweet note, you might say!'
-  on(ShopCartPage).cart_status_message.should == 'Cart was saved successfully'
+  @eshop_cart.add_note 'Wow! That is a sweet note, you might say!'
 end
 
 And /^I submit my e\-SHOP cart$/ do
   # We're assuming you're already on the e-SHOP cart page here.
-  @eshop_cart = make EShopCartObject
-  @eshop_cart.absorb
   @eshop_cart.submit
 
   # Surprise! This should kick you out to a Requisition document.
   on(RequisitionPage).doc_title.strip.should == 'Requisition'
   @requisition = make RequisitionObject
-  # @requisition.absorb :new # Hopefully, we can #absorb this mutha
   pending 'Gotta write RequisitionObject#absorb!'
+  # @requisition.absorb :new # Hopefully, we can #absorb this mutha
 end
 
 Then /^Payment Request Positive Approval Required is checked$/ do
+  # TODO: Convert this to using @requisition
   on(RequisitionPage).payment_request_positive_approval_required.checked?.should
 end
 
 And /^the e\-SHOP cart has an associated Requisition document$/ do
-  # We're actually expecting to be on said Requisition document during this check
-  on(RequisitionPage).description.should == @eshop_cart.cart_name
+  # You need to have to have already pulled up the Req doc, naturally
+  @requisition.description.should == @eshop_cart.cart_name
 end
 
 When /^I go to the e\-SHOP main page$/ do
@@ -55,7 +51,7 @@ end
 When /^I view my e\-SHOP cart$/ do
   # We're going to assume you want to update this guy
   # if you're checking out your cart...
-  on(EShopPage).goto_cart
-  @eshop_cart = make EShopCartObject
-  @eshop_cart.absorb
+  @eshop_cart = make EShopCartObject if @eshop_cart.nil?
+  @eshop_cart.view # This assumes you're at least in the e-SHOP, naturally
+  @eshop_cart.absorb!
 end
