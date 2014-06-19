@@ -99,36 +99,43 @@ And /^I create asset from General Ledger Processing$/ do
   @asset_global = create AssetGlobalObject
 end
 
-Given  /^I create Distribution Of Income And Expense with following:$/ do |table|
-  arguments = table.rows_hash
-  steps %Q{ Given   I am logged in as a KFS User for the DI document
-            And     I start an empty Distribution Of Income And Expense document
-  }
-  step 'I add a Source Accounting Line to the Distribution Of Income And Expense document with the following:',
-       table(%Q{
-              | Chart Code   | #{arguments['From Chart']}       |
-              | Number       | #{arguments['From Account']}     |
-              | Object Code  | #{arguments['From Object Code']} |
-              | Amount       | #{arguments['Amount']}           |
-         })
-  step 'I add a Target Accounting Line to the Distribution Of Income And Expense document with the following:',
-       table(%Q{
-              | Chart Code   | #{arguments['To Chart']}         |
-              | Number       | #{arguments['To Account']}       |
-              | Object Code  | #{arguments['To Object Code']}   |
-              | Amount       | #{arguments['Amount']}           |
-         })
+Given  /^I create a Distribution of Income and Expense document with the following:$/ do |table|
+  account_info = table.raw.flatten.each_slice(6).to_a
+  account_info.shift # skip header row
+  capital_asset_action = 'No'
 
-  if !arguments['Capital Asset'].nil? && arguments['Capital Asset'] == 'Yes'
-    steps %Q{ And     I select accounting line and create Capital Asset
-              And     I distribute Capital Asset amount
-              And     I add a tag and location for Capital Asset
-  }
+  steps %Q{
+            Given   I am logged in as a KFS User for the DI document
+            And     I start an empty Distribution Of Income And Expense document
+          }
+
+  account_info.each do |line_type, chart_code, account_number, object_code, amount, capital_asset|
+    account_line_type = line_type.eql?('From') ? 'Source' : 'Target'
+    capital_asset_action = line_type.eql?('From') && !capital_asset.empty? && capital_asset.eql?('Yes') ? 'Modify' : 'No'
+    capital_asset_action = capital_asset_action.eql?('No') && line_type.eql?('To') && !capital_asset.empty? && capital_asset.eql?('Yes') ? 'Create' : 'No'
+    step "I add a #{account_line_type} Accounting Line to the Distribution Of Income And Expense document with the following:",
+         table(%Q{
+              | Chart Code   | #{chart_code}       |
+              | Number       | #{account_number}   |
+              | Object Code  | #{object_code}      |
+              | Amount       | #{amount}           |
+         })
   end
 
-  steps %Q{ And     I submit the Distribution Of Income And Expense document
+
+  case capital_asset_action
+      when 'Create'
+        steps %Q{
+              And     I select accounting line and create Capital Asset
+              And     I distribute Capital Asset amount
+              And     I add a tag and location for Capital Asset
+            }
+  end
+
+  steps %Q{
+            And     I submit the Distribution Of Income And Expense document
             And     the Distribution Of Income And Expense document goes to ENROUTE
             And     I route the Distribution Of Income And Expense document to final
-      }
+          }
 
 end

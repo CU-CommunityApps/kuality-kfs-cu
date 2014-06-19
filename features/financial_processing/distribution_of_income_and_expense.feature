@@ -29,14 +29,9 @@ Feature: Distribution of Income and Expense
 
   @KFSQA-1006 @DI @E2E @slug @cornell @wip
   Scenario: I credit an expenditure from a source account and create an asset into the target account.
-    Given   I create Distribution Of Income And Expense with following:
-      | From Chart        | IT      |
-      | From Account      | 1003005 |
-      | From Object Code  | 6540    |
-      | Amount            | 8000    |
-      | To Chart          | IT      |
-      | To Account        | 1003010 |
-      | To Object Code    | 3630    |
-      | Capital Asset     | Yes     |
+    Given   I create a Distribution of Income and Expense document with the following:
+      | Line Type | Chart Code | Account | Object Code | Amount | Capital Asset? |
+      | From      | IT         | 1003005 | 6540        | 8000   |                |
+      | To        | IT         | 1003010 | 3630        | 8000   | Yes            |
     And     I run the nightly Capital Asset jobs
     And     I build a Capital Asset from the General Ledger
