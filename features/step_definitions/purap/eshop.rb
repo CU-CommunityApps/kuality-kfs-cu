@@ -55,6 +55,12 @@ end
 When /^I view my e\-SHOP cart$/ do
   on(EShopPage).goto_cart
   on(ShopCartPage) do |scp|
+    @eshop_cart = create EShopCartObject, cart_name: scp.cart_name.value.strip, cart_description: scp.cart_description.value.strip
+    puts @eshop_cart.inspect
+    @eshop_cart.absorb
+    puts @eshop_cart.inspect
+    pending
+
     s = 'PerkinElmer Life and Analytical Sciences'
     scp.supplier_lines.each{|sl| puts sl.text; }
     puts '======'
@@ -68,7 +74,7 @@ When /^I view my e\-SHOP cart$/ do
     puts '======'
     #puts scp.line_item_values('Staples', 0)
 
-    scp.delete_product('PerkinElmer Life and Analytical Sciences', 0)
+    #scp.delete_product('PerkinElmer Life and Analytical Sciences', 0)
     # puts scp.line_item_values('PerkinElmer Life and Analytical Sciences', 1).inspect
 
     #scp.update_product_quantity('PerkinElmer Life and Analytical Sciences', 'N9316232').fit '2'
