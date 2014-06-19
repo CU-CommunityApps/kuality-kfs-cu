@@ -338,7 +338,7 @@ And /^I calculate PREQ$/ do
 end
 
 
-And   /^I view the Purchase Order document via e-SHOP$/ do
+And /^I view the Purchase Order document via e-SHOP$/ do
   on ShopCatalogPage do |page|
     #page.key_words.fit 'Commidity 14111507'
     page.order_doc
@@ -359,14 +359,14 @@ And   /^I view the Purchase Order document via e-SHOP$/ do
   end
 end
 
-And   /^the Document Status displayed '(\w+)'$/ do |doc_status|
+And /^the Document Status displayed '(\w+)'$/ do |doc_status|
   on ShopCatalogPage do |page|
     page.return_po_value(@purchase_order_number)
     page.doc_summary[1].text.should include  'Workflow  ' + doc_status
   end
 end
 
-And   /^the Delivery Instructions displayed equals what came from the PO$/ do
+And /^the Delivery Instructions displayed equals what came from the PO$/ do
   on ShopCatalogPage do |page|
     page.doc_po_link
     page.doc_summary[1].text.should include "Note to Supplier\n#{@requisition.vendor_notes}"
