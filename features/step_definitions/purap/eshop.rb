@@ -27,16 +27,16 @@ And /^I add a note to my e\-SHOP cart$/ do
 end
 
 And /^I submit my e\-SHOP cart$/ do
-  on ShopCartPage do |scp|
-    @eshop_cart = make EShopCartObject
-    @eshop_cart.absorb
-    scp.submit_shopping_cart
-  end
+  # We're assuming you're already on the e-SHOP cart page here.
+  @eshop_cart = make EShopCartObject
+  @eshop_cart.absorb
+  @eshop_cart.submit
 
   # Surprise! This should kick you out to a Requisition document.
-  on(RequisitionPage).doc_title.should be 'Requistion'
+  on(RequisitionPage).doc_title.strip.should be 'Requistion'
   @requisition = make RequisitionObject
   # @requisition.absorb :new # Hopefully, we can #absorb this mutha
+  pending 'Gotta write RequisitionObject#absorb!'
 end
 
 Then /^Payment Request Positive Approval Required is checked$/ do
@@ -53,31 +53,9 @@ When /^I go to the e\-SHOP main page$/ do
 end
 
 When /^I view my e\-SHOP cart$/ do
+  # We're going to assume you want to update this guy
+  # if you're checking out your cart...
   on(EShopPage).goto_cart
-  on(ShopCartPage) do |scp|
-    @eshop_cart = create EShopCartObject, cart_name: scp.cart_name.value.strip, cart_description: scp.cart_description.value.strip
-    puts @eshop_cart.inspect
-    @eshop_cart.absorb
-    puts @eshop_cart.inspect
-    pending
-
-    s = 'PerkinElmer Life and Analytical Sciences'
-    scp.supplier_lines.each{|sl| puts sl.text; }
-    puts '======'
-    puts scp.line_items_table_for(s).header_keys.keep_if{ |k| k != :'' }
-    puts '======'
-
-    puts scp.line_items_for(s)[0].tds.to_a.keep_if{ |r| !r.text.empty? }.collect{|td| td.text}
-
-    puts '======'
-    puts scp.line_item_values('PerkinElmer Life and Analytical Sciences', 0)
-    puts '======'
-    #puts scp.line_item_values('Staples', 0)
-
-    #scp.delete_product('PerkinElmer Life and Analytical Sciences', 0)
-    # puts scp.line_item_values('PerkinElmer Life and Analytical Sciences', 1).inspect
-
-    #scp.update_product_quantity('PerkinElmer Life and Analytical Sciences', 'N9316232').fit '2'
-  end
-  pending
+  @eshop_cart = make EShopCartObject
+  @eshop_cart.absorb
 end
