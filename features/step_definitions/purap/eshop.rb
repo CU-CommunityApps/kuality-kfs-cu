@@ -33,7 +33,7 @@ And /^I submit my e\-SHOP cart$/ do
   @eshop_cart.submit
 
   # Surprise! This should kick you out to a Requisition document.
-  on(RequisitionPage).doc_title.strip.should be 'Requistion'
+  on(RequisitionPage).doc_title.strip.should == 'Requisition'
   @requisition = make RequisitionObject
   # @requisition.absorb :new # Hopefully, we can #absorb this mutha
   pending 'Gotta write RequisitionObject#absorb!'
