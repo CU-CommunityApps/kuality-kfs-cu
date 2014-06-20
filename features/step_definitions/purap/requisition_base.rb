@@ -30,7 +30,10 @@ Given  /^I initiate a Requisition document with the following:$/ do |table|
   end
 
   # so far it used 6540, 6560, 6570 which are all EX type (Expense Expenditure)
-  object_code = 6540
+  object_code =  get_aft_parameter_value(ParameterConstants::REQS_EX_OBJECT_CODE)
+  if !arguments['CA System Type'].nil?
+    object_code = get_aft_parameter_value(ParameterConstants::REQS_CA_OBJECT_CODE)
+  end
   step 'I create the Requisition document with:',
        table(%Q{
          | Vendor Number       | #{@vendor_number}  |
@@ -47,6 +50,13 @@ Given  /^I initiate a Requisition document with the following:$/ do |table|
   end
 
   step 'I select the Payment Request Positive Approval Required' if positive_approve == 'Checked'
+
+  if !arguments['CA System Type'].nil?
+    step "I fill in Capital Asset tab on Requisition document with:", table(%{
+      | CA System Type       | #{arguments['CA System Type']}  |
+      | CA System State      | #{arguments['CA System State']} |
+  })
+  end
 
   steps %q{
     When I add an Attachment to the Requisition document
@@ -193,9 +203,7 @@ And /^I format Disbursement$/ do
     page.payment_date.set right_now[:date_w_slashes]
     page.all_payment_type.set
     page.all_payment_distribution.set
-    puts 'fields set'
     page.customer_boxes.each { |check_box| check_box.checked? ? nil : check_box.click }
-    puts 'customer checked'
     page.begin_format
     sleep 20
   end
@@ -227,7 +235,6 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
   end
 
   if document == 'Purchase Order'
-    puts 'base org review level ', @base_org_review_level
 
     @base_org_review_level.should == @level
     po_reviewer_500k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
@@ -246,7 +253,6 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
         @org_review_users.should include po_reviewer_5m
     end
   elsif document == 'Requisition' || document == 'Payment Request'
-    puts 'reqs base org  ', @org_review_users
     case @level
      when 1
        (@org_review_users & reqs_org_reviewers_level_1).length.should >= 1
@@ -262,12 +268,10 @@ end
 And /^I validate Commodity Review Routing for (.*) document$/ do |document|
   # TODO : may need for POA in the future.
   if document == 'Purchase Order'
-    puts 'po commodity ',@commodity_review_users
     @commodity_review_users.length.should == 0
   elsif document == 'Requisition'
     # TODO : reviewers should come from groupservice when it is ready
     reqs_animal_reviewers = get_principal_name_for_group('3000083')
-    puts 'reqs commodity ', @commodity_review_users
     if @sensitive_commodity
       (@commodity_review_users & reqs_animal_reviewers).length.should >= 1
     else
@@ -374,14 +378,153 @@ Then /^the Purchase Order Amendment document's GLPE tab shows the new item amoun
   on PurchaseOrderAmendmentPage do |page|
     page.show_glpe
 
-    puts 'requisition ', @requisition.item_account_number,@requisition.item_uom
-    puts ' POA glpe ', page.glpe_results_table.text, page.glpe_results_table[2][11].text, @poa_item_amount
 
     page.glpe_results_table.rows.length.should == 3
     page.glpe_results_table.text.should include @requisition.item_account_number
     page.glpe_results_table[1][11].text.to_f.should == @poa_item_amount
     page.glpe_results_table[2][11].text.to_f.should == @poa_item_amount
   end
+end
+
+Then /^Award Review is not in the Requisition document workflow history$/ do
+  root_action_requests =  get_root_action_requests(@requisition.document_id).getRootActionRequest().to_a
+  root_action_requests.each do |root_action|
+    unless root_action.annotation.nil?
+      root_action.annotation.should_not include 'Contracts'
+    end
+  end
+
+end
+
+And /^I fill in Capital Asset tab on Requisition document with:$/ do |table|
+  #TODO : different type/state has different data input after select
+  system_params = table.rows_hash
+  on RequisitionPage do |page|
+    page.expand_all
+    page.system_type.fit system_params['CA System Type']
+    page.system_state.fit system_params['CA System State']
+    page.select
+  end
+
+  case system_params['CA System Type']
+    when 'One System'
+      case system_params['CA System State']
+        when 'New System'
+          on RequisitionPage do |page|
+            page.model_number.fit '2014 Bella Model'
+            page.transaction_type_code.fit 'New'
+            page.asset_system_description.fit random_alphanums(40, 'AFT CA desc')
+            page.asset_number.fit '1'
+            page.same_as_vendor
+          end
+        when 'Modify Existing System'
+          on RequisitionPage do |page|
+            page.add_asset_number.fit @asset_number
+            #page.add_asset_number.fit '504307'
+            page.add_asset
+            page.transaction_type_code.fit 'Modify existing'
+          end
+      end
+    when 'Individual Assets'
+      case system_params['CA System State']
+        when 'New System'
+          on RequisitionPage do |page|
+            #page.manufacturer.fit random_alphanums(15, 'AFT manuf')
+            page.model_number.fit '2014 Bella Model'
+            page.transaction_type_code.fit 'New'
+            page.same_as_vendor
+          end
+        when 'Modify Existing System'
+          on RequisitionPage do |page|
+            page.add_asset_number.fit @asset_number
+            #page.add_asset_number.fit '504307'
+            page.add_asset
+            page.transaction_type_code.fit 'Modify existing'
+          end
+      end
+  end
+end
+Then /^I run the nightly Capital Asset jobs$/ do
+  steps %Q{
+    Given I am logged in as a KFS Operations
+    And I collect the Capital Asset Documents
+    And I create the Plant Fund Entries
+    And I move the Plant Fund Entries to Posted Entries
+    And I clear Pending Entries
+    And I create entries for CAB
+   }
+
+end
+
+And /^I lookup a Capital Asset to process$/ do
+  visit(MainPage).capital_asset_builder_ap_transactions
+  on CabPurapLookupPage do |page|
+    page.preq_number.fit @preq_id
+     page.search
+    page.process(@preq_id)
+  end
+
+end
+
+And /^I select and create asset$/ do
+  on PurapTransactionPage do |page|
+    page.line_item_checkbox.set
+    page.create_asset
+    page.use_new_tab
+    page.close_parents
+  end
+  @asset_global = create AssetGlobalObject
+end
+
+And /^I complete the Asset Information Detail tab$/ do
+  on AssetGlobalPage do |page|
+    page.asset_type_code.fit '019'
+  end
+
+end
+
+And /^I complete the existing Asset Location Information$/ do
+  on AssetGlobalPage do |page|
+    page.asset_campus.fit 'IT'
+    page.asset_building_code.fit '7000'
+    page.asset_building_room_number.fit 'XXXXXXXX'
+    @asset_number = page.asset_number
+  end
+end
+
+
+And /^I build a Capital Asset from AP transaction$/ do
+  steps %Q{
+    Given I Login as an Asset Processor
+    And   I lookup a Capital Asset to process
+    And   I select and create asset
+    And   I complete the Asset Information Detail tab
+    And   I complete the existing Asset Location Information
+    And   I submit the Asset Global document
+    Then  the Asset Global document goes to FINAL
+   }
+end
+
+
+And /^I modify existing Capital Asset from AP transaction and apply payment$/ do
+  steps %Q{
+    Given I Login as an Asset Processor
+    And   I lookup a Capital Asset to process
+    And   I select and apply payment
+    And   I submit the Asset Manual Payment document
+    Then  the Asset Manual Payment document goes to FINAL
+   }
+end
+
+And /^I select and apply payment$/ do
+  on PurapTransactionPage do |page|
+    #page.split_qty.fit '1'
+    page.line_item_checkbox.set
+    page.apply_payment
+    page.use_new_tab
+    page.close_parents
+  end
+  @asset_manual_payment = create AssetManualPaymentObject
 end
 
 And /^I add these Accounting Lines to the Requisition document:$/ do |table|

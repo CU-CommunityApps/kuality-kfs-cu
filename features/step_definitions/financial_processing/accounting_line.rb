@@ -234,6 +234,14 @@ And /^I add a (Source|Target|From|To) Accounting Line to the (.*) document with 
               new_source_line.merge!({
                                          object: '6100'
                                      })
+              if accounting_line_info.has_key?'Auto Disencumber Type'
+                new_source_line.merge!({
+                                         auto_dis_encumber_type:    accounting_line_info['Auto Disencumber Type'],
+                                         partial_transaction_count: accounting_line_info['Partial Transaction Count'],
+                                         partial_amount:            accounting_line_info['Partial Amount'],
+                                         start_date:                right_now[:date_w_slashes]
+                                      })
+              end
             when 'Internal Billing', 'Service Billing'
               new_source_line.merge!({
                                          object: '4023'
@@ -474,5 +482,53 @@ And /^the (Encumbrance|Disencumbrance|Source|Target|From|To) Accounting Line ent
     ((entry_page.send("result_#{alt.to_s}_amount")).to_f.should == doc_object.accounting_lines[alt].first.amount.to_f) unless doc_object.accounting_lines[alt].first.amount.nil?
     ((entry_page.send("result_#{alt.to_s}_base_amount")).to_f.should == doc_object.accounting_lines[alt].first.base_amount.to_f) unless doc_object.accounting_lines[alt].first.base_amount.nil?
     ((entry_page.send("result_#{alt.to_s}_current_amount")).to_f.should == doc_object.accounting_lines[alt].first.current_amount.to_f) unless doc_object.accounting_lines[alt].first.current_amount.nil?
+  end
+end
+
+And /^the General Ledger Pending entries match the accounting lines on the (.*) document$/ do |document|
+  doc_object = get(snake_case(document))
+
+  on page_class_for(document) do |page|
+    page.expand_all
+
+    num_encum_source_d = 0
+    num_encum_source_c = 0
+    num_disencum_target_d = 0
+    num_disencum_target_c = 0
+
+    doc_object.accounting_lines.each_value do |al_type|
+      al_type.each do |accounting_line|
+
+        account_number_col = page.glpe_results_table.keyed_column_index(:account_number)
+        amount_col = page.glpe_results_table.keyed_column_index(:amount)
+        dc_col = page.glpe_results_table.keyed_column_index(:d_c)
+
+        page.glpe_results_table.rest.each do |row|
+          #get the reversal date in the correct format for comparison
+          reversal_date_str = row[page.glpe_results_table.keyed_column_index(:doc_reversal_date)].text.strip
+
+          #doc reversal data is empty, pertains to the target/disencumbrance row
+          if row[account_number_col].text.strip == accounting_line.account_number && row[amount_col].text.groom == accounting_line.amount.to_s.groom && reversal_date_str.length == 0
+            if row[dc_col].text.strip == 'D'
+              num_disencum_target_d +=1
+            elsif row[dc_col].text.strip == 'C'
+              num_disencum_target_c +=1
+            end
+          #doc reversal date has a value, pertains to the source/encumbrance line
+          elsif row[account_number_col].text.strip == accounting_line.account_number && row[amount_col].text.groom == accounting_line.partial_amount.to_s.groom && reversal_date_str.length != 0
+              if row[dc_col].text.strip == 'D'
+                num_encum_source_d +=1
+              elsif row[dc_col].text.strip == 'C'
+                num_encum_source_c +=1
+              end
+          end
+        end
+      end
+    end
+    num_encum_source_d.should == num_encum_source_c
+    num_disencum_target_d.should == num_disencum_target_c
+
+    #number of rows in results table should equal double (sum source debits and credits)
+    (page.glpe_results_table.rows.length-1).should == (num_encum_source_d + num_encum_source_c + num_disencum_target_d + num_disencum_target_c)
   end
 end

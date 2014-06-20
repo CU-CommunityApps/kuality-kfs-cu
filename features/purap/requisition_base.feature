@@ -10,7 +10,15 @@ Feature: REQS, PO, PREQ,PDP
 
   [KFSQA-882] GLPEs are wrong on Purchase Order Amendments (POAs)
 
-  @KFSQA-853 @BaseFunction @Routing @coral
+  [KFSQA-994] I CREATE A CAPITAL ASSET REQS E2E (Individual Assets/New)
+
+  [KFSQA-995] Create a Capital Asset starting with Base Function attributes and change Asset to System Type of One System with a System State of New System. Take the asset from Requisition to APO to PREQ to CAB and to Payment.
+
+  [KFSQA-997] First, create a initial Capital Asset with Base Function attributes. Second, create a modification to this asset. Keep the System Type
+              of Individual Assets but with a System State of Modify Existing System. Retrieve the previously created asset for modification. Take
+              the asset from Requisition to APO to PREQ to CAB and to Payment.
+
+  @KFSQA-853 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral
   Scenario: PUR-5 Sensitive Commodity Data Flag enh
     Given I initiate a Requisition document with the following:
       | Vendor Type        | NonB2B    |
@@ -98,3 +106,59 @@ Feature: REQS, PO, PREQ,PDP
       | Item Quantity | 1   |
       | Item Cost     | 100 |
     Then the Purchase Order Amendment document's GLPE tab shows the new item amount
+
+  @KFSQA-994 @KFSQA-995 @E2E @REQS @PO @PREQ @PDP @coral
+  Scenario Outline: I CREATE A CAPITAL ASSET REQS E2E (Individual Assets/New)/(One System/New System)
+    Given I initiate a Requisition document with the following:
+      | Vendor Type        | NonB2B            |
+      | Add Vendor On REQS | Yes               |
+      | Positive Approval  | Unchecked         |
+      | Account Type       | NonGrant          |
+      | Amount             | 1000              |
+      | CA System Type     | <CA System Type>  |
+      | CA System State    | <CA System State> |
+
+#    |Default PM         | P           |
+# default PM can ve implemented after alternate PM is moved to upgrade
+    And  I extract the Requisition document to SciQuest
+    When I initiate a Payment Request document
+    And  I run the nightly Capital Asset jobs
+    And  I build a Capital Asset from AP transaction
+  Examples:
+  | CA System Type     | CA System State    |
+  | Individual Assets  | New System         |
+  | One System         | New System         |
+
+  @KFSQA-997 @E2E @REQS @PO @PREQ @PDP @coral
+  Scenario: Modify a Individual Asset REQS E2E (Individual/Modify Existing System)
+    Given I initiate a Requisition document with the following:
+      | Vendor Type        | NonB2B                  |
+      | Add Vendor On REQS | Yes                     |
+      | Positive Approval  | Unchecked               |
+      | Account Type       | NonGrant                |
+      | Amount             | 1000                    |
+      | CA System Type     | Individual Assets       |
+      | CA System State    | New System              |
+
+#    |Default PM         | P           |
+# default PM can ve implemented after alternate PM is moved to upgrade
+    And  I extract the Requisition document to SciQuest
+    When I initiate a Payment Request document
+    And  I run the nightly Capital Asset jobs
+    And  I build a Capital Asset from AP transaction
+# new REQS to modify CA created from above
+    Given I initiate a Requisition document with the following:
+      | Vendor Type        | NonB2B                  |
+      | Add Vendor On REQS | Yes                     |
+      | Positive Approval  | Unchecked               |
+      | Account Type       | NonGrant                |
+      | Amount             | 1000                    |
+      | CA System Type     | Individual Assets       |
+      | CA System State    | Modify Existing System  |
+
+#    |Default PM         | P           |
+# default PM can ve implemented after alternate PM is moved to upgrade
+    And  I extract the Requisition document to SciQuest
+    When I initiate a Payment Request document
+    And  I run the nightly Capital Asset jobs
+    And  I modify existing Capital Asset from AP transaction and apply payment

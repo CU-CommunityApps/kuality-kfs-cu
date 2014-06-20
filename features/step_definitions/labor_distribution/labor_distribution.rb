@@ -58,7 +58,7 @@ Given  /^I CREATE A SALARY EXPENSE TRANSFER with following:$/ do |table|
   end
   steps %Q{ And   I submit the Salary Expense Transfer document
             And   the Salary Expense Transfer document goes to ENROUTE
-            And   I route the Salary Expense Transfer document to FINAL by clicking approve for each request
+            And   I route the Salary Expense Transfer document to final
             Then  the Salary Expense Transfer document goes to FINAL
       }
 
@@ -81,7 +81,7 @@ Given  /^I CREATE A BENEFIT EXPENSE TRANSFER with following:$/ do |table|
   end
   steps %Q{ And   I submit the Benefit Expense Transfer document
             And   the Benefit Expense Transfer document goes to ENROUTE
-            And   I route the Benefit Expense Transfer document to FINAL by clicking approve for each request
+            And   I route the Benefit Expense Transfer document to final
             Then  the Benefit Expense Transfer document goes to FINAL
       }
 

@@ -20,13 +20,13 @@ And /^the next pending action for the (.*) document is an? (.*) from a (.*)$/ do
   end
 end
 
-When /^I route the (.*) document to (.*) by clicking (.*) for each request$/ do |document, target_status, button|
+When /^I route the (.*) document to final$/ do |document|
   step "I view the #{document} document"
-
-  unless on(page_class_for(document)).document_status == target_status
+  until 'FINALPROCESSSED'.include?on(page_class_for(document)).document_status
     step "I switch to the user with the next Pending Action in the Route Log for the #{document} document"
     step "I view the #{document} document"
-    step "I #{button} the #{document} document if it is not already FINAL"
+    step "I approve the #{document} document if it is not already FINAL"
+    step "I view the #{document} document"
   end
 
 end
@@ -66,4 +66,12 @@ Then /^I switch to the user with the next Pending Action in the Route Log for th
   end
 
   step "I am logged in as \"#{new_user}\""
+end
+
+And /^the initiator is not an approver in the Future Actions table$/ do
+  on KFSBasePage do |page|
+    page.expand_all
+    page.show_future_action_requests if page.show_future_action_requests_button.exists?
+    page.future_actions_table.rows(text: /APPROVE/m).any? { |r| r.text.include? 'Initiator' }.should_not
+  end
 end
