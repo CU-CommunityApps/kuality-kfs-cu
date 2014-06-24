@@ -18,7 +18,7 @@ Feature: REQS, PO, PREQ,PDP
               of Individual Assets but with a System State of Modify Existing System. Retrieve the previously created asset for modification. Take
               the asset from Requisition to APO to PREQ to CAB and to Payment.
 
-  @KFSQA-853 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral
+  @KFSQA-853 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral @wip
   Scenario: PUR-5 Sensitive Commodity Data Flag enh
     Given I initiate a Requisition document with the following:
       | Vendor Type        | NonB2B    |

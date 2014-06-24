@@ -9,8 +9,8 @@ Given  /^I initiate a Requisition document with the following:$/ do |table|
   end
   @add_vendor_on_reqs = arguments['Add Vendor On REQS'].nil? ? 'Yes' : arguments['Add Vendor On REQS']
   positive_approve = arguments['Positive Approval'].nil? ? 'Unchecked' : arguments['Positive Approval']
-  commodity_code = get_aft_parameter_value('REQS_' + (arguments['Commodity Code'].nil? ? 'REGULAR' : arguments['Commodity Code'].upcase)+"_COMMODITY")
-  account_number = get_aft_parameter_value('REQS_' + (arguments['Account Type'].nil? ? 'NONGRANT' : arguments['Account Type'].upcase) + '_ACCOUNT') # from service or parameter
+  commodity_code = get_aft_parameter_value("REQS_#{arguments['Commodity Code'].nil? ? 'REGULAR' : arguments['Commodity Code'].upcase}_COMMODITY")
+  account_number = get_aft_parameter_value("REQS_#{arguments['Account Type'].nil? ? 'NONGRANT' : arguments['Account Type'].upcase}_ACCOUNT") # from service or parameter
   apo_amount = get_parameter_values('KFS-PURAP', 'AUTOMATIC_PURCHASE_ORDER_DEFAULT_LIMIT_AMOUNT', 'Requisition')[0].to_i
   amount = arguments['Amount']
   @level = arguments['Level'].nil? ? 0 : arguments['Level'].to_i
@@ -23,17 +23,15 @@ Given  /^I initiate a Requisition document with the following:$/ do |table|
     item_qty = apo_amount/1000 - 1
   else
     if amount == 'GT APO'
-        item_qty = apo_amount/1000 + 1
+      item_qty = apo_amount/1000 + 1
     else
-        item_qty = amount.to_i/1000
+      item_qty = amount.to_i/1000
     end
   end
 
   # so far it used 6540, 6560, 6570 which are all EX type (Expense Expenditure)
   object_code =  get_aft_parameter_value(ParameterConstants::REQS_EX_OBJECT_CODE)
-  if !arguments['CA System Type'].nil?
-    object_code = get_aft_parameter_value(ParameterConstants::REQS_CA_OBJECT_CODE)
-  end
+  object_code = get_aft_parameter_value(ParameterConstants::REQS_CA_OBJECT_CODE) unless arguments['CA System Type'].nil?
   step 'I create the Requisition document with:',
        table(%Q{
          | Vendor Number       | #{@vendor_number}  |
@@ -51,7 +49,7 @@ Given  /^I initiate a Requisition document with the following:$/ do |table|
 
   step 'I select the Payment Request Positive Approval Required' if positive_approve == 'Checked'
 
-  if !arguments['CA System Type'].nil?
+  unless arguments['CA System Type'].nil?
     step "I fill in Capital Asset tab on Requisition document with:", table(%{
       | CA System Type       | #{arguments['CA System Type']}  |
       | CA System State      | #{arguments['CA System State']} |

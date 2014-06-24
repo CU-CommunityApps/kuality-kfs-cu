@@ -1,17 +1,25 @@
 And /^I create the Requisition document with:$/  do |table|
   updates = table.rows_hash
-  @requisition = create RequisitionObject, payment_request_positive_approval_required: updates['payment request'],
-                        payment_request_positive_approval_required: updates['payment request'],
-                        vendor_number:        updates['Vendor Number'],
-                        item_quantity:        updates['Item Quantity'],
-                        item_unit_cost:       updates['Item Cost'],
-                        item_commodity_code:  updates['Item Commodity Code'],
-                        item_account_number:  updates['Account Number'],
-                        item_catalog_number:  updates['Item Catalog Number'],
-                        item_description:     updates['Item Description'].nil? ? random_alphanums(15, 'AFT') : updates['Item Description'],
-                        item_object_code:     updates['Object Code'],
-                        item_percent:         updates['Percent']
 
+  puts updates.inspect
+
+  @requisition = create RequisitionObject,
+                        payment_request_positive_approval_required: updates['payment request'],
+                        vendor_number:    updates['Vendor Number'],
+                        initial_item_lines: [{
+                          quantity:       updates['Item Quantity'],
+                          unit_cost:      updates['Item Cost'],
+                          commodity_code: updates['Item Commodity Code'],
+                          catalog_number: updates['Item Catalog Number'],
+                          description:    updates['Item Description'].nil? ? random_alphanums(15, 'AFT') : updates['Item Description'],
+                          initial_lines: [{
+                                           account_number: updates['Account Number'],
+                                           object_code:    updates['Object Code'],
+                                           percent:        updates['Percent']
+                                          }]
+                        }]
+
+  puts @requisition.inspect
 end
 
 And /^I create the Requisition document with an Award Account and items that total less than the dollar threshold Requiring Award Review$/ do
