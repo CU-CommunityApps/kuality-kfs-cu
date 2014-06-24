@@ -48,7 +48,7 @@ Feature: REQS, PO, PREQ,PDP
       | Level              | <level>   |
       | Routing Check      | Base Org  |
   #    |Default PM         | P          |
-    # default PM can be implemented after alternate PM is moved to upgrade
+    # default PM can ve implemented after alternate PM is moved to upgrade
     When  I extract the Requisition document to SciQuest
     And   I initiate a Payment Request document
   Examples:
