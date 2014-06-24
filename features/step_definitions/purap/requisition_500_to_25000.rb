@@ -242,8 +242,8 @@ And /^I calculate and verify the GLPE tab$/ do
     page.calculate
     page.show_glpe
 
-    page.glpe_results_table.text.include? @requisition.item_object_code
-    page.glpe_results_table.text.include? @requisition.item_account_number
+    page.glpe_results_table.text.include? @requisition.items.first.accounting_lines.first.object_code
+    page.glpe_results_table.text.include? @requisition.items.first.accounting_lines.first.account_number
     # credit object code should be 3110 (depends on parm)
 
   end
@@ -396,8 +396,8 @@ end
 And /^the Delivery Instructions displayed equals what came from the PO$/ do
   on ShopCatalogPage do |page|
     page.doc_po_link
-    page.doc_summary[1].text.should include "Note to Supplier\n#{@requisition.vendor_notes}"
-    page.doc_summary[3].text.should include "Delivery Instructions #{@requisition.delivery_instructions}"
+    page.doc_summary[1].text.should match /Note to Supplier.*#{@requisition.vendor_notes}/m
+    page.doc_summary[3].text.should match /Delivery Instructions.*#{@requisition.delivery_instructions}/m
   end
 end
 
@@ -443,7 +443,6 @@ And /^I verified the GLPE on Payment Request page with the following:$/ do |tabl
 end
 
 And /^I add an Attachment to the Requisition document$/ do
-  pending 'THIS STEP DOES NOT USE NOTES AND ATTACHMENTS CORRECTLY.'
   on RequisitionPage do |page|
     page.note_text.fit random_alphanums(40, 'AFT-NoteText')
     page.send_to_vendor.fit 'Yes'
@@ -453,6 +452,7 @@ And /^I add an Attachment to the Requisition document$/ do
     page.attach_notes_file_1.should exist #verify that note is indeed added
 
   end
+  pending 'THIS STEP DOES NOT USE NOTES AND ATTACHMENTS CORRECTLY.'
 end
 
 And /^I enter Delivery Instructions and Notes to Vendor$/ do

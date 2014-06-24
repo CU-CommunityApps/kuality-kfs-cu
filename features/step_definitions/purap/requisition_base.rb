@@ -50,14 +50,18 @@ Given  /^I initiate a Requisition document with the following:$/ do |table|
   step 'I select the Payment Request Positive Approval Required' if positive_approve == 'Checked'
 
   unless arguments['CA System Type'].nil?
-    step "I fill in Capital Asset tab on Requisition document with:", table(%{
-      | CA System Type       | #{arguments['CA System Type']}  |
-      | CA System State      | #{arguments['CA System State']} |
-  })
+    step 'I fill in Capital Asset tab on Requisition document with:',
+         table(%Q{
+                  | CA System Type  | #{arguments['CA System Type']}  |
+                  | CA System State | #{arguments['CA System State']} |
+                 })
   end
 
+  # steps %q{
+  #   When I add an Attachment to the Requisition document
   steps %q{
-    When I add an Attachment to the Requisition document
+    When I add an attachment to the Requisition document
+    And  I add a file attachment to the Notes and Attachment Tab of the Requisition document
     And  I enter Delivery Instructions and Notes to Vendor
 
     And  I calculate my Requisition document
