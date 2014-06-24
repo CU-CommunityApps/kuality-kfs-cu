@@ -173,9 +173,8 @@ Given /^I Login as a PDP Format Disbursement Processor$/ do
   #visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PDP', 'Processor'))
 end
 
-Given /^I Login as a Salary Transfer Initiator$/ do
-  #visit(BackdoorLoginPage).login_as('rae28')
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-LD', 'Labor Distribution Manager (cu)'))
+Given /^I am User (.*) who is a Salary Transfer Initiator$/ do |principal_name|
+  visit(BackdoorLoginPage).login_as(principal_name)
 end
 
 Given /^I Login as a Benefit Transfer Initiator$/ do

@@ -36,33 +36,71 @@ And /^I change target sub account number to '(.*)'$/ do |sub_account_number|
   on(BenefitExpenseTransferPage).update_target_sub_account_code.fit sub_account_number
 end
 
-When /^I start an empty Salary Expense Transfer document$/ do
+And /^I start an empty Salary Expense Transfer document$/ do
   @salary_expense_transfer = create SalaryExpenseTransferObject
 end
 
+# Given  /^I CREATE A SALARY EXPENSE TRANSFER with following:$/ do |table|
+#   arguments = table.rows_hash
+#   user_name = arguments['Employee']
+#   to_account_number = arguments['To Account']
+#   steps %Q{ Given I Login as a Salary Transfer Initiator
+#             And   I start an empty Salary Expense Transfer document
+#   }
+#   if !arguments['Employee'].nil?
+#       step "I select employee '#{user_name}'"
+#   end
+#   steps %Q{ And   I search and retrieve Ledger Balance entry
+#             And   I copy source account to target account
+#   }
+#   if !arguments['To Account'].nil?
+#      step "I change target account number to '#{to_account_number}'"
+#   end
+#   steps %Q{ And   I submit the Salary Expense Transfer document
+#             And   the Salary Expense Transfer document goes to ENROUTE
+#             And   I route the Salary Expense Transfer document to final
+#             Then  the Salary Expense Transfer document goes to FINAL
+#       }
+#
+# end
+
+
+# This base function REQUIRES the following arguments. Currently, the code is using these arguments like boolean
+# values where the local variable used will have a value of true/false/nil for processing.
+# If more values are needed in the future the code will need to be adjusted.
+#
+#  required parameter                   recognized value(s)
+#   From Account            In Same Organization / Out of Organization
+#   To Account              In Same Organization / Out of Organization
+#   Employee Funded From    In Same Organization / Out of Organization
+#
+# This base function will also accept and use the following arguments referring to the correlation of the specified
+# attribute between the "from account" and the "to account" when provided. Currently, the code is using these arguments
+# like boolean values where the local variable used will have a value of true/false/nil for processing.
+# If more values are needed in the future the code will need to be adjusted.
+#
+#  optional parameter                  recognized value(s)
+#   To Account Type                     Same (Different)
+#   To Account Rate                     Same (Different)
+
+
 Given  /^I CREATE A SALARY EXPENSE TRANSFER with following:$/ do |table|
   arguments = table.rows_hash
-  user_name = arguments['Employee']
-  to_account_number = arguments['To Account']
-  steps %Q{ Given I Login as a Salary Transfer Initiator
-            And   I start an empty Salary Expense Transfer document
-  }
-  if !arguments['Employee'].nil?
-      step "I select employee '#{user_name}'"
-  end
-  steps %Q{ And   I search and retrieve Ledger Balance entry
-            And   I copy source account to target account
-  }
-  if !arguments['To Account'].nil?
-     step "I change target account number to '#{to_account_number}'"
-  end
-  steps %Q{ And   I submit the Salary Expense Transfer document
-            And   the Salary Expense Transfer document goes to ENROUTE
-            And   I route the Salary Expense Transfer document to final
-            Then  the Salary Expense Transfer document goes to FINAL
-      }
+
+  data_for_test = SalaryExpenseTransferTestData.new(arguments)
+  data_for_test.determine_user()
+  login_gerkin = 'I am User ' + data_for_test.user_principal_name + ' who is a Salary Transfer Initiator'
+  step login_gerkin
+  steps %Q{ And I start an empty Salary Expense Transfer document }
+  # user_dept_code = determine_dept_code(data_for_test.user_principal_id)
+  data_for_test.determine_labor_orgs(data_for_test.user_principal_id)
+  # employee = determine_employee (@user_department_code)
+  # determine_dept_code(:user_principal_id)
+
+
 
 end
+
 
 Given  /^I CREATE A BENEFIT EXPENSE TRANSFER with following:$/ do |table|
   arguments = table.rows_hash

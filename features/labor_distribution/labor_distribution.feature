@@ -13,8 +13,9 @@ Feature: Labor Distribution
   @KFSQA-983 @BaseFunction @ST @tortoise
   Scenario: Base Function : I CREATE A SALARY EXPENSE TRANSFER
     Given  I CREATE A SALARY EXPENSE TRANSFER with following:
-      |Employee    | dw68      |
-      |To Account  | A453101   |
+      | From Account          | In Same Organization |
+      | To Account            | In Same Organization |
+      | Employee Funded From  | In Same Organization |
     And   I RUN THE NIGHTLY LABOR BATCH PROCESSES
     And   I Login as a Salary Transfer Initiator
     Then  the labor ledger pending entry for employee '1013939' is empty
@@ -35,7 +36,7 @@ Feature: Labor Distribution
 
   @KFSQA-970 @ST @smoke @wip
   Scenario: Salary Expense Transfer test between account types, between rates, and for labor access security.
-    Given logged in as an ST initiator role 10005
+    Given I Login as a Salary Transfer Initiator
     When run SALARY EXPENSE
     And transfer between accounts with different account types
     And receive Error: Invalid transfer between account types
