@@ -1,8 +1,6 @@
 And /^I create the Requisition document with:$/  do |table|
   updates = table.rows_hash
 
-  puts updates.inspect
-
   @requisition = create RequisitionObject,
                         payment_request_positive_approval_required: updates['payment request'],
                         vendor_number:    updates['Vendor Number'],
@@ -18,8 +16,6 @@ And /^I create the Requisition document with:$/  do |table|
                                            percent:        updates['Percent']
                                           }]
                         }]
-
-  puts @requisition.inspect
 end
 
 And /^I create the Requisition document with an Award Account and items that total less than the dollar threshold Requiring Award Review$/ do
@@ -140,9 +136,7 @@ And /^the View Related Documents Tab PO Status displays$/ do
 end
 
 And /^the Purchase Order Number is unmasked$/ do
-  on (PurchaseOrderPage) do |page|
-    page.po_number.should_not include '****'
-  end
+  on(PurchaseOrderPage).po_number.should_not include '****'
 end
 
 And /^I Select the PO$/ do
@@ -308,44 +302,38 @@ And /^I select the purchase order '(\d+)' with the doc id '(\d+)'$/ do |req_num,
 end
 
 And /^I fill out the PREQ initiation page and continue$/ do
-  #@purchase_order_number = '296399' # temporary.  don't commit
   visit(MainPage).payment_request
-  on(PaymentRequestInitiationPage) do |page|
-    page.purchase_order.fit @purchase_order_number
-    page.invoice_date.fit yesterday[:date_w_slashes]
-    page.invoice_number.fit rand(100000)
-    page.vendor_invoice_amount.fit @requisition.item_quantity.delete(',').to_f * @requisition.item_unit_cost.to_i
+  on PaymentRequestInitiationPage do |page|
+    page.purchase_order.fit        @purchase_order_number
+    page.invoice_date.fit          yesterday[:date_w_slashes]
+    page.invoice_number.fit        rand(100000)
+    page.vendor_invoice_amount.fit @requisition.items.first.quantity.delete(',').to_f * @requisition.items.first.unit_cost.to_i
     page.continue
   end
-  on YesOrNoPage do |page|
-    page.yes if page.yes_button.exists?
-  end
+  on(YesOrNoPage) { |yonp| yonp.yes if yonp.yes_button.exists? }
   sleep 10
   @payment_request = create PaymentRequestObject
 end
 
 And  /^I change the Remit To Address$/ do
-  on(PaymentRequestPage) do |page|
-    page.vendor_address_1.fit "Apt1" + page.vendor_address_1.value
-  end
+  on(PaymentRequestPage) { |p| p.vendor_address_1.fit "Apt1#{p.vendor_address_1.value}" }
 end
+
 And  /^I enter the Qty Invoiced and calculate$/ do
-  on(PaymentRequestPage) do |page|
+  on PaymentRequestPage do |page|
     @preq_id = page.preq_id
-    page.item_qty_invoiced.fit @requisition.item_quantity # same as REQS item qty
+    page.item_qty_invoiced.fit @requisition.items.first.quantity # same as REQS item qty
     page.item_calculate
   end
-
 end
 
 And  /^I enter a Pay Date$/ do
-  on(PaymentRequestPage) do |page|
-    page.pay_date.fit right_now[:date_w_slashes]
-  end
+  on(PaymentRequestPage).pay_date.fit right_now[:date_w_slashes]
 end
 
 
 And /^I attach an Invoice Image$/ do
+  pending 'THIS STEP DOES NOT USE NOTES AND ATTACHMENTS CORRECTLY!'
   on PaymentRequestPage do |page|
     page.note_text.fit random_alphanums(40, 'AFT-NoteText')
     page.attachment_type.fit 'Invoice Image'
@@ -358,7 +346,7 @@ And /^I attach an Invoice Image$/ do
 end
 
 And /^I calculate PREQ$/ do
-  on (PaymentRequestPage) do |page|
+  on PaymentRequestPage do |page|
     page.expand_all
     page.calculate
   end
@@ -367,29 +355,22 @@ end
 
 And /^I view the Purchase Order document via e-SHOP$/ do
   on ShopCatalogPage do |page|
-    #page.key_words.fit 'Commidity 14111507'
+    # TODO: When we do the split in the following comment, this block can be on EShopPage
     page.order_doc
     page.po_doc_search
-    page.po_id.fit @purchase_order_number
-    (0..page.date_range.length).each do |i|
-      if page.date_range[i].visible?
-        page.date_range[i].fit 'Today'
-      end
-    end
+
+    # TODO: This block should be split once we've defined a proper EShopDocSearchPage object
+    page.po_id.fit      @purchase_order_number
+    page.date_range.fit 'Today'
     sleep 2
-    (0..page.go_buttons.length).each do |i|
-      if page.go_buttons[i].visible?
-        page.go_buttons[i].click
-        break
-      end
-    end
+    page.go_button.click
   end
 end
 
 And /^the Document Status displayed '(\w+)'$/ do |doc_status|
   on ShopCatalogPage do |page|
     page.return_po_value(@purchase_order_number)
-    page.doc_summary[1].text.should include  'Workflow  ' + doc_status
+    page.doc_summary[1].text.should include  "Workflow  #{doc_status}"
   end
 end
 
@@ -402,10 +383,10 @@ And /^the Delivery Instructions displayed equals what came from the PO$/ do
 end
 
 And /^the Attachments for Supplier came from the PO$/ do
-  pending 'THIS STEP DOES NOT USE NOTES AND ATTACHMENTS CORRECTLY.'
   on ShopCatalogPage do |page|
     page.attachments_link
-    page.search_results[1].text.should include @requisition.attachment_file_name # FIXME: This doesn't use Notes and Attachments correctly
+    page.search_results.should exist
+    page.search_results[1].text[0..16].should == @requisition.notes_and_attachments_tab.first.file[0..16] # Longer file names are cut and an ellipse is added to the end
   end
 end
 
@@ -414,11 +395,11 @@ And  /^I select the Payment Request Positive Approval Required$/ do
 end
 
 Then /^I update the Tax Tab$/ do
-  on (PaymentRequestPage) do |page|
-    page.income_class_code.fit       'A - Honoraria, Prize'
-    page.federal_tax_pct.fit  '0'
-    page.state_tax_pct.fit    '0'
-    page.postal_country_code.fit     'Canada'
+  on PaymentRequestPage do |page|
+    page.income_class_code.fit   'A - Honoraria, Prize'
+    page.federal_tax_pct.fit     '0'
+    page.state_tax_pct.fit       '0'
+    page.postal_country_code.fit 'Canada'
   end
 end
 
@@ -428,7 +409,7 @@ And /^I verified the GLPE on Payment Request page with the following:$/ do |tabl
   glpe_entry = table.raw.flatten.each_slice(7).to_a
   glpe_entry.shift # skip header row
   glpe_entry.each do |line,account_number,object_code,balance_type,object_type,amount,dorc|
-    on (GeneralLedgerPendingEntryTab) do |gtab|
+    on GeneralLedgerPendingEntryTab do |gtab|
       idx = gtab.glpe_tables.length - 1
       glpe_table = gtab.glpe_tables[idx]
       seq = line.to_i

@@ -65,6 +65,7 @@ Given  /^I initiate a Requisition document with the following:$/ do |table|
     And  I enter Delivery Instructions and Notes to Vendor
 
     And  I calculate my Requisition document
+    And  I inspect the Requisition document
     And  I submit the Requisition document
     Then the Requisition document goes to ENROUTE
 
