@@ -65,7 +65,6 @@ Given  /^I initiate a Requisition document with the following:$/ do |table|
     And  I enter Delivery Instructions and Notes to Vendor
 
     And  I calculate my Requisition document
-    And  I inspect the Requisition document
     And  I submit the Requisition document
     Then the Requisition document goes to ENROUTE
 
@@ -148,21 +147,20 @@ And /^I assign Contract Manager and approve Purchase Order Document to FINAL$/ d
 end
 
 When /^I initiate a Payment Request document$/ do
-  steps %Q{
-    Given I login as a Accounts Payable Processor to create a PREQ
-    When  I fill out the PREQ initiation page and continue
-    And   I change the Remit To Address
-    And   I enter the Qty Invoiced and calculate
-    And   I enter a Pay Date
-    And   I attach an Invoice Image
-    And   I calculate PREQ
-    And   I submit the Payment Request document
-    Then  the Payment Request document goes to ENROUTE
-    Given I switch to the user with the next Pending Action in the Route Log to approve Payment Request document to Final
-    Then  the Payment Request document goes to FINAL
-    And   the Payment Request Doc Status is Department-Approved
-    And   the Payment Request document's GLPE tab shows the Requisition document submissions
-  }
+  step 'I login as a Accounts Payable Processor to create a PREQ'
+  step 'I fill out the PREQ initiation page and continue'
+  step 'I change the Remit To Address'
+  step 'I enter the Qty Invoiced and calculate'
+  step 'I enter a Pay Date'
+  step 'I attach an Invoice Image to the Payment Request document'
+  step 'I calculate PREQ'
+  step 'I submit the Payment Request document'
+  step 'the Payment Request document goes to ENROUTE'
+  #step 'I switch to the user with the next Pending Action in the Route Log to approve Payment Request document to Final'
+  step 'I route the Payment Request document to final'
+  #step 'the Payment Request document goes to FINAL'
+  step 'the Payment Request Doc Status is Department-Approved'
+  step 'the Payment Request document\'s GLPE tab shows the Requisition document submissions'
 end
 
 Then /^I FORMAT AND PROCESS THE CHECK WITH PDP$/ do

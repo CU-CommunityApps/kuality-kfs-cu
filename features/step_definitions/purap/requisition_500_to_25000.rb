@@ -144,38 +144,30 @@ And /^I Select the PO$/ do
 end
 
 And /^I Complete Selecting Vendor (.*)$/ do |vendor_number|
-  on (PurchaseOrderPage) do |page|
-    page.vendor_search
-    on VendorLookupPage do |vlookup|
-      vlookup.vendor_number.fit vendor_number
-      vlookup.search
-      vlookup.return_value(vendor_number)
-    end
+  on(PurchaseOrderPage).vendor_search
+  on VendorLookupPage do |vlookup|
+    vlookup.vendor_number.fit vendor_number
+    vlookup.search
+    vlookup.return_value(vendor_number)
   end
-
 end
 
-  And /^I Complete Selecting a Foreign Vendor$/ do
-    on (PurchaseOrderPage) do |page|
-      page.vendor_search
-      on VendorLookupPage do |vlookup|
-        vendor_number = '39210-0' # TODO : this vendor number should be from a parameter
-        vlookup.vendor_number.fit vendor_number
-        vlookup.search
-        vlookup.return_value(vendor_number)
-      end
-    end
-
+And /^I Complete Selecting a Foreign Vendor$/ do
+  on(PurchaseOrderPage).vendor_search
+  on VendorLookupPage do |vlookup|
+    vendor_number = '39210-0' # TODO : this vendor number should be from a parameter
+    vlookup.vendor_number.fit vendor_number
+    vlookup.search
+    vlookup.return_value(vendor_number)
   end
+end
 
 And /^I enter a Vendor Choice$/ do
-  on (PurchaseOrderPage) do |page|
-    page.vendor_choice.fit 'Lowest Price'
-  end
+  on(PurchaseOrderPage).vendor_choice.fit 'Lowest Price'
 end
 
 And /^I calculate and verify the GLPE with amount (.*)$/ do |amount|
-  on (PurchaseOrderPage) do |page|
+  on PurchaseOrderPage do |page|
     page.expand_all
     page.calculate
   end
@@ -195,40 +187,32 @@ And /^I calculate and verify the GLPE with amount (.*)$/ do |amount|
   end
 end
 
-
 And /^I submit the PO eDoc Status is$/ do
   pending # express the regexp above with the code you wish you had
 end
 
 
 
-And(/^The PO eDoc Status is$/) do
+And /^The PO eDoc Status is$/ do
   pending # express the regexp above with the code you wish you had
 end
 
 
 And(/^the (.*) Doc Status is (.*)/) do |document, doc_status|
-  on (KFSBasePage) do |page|
-    page.app_doc_status.should == doc_status
-  end
+  on(KFSBasePage).app_doc_status.should == doc_status
 end
 
 And /^I Complete Selecting a Vendor (.*)$/ do |vendor_number|
-  on (PurchaseOrderPage) do |page|
-    page.vendor_search
-    on VendorLookupPage do |vlookup|
-      vlookup.vendor_number.fit vendor_number
-      vlookup.search
-      vlookup.return_value(vendor_number)
-    end
+  on(PurchaseOrderPage).vendor_search
+  on VendorLookupPage do |vlookup|
+    vlookup.vendor_number.fit vendor_number
+    vlookup.search
+    vlookup.return_value(vendor_number)
   end
-
 end
 
 And /^I enter a Vendor Choice of '(.*)'$/ do  |choice|
-  on PurchaseOrderPage do |page|
-    page.vendor_choice.fit choice
-  end
+  on(PurchaseOrderPage).vendor_choice.fit choice
 end
 
 And /^I calculate and verify the GLPE tab$/ do
@@ -278,10 +262,8 @@ And /^the Purchase Order document status is '(.*)'$/  do  |status|
 end
 
 And /^the Purchase Order Doc Status equals '(.*)'$/ do |po_doc_status|
-  on PurchaseOrderPage do |page|
-    #this is a different field from the document status field
-    page.po_doc_status.should == po_doc_status
-  end
+  #this is a different field from the document status field
+  on(PurchaseOrderPage).po_doc_status.should == po_doc_status
 end
 
 And /^The Requisition status is '(.*)'$/ do |doc_status|
@@ -332,17 +314,11 @@ And  /^I enter a Pay Date$/ do
 end
 
 
-And /^I attach an Invoice Image$/ do
-  pending 'THIS STEP DOES NOT USE NOTES AND ATTACHMENTS CORRECTLY!'
-  on PaymentRequestPage do |page|
-    page.note_text.fit random_alphanums(40, 'AFT-NoteText')
-    page.attachment_type.fit 'Invoice Image'
-    page.attach_notes_file.set($file_folder+@payment_request.attachment_file_name)
-
-    page.add_note
-    page.attach_notes_file_1.should exist #verify that note is indeed added
-
-  end
+And /^I attach an Invoice Image to the (.*) document$/ do |document|
+  document_object_for(document).notes_and_attachments_tab
+                               .add note_text:      'Testing note text.',
+                                    file:           'vendor_attachment_test.png',
+                                    type:           'Invoice Image'
 end
 
 And /^I calculate PREQ$/ do
@@ -404,7 +380,6 @@ Then /^I update the Tax Tab$/ do
 end
 
 And /^I verified the GLPE on Payment Request page with the following:$/ do |table|
-
   on(PaymentRequestPage).expand_all
   glpe_entry = table.raw.flatten.each_slice(7).to_a
   glpe_entry.shift # skip header row
@@ -424,6 +399,7 @@ And /^I verified the GLPE on Payment Request page with the following:$/ do |tabl
 end
 
 And /^I add an Attachment to the Requisition document$/ do
+  pending 'THIS STEP DOES NOT USE NOTES AND ATTACHMENTS CORRECTLY.'
   on RequisitionPage do |page|
     page.note_text.fit random_alphanums(40, 'AFT-NoteText')
     page.send_to_vendor.fit 'Yes'
@@ -431,9 +407,7 @@ And /^I add an Attachment to the Requisition document$/ do
 
     page.add_note
     page.attach_notes_file_1.should exist #verify that note is indeed added
-
   end
-  pending 'THIS STEP DOES NOT USE NOTES AND ATTACHMENTS CORRECTLY.'
 end
 
 And /^I enter Delivery Instructions and Notes to Vendor$/ do
@@ -446,17 +420,15 @@ And /^I enter Delivery Instructions and Notes to Vendor$/ do
 end
 
 When /^I visit the "(.*)" page$/  do   |go_to_page|
-  go_to_pages = go_to_page.downcase.gsub!(' ', '_')
-  go_to_pages = go_to_page.downcase.gsub!('-', '_')
-  on(MainPage).send(go_to_pages)
+  on(MainPage).send(go_to_page.downcase.gsub(' ', '_').gsub('-', '_'))
 end
 
 And /^I enter Payment Information for recurring payment type (.*)$/ do |recurring_payment_type|
   unless recurring_payment_type.empty?
     on RequisitionPage do |page|
       page.recurring_payment_type.fit recurring_payment_type
-      page.payment_from_date.fit right_now[:date_w_slashes]
-      page.payment_to_date.fit next_year[:date_w_slashes]
+      page.payment_from_date.fit      right_now[:date_w_slashes]
+      page.payment_to_date.fit        next_year[:date_w_slashes]
     end
   end
 end
@@ -465,24 +437,20 @@ end
     on PaymentRequestPage do |page|
       page.show_glpe
 
-      page.glpe_results_table.text.include? @requisition.item_object_code
-      page.glpe_results_table.text.include? @requisition.item_account_number
+      page.glpe_results_table.text.include? @requisition.items.first.accounting_lines.first.object_code
+      page.glpe_results_table.text.include? @requisition.items.first.accounting_lines.first.account_number
       # credit object code should be 3110 (depends on parm)
-
     end
   end
 
 And /^I Complete Selecting an External Vendor$/ do
-  on (PurchaseOrderPage) do |page|
-    page.vendor_search
-    on VendorLookupPage do |vlookup|
-      vendor_number = '27015-0' # TODO : this vendor number should be from a parameter
-      vlookup.vendor_number.fit vendor_number
-      vlookup.search
-      vlookup.return_value(vendor_number)
-    end
+  on(PurchaseOrderPage).vendor_search
+  on VendorLookupPage do |vlookup|
+    vendor_number = '27015-0' # TODO : this vendor number should be from a parameter
+    vlookup.vendor_number.fit vendor_number
+    vlookup.search
+    vlookup.return_value(vendor_number)
   end
-
 end
 
 # started QA-853 work

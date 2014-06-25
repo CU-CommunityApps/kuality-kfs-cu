@@ -22,9 +22,12 @@ end
 
 When /^I route the (.*) document to final$/ do |document|
   step "I view the #{document} document"
-  until 'FINALPROCESSSED'.include?on(page_class_for(document)).document_status
+  until 'FINALPROCESSSED'.include? on(page_class_for(document)).document_status
     step "I switch to the user with the next Pending Action in the Route Log for the #{document} document"
     step "I view the #{document} document"
+    step "I attach an Invoice Image to the #{document} document" if document == 'Payment Request' &&
+                                                                    document_object_for(document).notes_and_attachments_tab.length.zero? ||
+                                                                    document_object_for(document).notes_and_attachments_tab.index{ |na| na.type == 'Invoice Image' }.nil?
     step "I approve the #{document} document if it is not already FINAL"
     step "I view the #{document} document"
   end
