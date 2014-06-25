@@ -134,7 +134,7 @@ Feature: REQS, PO, PREQ,PDP
   | One System         |
   | Multiple Systems   |
 
-  @KFSQA-997 @KFSQA-999 @E2E @REQS @PO @PREQ @PDP @coral @wip
+  @KFSQA-997 @KFSQA-999 @E2E @REQS @PO @PREQ @PDP @coral
   Scenario Outline: Modify a Capital Asset REQS E2E (Individual Asset/Modify Existing System)/(Multiple Systems/Modify Existing System)
     Given I initiate a Requisition document with the following:
       | Vendor Type        | NonB2B                  |
