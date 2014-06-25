@@ -19,6 +19,9 @@ And /^I create the Requisition document with an Award Account and items that tot
   award_account_number = account_info['accountNumber'][0]
   cost_from_param = get_parameter_values('KFS-PURAP', 'DOLLAR_THRESHOLD_REQUIRING_AWARD_REVIEW', 'Requisition')[0].to_i
   cost_from_param = cost_from_param - 1
+
+  @level = arguments['Level'].nil? ? 0 : arguments['Level'].to_i
+
   step 'I create the Requisition document with:',
        table(%Q{
          | Vendor Number       | 4471-0                  |
@@ -29,6 +32,31 @@ And /^I create the Requisition document with an Award Account and items that tot
          | Object Code         | 6570                    |
          | Percent             | 100                     |
        })
+end
+
+And /^I submit the Requisition document with items that total more than the dollar threshold Requiring Award Review$/ do
+  account_info = get_kuali_business_object('KFS-COA','Account','subFundGroupCode=APFEDL&closed=N&contractsAndGrantsAccountResponsibilityId=5&accountExpirationDate=NULL')
+  award_account_number = account_info['accountNumber'][0]
+  cost_from_param = get_parameter_values('KFS-PURAP', 'DOLLAR_THRESHOLD_REQUIRING_AWARD_REVIEW', 'Requisition')[0].to_i
+  cost_from_param = cost_from_param - 100
+
+
+  step 'I create the Requisition document with:',
+       table(%Q{
+         | Vendor Number       | 4471-0                  |
+         | Item Quantity       | 1                       |
+         | Item Cost           | #{cost_from_param}      |
+         | Item Commodity Code | 12142203                |
+         | Account Number      | #{award_account_number} |
+         | Object Code         | 6570                    |
+         | Percent             | 100                     |
+       })
+    step "I submit the Requisition document"
+
+end
+
+And /^I select yes to the question$/ do
+  on(YesOrNoPage).yes
 end
 
 And /^I add an item to the Requisition document with:$/ do |table|
@@ -55,7 +83,7 @@ And /^I add an item to the Requisition document with:$/ do |table|
     page.item_object_code(add_item['Line Number']).fit add_item['Object Code']
     page.item_percent(add_item['Line Number']).fit add_item['Percent']
     page.item_add_account_line(add_item['Line Number'])
-   end
+  end
 end
 
 And /^I calculate my Requisition document$/ do
@@ -89,7 +117,9 @@ end
 And /^I view the Requisition document from the Requisitions search$/ do
   visit(MainPage).requisitions
   on DocumentSearch do |page|
-    page.requisition_num
+    puts "Requisition id is #{@requisition_id}"
+    puts "Document ID is: #{@requisition.document_id}"
+    page.requisition_num.fit @requisition_id unless @requisition_id.nil?
     page.search
     page.open_item(@requisition.document_id)
   end
@@ -116,8 +146,11 @@ end
 
 And /^the View Related Documents Tab PO Status displays$/ do
   on RequisitionPage do |page|
-    page.show_related_documents
-    page.show_purchase_order
+    # page.show_related_documents
+    # page.show_purchase_order
+    sleep 5 #debug
+    page.expand_all
+    sleep 5 #debug
     @purchase_order_number = page.purchase_order_number
     # verify unmasked and 'UNAPPROVED'
     page.purchase_order_number.should_not include '*****' # unmasked
@@ -126,7 +159,7 @@ And /^the View Related Documents Tab PO Status displays$/ do
     end
     page.purchase_order_number_link
 
-    sleep 10
+    sleep 5 #debug
     @purchase_order = create PurchaseOrderObject
   end
 end
@@ -153,18 +186,18 @@ And /^I Complete Selecting Vendor (.*)$/ do |vendor_number|
 
 end
 
-  And /^I Complete Selecting a Foreign Vendor$/ do
-    on (PurchaseOrderPage) do |page|
-      page.vendor_search
-      on VendorLookupPage do |vlookup|
-        vendor_number = '39210-0' # TODO : this vendor number should be from a parameter
-        vlookup.vendor_number.fit vendor_number
-        vlookup.search
-        vlookup.return_value(vendor_number)
-      end
+And /^I Complete Selecting a Foreign Vendor$/ do
+  on (PurchaseOrderPage) do |page|
+    page.vendor_search
+    on VendorLookupPage do |vlookup|
+      vendor_number = '39210-0' # TODO : this vendor number should be from a parameter
+      vlookup.vendor_number.fit vendor_number
+      vlookup.search
+      vlookup.return_value(vendor_number)
     end
-
   end
+
+end
 
 And /^I enter a Vendor Choice$/ do
   on (PurchaseOrderPage) do |page|
@@ -246,7 +279,9 @@ Then /^in Pending Action Requests an FYI is sent to FO and Initiator$/ do
     # TODO : it looks like there is no reload button when open PO with final status.  so comment it out for now.  need further check
     #Watir::Wait::TimeoutError: timed out after 30 seconds, waiting for {:class=>"globalbuttons", :title=>"reload", :tag_name=>"button"} to become present    page.reload # Sometimes the pending table doesn't show up immediately.
     #page.headerinfo_table.wait_until_present
+    sleep 5 #debug
     page.expand_all
+    sleep 5 #debug
     page.refresh_route_log # Sometimes the pending table doesn't show up immediately.
     page.show_pending_action_requests if page.pending_action_requests_hidden?
     fyi_initiator = 0
@@ -258,7 +293,7 @@ Then /^in Pending Action Requests an FYI is sent to FO and Initiator$/ do
         else
           if page.pnd_act_req_table[i][4].text.include? 'Initiator'
             fyi_initiator += 1
-           end
+          end
         end
       end
     end
@@ -312,7 +347,7 @@ And /^I fill out the PREQ initiation page and continue$/ do
   on YesOrNoPage do |page|
     page.yes if page.yes_button.exists?
   end
-  sleep 10
+  sleep 5
   @payment_request = create PaymentRequestObject
 end
 
@@ -362,7 +397,10 @@ And   /^I view the Purchase Order document via e-SHOP$/ do
     #page.key_words.fit 'Commidity 14111507'
     page.order_doc
     page.po_doc_search
+    sleep 5 #debug
+    page.search_doc_type.fit 'Purchase Orders'
     page.po_id.fit @purchase_order_number
+
     (0..page.date_range.length).each do |i|
       if page.date_range[i].visible?
         page.date_range[i].fit 'Today'
@@ -470,16 +508,16 @@ And /^I enter Payment Information for recurring payment type (.*)$/ do |recurrin
   end
 end
 
-  Then /^the Payment Request document's GLPE tab shows the Requisition document submissions$/ do
-    on PaymentRequestPage do |page|
-      page.show_glpe
+Then /^the Payment Request document's GLPE tab shows the Requisition document submissions$/ do
+  on PaymentRequestPage do |page|
+    page.show_glpe
 
-      page.glpe_results_table.text.include? @requisition.item_object_code
-      page.glpe_results_table.text.include? @requisition.item_account_number
-      # credit object code should be 3110 (depends on parm)
+    page.glpe_results_table.text.include? @requisition.item_object_code
+    page.glpe_results_table.text.include? @requisition.item_account_number
+    # credit object code should be 3110 (depends on parm)
 
-    end
   end
+end
 
 And /^I Complete Selecting an External Vendor$/ do
   on (PurchaseOrderPage) do |page|
@@ -510,7 +548,9 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
   while true && x < 10
     new_user = ''
     on(page_class_for(document)) do |page|
+      sleep 10 #debug
       page.expand_all
+      sleep 10 #debug
       if (page.document_status != 'FINAL')
         (0..page.pnd_act_req_table.rows.length - 3).each do |i|
           idx = i + 1
@@ -556,7 +596,7 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
           @commodity_review_users.push(new_user)
         else
           if (on(page_class_for(document)).app_doc_status == 'Awaiting Fiscal Officer')
-             @fo_users.push(new_user)
+            @fo_users.push(new_user)
           end
         end
       end
@@ -568,7 +608,7 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
     end
 
     if on(page_class_for(document)).document_status == 'FINAL'
-        break
+      break
     end
     x += 1
   end
@@ -581,4 +621,67 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
     end
   end
 
+end
+
+And /^During Approval of the Requisition the Financial Officer adds a second line item for a second account$/ do
+  #add second accounting line
+  sleep 5 #debug
+  step "I view the Requisition document from the Requisitions search"
+  # step "I view the Requisition document"
+  sleep 5 #debug
+  step 'I switch to the user with the next Pending Action in the Route Log for the Requisition document'
+  step "I view the Requisition document on my action list"
+  # "I view the Requisition document"
+  on RequisitionPage do |page|
+    page.expand_all
+    page.item_account_number.fit '1000811'
+
+    page.item_object.fit '6570'
+    page.item_percent.fit '50'
+    page.item_add_account_line
+    page.added_percent.fit '50'
+    page.calculate
+    #better wait might be to wait for the amount after calculation
+    sleep 2
+    #approve document
+    page.approve
+  end
+end
+
+
+And /^During Approval of the Purchase Order Amendment the Financial Officer adds a line item$/ do
+  #add second accounting line
+  sleep 5 #debug
+  step "I view the Requisition document from the Requisitions search"
+
+  # step "I view the Requisition document"
+  sleep 5 #debug
+  #view the POA
+  step 'I switch to the user with the next Pending Action in the Route Log for the Requisition document'
+  # step "I view the Requisition document on my action list"
+  step "I view the Requisition document"
+  on RequisitionPage do |page|
+    page.expand_all
+    @purchase_order_amendment_id = page.purchase_order_amendment_value
+    page.purchase_order_amendment
+  end
+  step 'I switch to the user with the next Pending Action in the Route Log for the Purchase Order document'
+
+  on PurchaseOrderPage do |page|
+    page.expand_all
+
+    page.item_account_number.fit '1271001'
+    page.item_object.fit '6570'
+    page.item_percent.fit '50'
+    page.item_add_account_line
+    # page.added_percent.fit '50'
+    page.old_amount.fit ''
+    page.old_amount(1).fit ''
+
+    page.calculate
+    #better wait might be to wait for the amount after calculation
+    sleep 2
+    #approve document
+    page.approve
+  end
 end

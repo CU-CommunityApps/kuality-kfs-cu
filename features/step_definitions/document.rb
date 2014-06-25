@@ -21,6 +21,8 @@ And /^I copy a random (.*) document with (.*) status/ do |document, doc_status|
 end
 
 When /^I view the (.*) document$/ do |document|
+  sleep 10  #debug
+  sleep 10  #debug
   document_object_for(document).view
 end
 
@@ -29,6 +31,10 @@ When /^I (#{BasePage::available_buttons}) the (.*) document$/ do |button, docume
   document_object_for(document).send(button)
   on(YesOrNoPage).yes if button == 'cancel'
   sleep 10 if (button == 'blanket approve' || button == 'approve' || 'submit')
+
+  @requisition_id = on(RequisitionPage).requisition_id if document == 'Requisition' && button == 'submit'
+  puts "Requisition Id is: #{@requisition_id}" unless @requisition_id.nil? #debug
+
 end
 
 When /^I (#{BasePage::available_buttons}) the (.*) document if it is not already FINAL/ do |button, document|
@@ -59,12 +65,13 @@ end
 
 Then /^the (.*) document goes to (PROCESSED|ENROUTE|FINAL|INITIATED|SAVED)$/ do |document, doc_status|
   sleep 10
+  sleep 10 #debug
   document_object_for(document).view
   on(page_class_for(document)).document_status.should == doc_status
 end
 
 Then /^the (.*) document goes to one of the following statuses:$/ do |document, required_statuses|
-  sleep 10
+  sleep 10  #debug
   document_object_for(document).view
   on(page_class_for(document)) { |page| required_statuses.raw.flatten.should include page.document_status }
 end

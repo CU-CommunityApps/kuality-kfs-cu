@@ -34,7 +34,9 @@ end
 Then /^I switch to the user with the next Pending Action in the Route Log for the (.*) document$/ do |document|
   new_user = ''
   on page_class_for(document) do |page|
+    page.alert.ok if page.alert.exists? # Because, y'know, sometimes it doesn't actually come up... #debug
     page.expand_all
+    page.alert.ok if page.alert.exists? # Because, y'know, sometimes it doesn't actually come up... #debug
     page.show_route_log unless page.route_log_shown?
 
     page.pnd_act_req_table_action.visible?.should
@@ -51,18 +53,42 @@ Then /^I switch to the user with the next Pending Action in the Route Log for th
     page.use_new_tab
 
     # TODO: Actually build a functioning PersonPage to grab this. It seems our current PersonPage ain't right.
-    page.frm.div(id: 'tab-Overview-div').tables[0][1].tds.first.should exist
-    page.frm.div(id: 'tab-Overview-div').tables[0][1].tds.first.text.empty?.should_not
+    puts 'Check for frame or no frame'
+    sleep 10 #debug
 
-    if page.frm.div(id: 'tab-Overview-div').tables[0][1].text.include?('Principal Name:')
-      new_user = page.frm.div(id: 'tab-Overview-div').tables[0][1].tds.first.text
-    else
-      # TODO : this is for group.  any other alternative ?
-      mbr_tr = page.frm.select(id: 'document.members[0].memberTypeCode').parent.parent.parent
-      new_user = mbr_tr[4].text
+    if page.frm.div(id: 'tab-Overview-div').exists?
+      # WITH FRAME
+      puts 'frame for user'
+      page.frm.div(id: 'tab-Overview-div').tables[0][1].tds.first.should exist
+      page.frm.div(id: 'tab-Overview-div').tables[0][1].tds.first.text.empty?.should_not
+
+      if page.frm.div(id: 'tab-Overview-div').tables[0][1].text.include?('Principal Name:')
+        new_user = page.frm.div(id: 'tab-Overview-div').tables[0][1].tds.first.text
+      else
+        # TODO : this is for group.  any other alternative ?
+        mbr_tr = page.frm.select(id: 'document.members[0].memberTypeCode').parent.parent.parent
+        new_user = mbr_tr[4].text
+      end
+
+    elsif page.div(id: 'tab-Overview-div').exists?
+      #NO FRAME
+      puts 'no frame for user'
+      page.div(id: 'tab-Overview-div').tables[0][1].tds.first.should exist
+      page.div(id: 'tab-Overview-div').tables[0][1].tds.first.text.empty?.should_not
+
+      if page.div(id: 'tab-Overview-div').tables[0][1].text.include?('Principal Name:')
+        new_user = page.div(id: 'tab-Overview-div').tables[0][1].tds.first.text
+      else
+        # TODO : this is for group.  any other alternative ?
+        mbr_tr = page.select(id: 'document.members[0].memberTypeCode').parent.parent.parent
+        new_user = mbr_tr[4].text
+      end
     end
 
-    page.close_children
+
+  puts "New user to login as is: #{new_user}" #debug
+
+  page.close_children
   end
 
   step "I am logged in as \"#{new_user}\""

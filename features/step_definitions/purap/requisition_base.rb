@@ -1,4 +1,5 @@
-Given  /^I initiate a Requisition document with the following:$/ do |table|
+Given  /^I (initiate|submit) a Requisition document with the following:$/ do |type, table|
+
   arguments = table.rows_hash
 
   step 'I login as a KFS user to create an REQS'
@@ -23,9 +24,9 @@ Given  /^I initiate a Requisition document with the following:$/ do |table|
     item_qty = apo_amount/1000 - 1
   else
     if amount == 'GT APO'
-        item_qty = apo_amount/1000 + 1
+      item_qty = apo_amount/1000 + 1
     else
-        item_qty = amount.to_i/1000
+      item_qty = amount.to_i/1000
     end
   end
 
@@ -34,6 +35,8 @@ Given  /^I initiate a Requisition document with the following:$/ do |table|
   if !arguments['CA System Type'].nil?
     object_code = get_aft_parameter_value(ParameterConstants::REQS_CA_OBJECT_CODE)
   end
+  sleep 10 #debug
+
   step 'I create the Requisition document with:',
        table(%Q{
          | Vendor Number       | #{@vendor_number}  |
@@ -46,6 +49,7 @@ Given  /^I initiate a Requisition document with the following:$/ do |table|
        })
 
   if !@vendor_number.nil? && @add_vendor_on_reqs == 'Yes'
+sleep 10 #debug
     @requisition.add_vendor_to_req(@vendor_number)
   end
 
@@ -65,11 +69,18 @@ Given  /^I initiate a Requisition document with the following:$/ do |table|
     And  I calculate my Requisition document
     And  I submit the Requisition document
     Then the Requisition document goes to ENROUTE
-
-    And  I switch to the user with the next Pending Action in the Route Log to approve Requisition document to Final
-    Then the Requisition document goes to FINAL
-    And  users outside the Route Log can not search and retrieve the REQS
   }
+
+  case type
+    when 'initiate'
+      steps %q{
+        And  I switch to the user with the next Pending Action in the Route Log to approve Requisition document to Final
+        Then the Requisition document goes to FINAL
+    }
+    when 'submit'
+    puts 'just submitting Requisition document not taking to final'
+  end
+
 end
 
 And /^users outside the Route Log can not search and retrieve the REQS$/ do
@@ -77,7 +88,8 @@ And /^users outside the Route Log can not search and retrieve the REQS$/ do
   visit(MainPage).requisitions
   on DocumentSearch do |page|
     page.document_id.fit @requisition.document_id
-    #page.document_id.fit '5358712'
+
+    puts "req num is: #{@requisition.document_id}"
     page.search
     sleep 2
     unless page.lookup_div.parent.text.include?('No values match this search.')
@@ -90,6 +102,8 @@ And /^users outside the Route Log can not search and retrieve the REQS$/ do
 end
 
 And /^I extract the Requisition document to SciQuest$/ do
+  sleep 10 #debug
+
   steps %q{
     Given I am logged in as a Purchasing Processor
     And   I retrieve the Requisition document
@@ -285,9 +299,13 @@ And /^the POA Routes to the FO$/ do
 end
 
 And /^I amend the Purchase Order$/ do
+  sleep 10 #debug
   on(PurchaseOrderPage).amend_po
   on AmendPOReasonPage do |page|
+    sleep 10 #debug
+    sleep 10 #debug
     page.reason.fit random_alphanums(40, 'AFT-amendreason')
+    sleep 10 #debug
     page.amend
   end
   sleep 3
@@ -298,9 +316,9 @@ When /^I initiate a Purchase Order Amendment document$/ do
   step 'I initiate a Purchase Order Amendment document with the following:', table(%q{| Default |  |})
 end
 
-When /^I initiate a Purchase Order Amendment document with the following:$/ do |table|
+When /^I (initiate|submit) a Purchase Order Amendment document with the following:$/ do |type, table|
   arguments = table.rows_hash
-
+  sleep 10 #debug
   steps %Q{
     Given I am logged in as "#{@requisition_initiator}"
     And   I view the Purchase Order document
@@ -326,9 +344,18 @@ When /^I initiate a Purchase Order Amendment document with the following:$/ do |
   steps %q{
     When  I submit the Purchase Order Amendment document
     Then  the Purchase Order Amendment document goes to ENROUTE
-    Given I switch to the user with the next Pending Action in the Route Log to approve Purchase Order Amendment document to Final
-    Then  the Purchase Order Amendment document goes to FINAL
   }
+
+  case type
+    when 'initiate'
+      steps %q{
+        Given I switch to the user with the next Pending Action in the Route Log to approve Purchase Order Amendment document to Final
+        Then  the Purchase Order Amendment document goes to FINAL
+    }
+    when 'submit'
+      puts 'Just submitting Purchase Order Amendment document, not taking POA document to final'
+  end
+
 end
 
 And /^I check Related Documents Tab on Requisition Document$/ do
