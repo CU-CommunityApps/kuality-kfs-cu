@@ -18,6 +18,10 @@ Feature: REQS, PO, PREQ,PDP
               of Individual Assets but with a System State of Modify Existing System. Retrieve the previously created asset for modification. Take
               the asset from Requisition to APO to PREQ to CAB and to Payment.
 
+  [KFSQA-998] First, create a initial Capital Asset with Base Function attributes. Second, create a modification to this asset. Keep the System Type
+              of One System but with a System State of Modify Existing System. Retrieve the previously created asset for modification. Take
+              the asset from Requisition to APO to PREQ to CAB and to Payment.
+
   [KFSQA-996] Create a Capital Asset starting with Base Function attributes and change Asset to System Type of Multiple System with a System State of New System. Take the asset from Requisition to APO to PREQ to CAB and to Payment.
 
   [KFSQA-999]  First, create a initial Capital Asset with Base Function attributes. Second, create a modification to this asset. Change REQS System Type to Multiple System with a System State of Modify Existing System. Retrieve the previously created asset for modification. Take the asset from Requisition to APO to PREQ to CAB and to Payment.
@@ -134,8 +138,8 @@ Feature: REQS, PO, PREQ,PDP
   | One System         |
   | Multiple Systems   |
 
-  @KFSQA-997 @KFSQA-999 @E2E @REQS @PO @PREQ @PDP @coral
-  Scenario Outline: Modify a Capital Asset REQS E2E (Individual Asset/Modify Existing System)/(Multiple Systems/Modify Existing System)
+  @KFSQA-997 @KFSQA-998 @KFSQA-999 @E2E @REQS @PO @PREQ @PDP @coral
+  Scenario Outline: Modify a Capital Asset REQS E2E (Individual Asset/Modify Existing System)/(One System/Modify Existing System)/(Multiple Systems/Modify Existing System)
     Given I initiate a Requisition document with the following:
       | Vendor Type        | NonB2B                  |
       | Add Vendor On REQS | Yes                     |
@@ -170,4 +174,5 @@ Feature: REQS, PO, PREQ,PDP
   Examples:
     | CA System Type     |
     | Individual Assets  |
+    | One System         |
     | Multiple Systems   |
