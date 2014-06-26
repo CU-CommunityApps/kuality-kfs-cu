@@ -397,7 +397,6 @@ Then /^Award Review is not in the Requisition document workflow history$/ do
 end
 
 And /^I fill in Capital Asset tab on Requisition document with:$/ do |table|
-  #TODO : different type/state has different data input after select
   system_params = table.rows_hash
   on RequisitionPage do |page|
     page.expand_all
@@ -406,10 +405,10 @@ And /^I fill in Capital Asset tab on Requisition document with:$/ do |table|
     page.select
   end
 
-  case system_params['CA System Type']
-    when 'One System'
-      case system_params['CA System State']
-        when 'New System'
+  case system_params['CA System State']
+    when 'New System'
+      case system_params['CA System Type']
+        when 'One System'
           on RequisitionPage do |page|
             page.model_number.fit '2014 Bella Model'
             page.transaction_type_code.fit 'New'
@@ -417,33 +416,27 @@ And /^I fill in Capital Asset tab on Requisition document with:$/ do |table|
             page.asset_number.fit '1'
             page.same_as_vendor
           end
-        when 'Modify Existing System'
+        when 'Individual Assets'
           on RequisitionPage do |page|
-            page.add_asset_number.fit @asset_number
-            #page.add_asset_number.fit '504307'
-            page.add_asset
-            page.transaction_type_code.fit 'Modify existing'
-          end
-      end
-    when 'Individual Assets'
-      case system_params['CA System State']
-        when 'New System'
-          on RequisitionPage do |page|
-            #page.manufacturer.fit random_alphanums(15, 'AFT manuf')
             page.model_number.fit '2014 Bella Model'
             page.transaction_type_code.fit 'New'
             page.same_as_vendor
           end
-        when 'Modify Existing System'
+        when 'Multiple Systems'
           on RequisitionPage do |page|
-            page.add_asset_number.fit @asset_number
-            #page.add_asset_number.fit '504307'
-            page.add_asset
-            page.transaction_type_code.fit 'Modify existing'
+            page.transaction_type_code.fit 'New'
+            page.asset_system_description.fit random_alphanums(40, 'AFT CA desc')
           end
+      end
+    when 'Modify Existing System'
+      on RequisitionPage do |page|
+        page.add_asset_number.fit @asset_number
+        page.add_asset
+        page.transaction_type_code.fit 'Modify existing'
       end
   end
 end
+
 Then /^I run the nightly Capital Asset jobs$/ do
   steps %Q{
     Given I am logged in as a KFS Operations
@@ -479,6 +472,8 @@ end
 And /^I complete the Asset Information Detail tab$/ do
   on AssetGlobalPage do |page|
     page.asset_type_code.fit '019'
+    page.manufacturer.fit 'Jones Landscaping' if page.manufacturer.value.strip.empty?
+
   end
 
 end
