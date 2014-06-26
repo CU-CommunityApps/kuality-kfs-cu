@@ -53,12 +53,8 @@ Then /^I switch to the user with the next Pending Action in the Route Log for th
     page.use_new_tab
 
     # TODO: Actually build a functioning PersonPage to grab this. It seems our current PersonPage ain't right.
-    puts 'Check for frame or no frame'
-    sleep 10 #debug
-
     if page.frm.div(id: 'tab-Overview-div').exists?
       # WITH FRAME
-      puts 'frame for user'
       page.frm.div(id: 'tab-Overview-div').tables[0][1].tds.first.should exist
       page.frm.div(id: 'tab-Overview-div').tables[0][1].tds.first.text.empty?.should_not
 
@@ -72,7 +68,6 @@ Then /^I switch to the user with the next Pending Action in the Route Log for th
 
     elsif page.div(id: 'tab-Overview-div').exists?
       #NO FRAME
-      puts 'no frame for user'
       page.div(id: 'tab-Overview-div').tables[0][1].tds.first.should exist
       page.div(id: 'tab-Overview-div').tables[0][1].tds.first.text.empty?.should_not
 

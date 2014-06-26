@@ -12,8 +12,6 @@ Feature: Requistion
     When  I route the Requisition document to final
     Then  Award Review is not in the Requisition document workflow history
 
-
-
   @wip @KFSQA-864 @REQS @PREQ @Routing @PDP @POA
   Scenario: Financial Officer can add other accounts to REQ and document route to another FO - Implement KFSMI-8165 Test 1
   Given I submit a Requisition document with the following:
@@ -42,5 +40,4 @@ Feature: Requistion
     And I submit a Purchase Order Amendment document with the following:
       | Default |      |
     And   During Approval of the Purchase Order Amendment the Financial Officer adds a line item
-
     Then  the Purchase Order document routes to the correct individuals based on the org review levels

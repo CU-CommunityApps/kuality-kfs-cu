@@ -238,9 +238,11 @@ And /^a Format Summary Lookup displays$/ do
 end
 
 Then /^the (.*) document routes to the correct individuals based on the org review levels$/ do |document|
+  reqs_org_reviewers_level_0 = Array.new
   reqs_org_reviewers_level_1 = Array.new
   reqs_org_reviewers_level_2 = Array.new
   po_reviewer_5m = ''
+  puts "Level is #{@level}" #debug
 
   if @level == 1
     reqs_org_reviewers_level_1 = get_principal_name_for_role('KFS-SYS', 'ORG 0100 Level 1 Review')
@@ -265,7 +267,10 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
         (@org_review_users & po_reviewer_100k).length.should >= 1
         @org_review_users.should include po_reviewer_500k
         @org_review_users.should include po_reviewer_5m
+      else
+        warn "Warning: Level not handled, the level was #{@level}"
     end
+
   elsif document == 'Requisition' || document == 'Payment Request'
     case @level
      when 1
@@ -274,6 +279,8 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
        (@org_review_users & reqs_org_reviewers_level_2).length.should >= 1
      when 3
        (@org_review_users & reqs_org_reviewers_level_2).length.should >= 1
+      else
+        warn "Warning: Level not handled, the level was #{@level}"
     end
   end
 

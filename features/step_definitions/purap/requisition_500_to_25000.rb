@@ -38,8 +38,7 @@ And /^I submit the Requisition document with items that total more than the doll
   account_info = get_kuali_business_object('KFS-COA','Account','subFundGroupCode=APFEDL&closed=N&contractsAndGrantsAccountResponsibilityId=5&accountExpirationDate=NULL')
   award_account_number = account_info['accountNumber'][0]
   cost_from_param = get_parameter_values('KFS-PURAP', 'DOLLAR_THRESHOLD_REQUIRING_AWARD_REVIEW', 'Requisition')[0].to_i
-  cost_from_param = cost_from_param - 100
-
+  cost_from_param = cost_from_param + 100
 
   step 'I create the Requisition document with:',
        table(%Q{
@@ -146,8 +145,6 @@ end
 
 And /^the View Related Documents Tab PO Status displays$/ do
   on RequisitionPage do |page|
-    # page.show_related_documents
-    # page.show_purchase_order
     sleep 5 #debug
     page.expand_all
     sleep 5 #debug
@@ -196,7 +193,6 @@ And /^I Complete Selecting a Foreign Vendor$/ do
       vlookup.return_value(vendor_number)
     end
   end
-
 end
 
 And /^I enter a Vendor Choice$/ do
@@ -347,7 +343,7 @@ And /^I fill out the PREQ initiation page and continue$/ do
   on YesOrNoPage do |page|
     page.yes if page.yes_button.exists?
   end
-  sleep 5
+  sleep 10
   @payment_request = create PaymentRequestObject
 end
 
@@ -380,7 +376,6 @@ And /^I attach an Invoice Image$/ do
 
     page.add_note
     page.attach_notes_file_1.should exist #verify that note is indeed added
-
   end
 end
 
@@ -659,24 +654,28 @@ And /^During Approval of the Purchase Order Amendment the Financial Officer adds
   #view the POA
   step 'I switch to the user with the next Pending Action in the Route Log for the Requisition document'
   # step "I view the Requisition document on my action list"
-  step "I view the Requisition document"
-  on RequisitionPage do |page|
-    page.expand_all
-    @purchase_order_amendment_id = page.purchase_order_amendment_value
-    page.purchase_order_amendment
-  end
+  step 'I open the Purchase Order Amendment on the Requisition document'
+  # step "I view the Requisition document"
+  # on RequisitionPage do |page|
+  #   page.expand_all
+  #   @purchase_order_amendment_id = page.purchase_order_amendment_value
+  #   page.purchase_order_amendment
+  # end
   step 'I switch to the user with the next Pending Action in the Route Log for the Purchase Order document'
+
+  step 'I open the Purchase Order Amendment on the Requisition document'
+
 
   on PurchaseOrderPage do |page|
     page.expand_all
 
-    page.item_account_number.fit '1271001'
-    page.item_object.fit '6570'
-    page.item_percent.fit '50'
-    page.item_add_account_line
-    # page.added_percent.fit '50'
+    page.account_number.fit '1271001'
+    page.object_code.fit '6570'
+    page.percent.fit '50'
+
+    page.old_percent.fit '50'
     page.old_amount.fit ''
-    page.old_amount(1).fit ''
+    page.add_account
 
     page.calculate
     #better wait might be to wait for the amount after calculation
@@ -684,4 +683,16 @@ And /^During Approval of the Purchase Order Amendment the Financial Officer adds
     #approve document
     page.approve
   end
+end
+
+And /^I open the Purchase Order Amendment on the Requisition document$/ do
+  step "I view the Requisition document"
+  on RequisitionPage do |page|
+    page.expand_all
+    sleep 10 #debug
+    @purchase_order_amendment_id = page.purchase_order_amendment_value
+    page.purchase_order_amendment
+  end
+
+
 end

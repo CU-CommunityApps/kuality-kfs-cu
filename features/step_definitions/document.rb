@@ -33,8 +33,6 @@ When /^I (#{BasePage::available_buttons}) the (.*) document$/ do |button, docume
   sleep 10 if (button == 'blanket approve' || button == 'approve' || 'submit')
 
   @requisition_id = on(RequisitionPage).requisition_id if document == 'Requisition' && button == 'submit'
-  puts "Requisition Id is: #{@requisition_id}" unless @requisition_id.nil? #debug
-
 end
 
 When /^I (#{BasePage::available_buttons}) the (.*) document if it is not already FINAL/ do |button, document|
@@ -71,7 +69,7 @@ Then /^the (.*) document goes to (PROCESSED|ENROUTE|FINAL|INITIATED|SAVED)$/ do 
 end
 
 Then /^the (.*) document goes to one of the following statuses:$/ do |document, required_statuses|
-  sleep 10  #debug
+  sleep 10
   document_object_for(document).view
   on(page_class_for(document)) { |page| required_statuses.raw.flatten.should include page.document_status }
 end
