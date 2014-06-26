@@ -156,9 +156,7 @@ When /^I initiate a Payment Request document$/ do
   step 'I calculate PREQ'
   step 'I submit the Payment Request document'
   step 'the Payment Request document goes to ENROUTE'
-  #step 'I switch to the user with the next Pending Action in the Route Log to approve Payment Request document to Final'
   step 'I route the Payment Request document to final'
-  #step 'the Payment Request document goes to FINAL'
   step 'the Payment Request Doc Status is Department-Approved'
   step 'the Payment Request document\'s GLPE tab shows the Requisition document submissions'
 end
@@ -302,34 +300,31 @@ end
 When /^I initiate a Purchase Order Amendment document with the following:$/ do |table|
   arguments = table.rows_hash
 
-  steps %Q{
-    Given I am logged in as "#{@requisition_initiator}"
-    And   I view the Purchase Order document
-    And   I amend the Purchase Order
-  }
+  step "I am logged in as \"#{@requisition_initiator}\""
+  step 'I view the Purchase Order document'
+  step 'I amend the Purchase Order'
 
   if !arguments['Item Quantity'].nil? && arguments['Item Quantity'].to_f > 0
     @poa_item_amount = arguments['Item Quantity'].to_f * arguments['Item Cost'].to_f
     step 'I add an item to Purchase Order Amendment with:',
          table(%Q{
-           | Item Quantity       | #{arguments['Item Quantity']}        |
-           | Item Cost           | #{arguments['Item Cost']}            |
-           | Item Commodity Code | #{@requisition.item_commodity_code}  |
-           | Account Number      | #{@requisition.item_account_number}  |
-           | Object Code         | #{@requisition.item_object_code}     |
-           | Percent             | 100                                  |
+           | Item Quantity       | #{arguments['Item Quantity']}                                      |
+           | Item Cost           | #{arguments['Item Cost']}                                          |
+           | Item Commodity Code | #{@requisition.items.first.commodity_code}                         |
+           | Account Number      | #{@requisition.items.first.accounting_lines.first.account_number}  |
+           | Object Code         | #{@requisition.items.first.accounting_lines.first.object_code}     |
+           | Percent             | 100                                                                |
          })
     step 'I calculate and verify the GLPE tab with no entries'
   else
     step 'I calculate and verify the GLPE tab'
   end
 
-  steps %q{
-    When  I submit the Purchase Order Amendment document
-    Then  the Purchase Order Amendment document goes to ENROUTE
-    Given I switch to the user with the next Pending Action in the Route Log to approve Purchase Order Amendment document to Final
-    Then  the Purchase Order Amendment document goes to FINAL
-  }
+  step 'I submit the Purchase Order Amendment document'
+  step 'the Purchase Order Amendment document goes to ENROUTE'
+  step 'I switch to the user with the next Pending Action in the Route Log to approve Purchase Order Amendment document to Final'
+  step 'the Purchase Order Amendment document goes to FINAL'
+
 end
 
 And /^I check Related Documents Tab on Requisition Document$/ do
@@ -352,7 +347,7 @@ And /^I add an item to Purchase Order Amendment with:$/ do |table|
     page.item_commodity_code.fit arguments['Item Commodity Code']
     page.item_description.fit    random_alphanums(15, 'AFT Item')
     page.item_unit_cost.fit      arguments['Item Cost']
-    page.item_uom.fit            @requisition.item_uom
+    page.item_uom.fit            @requisition.items.first.uom
     page.item_add
 
     #Add Accounting line
@@ -379,9 +374,8 @@ Then /^the Purchase Order Amendment document's GLPE tab shows the new item amoun
   on PurchaseOrderAmendmentPage do |page|
     page.show_glpe
 
-
     page.glpe_results_table.rows.length.should == 3
-    page.glpe_results_table.text.should include @requisition.item_account_number
+    page.glpe_results_table.text.should include @requisition.items.first.accounting_lines.first.account_number
     page.glpe_results_table[1][11].text.to_f.should == @poa_item_amount
     page.glpe_results_table[2][11].text.to_f.should == @poa_item_amount
   end
@@ -390,9 +384,7 @@ end
 Then /^Award Review is not in the Requisition document workflow history$/ do
   root_action_requests =  get_root_action_requests(@requisition.document_id).getRootActionRequest().to_a
   root_action_requests.each do |root_action|
-    unless root_action.annotation.nil?
-      root_action.annotation.should_not include 'Contracts'
-    end
+    root_action.annotation.should_not include 'Contracts' unless root_action.annotation.nil?
   end
 
 end
@@ -446,25 +438,21 @@ And /^I fill in Capital Asset tab on Requisition document with:$/ do |table|
   end
 end
 Then /^I run the nightly Capital Asset jobs$/ do
-  steps %Q{
-    Given I am logged in as a KFS Operations
-    And I collect the Capital Asset Documents
-    And I create the Plant Fund Entries
-    And I move the Plant Fund Entries to Posted Entries
-    And I clear Pending Entries
-    And I create entries for CAB
-   }
-
+  step 'I am logged in as a KFS Operations'
+  step 'I collect the Capital Asset Documents'
+  step 'I create the Plant Fund Entries'
+  step 'I move the Plant Fund Entries to Posted Entries'
+  step 'I clear Pending Entries'
+  step 'I create entries for CAB'
 end
 
 And /^I lookup a Capital Asset to process$/ do
   visit(MainPage).capital_asset_builder_ap_transactions
   on CabPurapLookupPage do |page|
     page.preq_number.fit @preq_id
-     page.search
-    page.process(@preq_id)
+    page.search
+    page.process @preq_id
   end
-
 end
 
 And /^I select and create asset$/ do
@@ -478,10 +466,7 @@ And /^I select and create asset$/ do
 end
 
 And /^I complete the Asset Information Detail tab$/ do
-  on AssetGlobalPage do |page|
-    page.asset_type_code.fit '019'
-  end
-
+  on(AssetGlobalPage).asset_type_code.fit '019'
 end
 
 And /^I complete the existing Asset Location Information$/ do
@@ -495,26 +480,22 @@ end
 
 
 And /^I build a Capital Asset from AP transaction$/ do
-  steps %Q{
-    Given I Login as an Asset Processor
-    And   I lookup a Capital Asset to process
-    And   I select and create asset
-    And   I complete the Asset Information Detail tab
-    And   I complete the existing Asset Location Information
-    And   I submit the Asset Global document
-    Then  the Asset Global document goes to FINAL
-   }
+  step 'I Login as an Asset Processor'
+  step 'I lookup a Capital Asset to process'
+  step 'I select and create asset'
+  step 'I complete the Asset Information Detail tab'
+  step 'I complete the existing Asset Location Information'
+  step 'I submit the Asset Global document'
+  step 'the Asset Global document goes to FINAL'
 end
 
 
 And /^I modify existing Capital Asset from AP transaction and apply payment$/ do
-  steps %Q{
-    Given I Login as an Asset Processor
-    And   I lookup a Capital Asset to process
-    And   I select and apply payment
-    And   I submit the Asset Manual Payment document
-    Then  the Asset Manual Payment document goes to FINAL
-   }
+  step 'I Login as an Asset Processor'
+  step 'I lookup a Capital Asset to process'
+  step 'I select and apply payment'
+  step 'I submit the Asset Manual Payment document'
+  step 'the Asset Manual Payment document goes to FINAL'
 end
 
 And /^I select and apply payment$/ do

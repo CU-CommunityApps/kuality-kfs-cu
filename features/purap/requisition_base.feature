@@ -32,7 +32,7 @@ Feature: REQS, PO, PREQ,PDP
     When  I extract the Requisition document to SciQuest
     And   I initiate a Payment Request document
 
-  @KFSQA-854 @BaseFunction @Routing @coral @wip
+  @KFSQA-854 @BaseFunction @Routing @coral
   Scenario Outline: POs Follow Routing per Organization Review (ORG 0100)
     Given I initiate a Requisition document with the following:
       | Vendor Type        | NonB2B    |
@@ -53,7 +53,7 @@ Feature: REQS, PO, PREQ,PDP
     | 500000  | 2     |
     | 5000000 | 3     |
 
-  @KFSQA-855 @BaseFunction @Routing @coral @wip
+  @KFSQA-855 @BaseFunction @Routing @coral
   Scenario Outline: PUR-10  remove commodity review from PO
     Given I initiate a Requisition document with the following:
       | Vendor Type        | NonB2B      |
@@ -74,7 +74,7 @@ Feature: REQS, PO, PREQ,PDP
     | GT APO | Regular   |
     | LT APO | Regular   |
 
-  @KFSQA-858 @BaseFunction @POA @PDP @coral @wip
+  @KFSQA-858 @BaseFunction @POA @PDP @coral
   Scenario: PUR-4 POA Changes to routing and permissions
     Given I initiate a Requisition document with the following:
       | Vendor Type        | NonB2B    |
@@ -90,7 +90,7 @@ Feature: REQS, PO, PREQ,PDP
     Then the POA Routes to the FO
     When  I initiate a Payment Request document
 
-  @KFSQA-882 @BaseFunction @POA @PO @coral @wip
+  @KFSQA-882 @BaseFunction @POA @PO @coral
   Scenario: GLPEs are wrong on Purchase Order Amendments (POAs)
     Given I initiate a Requisition document with the following:
       | Vendor Type        | NonB2B    |
@@ -107,7 +107,7 @@ Feature: REQS, PO, PREQ,PDP
       | Item Cost     | 100 |
     Then the Purchase Order Amendment document's GLPE tab shows the new item amount
 
-  @KFSQA-994 @KFSQA-995 @E2E @REQS @PO @PREQ @PDP @coral @wip
+  @KFSQA-994 @KFSQA-995 @E2E @REQS @PO @PREQ @PDP @coral
   Scenario Outline: I CREATE A CAPITAL ASSET REQS E2E (Individual Assets/New)/(One System/New System)
     Given I initiate a Requisition document with the following:
       | Vendor Type        | NonB2B            |
@@ -129,7 +129,7 @@ Feature: REQS, PO, PREQ,PDP
   | Individual Assets  | New System         |
   | One System         | New System         |
 
-  @KFSQA-997 @E2E @REQS @PO @PREQ @PDP @coral @wip
+  @KFSQA-997 @E2E @REQS @PO @PREQ @PDP @coral
   Scenario: Modify a Individual Asset REQS E2E (Individual/Modify Existing System)
     Given I initiate a Requisition document with the following:
       | Vendor Type        | NonB2B                  |
