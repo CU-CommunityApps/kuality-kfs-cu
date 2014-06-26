@@ -27,7 +27,7 @@ Feature: Distribution of Income and Expense
     When    I view the Distribution Of Income And Expense document
     Then    the Notes and Attachment Tab says "Accounting Line changed from"
 
-  @KFSQA-1006 @DI @E2E @slug @cornell @wip
+  @KFSQA-1006 @DI @E2E @slug @cornell
   Scenario: I credit an expenditure from a source account and create an asset into the target account.
     Given   I create a Distribution of Income and Expense document with the following:
       | Line Type | Chart Code | Account | Object Code | Amount | Capital Asset? |
