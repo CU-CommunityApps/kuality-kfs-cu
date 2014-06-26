@@ -359,9 +359,9 @@ end
 
 And   /^I view the Purchase Order document via e-SHOP$/ do
   on ShopCatalogPage do |page|
-    #page.key_words.fit 'Commidity 14111507'
     page.order_doc
     page.po_doc_search
+    page.search_doc_type.fit 'Purchase Orders'
     page.po_id.fit @purchase_order_number
     (0..page.date_range.length).each do |i|
       if page.date_range[i].visible?
