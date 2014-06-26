@@ -46,20 +46,34 @@ And /^I add an item to the Requisition document with:$/ do |table|
   # and probably create a different step
   add_item['Line Number'] = '0'  if add_item['Line Number'].nil?
 
-  on RequisitionPage do |page|
-    page.item_quantity.fit add_item['Item Quantity']
-    page.item_unit_cost.fit add_item['Item Cost']
-    page.item_commodity_code.fit add_item['Item Commodity Code']
-    page.item_catalog_number.fit add_item['Item Catalog Number']
-    page.item_uom.fit add_item['Item Unit of Measure']
-    page.item_description.fit add_item['Item Description'].nil? ? random_alphanums(15, 'AFT') : add_item['Item Description']
-    page.item_add
+  @requisition.items.add({
+    quantity:  add_item['Item Quantity'],
+    unit_cost: add_item['Item Cost'],
+    commodity_code: add_item['Item Commodity Code'],
+    catalog_number: add_item['Item Catalog Number'],
+    uom: add_item['Item Unit of Measure'],
+    description: (add_item['Item Description'].nil? ? random_alphanums(15, 'AFT') : add_item['Item Description']),
+    initial_lines: [{
+                     account_number: add_item['Account Number'],
+                     object_code:    add_item['Object Code'],
+                     percent:        add_item['Percent']
+                    }]
+  })
 
-    page.item_account_number(add_item['Line Number']).fit add_item['Account Number']
-    page.item_object_code(add_item['Line Number']).fit add_item['Object Code']
-    page.item_percent(add_item['Line Number']).fit add_item['Percent']
-    page.item_add_account_line(add_item['Line Number'])
-   end
+  # on RequisitionPage do |page|
+  #   page.item_quantity.fit add_item['Item Quantity']
+  #   page.item_unit_cost.fit add_item['Item Cost']
+  #   page.item_commodity_code.fit add_item['Item Commodity Code']
+  #   page.item_catalog_number.fit add_item['Item Catalog Number']
+  #   page.item_uom.fit add_item['Item Unit of Measure']
+  #   page.item_description.fit add_item['Item Description'].nil? ? random_alphanums(15, 'AFT') : add_item['Item Description']
+  #   page.item_add
+  #
+  #   page.item_account_number(add_item['Line Number']).fit add_item['Account Number']
+  #   page.item_object_code(add_item['Line Number']).fit add_item['Object Code']
+  #   page.item_percent(add_item['Line Number']).fit add_item['Percent']
+  #   page.item_add_account_line(add_item['Line Number'])
+  #  end
 end
 
 And /^I calculate my Requisition document$/ do
