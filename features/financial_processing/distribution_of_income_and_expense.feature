@@ -4,6 +4,8 @@ Feature: Distribution of Income and Expense
 
   [KFSQA-1006] I credit an expenditure from a source account and create an asset into the target account.
 
+  [KFSQA-1007] I credit an asset from the source account it was originally posted to. I lookup that asset. I transfer the cost to a target account with an expenditure object code.
+
   @KFAQA-648 @Approving @DI @Edit @smoke @sloth @needs-clean-up @broken! @pending
   Scenario: Reject Approver Account changes unless they are the Fiscal Officer
     Given   I am logged in as a KFS User
@@ -35,3 +37,20 @@ Feature: Distribution of Income and Expense
       | To        | IT         | 1003010 | 3630        | 8000   | Yes            |
     And     I run the nightly Capital Asset jobs
     And     I build a Capital Asset from the General Ledger
+
+  @KFSQA-1007 @DI @E2E @slug @wip
+  Scenario: I credit an asset from the source account it was originally posted to. I lookup that asset. I transfer the cost to a target account with an expenditure object code.
+    Given   I Login as an Asset Processor
+    And     I lookup a Capital Asset with the following:
+      | Campus     | IT       |
+      | Building   | 7000     |
+#      | Room       | XXXXXXXX |
+      | Room       | Y&O      |
+      | Asset Type | 019      |
+      | Asset Code | A        |
+    And     I select Capital Asset detail information
+    Given   I create a Distribution of Income and Expense document with the following:
+      | Line Type | Chart Code | Account | Object Code | Amount | Capital Asset? |
+      | To        | IT         | 1003005 | 6540        |        | No             |
+    And     I run the nightly Capital Asset jobs
+    And     I modify a Capital Asset from the General Ledger and apply payment

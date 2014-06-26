@@ -31,19 +31,36 @@ And /^I add a (From|To) amount of "(.*)" for account "(.*)" with object code "(.
   end
 end
 
-And /^I select accounting line and create Capital Asset$/ do
+And /^I select accounting line and (create|modify) Capital Asset$/ do |action|
   on DistributionOfIncomeAndExpensePage do |page|
     page.accounting_lines_for_capitalization_select.set
     page.distribution_method.fit 'Distribute cost by amount'
-    page.create_asset
+    case action
+      when 'create'
+        page.create_asset
+      when 'modify'
+        page.modify_asset
+    end
+    page.use_new_tab
+    page.close_parents
   end
 end
 
-And /^I distribute Capital Asset amount$/ do
+And /^I distribute new Capital Asset amount$/ do
   on DistributionOfIncomeAndExpensePage do |page|
     @asset_account_number = page.asset_account_number
     page.capital_asset_line_amount.fit page.remain_asset_amount
+    page.capital_asset_number.fit @asset_number unless @asset_number.nil?
     page.redistribute_amount
+  end
+end
+
+And /^I distribute modify Capital Asset amount$/ do
+  on DistributionOfIncomeAndExpensePage do |page|
+    @asset_account_number = page.asset_account_number
+    page.capital_asset_line_amount.fit page.remain_asset_amount
+    page.capital_asset_number.fit @asset_number
+    page.redistribute_modify_amount
   end
 end
 
@@ -85,7 +102,7 @@ end
 
 And /^I lookup a Capital Asset from GL transaction to process$/ do
   visit(MainPage).capital_asset_builder_gl_transactions
-  on CABGeneralLedgerEntryLookupPage do |page|
+  on GeneralLedgerPendingEntryLookupPage do |page|
     page.account_number.fit @asset_account_number
     page.search
     page.process(@asset_account_number)
@@ -110,26 +127,42 @@ Given  /^I create a Distribution of Income and Expense document with the followi
           }
 
   account_info.each do |line_type, chart_code, account_number, object_code, amount, capital_asset|
+    account_amount = !@lookup_asset.nil? && amount.empty? ? @asset_amount : amount
     account_line_type = line_type.eql?('From') ? 'Source' : 'Target'
-    capital_asset_action = line_type.eql?('From') && !capital_asset.empty? && capital_asset.eql?('Yes') ? 'Modify' : 'No'
-    capital_asset_action = capital_asset_action.eql?('No') && line_type.eql?('To') && !capital_asset.empty? && capital_asset.eql?('Yes') ? 'Create' : 'No'
+    capital_asset_action = line_type.eql?('From') && !capital_asset.empty? && capital_asset.eql?('Yes') ? 'modify' : 'No'
+    capital_asset_action = capital_asset_action.eql?('No') && line_type.eql?('To') && !capital_asset.empty? && capital_asset.eql?('Yes') ? 'create' : 'No'
     step "I add a #{account_line_type} Accounting Line to the Distribution Of Income And Expense document with the following:",
          table(%Q{
               | Chart Code   | #{chart_code}       |
               | Number       | #{account_number}   |
               | Object Code  | #{object_code}      |
-              | Amount       | #{amount}           |
+              | Amount       | #{account_amount}           |
          })
   end
 
+  unless @lookup_asset.nil?
+    capital_asset_action = 'modify'
+    step "I add a Source Accounting Line to the Distribution Of Income And Expense document with the following:",
+         table(%Q{
+              | Chart Code   | #{@asset_chart}            |
+              | Number       | #{@asset_account_number}   |
+              | Object Code  | #{@asset_object_code}      |
+              | Amount       | #{@asset_amount}           |
+         })
 
+  end
   case capital_asset_action
-      when 'Create'
-        steps %Q{
+    when 'create'
+      steps %Q{
               And     I select accounting line and create Capital Asset
-              And     I distribute Capital Asset amount
+              And     I distribute new Capital Asset amount
               And     I add a tag and location for Capital Asset
-            }
+  }
+    when 'modify'
+      steps %Q{
+              And   I select accounting line and modify Capital Asset
+              And     I distribute modify Capital Asset amount
+  }
   end
 
   steps %Q{
@@ -138,4 +171,48 @@ Given  /^I create a Distribution of Income and Expense document with the followi
             And     I route the Distribution Of Income And Expense document to final
           }
 
+end
+
+And /^I lookup a Capital Asset with the following:$/ do |table|
+  asset_info = table.rows_hash
+  visit(MainPage).asset
+  on AssetLookupPage do |page|
+    page.campus.fit asset_info['Campus']
+    page.building_code.fit asset_info['Building']
+    page.building_room_number.fit asset_info['Room']
+    page.asset_type_code.fit asset_info['Asset Type']
+    page.asset_status_code.fit asset_info['Asset Code']
+    page.search
+    page.return_random_asset
+  #  TODO slow to return. need to find more efficient to pick return asset
+  end
+end
+
+And /^I select Capital Asset detail information$/ do
+  on AssetInquiryPage do |page|
+    page.toggle_payment
+    @asset_number = page.asset_number
+    @asset_account_number = page.asset_account_number
+    @asset_object_code = page.asset_object_code
+    @asset_amount = page.asset_amount
+    @asset_chart = page.asset_chart
+    puts @asset_number,@asset_account_number,@asset_object_code,@asset_amount
+    @lookup_asset = 'Yes'
+  end
+
+end
+
+And /^I modify a Capital Asset from the General Ledger and apply payment$/ do
+  steps %Q{
+    Given I am logged in as "jcs28"
+    And   I lookup a Capital Asset from GL transaction to process
+    And   I select and apply payment for General Ledger Capital Asset
+    And   I submit the Asset Manual Payment document
+    Then  the Asset Manual Payment document goes to FINAL
+   }
+end
+
+And /^I select and apply payment for General Ledger Capital Asset$/ do
+  on(GeneralLedgerProcessingPage).apply_payment
+  @asset_manual_payment = create AssetManualPaymentObject
 end
