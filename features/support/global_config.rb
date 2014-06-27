@@ -7,7 +7,6 @@ module GlobalConfig
   def ksb_client
     #sub string to remove trailing 
     rice_url = ENV['RICE_URL'] ? ENV['RICE_URL'] : global_config[:rice_url]
-    puts "rice url is #{rice_url}"
     @@ksb_client ||= KSBServiceClient.new("#{File.dirname(__FILE__)}/client-sign.properties", "cynergy-dev", rice_url.sub(/(\/)+$/,''))
   end
 
