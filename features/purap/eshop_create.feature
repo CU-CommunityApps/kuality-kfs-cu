@@ -4,7 +4,7 @@ Feature: eSHOP Create
               APO limit. Create order above the APO limit, but below the super-user
               APO limit. Check that order routes to Fiscal Officer for approval.
 
-  @KFSQA-731 @E2E @PURAP @REQS @e-SHOP @cornell @wip1 @pending
+  @KFSQA-731 @E2E @PURAP @REQS @e-SHOP @cornell @wip
   Scenario: Create e-shop order when the items' total is greater than the business
             to business total amount allowed for auto PO and less than business to
             business total amount allowed for superuser auto PO and verify the document
@@ -23,7 +23,7 @@ Feature: eSHOP Create
     And   I stop here because The above steps should be rolled into a base function!
 
     When  I view the Requisition document
-    And   I add these Accounting Lines to the Requisition document:
+    And   I add these Accounting Lines to Item #1 on the Requisition document:
       | chart_code | account_number | object | amount |
       | 1          | 2              | 3      | 4      |
       | 5          | 6              | 7      | 8      |
