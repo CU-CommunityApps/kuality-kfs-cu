@@ -114,7 +114,7 @@ Feature: Purap REQS 2 Building Blocks
   |                                     |
   | VARIABLE SCHEDULE, VARIABLE AMOUNT  |
 
-  @KFSQA-863 @PURAP @REQS @Routing @slug @wip
+  @KFSQA-863 @PURAP @REQS @Routing @slug
   Scenario: Create requisition with two accounting lines and verify routing goes to Org reviewer after the FO
     Given I login as a KFS user to create an REQS
     And   I create the Requisition document with:
@@ -134,8 +134,6 @@ Feature: Purap REQS 2 Building Blocks
       | Item Commodity Code | 10191507         |
       | Item Catalog Number | 10121801         |
       | Item Description    | Bird Repellents  |
-      #Line number because this is a multiple item test
-      #| Line Number         | 1                |
       | Account Number      | 1000817          |
       | Object Code         | 6570             |
       | Percent             | 100              |
