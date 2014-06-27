@@ -49,7 +49,12 @@ end
 And /^I distribute new Capital Asset amount$/ do
   on DistributionOfIncomeAndExpensePage do |page|
     @asset_account_number = page.asset_account_number
-    page.capital_asset_line_amount.fit page.remain_asset_amount
+    @distribution_of_income_and_expense.assets.add   capital_asset_qty:           '1',
+                                                     capital_asset_type:          '019',
+                                                     capital_asset_manufacturer:  'CA manufacturer',
+                                                     capital_asset_description:   random_alphanums(40, 'AFT'),
+                                                     capital_asset_line_amount:   page.remain_asset_amount
+    #page.capital_asset_line_amount.fit page.remain_asset_amount
     page.capital_asset_number.fit @asset_number unless @asset_number.nil?
     page.redistribute_amount
   end
@@ -75,10 +80,6 @@ And /^I add a tag and location for Capital Asset$/ do
     page.return_value(vendor_num)
   end
   on DistributionOfIncomeAndExpensePage do |page|
-    page.capital_asset_qty.fit '1'
-    page.capital_asset_type.fit '019'
-    page.capital_asset_manufacturer.fit 'CA manufacturer'
-    page.capital_asset_description.fit random_alphanums(40, 'AFT')
     page.insert_tag
 
     page.use_new_tab
