@@ -327,6 +327,7 @@ And /^I view the Purchase Order document via e-SHOP$/ do
     page.po_doc_search
 
     # TODO: This block should be split once we've defined a proper EShopDocSearchPage object
+    page.search_doc_type.fit 'Purchase Orders'
     page.po_id.fit      @purchase_order_number
     page.date_range.fit 'Today'
     sleep 2
