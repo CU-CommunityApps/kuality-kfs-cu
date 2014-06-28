@@ -100,6 +100,7 @@ And /^I view the (.*) document on my action list$/ do |document|
   on ActionList do |page|
     #sort the date
     # if previous user already clicked this sort, then action list for next user will be sorted with 'Date created'.  So, add this 'unless' check
+sleep 10 #debug
     page.sort_results_by('Date Created') unless page.result_item(document_object_for(document).document_id).exists?
     page.result_item(document_object_for(document).document_id).wait_until_present
     page.open_item(document_object_for(document).document_id)
@@ -275,9 +276,9 @@ Then /^in Pending Action Requests an FYI is sent to FO and Initiator$/ do
     # TODO : it looks like there is no reload button when open PO with final status.  so comment it out for now.  need further check
     #Watir::Wait::TimeoutError: timed out after 30 seconds, waiting for {:class=>"globalbuttons", :title=>"reload", :tag_name=>"button"} to become present    page.reload # Sometimes the pending table doesn't show up immediately.
     #page.headerinfo_table.wait_until_present
-    sleep 5 #debug
+    sleep 10 #debug
     page.expand_all
-    sleep 5 #debug
+    sleep 10 #debug
     page.refresh_route_log # Sometimes the pending table doesn't show up immediately.
     page.show_pending_action_requests if page.pending_action_requests_hidden?
     fyi_initiator = 0

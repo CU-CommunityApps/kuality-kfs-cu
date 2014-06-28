@@ -22,7 +22,9 @@ Feature: Requistion
     | Commodity Code     | Regular   |
     | Amount             | GT APO    |
     And During Approval of the Requisition the Financial Officer adds a second line item for a second account
-    Then the Requisition document routes to the correct individuals based on the org review levels
+#    Then the Requisition document routes to the correct individuals based on the org review levels
+    And I view the Requisition document from the Requisitions search
+    Then  the next pending action for the Requisition document is an IN ACTION LIST from a  KFS-SYS Accounting Reviewer 0001 IT KFST
 
   @wip @KFSQA-864 @REQS @PREQ @Routing @PDP @POA @coral @over20min
   Scenario: Financial Officer can add other accounts to POA and docs route to another FO - Implement KFSMI-8165 Test 2
@@ -40,4 +42,9 @@ Feature: Requistion
     And I submit a Purchase Order Amendment document with the following:
       | Default |      |
     And   During Approval of the Purchase Order Amendment the Financial Officer adds a line item
-    Then  the Purchase Order document routes to the correct individuals based on the org review levels
+#    And I switch to the user with the next Pending Action in the Route Log for the Requisition document
+    And I view the Requisition document on my action list
+    And I open the Purchase Order Amendment on the Requisition document
+#    Then  the Purchase Order document routes to the correct individuals based on the org review levels
+#    And I view the Requisition document from the Requisitions search
+    Then  the next pending action for the Purchase Order Admendment document is an APPROVE from a KFS-SYS Accounting Reviewer

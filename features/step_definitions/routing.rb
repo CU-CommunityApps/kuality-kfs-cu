@@ -1,6 +1,17 @@
 include Utilities
 
 And /^the next pending action for the (.*) document is an? (.*) from a (.*)$/ do |document, action, user_type|
+
+  root_action_requests =  get_root_action_requests(@requisition.document_id).getRootActionRequest().to_a
+  root_action_requests.each do |root_action|
+    puts root_action.annotation.inspect
+    puts 'next action'
+    # unless root_action.annotation.nil?
+    #   root_action.annotation.should_not include 'Contracts'
+    # end
+  end
+
+
   on page_class_for(document) do |page|
     page.show_route_log_button.wait_until_present
     page.show_route_log unless page.route_log_shown?

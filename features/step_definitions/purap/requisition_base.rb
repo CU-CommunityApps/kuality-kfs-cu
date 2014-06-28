@@ -71,6 +71,8 @@ sleep 10 #debug
     Then the Requisition document goes to ENROUTE
   }
 
+  puts "Level is #{@level}"  #debug
+
   case type
     when 'initiate'
       steps %q{
@@ -80,7 +82,6 @@ sleep 10 #debug
     when 'submit'
     puts 'just submitting Requisition document not taking to final'
   end
-
 end
 
 And /^users outside the Route Log can not search and retrieve the REQS$/ do
@@ -238,7 +239,6 @@ And /^a Format Summary Lookup displays$/ do
 end
 
 Then /^the (.*) document routes to the correct individuals based on the org review levels$/ do |document|
-  reqs_org_reviewers_level_0 = Array.new
   reqs_org_reviewers_level_1 = Array.new
   reqs_org_reviewers_level_2 = Array.new
   po_reviewer_5m = ''
@@ -251,7 +251,6 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
   end
 
   if document == 'Purchase Order'
-
     @base_org_review_level.should == @level
     po_reviewer_500k = get_aft_parameter_value('PO_BASE_ORG_REVIEW_500K')
     po_reviewer_5m = get_aft_parameter_value('PO_BASE_ORG_REVIEW_5M')
@@ -268,9 +267,8 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
         @org_review_users.should include po_reviewer_500k
         @org_review_users.should include po_reviewer_5m
       else
-        warn "Warning: Level not handled, the level was #{@level}"
+        warn "Warning: Level not handled for Purchase Order, the level was #{@level}"
     end
-
   elsif document == 'Requisition' || document == 'Payment Request'
     case @level
      when 1
@@ -280,7 +278,7 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
      when 3
        (@org_review_users & reqs_org_reviewers_level_2).length.should >= 1
       else
-        warn "Warning: Level not handled, the level was #{@level}"
+        warn "Warning: Level not handled for the Requisition, the level was #{@level}"
     end
   end
 
