@@ -1,5 +1,6 @@
 When /^I start an empty Distribution Of Income And Expense document$/ do
   @distribution_of_income_and_expense = create DistributionOfIncomeAndExpenseObject, initial_lines: []
+  @distribution_of_income_and_expense.assets.shift # TODO : CA is not added yet. so remove it ??
 end
 
 And /^I change the DI from Account to one not owned by the current user$/ do
@@ -15,62 +16,64 @@ And /^I add a (From|To) amount of "(.*)" for account "(.*)" with object code "(.
     case target
       when 'From'
         @distribution_of_income_and_expense.add_source_line({
-                                               account_number:   account_number,
-                                               object:           object_code,
-                                               amount:   amount,
-                                               line_description: line_desc
-                                           })
+                                                                account_number:   account_number,
+                                                                object:           object_code,
+                                                                amount:   amount,
+                                                                line_description: line_desc
+                                                            })
       when 'To'
         @distribution_of_income_and_expense.add_target_line({
-                                               account_number:   account_number,
-                                               object:           object_code,
-                                               amount:   amount,
-                                               line_description: line_desc
-                                           })
+                                                                account_number:   account_number,
+                                                                object:           object_code,
+                                                                amount:   amount,
+                                                                line_description: line_desc
+                                                            })
     end
   end
 end
 
 And /^I select accounting line and (create|modify) Capital Asset$/ do |action|
-  on DistributionOfIncomeAndExpensePage do |page|
-    page.accounting_lines_for_capitalization_select.set
-    page.distribution_method.fit 'Distribute cost by amount'
+  on CapitalAssetsTab do |tab|
+    tab.accounting_lines_for_capitalization_select.set
+    tab.distribution_method.fit 'Distribute cost by amount'
     case action
       when 'create'
-        page.create_asset
+        tab.create_asset
       when 'modify'
-        page.modify_asset
+        tab.modify_asset
     end
+  end
+  on DistributionOfIncomeAndExpensePage do |page|
     page.use_new_tab
     page.close_parents
   end
 end
 
 And /^I distribute new Capital Asset amount$/ do
-  on DistributionOfIncomeAndExpensePage do |page|
-    @asset_account_number = page.asset_account_number
+  on CapitalAssetsTab do |tab|
+    @asset_account_number = tab.asset_account_number
     @distribution_of_income_and_expense.assets.add   capital_asset_qty:           '1',
                                                      capital_asset_type:          '019',
                                                      capital_asset_manufacturer:  'CA manufacturer',
                                                      capital_asset_description:   random_alphanums(40, 'AFT'),
                                                      capital_asset_line_amount:   page.remain_asset_amount
     #page.capital_asset_line_amount.fit page.remain_asset_amount
-    page.capital_asset_number.fit @asset_number unless @asset_number.nil?
-    page.redistribute_amount
+    tab.capital_asset_number.fit @asset_number unless @asset_number.nil?
+    tab.redistribute_amount
   end
 end
 
 And /^I distribute modify Capital Asset amount$/ do
-  on DistributionOfIncomeAndExpensePage do |page|
+  on CapitalAssetsTab do |tab|
     @asset_account_number = page.asset_account_number
-    page.capital_asset_line_amount.fit page.remain_asset_amount
-    page.capital_asset_number.fit @asset_number
-    page.redistribute_modify_amount
+    tab.capital_asset_line_amount.fit page.remain_asset_amount
+    tab.capital_asset_number.fit @asset_number
+    tab.redistribute_modify_amount
   end
 end
 
 And /^I add a tag and location for Capital Asset$/ do
-  on(DistributionOfIncomeAndExpensePage).vendor_search
+  on(CapitalAssetsTab).vendor_search
   vendor_num = get_aft_parameter_value(ParameterConstants::REQS_NONB2B_VENDOR)
 
   on VendorLookupPage do |page|
@@ -79,15 +82,17 @@ And /^I add a tag and location for Capital Asset$/ do
     page.search
     page.return_value(vendor_num)
   end
-  on DistributionOfIncomeAndExpensePage do |page|
-    page.insert_tag
+  on(CapitalAssetsTab).insert_tag
 
+  on DistributionOfIncomeAndExpensePage do |page|
     page.use_new_tab
     page.close_parents
-    page.tag_number.fit random_alphanums(8, 'T')
-    page.capital_asset_campus.fit 'IT - Ithaca'
-    page.capital_asset_building.fit '7000'
-    page.capital_asset_room.fit 'XXXXXXXX'
+  end
+  on CapitalAssetsTab do |tab|
+    tab.tag_number.fit random_alphanums(8, 'T')
+    tab.capital_asset_campus.fit 'IT - Ithaca'
+    tab.capital_asset_building.fit '7000'
+    tab.capital_asset_room.fit 'XXXXXXXX'
   end
 end
 
@@ -185,7 +190,7 @@ And /^I lookup a Capital Asset with the following:$/ do |table|
     page.asset_status_code.fit asset_info['Asset Code']
     page.search
     page.return_random_asset
-  #  TODO slow to return. need to find more efficient to pick return asset
+    #  TODO slow to return. need to find more efficient to pick return asset
   end
 end
 
@@ -217,3 +222,4 @@ And /^I select and apply payment for General Ledger Capital Asset$/ do
   on(GeneralLedgerProcessingPage).apply_payment
   @asset_manual_payment = create AssetManualPaymentObject
 end
+
