@@ -56,7 +56,7 @@ And /^I distribute new Capital Asset amount$/ do
                                                      capital_asset_type:          '019',
                                                      capital_asset_manufacturer:  'CA manufacturer',
                                                      capital_asset_description:   random_alphanums(40, 'AFT'),
-                                                     capital_asset_line_amount:   page.remain_asset_amount
+                                                     capital_asset_line_amount:   tab.remain_asset_amount
     #page.capital_asset_line_amount.fit page.remain_asset_amount
     tab.capital_asset_number.fit @asset_number unless @asset_number.nil?
     tab.redistribute_amount
@@ -65,8 +65,8 @@ end
 
 And /^I distribute modify Capital Asset amount$/ do
   on CapitalAssetsTab do |tab|
-    @asset_account_number = page.asset_account_number
-    tab.capital_asset_line_amount.fit page.remain_asset_amount
+    @asset_account_number = tab.asset_account_number
+    tab.capital_asset_line_amount.fit tab.remain_asset_amount
     tab.capital_asset_number.fit @asset_number
     tab.redistribute_modify_amount
   end
