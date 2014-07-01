@@ -68,16 +68,14 @@ Given  /^I initiate a Requisition document with the following:$/ do |table|
 
     And  I switch to the user with the next Pending Action in the Route Log to approve Requisition document to Final
     Then the Requisition document goes to FINAL
-    And  users outside the Route Log can not search and retrieve the REQS
   }
 end
 
-And /^users outside the Route Log can not search and retrieve the REQS$/ do
+And /^users outside the Route Log can not search and retrieve the Requisition document$/ do
   step "I am logged in as \"mrw258\"" # TODO : need a better way to figure out who can't view REQS
   visit(MainPage).requisitions
   on DocumentSearch do |page|
     page.document_id.fit @requisition.document_id
-    #page.document_id.fit '5358712'
     page.search
     sleep 2
     unless page.lookup_div.parent.text.include?('No values match this search.')
@@ -154,7 +152,7 @@ When /^I initiate a Payment Request document$/ do
   step 'I calculate PREQ'
   step 'I submit the Payment Request document'
   step 'the Payment Request document goes to ENROUTE'
-  step 'I route the Payment Request document to final'
+  step 'I switch to the user with the next Pending Action in the Route Log to approve Purchase Order Amendment document to Final'
   step 'the Payment Request Doc Status is Department-Approved'
   step 'the Payment Request document\'s GLPE tab shows the Requisition document submissions'
 end
@@ -504,3 +502,13 @@ And /^I select and apply payment$/ do
 end
 
 
+Then /^an FYI is sent to the Accounting Reviewer$/ do
+  # The document must be open before calling this
+  on RequisitionPage do |page|
+    page.expand_all
+    page.refresh_route_log # Sometimes the pending table doesn't show up immediately.
+    page.show_pending_action_requests if page.pending_action_requests_hidden?
+    page.pnd_act_req_table[1][1].text.should include 'FYI'
+    page.pnd_act_req_table[1][4].text.should include 'Accounting Reviewer'
+  end
+end

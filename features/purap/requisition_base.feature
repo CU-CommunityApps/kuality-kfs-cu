@@ -26,6 +26,8 @@ Feature: REQS, PO, PREQ,PDP
 
   [KFSQA-999]  First, create a initial Capital Asset with Base Function attributes. Second, create a modification to this asset. Change REQS System Type to Multiple System with a System State of Modify Existing System. Retrieve the previously created asset for modification. Take the asset from Requisition to APO to PREQ to CAB and to Payment.
 
+  [KFSQA-814]  PURAP E2E-004k PREQ - Manual Entry, >$5K, <$25K, External Foreign Vendor, No Wire
+
   @KFSQA-853 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral
   Scenario: PUR-5 Sensitive Commodity Data Flag enh
     Given I initiate a Requisition document with the following:
@@ -37,6 +39,7 @@ Feature: REQS, PO, PREQ,PDP
       | Amount             | GT APO    |
 #    | Default PM         | P           |
   # default PM can be implemented after alternate PM is moved to upgrade
+    Then  users outside the Route Log can not search and retrieve the Requisition document
     When  I extract the Requisition document to SciQuest
     And   I initiate a Payment Request document
 
@@ -176,3 +179,18 @@ Feature: REQS, PO, PREQ,PDP
     | Individual Assets  |
     | One System         |
     | Multiple Systems   |
+
+  @KFSQA-814 @E2E @M-ENTRY  @PURAP @PREQ @cornell @coral @wip
+  Scenario: PURAP E2E-004k PREQ - Manual Entry, >$5K, <$25K, External Foreign Vendor, No Wire
+   Given I initiate a Requisition document with the following:
+      | Vendor Type        | Foreign   |
+      | Add Vendor On REQS | Yes       |
+      | Positive Approval  | Checked   |
+      | Account Type       | NonGrant  |
+      | Commodity Code     | Regular   |
+      | Amount             | GT APO    |
+#    | Default PM         | P           |
+# default PM can be implemented after alternate PM is moved to upgrade
+    Then  an FYI is sent to the Accounting Reviewer
+    When  I extract the Requisition document to SciQuest
+    When  I initiate a Payment Request document

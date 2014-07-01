@@ -28,6 +28,8 @@ When /^I (#{BasePage::available_buttons}) the (.*) document$/ do |button, docume
   button.gsub!(' ', '_')
   document_object_for(document).send(button)
   on(YesOrNoPage).yes if button == 'cancel'
+  # TODO : following is to fix a yes/no page after Fiscal year change
+  on(YesOrNoPage) { |yonp| yonp.yes if yonp.yes_button.exists? && button == 'submit' && document == 'Payment Request'}
   sleep 10 if (button == 'blanket approve' || button == 'approve' || 'submit')
 end
 

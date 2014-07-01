@@ -54,7 +54,12 @@ And /^I add an item to the Requisition document with:$/ do |table|
 end
 
 And /^I calculate my Requisition document$/ do
-  on(RequisitionPage).calculate
+  on RequisitionPage do |page|
+    page.calculate
+    @requisition_id = page.requisition_id
+    @requisition_initiator = page.initiator
+  end
+
   #need to let calculate process, no other way to verify calculate is completed
   sleep 3
 end
@@ -71,12 +76,6 @@ And /^I view the (.*) document on my action list$/ do |document|
     page.sort_results_by('Date Created') unless page.result_item(document_object_for(document).document_id).exists?
     page.result_item(document_object_for(document).document_id).wait_until_present
     page.open_item(document_object_for(document).document_id)
-  end
-  if document.eql?('Requisition')
-    on RequisitionPage do |page|
-      @requisition_id = page.requisition_id
-      @requisition_initiator = page.initiator
-    end
   end
 
 end
