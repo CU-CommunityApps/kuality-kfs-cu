@@ -152,7 +152,7 @@ When /^I initiate a Payment Request document$/ do
   step 'I calculate PREQ'
   step 'I submit the Payment Request document'
   step 'the Payment Request document goes to ENROUTE'
-  step 'I switch to the user with the next Pending Action in the Route Log to approve Purchase Order Amendment document to Final'
+  step 'I switch to the user with the next Pending Action in the Route Log to approve Payment Request document to Final'
   step 'the Payment Request Doc Status is Department-Approved'
   step 'the Payment Request document\'s GLPE tab shows the Requisition document submissions'
 end
