@@ -173,7 +173,16 @@ Given /^I Login as a PDP Format Disbursement Processor$/ do
   #visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PDP', 'Processor'))
 end
 
-Given /^I am User (.*) who is a Salary Transfer Initiator$/ do |principal_name|
+Given /^I Login as a Salary Transfer Initiator$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-LD', 'Salary Transfer Initiator (cu)'))
+end
+
+Given /^I Login as a Labor Distribution Manager$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-LD', 'Labor Distribution Manager (cu)'))
+end
+
+# This Cucumber step takes the User principal name so the application login can be performed as that user.
+Given  /^I am User (.*) who is a Salary Transfer Initiator$/ do |principal_name|
   visit(BackdoorLoginPage).login_as(principal_name)
 end
 

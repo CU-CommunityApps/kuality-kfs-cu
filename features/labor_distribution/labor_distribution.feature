@@ -10,15 +10,18 @@ Feature: Labor Distribution
               between account types, calculations between rates, and labor access security between orgs.
 
 
-  @KFSQA-983 @BaseFunction @ST @tortoise
+  @KFSQA-983 @BaseFunction @ST @slug
   Scenario: Base Function : I CREATE A SALARY EXPENSE TRANSFER
-    Given  I CREATE A SALARY EXPENSE TRANSFER with following:
-      | From Account          | In Same Organization |
-      | To Account            | In Same Organization |
-      | Employee Funded From  | In Same Organization |
+    Given I CREATE A SALARY EXPENSE TRANSFER with following:
+      | User Name  | dw68    |
+      | Employee   | 1006368 |
+    And I transfer the Salary to another Account in my Organization
+      | To Account | A453101 |
+    And   I submit the Salary Expense Transfer document
+    Then  the Salary Expense Transfer document goes to FINAL
     And   I RUN THE NIGHTLY LABOR BATCH PROCESSES
-    And   I Login as a Salary Transfer Initiator
-    Then  the labor ledger pending entry for employee '1013939' is empty
+    And   I Login as a Labor Distribution Manager
+    Then  the labor ledger pending entry for employee '1006368' is empty
 
   @KFSQA-984 @BaseFunction @BT @tortoise
   Scenario: Base Function : I CREATE A BENEFIT EXPENSE TRANSFER
@@ -36,12 +39,24 @@ Feature: Labor Distribution
 
   @KFSQA-970 @ST @smoke @wip
   Scenario: Salary Expense Transfer test between account types, between rates, and for labor access security.
-    Given I Login as a Salary Transfer Initiator
-    When run SALARY EXPENSE
-    And transfer between accounts with different account types
-    And receive Error: Invalid transfer between account types
-    And change transfer accounting line to transfer to an account with the same account type and org
-    And accounts used have different rates; one fed and one non-fed rate
-    Then verify ST initiator role 10005 from outside org cannot search and see and return the edoc (Rows are hidden)
-    And verify ST initiator role 10005 from within org can search and see and return the edoc (rows not hidden)
-    Then verify all pending entries after nightly batch job has run (following approvals)
+    Given I CREATE A SALARY EXPENSE TRANSFER with following:
+      | User Name  | ceh19    |
+      | Employee   | 2569631 |
+    And   I transfer the Salary between accounts with different Account Types
+      | To Account | 5032020 |
+    And   I submit the Salary Expense Transfer document
+    And   I remember the Salary Expense Transfer document number
+    Then  I should get an error that starts with "Invalid transfer between account types"
+    And   I transfer the Salary to an Account with a different Rate but the same Account Type and Organization
+      | To Account | 5088700 |
+    And   I submit the Salary Expense Transfer document
+    And   the Salary Expense Transfer document goes to ENROUTE
+    And   I route the Salary Expense Transfer document to final
+    Then  the Salary Expense Transfer document goes to FINAL
+    And   a Salary Expense Transfer initiator outside the organization cannot view the document
+      |User Name | dw68 |
+    And   a Salary Expense Transfer initiator inside the organization can view the document
+      |User Name | rlo4 |
+    And   I RUN THE NIGHTLY LABOR BATCH PROCESSES
+    And   I Login as a Labor Distribution Manager
+    Then  the labor ledger pending entry for employee '2569631' is empty

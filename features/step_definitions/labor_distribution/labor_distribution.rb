@@ -2,13 +2,13 @@ When /^I start an empty Benefit Expense Transfer document$/ do
   @benefit_expense_transfer = create BenefitExpenseTransferObject
 end
 
-And /^I select employee '(.*)'$/ do |emp|
+Given(/^And I select employee (\d+)$/) do|emp|
   on SalaryExpenseTransferPage do |page|
     page.empl_id.fit ''
     page.search_empl_id
   end
   on PersonLookup do |search|
-    search.principal_name.fit emp
+    search.employee_id.fit emp
     search.search
     search.return_value(emp)
   end
@@ -16,9 +16,16 @@ And /^I select employee '(.*)'$/ do |emp|
 end
 
 And /^I search and retrieve Ledger Balance entry$/ do
-
-  on(LaborDistributionPage).import_search
+  on(LaborDistributionPage) do |ldlookup|
+    #look back to previous fiscal year at start of new fiscal year because we do not have labor data yet
+    if "#{Date::MONTHNAMES[Date.today.month]}" == "July"
+      previous_fiscal_year = ldlookup.fiscal_year.value.to_i - 1
+      ldlookup.fiscal_year.set previous_fiscal_year
+    end
+    ldlookup.import_search
+  end
   on LedgerBalanceLookupPage do |lblookup|
+    #TODO Change to select first month with a positive balance.  Currently, first month regardless of balance is being selected.
     lblookup.check_first_month
     lblookup.return_selected
   end
@@ -32,75 +39,74 @@ And /^I change target account number to '(.*)'$/ do |account_number|
   on(BenefitExpenseTransferPage).update_target_account_number.fit account_number
 end
 
+And /^I transfer the Salary to another Account in my Organization$/ do |table|
+  arguments = table.rows_hash
+  @to_account = arguments['To Account']
+
+  # do not continue, required parameters not sent
+  if @to_account.nil?
+    fail(ArgumentError.new('Required parameter To Account was not specified.'))
+  end
+  acct_gerkin = "I change target account number to '" + @to_account + "'"
+  step acct_gerkin
+end
+
+And /^I transfer the Salary between accounts with different Account Types$/ do |table|
+  arguments = table.rows_hash
+  @to_account_different_types = arguments['To Account']
+
+  # do not continue, required parameters not sent
+  if @to_account_different_types.nil?
+    fail(ArgumentError.new('Required parameter To Account was not specified.'))
+  end
+  acct_gerkin = "I change target account number to '" + @to_account_different_types + "'"
+  step acct_gerkin
+end
+
+And /^I transfer the Salary to an Account with a different Rate but the same Account Type and Organization$/ do |table|
+  # fedrate (FD) vs nonfedrate (NF)
+  arguments = table.rows_hash
+  @to_account = arguments['To Account']
+
+  # do not continue, required parameters not sent
+  if @to_account.nil?
+    fail(ArgumentError.new('Required parameter To Account was not specified.'))
+  end
+  acct_gerkin = "I change target account number to '" + @to_account + "'"
+  step acct_gerkin
+end
+
+
 And /^I change target sub account number to '(.*)'$/ do |sub_account_number|
   on(BenefitExpenseTransferPage).update_target_sub_account_code.fit sub_account_number
 end
 
-And /^I start an empty Salary Expense Transfer document$/ do
+Given(/^And I start an empty Salary Expense Transfer document$/) do
   @salary_expense_transfer = create SalaryExpenseTransferObject
 end
-
-# Given  /^I CREATE A SALARY EXPENSE TRANSFER with following:$/ do |table|
-#   arguments = table.rows_hash
-#   user_name = arguments['Employee']
-#   to_account_number = arguments['To Account']
-#   steps %Q{ Given I Login as a Salary Transfer Initiator
-#             And   I start an empty Salary Expense Transfer document
-#   }
-#   if !arguments['Employee'].nil?
-#       step "I select employee '#{user_name}'"
-#   end
-#   steps %Q{ And   I search and retrieve Ledger Balance entry
-#             And   I copy source account to target account
-#   }
-#   if !arguments['To Account'].nil?
-#      step "I change target account number to '#{to_account_number}'"
-#   end
-#   steps %Q{ And   I submit the Salary Expense Transfer document
-#             And   the Salary Expense Transfer document goes to ENROUTE
-#             And   I route the Salary Expense Transfer document to final
-#             Then  the Salary Expense Transfer document goes to FINAL
-#       }
-#
-# end
-
-
-# This base function REQUIRES the following arguments. Currently, the code is using these arguments like boolean
-# values where the local variable used will have a value of true/false/nil for processing.
-# If more values are needed in the future the code will need to be adjusted.
-#
-#  required parameter                   recognized value(s)
-#   From Account            In Same Organization / Out of Organization
-#   To Account              In Same Organization / Out of Organization
-#   Employee Funded From    In Same Organization / Out of Organization
-#
-# This base function will also accept and use the following arguments referring to the correlation of the specified
-# attribute between the "from account" and the "to account" when provided. Currently, the code is using these arguments
-# like boolean values where the local variable used will have a value of true/false/nil for processing.
-# If more values are needed in the future the code will need to be adjusted.
-#
-#  optional parameter                  recognized value(s)
-#   To Account Type                     Same (Different)
-#   To Account Rate                     Same (Different)
 
 
 Given  /^I CREATE A SALARY EXPENSE TRANSFER with following:$/ do |table|
   arguments = table.rows_hash
+  @user_principal = arguments['User Name']
+  @empl_id = arguments['Employee']
 
-  data_for_test = SalaryExpenseTransferTestData.new(arguments)
-  data_for_test.determine_user()
-  login_gerkin = 'I am User ' + data_for_test.user_principal_name + ' who is a Salary Transfer Initiator'
-  step login_gerkin
-  steps %Q{ And I start an empty Salary Expense Transfer document }
-  # user_dept_code = determine_dept_code(data_for_test.user_principal_id)
-  data_for_test.determine_labor_orgs(data_for_test.user_principal_id)
-  # employee = determine_employee (@user_department_code)
-  # determine_dept_code(:user_principal_id)
+  # do not continue, required parameters not sent
+  if @user_principal.nil? || @empl_id.nil?
+    fail(ArgumentError.new('One or more required parameters were not specified.'))
+  end
 
+  login_gerkin = 'Given I am User ' + @user_principal + ' who is a Salary Transfer Initiator'
+  steps login_gerkin
 
+  step "And I start an empty Salary Expense Transfer document"
+  employee_gerkin = 'And I select employee ' + @empl_id
+  step employee_gerkin
 
+  steps %Q{ And   I search and retrieve Ledger Balance entry
+            And   I copy source account to target account
+  }
 end
-
 
 Given  /^I CREATE A BENEFIT EXPENSE TRANSFER with following:$/ do |table|
   arguments = table.rows_hash
@@ -170,4 +176,41 @@ Then /^the labor ledger pending entry for employee '(.*)' is empty$/ do |empl_id
     page.frm.divs(id: 'view_div')[0].text.should include 'No values match this search.'
   end
 
+end
+
+And /^a Salary Expense Transfer initiator outside the organization cannot view the document$/ do |table|
+  arguments = table.rows_hash
+  @user_outside_organization = arguments['User Name']
+
+  # do not continue, required parameters not sent
+  if @user_outside_organization.nil?
+    fail(ArgumentError.new('Required parameter User Name was not specified.'))
+  end
+
+  step "I am logged in as \"#{@user_outside_organization}\""
+  visit(MainPage).doc_search
+  on DocumentSearch do |page|
+    page.document_id_field.set @remembered_document_id
+    page.search
+    page.open_item(@remembered_document_id)
+  end
+  step "I should get an Authorization Exception Report error"
+end
+
+And /^a Salary Expense Transfer initiator inside the organization can view the document$/ do |table|
+  arguments = table.rows_hash
+  @user_inside_organization = arguments['User Name']
+
+  # do not continue, required parameters not sent
+  if @user_inside_organization.nil?
+    fail(ArgumentError.new('Required parameter User Name was not specified.'))
+  end
+
+  step "I am logged in as \"#{@user_inside_organization}\""
+  visit(MainPage).doc_search
+  on DocumentSearch do |page|
+    page.document_id_field.set @remembered_document_id
+    page.search
+    page.open_item(@remembered_document_id)
+  end
 end
