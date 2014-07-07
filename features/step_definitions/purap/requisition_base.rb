@@ -10,8 +10,8 @@ Given  /^I (initiate|submit) a Requisition document with the following:$/ do |ty
   end
   @add_vendor_on_reqs = arguments['Add Vendor On REQS'].nil? ? 'Yes' : arguments['Add Vendor On REQS']
   positive_approve = arguments['Positive Approval'].nil? ? 'Unchecked' : arguments['Positive Approval']
-  commodity_code = get_aft_parameter_value('REQS_' + (arguments['Commodity Code'].nil? ? 'REGULAR' : arguments['Commodity Code'].upcase)+"_COMMODITY")
-  account_number = get_aft_parameter_value('REQS_' + (arguments['Account Type'].nil? ? 'NONGRANT' : arguments['Account Type'].upcase) + '_ACCOUNT') # from service or parameter
+  commodity_code = get_aft_parameter_value("REQS_#{arguments['Commodity Code'].nil? ? 'REGULAR' : arguments['Commodity Code'].upcase}_COMMODITY")
+  account_number = get_aft_parameter_value("REQS_#{arguments['Account Type'].nil? ? 'NONGRANT' : arguments['Account Type'].upcase}_ACCOUNT") # from service or parameter
   apo_amount = get_parameter_values('KFS-PURAP', 'AUTOMATIC_PURCHASE_ORDER_DEFAULT_LIMIT_AMOUNT', 'Requisition')[0].to_i
   amount = arguments['Amount']
   @level = arguments['Level'].nil? ? 0 : arguments['Level'].to_i
@@ -24,19 +24,15 @@ Given  /^I (initiate|submit) a Requisition document with the following:$/ do |ty
     item_qty = apo_amount/1000 - 1
   else
     if amount == 'GT APO'
-      item_qty = apo_amount/1000 + 1
+        item_qty = apo_amount/1000 + 1
     else
-      item_qty = amount.to_i/1000
+        item_qty = amount.to_i/1000
     end
   end
 
   # so far it used 6540, 6560, 6570 which are all EX type (Expense Expenditure)
   object_code =  get_aft_parameter_value(ParameterConstants::REQS_EX_OBJECT_CODE)
-  if !arguments['CA System Type'].nil?
-    object_code = get_aft_parameter_value(ParameterConstants::REQS_CA_OBJECT_CODE)
-  end
-  sleep 10 #debug
-
+  object_code = get_aft_parameter_value(ParameterConstants::REQS_CA_OBJECT_CODE) unless arguments['CA System Type'].nil?
   step 'I create the Requisition document with:',
        table(%Q{
          | Vendor Number       | #{@vendor_number}  |
@@ -49,21 +45,22 @@ Given  /^I (initiate|submit) a Requisition document with the following:$/ do |ty
        })
 
   if !@vendor_number.nil? && @add_vendor_on_reqs == 'Yes'
-sleep 10 #debug
     @requisition.add_vendor_to_req(@vendor_number)
   end
 
   step 'I select the Payment Request Positive Approval Required' if positive_approve == 'Checked'
 
-  if !arguments['CA System Type'].nil?
-    step "I fill in Capital Asset tab on Requisition document with:", table(%{
-      | CA System Type       | #{arguments['CA System Type']}  |
-      | CA System State      | #{arguments['CA System State']} |
-  })
+  unless arguments['CA System Type'].nil?
+    step 'I fill in Capital Asset tab on Requisition document with:',
+         table(%Q{
+                  | CA System Type  | #{arguments['CA System Type']}  |
+                  | CA System State | #{arguments['CA System State']} |
+                 })
   end
 
   steps %q{
-    When I add an Attachment to the Requisition document
+    When I add an attachment to the Requisition document
+    And  I add a file attachment to the Notes and Attachment Tab of the Requisition document
     And  I enter Delivery Instructions and Notes to Vendor
 
     And  I calculate my Requisition document
@@ -103,8 +100,6 @@ And /^users outside the Route Log can not search and retrieve the REQS$/ do
 end
 
 And /^I extract the Requisition document to SciQuest$/ do
-  sleep 10 #debug
-
   steps %q{
     Given I am logged in as a Purchasing Processor
     And   I retrieve the Requisition document
@@ -160,21 +155,18 @@ And /^I assign Contract Manager and approve Purchase Order Document to FINAL$/ d
 end
 
 When /^I initiate a Payment Request document$/ do
-  steps %Q{
-    Given I login as a Accounts Payable Processor to create a PREQ
-    When  I fill out the PREQ initiation page and continue
-    And   I change the Remit To Address
-    And   I enter the Qty Invoiced and calculate
-    And   I enter a Pay Date
-    And   I attach an Invoice Image
-    And   I calculate PREQ
-    And   I submit the Payment Request document
-    Then  the Payment Request document goes to ENROUTE
-    Given I switch to the user with the next Pending Action in the Route Log to approve Payment Request document to Final
-    Then  the Payment Request document goes to FINAL
-    And   the Payment Request Doc Status is Department-Approved
-    And   the Payment Request document's GLPE tab shows the Requisition document submissions
-  }
+  step 'I login as a Accounts Payable Processor to create a PREQ'
+  step 'I fill out the PREQ initiation page and continue'
+  step 'I change the Remit To Address'
+  step 'I enter the Qty Invoiced and calculate'
+  step 'I enter a Pay Date'
+  step 'I attach an Invoice Image to the Payment Request document'
+  step 'I calculate PREQ'
+  step 'I submit the Payment Request document'
+  step 'the Payment Request document goes to ENROUTE'
+  step 'I route the Payment Request document to final'
+  step 'the Payment Request Doc Status is Department-Approved'
+  step 'the Payment Request document\'s GLPE tab shows the Requisition document submissions'
 end
 
 Then /^I FORMAT AND PROCESS THE CHECK WITH PDP$/ do
@@ -304,13 +296,9 @@ And /^the POA Routes to the FO$/ do
 end
 
 And /^I amend the Purchase Order$/ do
-  sleep 10 #debug
   on(PurchaseOrderPage).amend_po
   on AmendPOReasonPage do |page|
-    sleep 10 #debug
-    sleep 10 #debug
     page.reason.fit random_alphanums(40, 'AFT-amendreason')
-    sleep 10 #debug
     page.amend
   end
   sleep 3
@@ -323,33 +311,36 @@ end
 
 When /^I (initiate|submit) a Purchase Order Amendment document with the following:$/ do |type, table|
   arguments = table.rows_hash
-  sleep 10 #debug
-  steps %Q{
-    Given I am logged in as "#{@requisition_initiator}"
-    And   I view the Purchase Order document
-    And   I amend the Purchase Order
-  }
+
+  step "I am logged in as \"#{@requisition_initiator}\""
+  step 'I view the Purchase Order document'
+  step 'I amend the Purchase Order'
 
   if !arguments['Item Quantity'].nil? && arguments['Item Quantity'].to_f > 0
     @poa_item_amount = arguments['Item Quantity'].to_f * arguments['Item Cost'].to_f
     step 'I add an item to Purchase Order Amendment with:',
          table(%Q{
-           | Item Quantity       | #{arguments['Item Quantity']}        |
-           | Item Cost           | #{arguments['Item Cost']}            |
-           | Item Commodity Code | #{@requisition.item_commodity_code}  |
-           | Account Number      | #{@requisition.item_account_number}  |
-           | Object Code         | #{@requisition.item_object_code}     |
-           | Percent             | 100                                  |
+           | Item Quantity       | #{arguments['Item Quantity']}                                      |
+           | Item Cost           | #{arguments['Item Cost']}                                          |
+           | Item Commodity Code | #{@requisition.items.first.commodity_code}                         |
+           | Account Number      | #{@requisition.items.first.accounting_lines.first.account_number}  |
+           | Object Code         | #{@requisition.items.first.accounting_lines.first.object_code}     |
+           | Percent             | 100                                                                |
          })
     step 'I calculate and verify the GLPE tab with no entries'
   else
     step 'I calculate and verify the GLPE tab'
   end
 
-  steps %q{
-    When  I submit the Purchase Order Amendment document
-    Then  the Purchase Order Amendment document goes to ENROUTE
-  }
+  step 'I submit the Purchase Order Amendment document'
+  step 'the Purchase Order Amendment document goes to ENROUTE'
+  # step 'I switch to the user with the next Pending Action in the Route Log to approve Purchase Order Amendment document to Final'
+  # step 'the Purchase Order Amendment document goes to FINAL'
+  # 
+  # steps %q{
+  #   When  I submit the Purchase Order Amendment document
+  #   Then  the Purchase Order Amendment document goes to ENROUTE
+  # }
 
   case type
     when 'initiate'
@@ -383,7 +374,7 @@ And /^I add an item to Purchase Order Amendment with:$/ do |table|
     page.item_commodity_code.fit arguments['Item Commodity Code']
     page.item_description.fit    random_alphanums(15, 'AFT Item')
     page.item_unit_cost.fit      arguments['Item Cost']
-    page.item_uom.fit            @requisition.item_uom
+    page.item_uom.fit            @requisition.items.first.uom
     page.item_add
 
     #Add Accounting line
@@ -410,9 +401,8 @@ Then /^the Purchase Order Amendment document's GLPE tab shows the new item amoun
   on PurchaseOrderAmendmentPage do |page|
     page.show_glpe
 
-
     page.glpe_results_table.rows.length.should == 3
-    page.glpe_results_table.text.should include @requisition.item_account_number
+    page.glpe_results_table.text.should include @requisition.items.first.accounting_lines.first.account_number
     page.glpe_results_table[1][11].text.to_f.should == @poa_item_amount
     page.glpe_results_table[2][11].text.to_f.should == @poa_item_amount
   end
@@ -421,15 +411,12 @@ end
 Then /^Award Review is not in the Requisition document workflow history$/ do
   root_action_requests =  get_root_action_requests(@requisition.document_id).getRootActionRequest().to_a
   root_action_requests.each do |root_action|
-    unless root_action.annotation.nil?
-      root_action.annotation.should_not include 'Contracts'
-    end
+    root_action.annotation.should_not include 'Contracts' unless root_action.annotation.nil?
   end
 
 end
 
 And /^I fill in Capital Asset tab on Requisition document with:$/ do |table|
-  #TODO : different type/state has different data input after select
   system_params = table.rows_hash
   on RequisitionPage do |page|
     page.expand_all
@@ -438,10 +425,10 @@ And /^I fill in Capital Asset tab on Requisition document with:$/ do |table|
     page.select
   end
 
-  case system_params['CA System Type']
-    when 'One System'
-      case system_params['CA System State']
-        when 'New System'
+  case system_params['CA System State']
+    when 'New System'
+      case system_params['CA System Type']
+        when 'One System'
           on RequisitionPage do |page|
             page.model_number.fit '2014 Bella Model'
             page.transaction_type_code.fit 'New'
@@ -449,53 +436,43 @@ And /^I fill in Capital Asset tab on Requisition document with:$/ do |table|
             page.asset_number.fit '1'
             page.same_as_vendor
           end
-        when 'Modify Existing System'
+        when 'Individual Assets'
           on RequisitionPage do |page|
-            page.add_asset_number.fit @asset_number
-            #page.add_asset_number.fit '504307'
-            page.add_asset
-            page.transaction_type_code.fit 'Modify existing'
-          end
-      end
-    when 'Individual Assets'
-      case system_params['CA System State']
-        when 'New System'
-          on RequisitionPage do |page|
-            #page.manufacturer.fit random_alphanums(15, 'AFT manuf')
             page.model_number.fit '2014 Bella Model'
             page.transaction_type_code.fit 'New'
             page.same_as_vendor
           end
-        when 'Modify Existing System'
+        when 'Multiple Systems'
           on RequisitionPage do |page|
-            page.add_asset_number.fit @asset_number
-            #page.add_asset_number.fit '504307'
-            page.add_asset
-            page.transaction_type_code.fit 'Modify existing'
+            page.transaction_type_code.fit 'New'
+            page.asset_system_description.fit random_alphanums(40, 'AFT CA desc')
           end
+      end
+    when 'Modify Existing System'
+      on RequisitionPage do |page|
+        page.add_asset_number.fit @asset_number
+        page.add_asset
+        page.transaction_type_code.fit 'Modify existing'
       end
   end
 end
-Then /^I run the nightly Capital Asset jobs$/ do
-  steps %Q{
-    Given I am logged in as a KFS Operations
-    And I collect the Capital Asset Documents
-    And I create the Plant Fund Entries
-    And I move the Plant Fund Entries to Posted Entries
-    And I clear Pending Entries
-    And I create entries for CAB
-   }
 
+Then /^I run the nightly Capital Asset jobs$/ do
+  step 'I am logged in as a KFS Operations'
+  step 'I collect the Capital Asset Documents'
+  step 'I create the Plant Fund Entries'
+  step 'I move the Plant Fund Entries to Posted Entries'
+  step 'I clear Pending Entries'
+  step 'I create entries for CAB'
 end
 
 And /^I lookup a Capital Asset to process$/ do
   visit(MainPage).capital_asset_builder_ap_transactions
   on CabPurapLookupPage do |page|
     page.preq_number.fit @preq_id
-     page.search
-    page.process(@preq_id)
+    page.search
+    page.process @preq_id
   end
-
 end
 
 And /^I select and create asset$/ do
@@ -511,8 +488,8 @@ end
 And /^I complete the Asset Information Detail tab$/ do
   on AssetGlobalPage do |page|
     page.asset_type_code.fit '019'
+    page.manufacturer.fit 'Jones Landscaping' if page.manufacturer.value.strip.empty?
   end
-
 end
 
 And /^I complete the existing Asset Location Information$/ do
@@ -526,26 +503,22 @@ end
 
 
 And /^I build a Capital Asset from AP transaction$/ do
-  steps %Q{
-    Given I Login as an Asset Processor
-    And   I lookup a Capital Asset to process
-    And   I select and create asset
-    And   I complete the Asset Information Detail tab
-    And   I complete the existing Asset Location Information
-    And   I submit the Asset Global document
-    Then  the Asset Global document goes to FINAL
-   }
+  step 'I Login as an Asset Processor'
+  step 'I lookup a Capital Asset to process'
+  step 'I select and create asset'
+  step 'I complete the Asset Information Detail tab'
+  step 'I complete the existing Asset Location Information'
+  step 'I submit the Asset Global document'
+  step 'the Asset Global document goes to FINAL'
 end
 
 
 And /^I modify existing Capital Asset from AP transaction and apply payment$/ do
-  steps %Q{
-    Given I Login as an Asset Processor
-    And   I lookup a Capital Asset to process
-    And   I select and apply payment
-    And   I submit the Asset Manual Payment document
-    Then  the Asset Manual Payment document goes to FINAL
-   }
+  step 'I Login as an Asset Processor'
+  step 'I lookup a Capital Asset to process'
+  step 'I select and apply payment'
+  step 'I submit the Asset Manual Payment document'
+  step 'the Asset Manual Payment document goes to FINAL'
 end
 
 And /^I select and apply payment$/ do

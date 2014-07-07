@@ -1,17 +1,21 @@
 And /^I create the Requisition document with:$/  do |table|
   updates = table.rows_hash
-  @requisition = create RequisitionObject, payment_request_positive_approval_required: updates['payment request'],
-                        payment_request_positive_approval_required: updates['payment request'],
-                        vendor_number:        updates['Vendor Number'],
-                        item_quantity:        updates['Item Quantity'],
-                        item_unit_cost:       updates['Item Cost'],
-                        item_commodity_code:  updates['Item Commodity Code'],
-                        item_account_number:  updates['Account Number'],
-                        item_catalog_number:  updates['Item Catalog Number'],
-                        item_description:     updates['Item Description'].nil? ? random_alphanums(15, 'AFT') : updates['Item Description'],
-                        item_object_code:     updates['Object Code'],
-                        item_percent:         updates['Percent']
 
+  @requisition = create RequisitionObject,
+                        payment_request_positive_approval_required: updates['payment request'],
+                        vendor_number:    updates['Vendor Number'],
+                        initial_item_lines: [{
+                          quantity:       updates['Item Quantity'],
+                          unit_cost:      updates['Item Cost'],
+                          commodity_code: updates['Item Commodity Code'],
+                          catalog_number: updates['Item Catalog Number'],
+                          description:    updates['Item Description'].nil? ? random_alphanums(15, 'AFT') : updates['Item Description'],
+                          initial_accounting_lines: [{
+                                                      account_number: updates['Account Number'],
+                                                      object_code:    updates['Object Code'],
+                                                      percent:        updates['Percent']
+                                                     }]
+                        }]
 end
 
 And /^I create the Requisition document with an Award Account and items that total less than the dollar threshold Requiring Award Review$/ do
@@ -61,28 +65,44 @@ end
 And /^I add an item to the Requisition document with:$/ do |table|
   add_item = table.rows_hash
 
-  # Just in case you are adding an accounting line, where no previous line item existed
-  # This line number is used for the Account Line object on the Item,
-  # zero '0' for accounting line on the first item
-  # one '1' for accounting line on the second item. etc...
-  # Note: for multiple accounting lines on one item will need to add page object as that name tag changes
-  # and probably create a different step
-  add_item['Line Number'] = '0'  if add_item['Line Number'].nil?
-
-  on RequisitionPage do |page|
-    page.item_quantity.fit add_item['Item Quantity']
-    page.item_unit_cost.fit add_item['Item Cost']
-    page.item_commodity_code.fit add_item['Item Commodity Code']
-    page.item_catalog_number.fit add_item['Item Catalog Number']
-    page.item_uom.fit add_item['Item Unit of Measure']
-    page.item_description.fit add_item['Item Description'].nil? ? random_alphanums(15, 'AFT') : add_item['Item Description']
-    page.item_add
-
-    page.item_account_number(add_item['Line Number']).fit add_item['Account Number']
-    page.item_object_code(add_item['Line Number']).fit add_item['Object Code']
-    page.item_percent(add_item['Line Number']).fit add_item['Percent']
-    page.item_add_account_line(add_item['Line Number'])
-  end
+# <<<<<<< HEAD
+#   # Just in case you are adding an accounting line, where no previous line item existed
+#   # This line number is used for the Account Line object on the Item,
+#   # zero '0' for accounting line on the first item
+#   # one '1' for accounting line on the second item. etc...
+#   # Note: for multiple accounting lines on one item will need to add page object as that name tag changes
+#   # and probably create a different step
+#   add_item['Line Number'] = '0'  if add_item['Line Number'].nil?
+#
+#   on RequisitionPage do |page|
+#     page.item_quantity.fit add_item['Item Quantity']
+#     page.item_unit_cost.fit add_item['Item Cost']
+#     page.item_commodity_code.fit add_item['Item Commodity Code']
+#     page.item_catalog_number.fit add_item['Item Catalog Number']
+#     page.item_uom.fit add_item['Item Unit of Measure']
+#     page.item_description.fit add_item['Item Description'].nil? ? random_alphanums(15, 'AFT') : add_item['Item Description']
+#     page.item_add
+#
+#     page.item_account_number(add_item['Line Number']).fit add_item['Account Number']
+#     page.item_object_code(add_item['Line Number']).fit add_item['Object Code']
+#     page.item_percent(add_item['Line Number']).fit add_item['Percent']
+#     page.item_add_account_line(add_item['Line Number'])
+#   end
+# =======
+  @requisition.add_item_line({
+    quantity:  add_item['Item Quantity'],
+    unit_cost: add_item['Item Cost'],
+    commodity_code: add_item['Item Commodity Code'],
+    catalog_number: add_item['Item Catalog Number'],
+    uom: add_item['Item Unit of Measure'],
+    description: (add_item['Item Description'].nil? ? random_alphanums(15, 'AFT') : add_item['Item Description']),
+    initial_accounting_lines: [{
+                                account_number: add_item['Account Number'],
+                                object_code:    add_item['Object Code'],
+                                percent:        add_item['Percent']
+                               }]
+  })
+# >>>>>>> remotes/origin/master
 end
 
 And /^I calculate my Requisition document$/ do
@@ -100,8 +120,12 @@ And /^I view the (.*) document on my action list$/ do |document|
   on ActionList do |page|
     #sort the date
     # if previous user already clicked this sort, then action list for next user will be sorted with 'Date created'.  So, add this 'unless' check
-sleep 10 #debug
+    sleep 10 #debug
+    sleep 10 #debug
+    puts "doc id is:"
+    puts document_object_for(document).document_id
     page.sort_results_by('Date Created') unless page.result_item(document_object_for(document).document_id).exists?
+
     page.result_item(document_object_for(document).document_id).wait_until_present
     page.open_item(document_object_for(document).document_id)
   end
@@ -163,9 +187,7 @@ And /^the View Related Documents Tab PO Status displays$/ do
 end
 
 And /^the Purchase Order Number is unmasked$/ do
-  on (PurchaseOrderPage) do |page|
-    page.po_number.should_not include '****'
-  end
+  on(PurchaseOrderPage).po_number.should_not include '****'
 end
 
 And /^I Select the PO$/ do
@@ -173,37 +195,41 @@ And /^I Select the PO$/ do
 end
 
 And /^I Complete Selecting Vendor (.*)$/ do |vendor_number|
-  on (PurchaseOrderPage) do |page|
-    page.vendor_search
-    on VendorLookupPage do |vlookup|
-      vlookup.vendor_number.fit vendor_number
-      vlookup.search
-      vlookup.return_value(vendor_number)
-    end
+  on(PurchaseOrderPage).vendor_search
+  on VendorLookupPage do |vlookup|
+    vlookup.vendor_number.fit vendor_number
+    vlookup.search
+    vlookup.return_value(vendor_number)
   end
-
 end
 
 And /^I Complete Selecting a Foreign Vendor$/ do
-  on (PurchaseOrderPage) do |page|
-    page.vendor_search
-    on VendorLookupPage do |vlookup|
-      vendor_number = '39210-0' # TODO : this vendor number should be from a parameter
-      vlookup.vendor_number.fit vendor_number
-      vlookup.search
-      vlookup.return_value(vendor_number)
-    end
+# <<<<<<< HEAD
+#   on (PurchaseOrderPage) do |page|
+#     page.vendor_search
+#     on VendorLookupPage do |vlookup|
+#       vendor_number = '39210-0' # TODO : this vendor number should be from a parameter
+#       vlookup.vendor_number.fit vendor_number
+#       vlookup.search
+#       vlookup.return_value(vendor_number)
+#     end
+# =======
+  on(PurchaseOrderPage).vendor_search
+  on VendorLookupPage do |vlookup|
+    vendor_number = '39210-0' # TODO : this vendor number should be from a parameter
+    vlookup.vendor_number.fit vendor_number
+    vlookup.search
+    vlookup.return_value(vendor_number)
+# >>>>>>> remotes/origin/master
   end
 end
 
 And /^I enter a Vendor Choice$/ do
-  on (PurchaseOrderPage) do |page|
-    page.vendor_choice.fit 'Lowest Price'
-  end
+  on(PurchaseOrderPage).vendor_choice.fit 'Lowest Price'
 end
 
 And /^I calculate and verify the GLPE with amount (.*)$/ do |amount|
-  on (PurchaseOrderPage) do |page|
+  on PurchaseOrderPage do |page|
     page.expand_all
     page.calculate
   end
@@ -223,40 +249,32 @@ And /^I calculate and verify the GLPE with amount (.*)$/ do |amount|
   end
 end
 
-
 And /^I submit the PO eDoc Status is$/ do
   pending # express the regexp above with the code you wish you had
 end
 
 
 
-And(/^The PO eDoc Status is$/) do
+And /^The PO eDoc Status is$/ do
   pending # express the regexp above with the code you wish you had
 end
 
 
 And(/^the (.*) Doc Status is (.*)/) do |document, doc_status|
-  on (KFSBasePage) do |page|
-    page.app_doc_status.should == doc_status
-  end
+  on(KFSBasePage).app_doc_status.should == doc_status
 end
 
 And /^I Complete Selecting a Vendor (.*)$/ do |vendor_number|
-  on (PurchaseOrderPage) do |page|
-    page.vendor_search
-    on VendorLookupPage do |vlookup|
-      vlookup.vendor_number.fit vendor_number
-      vlookup.search
-      vlookup.return_value(vendor_number)
-    end
+  on(PurchaseOrderPage).vendor_search
+  on VendorLookupPage do |vlookup|
+    vlookup.vendor_number.fit vendor_number
+    vlookup.search
+    vlookup.return_value(vendor_number)
   end
-
 end
 
 And /^I enter a Vendor Choice of '(.*)'$/ do  |choice|
-  on PurchaseOrderPage do |page|
-    page.vendor_choice.fit choice
-  end
+  on(PurchaseOrderPage).vendor_choice.fit choice
 end
 
 And /^I calculate and verify the GLPE tab$/ do
@@ -264,8 +282,8 @@ And /^I calculate and verify the GLPE tab$/ do
     page.calculate
     page.show_glpe
 
-    page.glpe_results_table.text.include? @requisition.item_object_code
-    page.glpe_results_table.text.include? @requisition.item_account_number
+    page.glpe_results_table.text.include? @requisition.items.first.accounting_lines.first.object_code
+    page.glpe_results_table.text.include? @requisition.items.first.accounting_lines.first.account_number
     # credit object code should be 3110 (depends on parm)
 
   end
@@ -308,10 +326,8 @@ And /^the Purchase Order document status is '(.*)'$/  do  |status|
 end
 
 And /^the Purchase Order Doc Status equals '(.*)'$/ do |po_doc_status|
-  on PurchaseOrderPage do |page|
-    #this is a different field from the document status field
-    page.po_doc_status.should == po_doc_status
-  end
+  #this is a different field from the document status field
+  on(PurchaseOrderPage).po_doc_status.should == po_doc_status
 end
 
 And /^The Requisition status is '(.*)'$/ do |doc_status|
@@ -332,105 +348,110 @@ And /^I select the purchase order '(\d+)' with the doc id '(\d+)'$/ do |req_num,
 end
 
 And /^I fill out the PREQ initiation page and continue$/ do
-  #@purchase_order_number = '296399' # temporary.  don't commit
   visit(MainPage).payment_request
-  on(PaymentRequestInitiationPage) do |page|
-    page.purchase_order.fit @purchase_order_number
-    page.invoice_date.fit yesterday[:date_w_slashes]
-    page.invoice_number.fit rand(100000)
-    page.vendor_invoice_amount.fit @requisition.item_quantity.delete(',').to_f * @requisition.item_unit_cost.to_i
+  on PaymentRequestInitiationPage do |page|
+    page.purchase_order.fit        @purchase_order_number
+    page.invoice_date.fit          yesterday[:date_w_slashes]
+    page.invoice_number.fit        rand(100000)
+    page.vendor_invoice_amount.fit @requisition.items.first.quantity.delete(',').to_f * @requisition.items.first.unit_cost.to_i
     page.continue
   end
-  on YesOrNoPage do |page|
-    page.yes if page.yes_button.exists?
-  end
+  on(YesOrNoPage) { |yonp| yonp.yes if yonp.yes_button.exists? }
   sleep 10
   @payment_request = create PaymentRequestObject
 end
 
 And  /^I change the Remit To Address$/ do
-  on(PaymentRequestPage) do |page|
-    page.vendor_address_1.fit "Apt1" + page.vendor_address_1.value
-  end
+  on(PaymentRequestPage) { |p| p.vendor_address_1.fit "Apt1#{p.vendor_address_1.value}" }
 end
+
 And  /^I enter the Qty Invoiced and calculate$/ do
-  on(PaymentRequestPage) do |page|
+  on PaymentRequestPage do |page|
     @preq_id = page.preq_id
-    page.item_qty_invoiced.fit @requisition.item_quantity # same as REQS item qty
+    page.item_qty_invoiced.fit @requisition.items.first.quantity # same as REQS item qty
     page.item_calculate
   end
-
 end
 
 And  /^I enter a Pay Date$/ do
-  on(PaymentRequestPage) do |page|
-    page.pay_date.fit right_now[:date_w_slashes]
-  end
+  on(PaymentRequestPage).pay_date.fit right_now[:date_w_slashes]
 end
 
 
-And /^I attach an Invoice Image$/ do
-  on PaymentRequestPage do |page|
-    page.note_text.fit random_alphanums(40, 'AFT-NoteText')
-    page.attachment_type.fit 'Invoice Image'
-    page.attach_notes_file.set($file_folder+@payment_request.attachment_file_name)
-
-    page.add_note
-    page.attach_notes_file_1.should exist #verify that note is indeed added
-  end
+# <<<<<<< HEAD
+# And /^I attach an Invoice Image$/ do
+#   on PaymentRequestPage do |page|
+#     page.note_text.fit random_alphanums(40, 'AFT-NoteText')
+#     page.attachment_type.fit 'Invoice Image'
+#     page.attach_notes_file.set($file_folder+@payment_request.attachment_file_name)
+#
+#     page.add_note
+#     page.attach_notes_file_1.should exist #verify that note is indeed added
+#   end
+# =======
+And /^I attach an Invoice Image to the (.*) document$/ do |document|
+  document_object_for(document).notes_and_attachments_tab
+                               .add note_text:      'Testing note text.',
+                                    file:           'vendor_attachment_test.png',
+                                    type:           'Invoice Image'
+# >>>>>>> remotes/origin/master
 end
 
 And /^I calculate PREQ$/ do
-  on (PaymentRequestPage) do |page|
+  on PaymentRequestPage do |page|
     page.expand_all
     page.calculate
   end
 end
 
 
-And   /^I view the Purchase Order document via e-SHOP$/ do
+And /^I view the Purchase Order document via e-SHOP$/ do
   on ShopCatalogPage do |page|
-    #page.key_words.fit 'Commidity 14111507'
+    # TODO: When we do the split in the following comment, this block can be on EShopPage
     page.order_doc
     page.po_doc_search
-    sleep 5 #debug
-    page.search_doc_type.fit 'Purchase Orders'
-    page.po_id.fit @purchase_order_number
+# <<<<<<< HEAD
+#     sleep 5 #debug
+#     page.search_doc_type.fit 'Purchase Orders'
+#     page.po_id.fit @purchase_order_number
+#
+#     (0..page.date_range.length).each do |i|
+#       if page.date_range[i].visible?
+#         page.date_range[i].fit 'Today'
+#       end
+#     end
+# =======
 
-    (0..page.date_range.length).each do |i|
-      if page.date_range[i].visible?
-        page.date_range[i].fit 'Today'
-      end
-    end
+    # TODO: This block should be split once we've defined a proper EShopDocSearchPage object
+    page.search_doc_type.fit 'Purchase Orders'
+    page.po_id.fit      @purchase_order_number
+    page.date_range.fit 'Today'
+# >>>>>>> remotes/origin/master
     sleep 2
-    (0..page.go_buttons.length).each do |i|
-      if page.go_buttons[i].visible?
-        page.go_buttons[i].click
-        break
-      end
-    end
+    page.go_button.click
   end
 end
 
-And   /^the Document Status displayed '(\w+)'$/ do |doc_status|
+And /^the Document Status displayed '(\w+)'$/ do |doc_status|
   on ShopCatalogPage do |page|
     page.return_po_value(@purchase_order_number)
-    page.doc_summary[1].text.should include  'Workflow  ' + doc_status
+    page.doc_summary[1].text.should include  "Workflow  #{doc_status}"
   end
 end
 
-And   /^the Delivery Instructions displayed equals what came from the PO$/ do
+And /^the Delivery Instructions displayed equals what came from the PO$/ do
   on ShopCatalogPage do |page|
     page.doc_po_link
-    page.doc_summary[1].text.should include "Note to Supplier\n" + @requisition.vendor_notes
-    page.doc_summary[3].text.should include "Delivery Instructions " + @requisition.delivery_instructions
+    page.doc_summary[1].text.should match /Note to Supplier.*#{@requisition.vendor_notes}/m
+    page.doc_summary[3].text.should match /Delivery Instructions.*#{@requisition.delivery_instructions}/m
   end
 end
 
-And   /^the Attachments for Supplier came from the PO$/ do
+And /^the Attachments for Supplier came from the PO$/ do
   on ShopCatalogPage do |page|
     page.attachments_link
-    page.search_results[1].text.should include @requisition.attachment_file_name
+    page.search_results.should exist
+    page.search_results[1].text[0..16].should == @requisition.notes_and_attachments_tab.first.file[0..16] # Longer file names are cut and an ellipse is added to the end
   end
 end
 
@@ -439,21 +460,20 @@ And  /^I select the Payment Request Positive Approval Required$/ do
 end
 
 Then /^I update the Tax Tab$/ do
-  on (PaymentRequestPage) do |page|
-    page.income_class_code.fit       'A - Honoraria, Prize'
-    page.federal_tax_pct.fit  '0'
-    page.state_tax_pct.fit    '0'
-    page.postal_country_code.fit     'Canada'
+  on PaymentRequestPage do |page|
+    page.income_class_code.fit   'A - Honoraria, Prize'
+    page.federal_tax_pct.fit     '0'
+    page.state_tax_pct.fit       '0'
+    page.postal_country_code.fit 'Canada'
   end
 end
 
 And /^I verified the GLPE on Payment Request page with the following:$/ do |table|
-
   on(PaymentRequestPage).expand_all
   glpe_entry = table.raw.flatten.each_slice(7).to_a
   glpe_entry.shift # skip header row
   glpe_entry.each do |line,account_number,object_code,balance_type,object_type,amount,dorc|
-    on (GeneralLedgerPendingEntryTab) do |gtab|
+    on GeneralLedgerPendingEntryTab do |gtab|
       idx = gtab.glpe_tables.length - 1
       glpe_table = gtab.glpe_tables[idx]
       seq = line.to_i
@@ -468,14 +488,14 @@ And /^I verified the GLPE on Payment Request page with the following:$/ do |tabl
 end
 
 And /^I add an Attachment to the Requisition document$/ do
+  pending 'THIS STEP DOES NOT USE NOTES AND ATTACHMENTS CORRECTLY.'
   on RequisitionPage do |page|
     page.note_text.fit random_alphanums(40, 'AFT-NoteText')
     page.send_to_vendor.fit 'Yes'
-    page.attach_notes_file.set($file_folder+@requisition.attachment_file_name)
+    page.attach_notes_file.set($file_folder+@requisition.attachment_file_name) # FIXME: This doesn't use Notes and Attachments correctly at all
 
     page.add_note
     page.attach_notes_file_1.should exist #verify that note is indeed added
-
   end
 end
 
@@ -489,17 +509,15 @@ And /^I enter Delivery Instructions and Notes to Vendor$/ do
 end
 
 When /^I visit the "(.*)" page$/  do   |go_to_page|
-  go_to_pages = go_to_page.downcase.gsub!(' ', '_')
-  go_to_pages = go_to_page.downcase.gsub!('-', '_')
-  on(MainPage).send(go_to_pages)
+  on(MainPage).send(go_to_page.downcase.gsub(' ', '_').gsub('-', '_'))
 end
 
 And /^I enter Payment Information for recurring payment type (.*)$/ do |recurring_payment_type|
   unless recurring_payment_type.empty?
     on RequisitionPage do |page|
       page.recurring_payment_type.fit recurring_payment_type
-      page.payment_from_date.fit right_now[:date_w_slashes]
-      page.payment_to_date.fit next_year[:date_w_slashes]
+      page.payment_from_date.fit      right_now[:date_w_slashes]
+      page.payment_to_date.fit        next_year[:date_w_slashes]
     end
   end
 end
@@ -508,24 +526,28 @@ Then /^the Payment Request document's GLPE tab shows the Requisition document su
   on PaymentRequestPage do |page|
     page.show_glpe
 
-    page.glpe_results_table.text.include? @requisition.item_object_code
-    page.glpe_results_table.text.include? @requisition.item_account_number
-    # credit object code should be 3110 (depends on parm)
-
-  end
+# <<<<<<< HEAD
+#     page.glpe_results_table.text.include? @requisition.item_object_code
+#     page.glpe_results_table.text.include? @requisition.item_account_number
+#     # credit object code should be 3110 (depends on parm)
+#
+# =======
+      page.glpe_results_table.text.include? @requisition.items.first.accounting_lines.first.object_code
+      page.glpe_results_table.text.include? @requisition.items.first.accounting_lines.first.account_number
+      # credit object code should be 3110 (depends on parm)
+    end
+# >>>>>>> remotes/origin/master
+#   end
 end
 
 And /^I Complete Selecting an External Vendor$/ do
-  on (PurchaseOrderPage) do |page|
-    page.vendor_search
-    on VendorLookupPage do |vlookup|
-      vendor_number = '27015-0' # TODO : this vendor number should be from a parameter
-      vlookup.vendor_number.fit vendor_number
-      vlookup.search
-      vlookup.return_value(vendor_number)
-    end
+  on(PurchaseOrderPage).vendor_search
+  on VendorLookupPage do |vlookup|
+    vendor_number = '27015-0' # TODO : this vendor number should be from a parameter
+    vlookup.vendor_number.fit vendor_number
+    vlookup.search
+    vlookup.return_value(vendor_number)
   end
-
 end
 
 # started QA-853 work
@@ -684,6 +706,8 @@ And /^During Approval of the Purchase Order Amendment the Financial Officer adds
     #approve document
     page.approve
   end
+
+  breakky brakes
 end
 
 And /^I open the Purchase Order Amendment on the Requisition document$/ do

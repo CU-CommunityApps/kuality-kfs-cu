@@ -55,9 +55,16 @@ When /^I enter a Valid Notification Recipient for the (.*) document$/ do |docume
 end
 
 And /^I add an attachment to the (.*) document$/ do |document|
-  document_object_for(document).notes_and_attachments_tab
-                               .add note_text: 'Testing note text.',
-                                    file:      'vendor_attachment_test.png'
+  if on(KFSBasePage).send_to_vendor.exists?
+    document_object_for(document).notes_and_attachments_tab
+                                 .add note_text:      'Testing note text.',
+                                      file:           'vendor_attachment_test.png',
+                                      send_to_vendor: 'Yes'
+  else
+    document_object_for(document).notes_and_attachments_tab
+                                 .add note_text: 'Testing note text.',
+                                      file:      'vendor_attachment_test.png'
+  end
 end
 
 And /^I note how many attachments the (.*) document has already$/ do |document|

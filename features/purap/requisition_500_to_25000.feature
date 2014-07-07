@@ -14,7 +14,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
 
   @KFSQA-791 @PO @PREQ @REQS @coral
   Scenario: PURAP manual >$500, <$25000 external vendor no wire
-    Given I login as a PURAP eSHop user
+    Given I am logged in as an e-SHOP User
     And   I create the Requisition document with:
      | Vendor Number       | 4471-0   |
      | Item Quantity       | 9.9      |
@@ -33,7 +33,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   I am logged in as a Purchasing Processor
     #<ml284>
     And   I submit a Contract Manager Assignment of '10' for the Requisition
-    And   I login as a PURAP eSHop user
+    And   I am logged in as an e-SHOP User
     #der9
     And   I view the Requisition document from the Requisitions search
     And   I am logged in as a PURAP Contract Manager
@@ -51,7 +51,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
 
   @KFSQA-743 @E2E @PO @PURAP @cornell @coral
   Scenario: PURAP E2E PO - Unapproved (PURAP E2E-003b) - vendor not selected, <$100K
-    Given I login as a PURAP eSHop user
+    Given I am logged in as an e-SHOP User
     And   I create the Requisition document with:
       | Item Quantity       | 18       |
       | Item Cost           | 1000     |
@@ -61,7 +61,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
       | Account Number      | R589854  |
       | Object Code         | 6540     |
       | Percent             | 100      |
-    And   I add an Attachment to the Requisition document
+    And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
     And   I calculate my Requisition document
     And   I submit the Requisition document
@@ -89,10 +89,9 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     Then  in Pending Action Requests an FYI is sent to FO and Initiator
     And   the Purchase Order Doc Status is Open
 
-
   @KFSQA-763 @E2E @MultiDay @PO @PREQ @REQS @Routing @auto-approve-preq-job @cornell @coral
   Scenario: PURAP E2E-004a PREQ - Manual Entry, >$500 Auto Approve
-    Given I login as a PURAP eSHop user
+    Given I am logged in as an e-SHOP User
     When  I create the Requisition document with:
       | Item Quantity       | 4.9      |
       | Item Cost           | 1000     |
@@ -102,7 +101,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
       | Account Number      | 1093603  |
       | Object Code         | 6540     |
       | Percent             | 100      |
-    And   I add an Attachment to the Requisition document
+    And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
     And   I calculate my Requisition document
     And   I submit the Requisition document
@@ -135,7 +134,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   I change the Remit To Address
     And   I enter the Qty Invoiced and calculate
     And   I enter a Pay Date
-    And   I attach an Invoice Image
+    And   I attach an Invoice Image to the Payment Request document
     And   I calculate PREQ
     And   I submit the Payment Request document
     Then  the Payment Request document goes to ENROUTE
@@ -147,7 +146,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
 
   @KFSQA-765 @E2E @Encumbrance @ForeignVendor @MultiDay @PO @REQS @PREQ @PendingEntries @cornell @coral
   Scenario: PURAP E2E-004c PREQ - Manual Entry, >$500, <$5000, External Foreign Vendor, No Wire
-    Given I login as a PURAP eSHop user
+    Given I am logged in as an e-SHOP User
     When  I create the Requisition document with:
       | Item Quantity       | 4.9      |
       | Item Cost           | 1000     |
@@ -158,7 +157,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
       | Object Code         | 6540     |
       | Percent             | 100      |
     And   I select the Payment Request Positive Approval Required
-    And   I add an Attachment to the Requisition document
+    And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
     And   I calculate my Requisition document
     And   I submit the Requisition document
@@ -197,7 +196,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   I change the Remit To Address
     And   I enter the Qty Invoiced and calculate
     And   I enter a Pay Date
-    And   I attach an Invoice Image
+    And   I attach an Invoice Image to the Payment Request document
     And   I calculate PREQ
     And   I submit the Payment Request document
     Then  the Payment Request document goes to ENROUTE
@@ -217,7 +216,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
 
   @KFSQA-764 @Approving @E2E @Encumbrance @MultiDay @PO @REQS @PREQ @PendingEntries @cornell @coral
   Scenario: PURAP E2E-004b PREQ - Manual Entry, >$500, <$5000, External Vendor, No Wire
-    Given I login as a PURAP eSHop user
+    Given I am logged in as an e-SHOP User
     When  I create the Requisition document with:
       | Item Quantity       | 2.75     |
       | Item Cost           | 1000     |
@@ -227,7 +226,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
       | Object Code         | 6540     |
       | Percent             | 100      |
     And   I select the Payment Request Positive Approval Required
-    And   I add an Attachment to the Requisition document
+    And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
     And   I calculate my Requisition document
     And   I submit the Requisition document
@@ -260,7 +259,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   I change the Remit To Address
     And   I enter the Qty Invoiced and calculate
     And   I enter a Pay Date
-    And   I attach an Invoice Image
+    And   I attach an Invoice Image to the Payment Request document
     And   I calculate PREQ
     And   I submit the Payment Request document
     Then  the Payment Request document goes to ENROUTE
@@ -284,7 +283,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
       | Object Code         | 6540     |
       | Percent             | 100      |
     And   I select the Payment Request Positive Approval Required
-    And   I add an Attachment to the Requisition document
+    And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
     And   I calculate my Requisition document
     And   I submit the Requisition document
@@ -323,7 +322,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   I change the Remit To Address
     And   I enter the Qty Invoiced and calculate
     And   I enter a Pay Date
-    And   I attach an Invoice Image
+    And   I attach an Invoice Image to the Payment Request document
     And   I calculate PREQ
     And   I submit the Payment Request document
     Then  the Payment Request document goes to ENROUTE
