@@ -173,11 +173,11 @@ Given /^I Login as a PDP Format Disbursement Processor$/ do
   #visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PDP', 'Processor'))
 end
 
-Given /^I Login as a Salary Transfer Initiator$/ do
+Given /^I am logged in as a Salary Transfer Initiator$/ do
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-LD', 'Salary Transfer Initiator (cu)'))
 end
 
-Given /^I Login as a Labor Distribution Manager$/ do
+Given /^I am logged in as a Labor Distribution Manager$/ do
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-LD', 'Labor Distribution Manager (cu)'))
 end
 
