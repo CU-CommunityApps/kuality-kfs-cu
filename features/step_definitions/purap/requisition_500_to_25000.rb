@@ -65,30 +65,6 @@ end
 And /^I add an item to the Requisition document with:$/ do |table|
   add_item = table.rows_hash
 
-# <<<<<<< HEAD
-#   # Just in case you are adding an accounting line, where no previous line item existed
-#   # This line number is used for the Account Line object on the Item,
-#   # zero '0' for accounting line on the first item
-#   # one '1' for accounting line on the second item. etc...
-#   # Note: for multiple accounting lines on one item will need to add page object as that name tag changes
-#   # and probably create a different step
-#   add_item['Line Number'] = '0'  if add_item['Line Number'].nil?
-#
-#   on RequisitionPage do |page|
-#     page.item_quantity.fit add_item['Item Quantity']
-#     page.item_unit_cost.fit add_item['Item Cost']
-#     page.item_commodity_code.fit add_item['Item Commodity Code']
-#     page.item_catalog_number.fit add_item['Item Catalog Number']
-#     page.item_uom.fit add_item['Item Unit of Measure']
-#     page.item_description.fit add_item['Item Description'].nil? ? random_alphanums(15, 'AFT') : add_item['Item Description']
-#     page.item_add
-#
-#     page.item_account_number(add_item['Line Number']).fit add_item['Account Number']
-#     page.item_object_code(add_item['Line Number']).fit add_item['Object Code']
-#     page.item_percent(add_item['Line Number']).fit add_item['Percent']
-#     page.item_add_account_line(add_item['Line Number'])
-#   end
-# =======
   @requisition.add_item_line({
     quantity:  add_item['Item Quantity'],
     unit_cost: add_item['Item Cost'],
@@ -102,7 +78,6 @@ And /^I add an item to the Requisition document with:$/ do |table|
                                 percent:        add_item['Percent']
                                }]
   })
-# >>>>>>> remotes/origin/master
 end
 
 And /^I calculate my Requisition document$/ do
@@ -144,8 +119,10 @@ And /^I view the Requisition document from the Requisitions search$/ do
     puts "Requisition id is #{@requisition_id}"
     puts "Document ID is: #{@requisition.document_id}"
     page.requisition_num.fit @requisition_id unless @requisition_id.nil?
+    sleep 10 #debug
     page.search
     page.open_item(@requisition.document_id)
+    sleep 10 #debug
   end
 end
 
@@ -641,7 +618,7 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
 
 end
 
-And /^During Approval of the Requisition the Financial Officer adds a second line item for a second account$/ do
+And /^During Approval of the (.*) document the Financial Officer adds a second line item with:$/ do |document, table|
   #add second accounting line
   sleep 5 #debug
   step "I view the Requisition document from the Requisitions search"
@@ -652,19 +629,55 @@ And /^During Approval of the Requisition the Financial Officer adds a second lin
   # "I view the Requisition document"
   on RequisitionPage do |page|
     page.expand_all
-    page.item_account_number.fit '1000811'
 
-    page.item_object.fit '6570'
-    page.item_percent.fit '50'
-    page.item_add_account_line
-    page.added_percent.fit '50'
-    page.calculate
+    accounting_line_info = table.rows_hash
+
+    puts "the document is : #{document}"
+
+    doc_object = snake_case document
+
+    puts "The doc_object is: #{get(doc_object)}"
+
+    on page_class_for(document) do |page|
+      page.added_percent.fit '50'
+
+      # new_source_line = {
+      #   account_number: accounting_line_info['Number'],
+      #   object:         accounting_line_info['Object Code'],
+      #   percent:         accounting_line_info['Percent']
+      # }
+
+
+      AccountingLinesMixin.add_source_line({
+                                       account_number: accounting_line_info['Number'],
+                                       object:         accounting_line_info['Object Code'],
+                                       percent:         accounting_line_info['Percent']
+                                  })
+
+      # get(doc_object).add_source_line(new_source_line)
+      #
+      # add_accounting_line
+      #
+      # initial_accounting_lines: [{
+      #                                account_number: updates['Account Number'],
+      #                                object_code:    updates['Object Code'],
+      #                                percent:        updates['Percent']
+      #                            }]
+
+    # page.item_account_number.fit '1000811'
+    # page.item_object.fit '6570'
+    # page.item_percent.fit '50'
+    #   page.item_add_account_line
+     breaky
+      page.calculate
     #better wait might be to wait for the amount after calculation
-    sleep 2
+      sleep 2
     #approve document
-    page.approve
+      page.approve
+    end
   end
 end
+
 
 
 And /^During Approval of the Purchase Order Amendment the Financial Officer adds a line item$/ do
@@ -706,8 +719,6 @@ And /^During Approval of the Purchase Order Amendment the Financial Officer adds
     #approve document
     page.approve
   end
-
-  breakky brakes
 end
 
 And /^I open the Purchase Order Amendment on the Requisition document$/ do
