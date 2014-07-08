@@ -8,12 +8,14 @@ end
 
 And /^I add e\-SHOP items to my cart until the cart total reaches the Business to Business Total Amount For Automatic Purchase Order limit$/ do
   on ShopResultsPage do |page|
+    item = 0
+    target_value = page.price_for_item item
     target_quantity = ((get_parameter_values('KFS-PURAP', 'B2B_TOTAL_AMOUNT_FOR_AUTO_PO', 'Requisition').first.to_f -
                         page.cart_total_value.to_f) /
-                        21.26).ceil
+                        target_value).ceil
     target_quantity.should be > 0, 'There are already one or more items in your shopping cart such that we cannot add an additional item!'
-    page.item_quantity(0).fit target_quantity
-    page.add_item(0)
+    page.item_quantity(item).fit target_quantity
+    page.add_item item
     page.cart_total_value.to_f.should be >= get_parameter_values('KFS-PURAP', 'B2B_TOTAL_AMOUNT_FOR_AUTO_PO', 'Requisition').first.to_f
     page.cart_total_value.to_f.should be < get_parameter_values('KFS-PURAP', 'B2B_TOTAL_AMOUNT_FOR_SUPER_USER_AUTO_PO', 'Requisition').first.to_f
   end
@@ -30,15 +32,17 @@ And /^I submit my e\-SHOP cart$/ do
   # Surprise! This should kick you out to a Requisition document.
   on(RequisitionPage).doc_title.strip.should == 'Requisition'
   @requisition = make RequisitionObject
-  @requisition.absorb :new
-  puts @requisition.inspect
-  pending 'Gotta write RequisitionObject#absorb!'
-  # @requisition.absorb :new # Hopefully, we can #absorb this mutha
+  @requisition.absorb! :new
 end
 
-Then /^Payment Request Positive Approval Required is checked$/ do
-  # TODO: Convert this to using @requisition
-  on(RequisitionPage).payment_request_positive_approval_required.checked?.should
+Then /^Payment Request Positive Approval Required is (not required|required)$/ do |is_required|
+  if is_required == 'required'
+    @requisition.payment_request_positive_approval_required.set?.true?.should
+    on(RequisitionPage).result_payment_request_positive_approval_required.should == 'Yes'
+  else
+    @requisition.payment_request_positive_approval_required.set?.false?.should
+    on(RequisitionPage).result_payment_request_positive_approval_required.should == 'No'
+  end
 end
 
 And /^the e\-SHOP cart has an associated Requisition document$/ do
@@ -56,4 +60,26 @@ When /^I view my e\-SHOP cart$/ do
   @eshop_cart = make EShopCartObject if @eshop_cart.nil?
   @eshop_cart.view # This assumes you're at least in the e-SHOP, naturally
   @eshop_cart.absorb!
+end
+
+Given /^I initiate an e\-SHOP order$/ do
+  step 'I am logged in as an e-SHOP User'
+  step 'I go to the e-SHOP main page'
+  step 'I search for an e-SHOP item with a Non-Sensitive Commodity Code'
+  step 'I add e-SHOP items to my cart until the cart total reaches the Business to Business Total Amount For Automatic Purchase Order limit'
+  step 'I view my e-SHOP cart'
+  step 'I add a note to my e-SHOP cart'
+  step 'I submit my e-SHOP cart'
+  step 'I add a random address to the Delivery tab on the Requisition document'
+  step 'I add a random Requestor Phone number to the Requisition document'
+  step 'I add these Accounting Lines to Item #1 on the Requisition document:',
+    table(%q{
+            | chart_code | account_number       | object_code | amount |
+            | Default    | Unrestricted Account | Expenditure | 10     |
+          })
+  step 'I calculate my Requisition document'
+  step 'I submit the Requisition document'
+  step 'the document should have no errors'
+  step 'I reload the Requisition document'
+  step 'Payment Request Positive Approval Required is not required'
 end
