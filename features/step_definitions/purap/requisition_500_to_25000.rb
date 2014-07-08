@@ -219,29 +219,29 @@ And /^I calculate and verify the GLPE tab$/ do
 end
 
 Then /^in Pending Action Requests an FYI is sent to FO and Initiator$/ do
-  on PurchaseOrderPage do |page|
-    # TODO : it looks like there is no reload button when open PO with final status.  so comment it out for now.  need further check
-    #Watir::Wait::TimeoutError: timed out after 30 seconds, waiting for {:class=>"globalbuttons", :title=>"reload", :tag_name=>"button"} to become present    page.reload # Sometimes the pending table doesn't show up immediately.
-    #page.headerinfo_table.wait_until_present
-    page.expand_all
-    page.refresh_route_log # Sometimes the pending table doesn't show up immediately.
-    page.show_pending_action_requests if page.pending_action_requests_hidden?
-    fyi_initiator = 0
-    fyi_fo = 0
-    (1..page.pnd_act_req_table.rows.length - 2).each do |i|
-      if page.pnd_act_req_table[i][1].text.include?('FYI')
-        if page.pnd_act_req_table[i][4].text.include? 'Fiscal Officer'
+  sleep 5 # wait for workflow to do its thing
+
+  fyi_initiator = 0
+  fyi_fo = 0
+
+  pending_action_requests = get_pending_action_requests(@purchase_order.document_id).getPendingActionRequest().to_a
+  pending_action_requests.each do |pending_action|
+    puts pending_action.annotation
+    if pending_action.is_current?
+      unless pending_action.annotation.nil?
+        if pending_action.annotation.include? 'Fiscal Officer'
           fyi_fo += 1
         else
-          if page.pnd_act_req_table[i][4].text.include? 'Initiator'
+          if pending_action.annotation.include? 'Initiator'
             fyi_initiator += 1
            end
         end
       end
     end
-    fyi_initiator.should >= 1
-    fyi_fo.should >= 1
   end
+
+  fyi_initiator.should >= 1
+  fyi_fo.should >= 1
 end
 
 And /^the Purchase Order document status is '(.*)'$/  do  |status|

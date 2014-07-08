@@ -12,7 +12,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
 
   [KFSQA-766] PURAP E2E-004d PREQ - Manual Entry, >$500, <$5000, Internal Vendor
 
-  @KFSQA-791 @PO @PREQ @REQS @coral
+  @KFSQA-791 @PO @PREQ @REQS @coral @wip
   Scenario: PURAP manual >$500, <$25000 external vendor no wire
     Given I am logged in as an e-SHOP User
     And   I create the Requisition document with:

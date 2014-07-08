@@ -380,11 +380,10 @@ Then /^the Purchase Order Amendment document's GLPE tab shows the new item amoun
 end
 
 Then /^Award Review is not in the Requisition document workflow history$/ do
-  root_action_requests =  get_root_action_requests(@requisition.document_id).getRootActionRequest().to_a
+  root_action_requests = get_root_action_requests(@requisition.document_id).getRootActionRequest().to_a
   root_action_requests.each do |root_action|
     root_action.annotation.should_not include 'Contracts' unless root_action.annotation.nil?
   end
-
 end
 
 And /^I fill in Capital Asset tab on Requisition document with:$/ do |table|
