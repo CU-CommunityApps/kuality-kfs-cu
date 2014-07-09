@@ -74,7 +74,8 @@ And /^I view the (.*) document on my action list$/ do |document|
   end
   if document.eql?('Requisition')
     on RequisitionPage do |page|
-      @requisition_id = page.requisition_id
+      @requisition.requisition_id = page.requisition_id
+      #@requisition_id = page.requisition_id
       @requisition_initiator = page.initiator
     end
   end
@@ -93,7 +94,8 @@ end
 And /^I (submit|close|cancel) a Contract Manager Assignment of '(\d+)' for the Requisition$/ do |btn, contract_manager_number|
   visit(MainPage).contract_manager_assignment
   on ContractManagerAssignmentPage do |page|
-    page.set_contract_manager(@requisition_id, contract_manager_number)
+    page.set_contract_manager(@requisition.requisition_id, contract_manager_number)
+    #page.set_contract_manager(@requisition_id, contract_manager_number)
     page.send(btn)
   end
   sleep 5
@@ -103,7 +105,8 @@ And /^I retrieve the Requisition document$/ do
   visit(MainPage).requisitions  #remember "S" is for search
   on DocumentSearch do |page|
     page.document_type.set 'REQS'
-    page.requisition_num.fit @requisition_id
+    page.requisition_num.fit @requisition.requisition_id
+    #page.requisition_num.fit @requisition_id
     page.search
     page.open_item(@requisition.document_id)
   end

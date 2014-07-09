@@ -90,57 +90,49 @@ And /^users outside the Route Log can not search and retrieve the REQS$/ do
 end
 
 And /^I extract the Requisition document to SciQuest$/ do
-  steps %q{
-    Given I am logged in as a Purchasing Processor
-    And   I retrieve the Requisition document
-    When  I check Related Documents Tab on Requisition Document
-  }
+  step 'I am logged in as a Purchasing Processor'
+  step 'I retrieve the Requisition document'
+  step 'I check Related Documents Tab on Requisition Document'
 
   if !@auto_gen_po.nil? && !@auto_gen_po
    step 'I assign Contract Manager and approve Purchase Order Document to FINAL'
   end
 
-  steps %Q{
-    Given I am logged in as "db18"
-    When  I visit the "e-SHOP" page
-    And   I view the Purchase Order document via e-SHOP
-    Then  the Document Status displayed 'Completed'
-    And   the Delivery Instructions displayed equals what came from the PO
-    And   the Attachments for Supplier came from the PO
-  }
+  step 'I am logged in as "db18"' # FIXME: This should log in using a role instead of a netid
+  step 'I visit the "e-SHOP" page'
+  step 'I view the Purchase Order document via e-SHOP'
+  step 'the Document Status displayed \'Completed\''
+  step 'the Delivery Instructions displayed equals what came from the PO'
+  step 'the Attachments for Supplier came from the PO'
+
 end
 
 And /^I assign Contract Manager and approve Purchase Order Document to FINAL$/ do
 
-  steps %Q{
-    Given I am logged in as a Purchasing Processor
-    When  I submit a Contract Manager Assignment of '10' for the Requisition
-    Given I am logged in as a PURAP Contract Manager
-    When  I retrieve the Requisition document
-    Then  the View Related Documents Tab PO Status displays
-    And the Purchase Order Number is unmasked
-  }
+  step 'I am logged in as a Purchasing Processor'
+  step 'I submit a Contract Manager Assignment of \'10\' for the Requisition'
+  step 'I am logged in as a PURAP Contract Manager'
+  step 'I retrieve the Requisition document'
+  step 'the View Related Documents Tab PO Status displays'
+  step 'the Purchase Order Number is unmasked'
+
 
   step "I Complete Selecting Vendor #{@vendor_number}" unless @add_vendor_on_reqs == 'Yes'
 
-  steps %Q{
-    When I enter a Vendor Choice of 'Lowest Price'
-    And  I calculate and verify the GLPE tab
-    And  I submit the Purchase Order document
-  }
+  step 'I enter a Vendor Choice of \'Lowest Price\''
+  step 'I calculate and verify the GLPE tab'
+  step 'I submit the Purchase Order document'
 
   step 'the Purchase Order document goes to one of the following statuses:',
        table('
-               | ENROUTE   |
-               | FINAL     |
-             ')
+              | ENROUTE   |
+              | FINAL     |
+            ')
 
-  steps %q{
-    Given I switch to the user with the next Pending Action in the Route Log to approve Purchase Order document to Final
-    Then  the Purchase Order document goes to FINAL
-    And   in Pending Action Requests an FYI is sent to FO and Initiator
-    And   the Purchase Order Doc Status is Open
-  }
+  step 'I switch to the user with the next Pending Action in the Route Log to approve Purchase Order document to Final'
+  step 'the Purchase Order document goes to FINAL'
+  step 'in Pending Action Requests an FYI is sent to FO and Initiator'
+  step 'the Purchase Order Doc Status is Open'
 
 end
 
