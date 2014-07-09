@@ -4,7 +4,7 @@ Feature: eSHOP Create
               APO limit. Create order above the APO limit, but below the super-user
               APO limit. Check that order routes to Fiscal Officer for approval.
 
-  @KFSQA-731 @E2E @PURAP @REQS @e-SHOP @cornell @wip
+  @KFSQA-731 @E2E @PURAP @REQS @e-SHOP @cornell @slug
   Scenario: Create e-shop order when the items' total is greater than the business
             to business total amount allowed for auto PO and less than business to
             business total amount allowed for superuser auto PO and verify the document
