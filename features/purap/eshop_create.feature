@@ -30,7 +30,7 @@ Feature: eSHOP Create
     And   the document status is ENROUTE
     And   the next pending action for the Requisition document is an APPROVE from a Fiscal Officer
 
-  @KFSQA-856 @BaseFunction @PDP @PO @PREQ @REQS
+  @KFSQA-856 @BaseFunction @PDP @PO @PREQ @REQS @wip
   Scenario: e-SHOP to PO to PREQ to PDP
     Given I initiate an e-SHOP order
     And   I extract the Requisition document to SciQuest
