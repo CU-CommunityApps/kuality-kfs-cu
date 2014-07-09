@@ -45,7 +45,6 @@ When /^I create an? (Corporation|Individual) and (Foreign|Non-Foreign|e-SHOP) Ve
                 ownership:                       'CORPORATION',
                 w9_received:                     'Yes',
                 w9_received_date:                '02/01/2014',
-                attachment_file_name:            'vendor_attachment_test.png',
                 insurance_requirements_complete: 'Yes',
                 cornell_additional_ins_ind:      'Yes',
                 initial_contracts: [{
@@ -207,7 +206,7 @@ And /^I edit a Vendor with Vendor Number (.*)$/ do |vendor_number|
     page.description.fit random_alphanums(40, 'AFT')
     @vendor = make VendorObject, description: page.description.text.strip,
                                  document_id: page.document_id
-    @vendor.absorb :old
+    @vendor.absorb! :old
     @document_id = @vendor.document_id
   end
 end
@@ -435,7 +434,7 @@ And /^I edit a PO Vendor$/ do
   step 'I lookup a PO Vendor'
   @vendor = make VendorObject
   on(VendorPage).description.fit @vendor.description
-  @vendor.absorb(:old)
+  @vendor.absorb! :old
   @document_id = @vendor.document_id
 end
 
@@ -510,7 +509,7 @@ end
 Then /^the default Purchase Order Vendor address\(es\) are shown on the (.*) document$/ do |document|
   # We're only interested in comparing the addresses here, so we'll pull them
   # from the page and only look at that data. If this step is expanded, we can
-  # modify VendorObject#absorb appropriately and switch to using that method
+  # modify VendorObject#absorb! appropriately and switch to using that method
   # instead of #update_from_page!
   vendor_on_page = make VendorObject
   vendor_on_page.addresses.update_from_page! :readonly

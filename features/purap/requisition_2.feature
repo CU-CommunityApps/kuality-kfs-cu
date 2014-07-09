@@ -25,7 +25,7 @@ Feature: Purap REQS 2 Building Blocks
     | Account Number      | 1278003  |
     | Object Code         | 6570     |
     | Percent             | 100      |
-    And   I add an Attachment to the Requisition document
+    And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
     And   I calculate my Requisition document
     And   I submit the Requisition document
@@ -59,7 +59,7 @@ Feature: Purap REQS 2 Building Blocks
       | Account Number      | <account_number> |
       | Object Code         | <object_code>    |
       | Percent             | 100              |
-    And   I add an Attachment to the Requisition document
+    And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
     And   I calculate my Requisition document
     And   I submit the Requisition document
@@ -93,7 +93,7 @@ Feature: Purap REQS 2 Building Blocks
       | Object Code         | 6570             |
       | Percent             | 100              |
     And   I enter Payment Information for recurring payment type <recurring_payment_type>
-    And   I add an Attachment to the Requisition document
+    And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
     And   I calculate my Requisition document
     And   I submit the Requisition document
@@ -134,8 +134,6 @@ Feature: Purap REQS 2 Building Blocks
       | Item Commodity Code | 10191507         |
       | Item Catalog Number | 10121801         |
       | Item Description    | Bird Repellents  |
-      #Line number because this is a multiple item test
-      | Line Number         | 1                |
       | Account Number      | 1000817          |
       | Object Code         | 6570             |
       | Percent             | 100              |
