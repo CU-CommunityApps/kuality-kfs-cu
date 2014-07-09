@@ -205,10 +205,19 @@ And /^I edit a Vendor with Vendor Number (.*)$/ do |vendor_number|
   on VendorPage do |page|
     page.description.fit random_alphanums(40, 'AFT')
     @vendor = make VendorObject, description: page.description.text.strip,
-                                 document_id: page.document_id
+                   document_id: page.document_id
     @vendor.absorb :old
     @document_id = @vendor.document_id
   end
+end
+
+And /^I edit a Vendor with Ownership Type (.*)$/ do |ownership_type|
+  # vendor_info = get_kuali_business_object('KFS-VND','Vendor','vendorHeader.vendorOwnershipCode=' + ownership_type)
+  # vendor_number = vendor_info['accountFiscalOfficerUser.principalName']
+  vendor_info = get_kuali_business_object('KFS-VND','VendorHeader','vendorOwnershipCode=' + ownership_type)
+  vendor_number = vendor_info['vendorHeaderGeneratedIdentifier']
+  puts vendor_number
+  step "I edit a Vendor with Vendor Number #{vendor_number}"
 end
 
 And /^the Tax Number and Notes are Not Visible on Vendor page$/ do
