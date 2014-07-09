@@ -32,3 +32,10 @@ Feature: eSHOP Create
     Then  the document status is APPROVED
     And   the next pending action for the Requisition document is an APPROVE from a Fiscal Officer
 
+  @KFSQA-856 @BaseFunction @PDP @PO @PREQ @REQS
+  Scenario: e-SHOP to PO to PREQ to PDP
+    Given I INITIATE AN ESHOP ORDER
+    And   I EXTRACT THE REQS TO SQ
+    When  I INITIATE A PREQ
+    Then  I FORMAT AND PROCESS THE CHECK WITH PDP
+
