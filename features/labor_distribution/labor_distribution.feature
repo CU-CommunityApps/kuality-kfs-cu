@@ -8,7 +8,7 @@ Feature: Labor Distribution
 
   [KFSQA-970] Background: Tests submission of a salary expense transfer and functionality of transfers
               between account types, calculations between rates, and labor access security between orgs.
-              Required Setup Data specifications are located here : [https://jira.cornell.edu/browse/KFSQA-970]
+              Required Setup Data specifications are located in the JIRA.
 
   @KFSQA-983 @BaseFunction @ST @slug
   Scenario: Base Function : I create a Salary Expense Transfer
