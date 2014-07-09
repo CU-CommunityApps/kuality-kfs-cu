@@ -10,6 +10,10 @@ Feature: Labor Distribution
               between account types, calculations between rates, and labor access security between orgs.
               Required Setup Data specifications are located in the JIRA.
 
+  [KFSQA-1012] Background: This tests privileged functionality for cross divisional transfers and
+               ability to edit object codes on a salary transfer edoc.
+
+
   @KFSQA-983 @BaseFunction @ST @slug
   Scenario: Base Function : I create a Salary Expense Transfer
     Given I create a Salary Expense Transfer with following:
@@ -60,3 +64,13 @@ Feature: Labor Distribution
     And   I run the nightly Labor batch process
     And   I am logged in as a Labor Distribution Manager
     Then  the labor ledger pending entry for employee '2569631' is empty
+
+   @KFSQA-1012 @ST @smoke @wip
+  Scenario: Submit a salary transfer edoc between account types, edit the object code, verify pending entries, and submit successfully.
+    Given logged in as an ST initiator role 10004
+    When  run SALARY EXPENSE
+    And   transfer between accounts with different account types
+    And   Edit object code to replace with a different labor object code
+    And   verify pending entries
+    And   submit
+    Then  doc should become FINAL
