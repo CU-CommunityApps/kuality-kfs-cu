@@ -206,7 +206,7 @@ And /^I edit a Vendor with Vendor Number (.*)$/ do |vendor_number|
     page.description.fit random_alphanums(40, 'AFT')
     @vendor = make VendorObject, description: page.description.text.strip,
                    document_id: page.document_id
-    @vendor.absorb :old
+    @vendor.absorb! :old
     @document_id = @vendor.document_id
   end
 end
@@ -443,7 +443,7 @@ And /^I edit a PO Vendor$/ do
   step 'I lookup a PO Vendor'
   @vendor = make VendorObject
   on(VendorPage).description.fit @vendor.description
-  @vendor.absorb(:old)
+  @vendor.absorb! :old
   @document_id = @vendor.document_id
 end
 

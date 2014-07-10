@@ -83,8 +83,9 @@ And /^I (#{BudgetAdjustmentPage::available_buttons}) a balanced Budget Adjustmen
                                       chart_code:       get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
                                   }
                               ]
-
-    on BudgetAdjustmentPage do |page|
+  @from_fiscal_officer = 'djj1'
+  @to_fiscal_officer = 'sag3'
+  on BudgetAdjustmentPage do |page|
       @budget_adjustment.add_source_line({
                                          account_number:   'G003704',
                                          object:           '6510',
