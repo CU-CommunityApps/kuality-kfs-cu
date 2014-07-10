@@ -121,7 +121,7 @@ And /^I extract the Requisition document to SciQuest$/ do
 end
 
 And /^I assign Contract Manager and approve Purchase Order Document to FINAL$/ do
-
+sleep 10 #debug
   steps %Q{
     Given I am logged in as a Purchasing Processor
     When  I submit a Contract Manager Assignment of '10' for the Requisition
@@ -298,7 +298,9 @@ end
 And /^I amend the Purchase Order$/ do
   on(PurchaseOrderPage).amend_po
   on AmendPOReasonPage do |page|
+    sleep 10 #debug
     page.reason.fit random_alphanums(40, 'AFT-amendreason')
+    sleep 10 #debug
     page.amend
   end
   sleep 3
@@ -313,7 +315,9 @@ When /^I (initiate|submit) a Purchase Order Amendment document with the followin
   arguments = table.rows_hash
 
   step "I am logged in as \"#{@requisition_initiator}\""
+  sleep 10 #debug
   step 'I view the Purchase Order document'
+sleep 10 #debug
   step 'I amend the Purchase Order'
 
   if !arguments['Item Quantity'].nil? && arguments['Item Quantity'].to_f > 0
@@ -331,7 +335,6 @@ When /^I (initiate|submit) a Purchase Order Amendment document with the followin
   else
     step 'I calculate and verify the GLPE tab'
   end
-
   step 'I submit the Purchase Order Amendment document'
   step 'the Purchase Order Amendment document goes to ENROUTE'
   # step 'I switch to the user with the next Pending Action in the Route Log to approve Purchase Order Amendment document to Final'
@@ -532,4 +535,44 @@ And /^I select and apply payment$/ do
   @asset_manual_payment = create AssetManualPaymentObject
 end
 
+
+And /^I set the added account percent to 50$/ do
+  on RequisitionPage do |page|
+    page.expand_all
+sleep 10 #debug
+    page.added_percent.fit '50'
+    page.added_amount.set ' '
+  end
+end
+
+And /^I add these Accounting Lines to Item \#(\d+) on the (.*) document with:$/ do |il, document, supplied|
+  # table is a supplied.hashes.keys # => [:chart_code, :account_number, :object, :amount]
+
+  il = il.to_i
+  il -= 1
+
+
+  on(RequisitionPage).expand_all
+  on ItemsTab do |tab|
+    # tab.item_accounting_lines_section(il).should exist
+    # tab.show_item_accounting_lines unless tab.item_accounting_lines_shown?
+  end
+
+  supplied.hashes.each do |supplied_line|
+    new_line = {
+        chart_code:                supplied_line[:chart_code] == 'Default' ? get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE) : supplied_line[:chart_code],
+        account_number:            supplied_line[:account_number][0].match(/[0-9]/m) ? supplied_line[:account_number] : get_account_of_type(supplied_line[:account_number]),
+        sub_account_code:          supplied_line[:sub_account_code],
+        object_code:               supplied_line[:object_code].length > 5 ? get_object_type_of_type(supplied_line[:object_code]) : supplied_line[:object_code],
+        sub_object_code:           supplied_line[:sub_object_code],
+        project_code:              supplied_line[:project_code],
+        organization_reference_id: supplied_line[:organization_reference_id],
+        line_description:          supplied_line[:line_description],
+        percent:                   supplied_line[:percent],
+        amount:                    supplied_line[:amount]
+    }
+    # new_line.delete_if { |k, v| v.nil? }
+    document_object_for(document).items[il].add_accounting_line new_line
+  end
+end
 

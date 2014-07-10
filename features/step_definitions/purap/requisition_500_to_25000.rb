@@ -91,15 +91,17 @@ And /^the Requisition status is '(.*)'$/ do |req_status|
 end
 
 And /^I view the (.*) document on my action list$/ do |document|
+  sleep 10 #debug
+
   visit(MainPage).action_list
   on ActionList do |page|
     #sort the date
     # if previous user already clicked this sort, then action list for next user will be sorted with 'Date created'.  So, add this 'unless' check
     sleep 10 #debug
-    sleep 10 #debug
     puts "doc id is:"
     puts document_object_for(document).document_id
     page.sort_results_by('Date Created') unless page.result_item(document_object_for(document).document_id).exists?
+    sleep 10 #debug
 
     page.result_item(document_object_for(document).document_id).wait_until_present
     page.open_item(document_object_for(document).document_id)
@@ -114,6 +116,7 @@ And /^I view the (.*) document on my action list$/ do |document|
 end
 
 And /^I view the Requisition document from the Requisitions search$/ do
+    sleep 10 #debug
   visit(MainPage).requisitions
   on DocumentSearch do |page|
     puts "Requisition id is #{@requisition_id}"
@@ -124,6 +127,8 @@ And /^I view the Requisition document from the Requisitions search$/ do
     page.open_item(@requisition.document_id)
     sleep 10 #debug
   end
+  on(RequisitionPage).expand_all
+
 end
 
 And /^I (submit|close|cancel) a Contract Manager Assignment of '(\d+)' for the Requisition$/ do |btn, contract_manager_number|
@@ -181,23 +186,12 @@ And /^I Complete Selecting Vendor (.*)$/ do |vendor_number|
 end
 
 And /^I Complete Selecting a Foreign Vendor$/ do
-# <<<<<<< HEAD
-#   on (PurchaseOrderPage) do |page|
-#     page.vendor_search
-#     on VendorLookupPage do |vlookup|
-#       vendor_number = '39210-0' # TODO : this vendor number should be from a parameter
-#       vlookup.vendor_number.fit vendor_number
-#       vlookup.search
-#       vlookup.return_value(vendor_number)
-#     end
-# =======
   on(PurchaseOrderPage).vendor_search
   on VendorLookupPage do |vlookup|
     vendor_number = '39210-0' # TODO : this vendor number should be from a parameter
     vlookup.vendor_number.fit vendor_number
     vlookup.search
     vlookup.return_value(vendor_number)
-# >>>>>>> remotes/origin/master
   end
 end
 
@@ -230,12 +224,9 @@ And /^I submit the PO eDoc Status is$/ do
   pending # express the regexp above with the code you wish you had
 end
 
-
-
 And /^The PO eDoc Status is$/ do
   pending # express the regexp above with the code you wish you had
 end
-
 
 And(/^the (.*) Doc Status is (.*)/) do |document, doc_status|
   on(KFSBasePage).app_doc_status.should == doc_status
@@ -354,24 +345,11 @@ And  /^I enter a Pay Date$/ do
   on(PaymentRequestPage).pay_date.fit right_now[:date_w_slashes]
 end
 
-
-# <<<<<<< HEAD
-# And /^I attach an Invoice Image$/ do
-#   on PaymentRequestPage do |page|
-#     page.note_text.fit random_alphanums(40, 'AFT-NoteText')
-#     page.attachment_type.fit 'Invoice Image'
-#     page.attach_notes_file.set($file_folder+@payment_request.attachment_file_name)
-#
-#     page.add_note
-#     page.attach_notes_file_1.should exist #verify that note is indeed added
-#   end
-# =======
 And /^I attach an Invoice Image to the (.*) document$/ do |document|
   document_object_for(document).notes_and_attachments_tab
                                .add note_text:      'Testing note text.',
                                     file:           'vendor_attachment_test.png',
                                     type:           'Invoice Image'
-# >>>>>>> remotes/origin/master
 end
 
 And /^I calculate PREQ$/ do
@@ -381,29 +359,16 @@ And /^I calculate PREQ$/ do
   end
 end
 
-
 And /^I view the Purchase Order document via e-SHOP$/ do
   on ShopCatalogPage do |page|
     # TODO: When we do the split in the following comment, this block can be on EShopPage
     page.order_doc
     page.po_doc_search
-# <<<<<<< HEAD
-#     sleep 5 #debug
-#     page.search_doc_type.fit 'Purchase Orders'
-#     page.po_id.fit @purchase_order_number
-#
-#     (0..page.date_range.length).each do |i|
-#       if page.date_range[i].visible?
-#         page.date_range[i].fit 'Today'
-#       end
-#     end
-# =======
 
     # TODO: This block should be split once we've defined a proper EShopDocSearchPage object
     page.search_doc_type.fit 'Purchase Orders'
     page.po_id.fit      @purchase_order_number
     page.date_range.fit 'Today'
-# >>>>>>> remotes/origin/master
     sleep 2
     page.go_button.click
   end
@@ -503,18 +468,10 @@ Then /^the Payment Request document's GLPE tab shows the Requisition document su
   on PaymentRequestPage do |page|
     page.show_glpe
 
-# <<<<<<< HEAD
-#     page.glpe_results_table.text.include? @requisition.item_object_code
-#     page.glpe_results_table.text.include? @requisition.item_account_number
-#     # credit object code should be 3110 (depends on parm)
-#
-# =======
       page.glpe_results_table.text.include? @requisition.items.first.accounting_lines.first.object_code
       page.glpe_results_table.text.include? @requisition.items.first.accounting_lines.first.account_number
       # credit object code should be 3110 (depends on parm)
     end
-# >>>>>>> remotes/origin/master
-#   end
 end
 
 And /^I Complete Selecting an External Vendor$/ do
@@ -619,34 +576,19 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
 end
 
 And /^During Approval of the (.*) document the Financial Officer adds a second line item with:$/ do |document, table|
-  #add second accounting line
   sleep 5 #debug
   step "I view the Requisition document from the Requisitions search"
-  # step "I view the Requisition document"
   sleep 5 #debug
   step 'I switch to the user with the next Pending Action in the Route Log for the Requisition document'
   step "I view the Requisition document on my action list"
-  # "I view the Requisition document"
   on RequisitionPage do |page|
     page.expand_all
-
     accounting_line_info = table.rows_hash
-
-    puts "the document is : #{document}"
 
     doc_object = snake_case document
 
-    puts "The doc_object is: #{get(doc_object)}"
-
     on page_class_for(document) do |page|
       page.added_percent.fit '50'
-
-      # new_source_line = {
-      #   account_number: accounting_line_info['Number'],
-      #   object:         accounting_line_info['Object Code'],
-      #   percent:         accounting_line_info['Percent']
-      # }
-
 
       AccountingLinesMixin.add_source_line({
                                        account_number: accounting_line_info['Number'],
@@ -654,53 +596,21 @@ And /^During Approval of the (.*) document the Financial Officer adds a second l
                                        percent:         accounting_line_info['Percent']
                                   })
 
-      # get(doc_object).add_source_line(new_source_line)
-      #
-      # add_accounting_line
-      #
-      # initial_accounting_lines: [{
-      #                                account_number: updates['Account Number'],
-      #                                object_code:    updates['Object Code'],
-      #                                percent:        updates['Percent']
-      #                            }]
-
-    # page.item_account_number.fit '1000811'
-    # page.item_object.fit '6570'
-    # page.item_percent.fit '50'
-    #   page.item_add_account_line
-     breaky
       page.calculate
-    #better wait might be to wait for the amount after calculation
       sleep 2
-    #approve document
       page.approve
     end
   end
 end
 
-
-
 And /^During Approval of the Purchase Order Amendment the Financial Officer adds a line item$/ do
-  #add second accounting line
   sleep 5 #debug
   step "I view the Requisition document from the Requisitions search"
-
-  # step "I view the Requisition document"
   sleep 5 #debug
-  #view the POA
   step 'I switch to the user with the next Pending Action in the Route Log for the Requisition document'
-  # step "I view the Requisition document on my action list"
   step 'I open the Purchase Order Amendment on the Requisition document'
-  # step "I view the Requisition document"
-  # on RequisitionPage do |page|
-  #   page.expand_all
-  #   @purchase_order_amendment_id = page.purchase_order_amendment_value
-  #   page.purchase_order_amendment
-  # end
   step 'I switch to the user with the next Pending Action in the Route Log for the Purchase Order document'
-
   step 'I open the Purchase Order Amendment on the Requisition document'
-
 
   on PurchaseOrderPage do |page|
     page.expand_all
@@ -711,12 +621,12 @@ And /^During Approval of the Purchase Order Amendment the Financial Officer adds
 
     page.old_percent.fit '50'
     page.old_amount.fit ''
-    page.add_account
+    sleep 10 #debug
 
+    page.add_account
+    sleep 10 #debug
     page.calculate
-    #better wait might be to wait for the amount after calculation
     sleep 2
-    #approve document
     page.approve
   end
 end
@@ -730,5 +640,6 @@ And /^I open the Purchase Order Amendment on the Requisition document$/ do
     page.purchase_order_amendment
   end
 
+  sleep 10 #debug
 
 end

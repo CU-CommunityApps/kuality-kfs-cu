@@ -63,7 +63,6 @@ end
 
 Then /^the (.*) document goes to (PROCESSED|ENROUTE|FINAL|INITIATED|SAVED)$/ do |document, doc_status|
   sleep 10
-  sleep 10 #debug
   document_object_for(document).view
   on(page_class_for(document)).document_status.should == doc_status
 end
