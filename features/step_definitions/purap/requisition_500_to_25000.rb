@@ -356,12 +356,8 @@ And /^I calculate PREQ$/ do
 end
 
 And /^I view the Purchase Order document via e-SHOP$/ do
-  on ShopCatalogPage do |page|
-    # TODO: When we do the split in the following comment, this block can be on EShopPage
-    page.order_doc
-    page.po_doc_search
-
-    # TODO: This block should be split once we've defined a proper EShopDocSearchPage object
+  on(EShopPage).goto_doc_search
+  on EShopAdvancedDocSearchPage do |page|
     page.search_doc_type.fit 'Purchase Orders'
     page.po_id.fit      @purchase_order_number
     page.date_range.fit 'Today'
@@ -371,14 +367,12 @@ And /^I view the Purchase Order document via e-SHOP$/ do
 end
 
 And /^the Document Status displayed '(\w+)'$/ do |doc_status|
-  on ShopCatalogPage do |page|
-    page.return_po_value(@purchase_order_number)
-    page.doc_summary[1].text.should include  "Workflow  #{doc_status}"
-  end
+  on(EShopAdvancedDocSearchPage).return_po_value @purchase_order_number
+  on(EShopSummaryPage).doc_summary[1].text.should include "Workflow  #{doc_status}"
 end
 
 And /^the Delivery Instructions displayed equals what came from the PO$/ do
-  on ShopCatalogPage do |page|
+  on EShopSummaryPage do |page|
     page.doc_po_link
     page.doc_summary[1].text.should match /Note to Supplier.*#{@requisition.vendor_notes}/m
     page.doc_summary[3].text.should match /Delivery Instructions.*#{@requisition.delivery_instructions}/m
@@ -386,10 +380,11 @@ And /^the Delivery Instructions displayed equals what came from the PO$/ do
 end
 
 And /^the Attachments for Supplier came from the PO$/ do
-  on ShopCatalogPage do |page|
+  on EShopSummaryPage do |page|
     page.attachments_link
     page.search_results.should exist
-    page.search_results[1].text[0..16].should == @requisition.notes_and_attachments_tab.first.file[0..16] # Longer file names are cut and an ellipse is added to the end
+    # Longer file names are cut and an ellipse is added to the end, so we need to restrict the length of the match
+    page.search_results[1].text[0..16].should == @requisition.notes_and_attachments_tab.first.file[0..16]
   end
 end
 
