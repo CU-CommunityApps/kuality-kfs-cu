@@ -48,9 +48,7 @@ end
 Then /^I switch to the user with the next Pending Action in the Route Log for the (.*) document$/ do |document|
   new_user = ''
   on page_class_for(document) do |page|
-    page.alert.ok if page.alert.exists? # Because, y'know, sometimes it doesn't actually come up... #debug
     page.expand_all
-    page.alert.ok if page.alert.exists? # Because, y'know, sometimes it doesn't actually come up... #debug
     page.show_route_log unless page.route_log_shown?
 
     page.pnd_act_req_table_action.visible?.should
@@ -93,9 +91,6 @@ Then /^I switch to the user with the next Pending Action in the Route Log for th
         new_user = mbr_tr[4].text
       end
     end
-
-
-  puts "New user to login as is: #{new_user}" #debug
 
   page.close_children
   end

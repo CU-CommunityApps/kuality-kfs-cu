@@ -21,8 +21,6 @@ And /^I copy a random (.*) document with (.*) status/ do |document, doc_status|
 end
 
 When /^I view the (.*) document$/ do |document|
-  sleep 10  #debug
-  sleep 10  #debug
   document_object_for(document).view
 end
 

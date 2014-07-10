@@ -68,8 +68,6 @@ Given  /^I (initiate|submit) a Requisition document with the following:$/ do |ty
     Then the Requisition document goes to ENROUTE
   }
 
-  puts "Level is #{@level}"  #debug
-
   case type
     when 'initiate'
       steps %q{
@@ -333,13 +331,6 @@ When /^I (initiate|submit) a Purchase Order Amendment document with the followin
 
   step 'I submit the Purchase Order Amendment document'
   step 'the Purchase Order Amendment document goes to ENROUTE'
-  # step 'I switch to the user with the next Pending Action in the Route Log to approve Purchase Order Amendment document to Final'
-  # step 'the Purchase Order Amendment document goes to FINAL'
-  # 
-  # steps %q{
-  #   When  I submit the Purchase Order Amendment document
-  #   Then  the Purchase Order Amendment document goes to ENROUTE
-  # }
 
   case type
     when 'initiate'
@@ -538,40 +529,8 @@ end
 And /^I set the added account percent to 50$/ do
   on RequisitionPage do |page|
     page.expand_all
-sleep 10 #debug
     page.added_percent.fit '50'
     page.added_amount.set ' '
-  end
-end
-
-And /^I add these Accounting Lines to Item \#(\d+) on the (.*) document with:$/ do |il, document, supplied|
-  # table is a supplied.hashes.keys # => [:chart_code, :account_number, :object, :amount]
-
-  il = il.to_i
-  il -= 1
-
-
-  on(RequisitionPage).expand_all
-  on ItemsTab do |tab|
-    # tab.item_accounting_lines_section(il).should exist
-    # tab.show_item_accounting_lines unless tab.item_accounting_lines_shown?
-  end
-
-  supplied.hashes.each do |supplied_line|
-    new_line = {
-        chart_code:                supplied_line[:chart_code] == 'Default' ? get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE) : supplied_line[:chart_code],
-        account_number:            supplied_line[:account_number][0].match(/[0-9]/m) ? supplied_line[:account_number] : get_account_of_type(supplied_line[:account_number]),
-        sub_account_code:          supplied_line[:sub_account_code],
-        object_code:               supplied_line[:object_code].length > 5 ? get_object_type_of_type(supplied_line[:object_code]) : supplied_line[:object_code],
-        sub_object_code:           supplied_line[:sub_object_code],
-        project_code:              supplied_line[:project_code],
-        organization_reference_id: supplied_line[:organization_reference_id],
-        line_description:          supplied_line[:line_description],
-        percent:                   supplied_line[:percent],
-        amount:                    supplied_line[:amount]
-    }
-    # new_line.delete_if { |k, v| v.nil? }
-    document_object_for(document).items[il].add_accounting_line new_line
   end
 end
 

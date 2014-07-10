@@ -25,7 +25,7 @@ Feature: Requistion
     And  I switch to the user with the next Pending Action in the Route Log for the Requisition document
     And  I view the Requisition document on my action list
     And  I set the added account percent to 50
-    And  I add these Accounting Lines to Item #1 on the Requisition document with:
+    And  I add these Accounting Lines to Item #1 on the Requisition document:
       | chart_code | account_number       | object_code | percent |
       | Default    | 1093603              | 6570        | 50     |
     And  I calculate my Requisition document
@@ -46,7 +46,7 @@ Feature: Requistion
     And  I switch to the user with the next Pending Action in the Route Log for the Requisition document
     And  I view the Requisition document on my action list
     And  I set the added account percent to 50
-    And  I add these Accounting Lines to Item #1 on the Requisition document with:
+    And  I add these Accounting Lines to Item #1 on the Requisition document:
       | chart_code | account_number       | object_code | percent |
       | Default    | 1271001              | 6570        | 50     |
     And  I calculate my Requisition document

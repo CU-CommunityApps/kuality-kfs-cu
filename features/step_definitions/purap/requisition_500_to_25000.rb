@@ -91,15 +91,11 @@ And /^the Requisition status is '(.*)'$/ do |req_status|
 end
 
 And /^I view the (.*) document on my action list$/ do |document|
-  sleep 10 #debug
-
   visit(MainPage).action_list
   on ActionList do |page|
     #sort the date
     # if previous user already clicked this sort, then action list for next user will be sorted with 'Date created'.  So, add this 'unless' check
-    sleep 10 #debug
     page.sort_results_by('Date Created') unless page.result_item(document_object_for(document).document_id).exists?
-    sleep 10 #debug
 
     page.result_item(document_object_for(document).document_id).wait_until_present
     page.open_item(document_object_for(document).document_id)
@@ -114,14 +110,11 @@ And /^I view the (.*) document on my action list$/ do |document|
 end
 
 And /^I view the Requisition document from the Requisitions search$/ do
-    sleep 10 #debug
   visit(MainPage).requisitions
   on DocumentSearch do |page|
     page.requisition_num.fit @requisition_id unless @requisition_id.nil?
-    sleep 10 #debug
     page.search
     page.open_item(@requisition.document_id)
-    sleep 10 #debug
   end
   on(RequisitionPage).expand_all
 
@@ -148,9 +141,7 @@ end
 
 And /^the View Related Documents Tab PO Status displays$/ do
   on RequisitionPage do |page|
-    sleep 5 #debug
     page.expand_all
-    sleep 5 #debug
     @purchase_order_number = page.purchase_order_number
     # verify unmasked and 'UNAPPROVED'
     page.purchase_order_number.should_not include '*****' # unmasked
@@ -159,7 +150,6 @@ And /^the View Related Documents Tab PO Status displays$/ do
     end
     page.purchase_order_number_link
 
-    sleep 5 #debug
     @purchase_order = create PurchaseOrderObject
   end
 end
@@ -258,9 +248,7 @@ Then /^in Pending Action Requests an FYI is sent to FO and Initiator$/ do
     # TODO : it looks like there is no reload button when open PO with final status.  so comment it out for now.  need further check
     #Watir::Wait::TimeoutError: timed out after 30 seconds, waiting for {:class=>"globalbuttons", :title=>"reload", :tag_name=>"button"} to become present    page.reload # Sometimes the pending table doesn't show up immediately.
     #page.headerinfo_table.wait_until_present
-    sleep 10 #debug
     page.expand_all
-    sleep 10 #debug
     page.refresh_route_log # Sometimes the pending table doesn't show up immediately.
     page.show_pending_action_requests if page.pending_action_requests_hidden?
     fyi_initiator = 0
@@ -491,9 +479,7 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
   while true && x < 10
     new_user = ''
     on(page_class_for(document)) do |page|
-      sleep 10 #debug
       page.expand_all
-      sleep 10 #debug
       if (page.document_status != 'FINAL')
         (0..page.pnd_act_req_table.rows.length - 3).each do |i|
           idx = i + 1
@@ -567,9 +553,7 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
 end
 
 And /^During Approval of the (.*) document the Financial Officer adds a second line item with:$/ do |document, table|
-  sleep 5 #debug
   step "I view the Requisition document from the Requisitions search"
-  sleep 5 #debug
   step 'I switch to the user with the next Pending Action in the Route Log for the Requisition document'
   step "I view the Requisition document on my action list"
   on RequisitionPage do |page|
@@ -595,9 +579,7 @@ And /^During Approval of the (.*) document the Financial Officer adds a second l
 end
 
 And /^During Approval of the Purchase Order Amendment the Financial Officer adds a line item$/ do
-  sleep 5 #debug
   step "I view the Requisition document from the Requisitions search"
-  sleep 5 #debug
   step 'I switch to the user with the next Pending Action in the Route Log for the Requisition document'
   step 'I open the Purchase Order Amendment on the Requisition document'
   step 'I switch to the user with the next Pending Action in the Route Log for the Purchase Order document'
@@ -612,10 +594,8 @@ And /^During Approval of the Purchase Order Amendment the Financial Officer adds
 
     page.old_percent.fit '50'
     page.old_amount.fit ''
-    sleep 10 #debug
 
     page.add_account
-    sleep 10 #debug
     page.calculate
     sleep 2
     page.approve
@@ -626,11 +606,7 @@ And /^I open the Purchase Order Amendment on the Requisition document$/ do
   step "I view the Requisition document"
   on RequisitionPage do |page|
     page.expand_all
-    sleep 10 #debug
     @purchase_order_amendment_id = page.purchase_order_amendment_value
     page.purchase_order_amendment
   end
-
-  sleep 10 #debug
-
 end
