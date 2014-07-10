@@ -3,7 +3,14 @@ And /^I (#{SubAccountPage::available_buttons}) a Sub-Account document$/ do |butt
 end
 
 And /^I Create a Sub-Account with Sub-Account Type CS$/ do
-  @sub_account = create SubAccountObject, type_code: 'CS', press: :save
+  account_info = get_kuali_business_object('KFS-COA','Account','active=Y&accountExpirationDate=NULL')
+  account_number = account_info['accountNumber'][0].to_s
+  options = {
+      account_number: account_number,
+      type_code:      'CS',
+      press:          :save
+  }
+  @sub_account = create SubAccountObject, options
 end
 
 When /^I tab away from the Account Number field$/ do
@@ -26,6 +33,7 @@ end
 And /^I am logged in as the FO of the Sub-Account$/ do
   sleep(1)
   account_info = get_kuali_business_object('KFS-COA','Account','accountNumber=' + @sub_account.account_number)
+  puts account_info
   fiscal_officer_principal_name = account_info['accountFiscalOfficerUser.principalName'][0].to_s
   step "I am logged in as \"#{fiscal_officer_principal_name}\""
   @user_id = fiscal_officer_principal_name
