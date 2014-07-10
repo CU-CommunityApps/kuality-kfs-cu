@@ -98,8 +98,6 @@ And /^I view the (.*) document on my action list$/ do |document|
     #sort the date
     # if previous user already clicked this sort, then action list for next user will be sorted with 'Date created'.  So, add this 'unless' check
     sleep 10 #debug
-    puts "doc id is:"
-    puts document_object_for(document).document_id
     page.sort_results_by('Date Created') unless page.result_item(document_object_for(document).document_id).exists?
     sleep 10 #debug
 
@@ -119,8 +117,6 @@ And /^I view the Requisition document from the Requisitions search$/ do
     sleep 10 #debug
   visit(MainPage).requisitions
   on DocumentSearch do |page|
-    puts "Requisition id is #{@requisition_id}"
-    puts "Document ID is: #{@requisition.document_id}"
     page.requisition_num.fit @requisition_id unless @requisition_id.nil?
     sleep 10 #debug
     page.search
