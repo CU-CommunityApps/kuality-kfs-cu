@@ -26,7 +26,7 @@ Feature: Budget Adjustment
     When  I open the Budget Adjustment document page
     Then  I verify that Chart Value defaults to IT
 
-  @KFSQA-628 @BA @E2E @cornell @hare @wip
+  @KFSQA-628 @BA @E2E @cornell @hare
   Scenario: Budget Adjustment routing and approval by From and To FO
     Given I am logged in as a KFS User for the BA document
     And   I submit a balanced Budget Adjustment document
