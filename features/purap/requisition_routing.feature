@@ -6,10 +6,17 @@ Feature: Requisition routing testing
 
   @wip @KFSQA-865 @PURAP @REQS @ESHOP @PREQS @routing
   Scenario: Create ESHOP order 500 and one for 1500
-    Given I INITIATE AN ESHOP ORDER
-    Then the FO is not in the Route Log
-    And I EXTRACT THE REQS TO SQ
-    When I INITIATE A PREQS
+    Given I am logged in as an e-SHOP User
+    When  I go to the e-SHOP main page
+    And   I search for an e-SHOP item with a Non-Sensitive Commodity Code
+    And   I add e-SHOP items to my cart until the cart total reaches the Business to Business Total Amount For Automatic Purchase Order limit
+    And   I view my e-SHOP cart
+    And   I add a note to my e-SHOP cart
+#    And   I submit my e-SHOP cart
+#    Given I INITIATE AN ESHOP ORDER
+    Then the Fiscal Officer is not in the Route Log
+    And I extract the Requisition document to SciQuest
+    When I initiate a PREQS
     And The PREQ requires Positive Approval by the FO
 
   @wip @KFSQA-865 @PURAP @REQS @ESHOP @PREQS @routing
@@ -17,8 +24,8 @@ Feature: Requisition routing testing
     Given I INITIATE AN ESHOP ORDER
     And I Login as an eShop Super User
     And Items total greater than less than B2B_TOTAL_AMOUNT_ FOR_AUTO_PO and less than B2B_TOTAL_AMOUNT_ FOR_SUPER_USER_AUTO_PO
-    And the FO is not in the Route Log
-    And I EXTRACT THE REQS TO SQ
+    Then the Fiscal Officer is not in the Route Log
+    And I extract the Requisition document to SciQuest
     When I INITIATE A PREQS
     And The PREQ requires Positive Approval by the FO
 
@@ -26,8 +33,8 @@ Feature: Requisition routing testing
   Scenario: Requisition routing test with commodity review and make sure the PO does route to commodity reviewer.  Do a negative test
     Given I INITIATE AN ESHOP ORDER
     And I Order a Sensitive Item
-    And the FO is not in the Route Log
-    And I EXTRACT THE REQS TO SQ
+    Then the Fiscal Officer is not in the Route Log
+    And I extract the Requisition document to SciQuest
     When I INITIATE A PREQS
     And The PREQ requires Positive Approval by the FO
 
@@ -37,9 +44,9 @@ Feature: Requisition routing testing
     And I Login as an eShop Super User
     And I Order a Sensitive Item
     And Items Total GT less than B2B_TOTAL_AMOUNT_ FOR_AUTO_PO and less than B2B_TOTAL_AMOUNT_ FOR_SUPER_USER_AUTO_PO
-    And the FO is not in the Route Log
+    Then the Fiscal Officer is not in the Route Log
     And The REQS is approved by Animal Review
-    And I EXTRACT THE REQS TO SQ
+    And I extract the Requisition document to SciQuest
     When I INITIATE A PREQS
     And The PREQ requires Positive Approval by the FO
 
@@ -47,7 +54,7 @@ Feature: Requisition routing testing
   Scenario: Requisition routing test with a regular orders of the same amounts.
     Given I INITIATE AN ESHOP ORDER
     And the Items are less than 0
-    And the FO is not in the Route Log
-    And I EXTRACT THE REQS TO SQ
+    Then the Fiscal Officer is not in the Route Log
+    And I extract the Requisition document to SciQuest
     When I INITIATE A PREQS
     And The PREQ requires Positive Approval by the FO
