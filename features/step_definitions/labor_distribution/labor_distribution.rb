@@ -2,13 +2,13 @@ When /^I start an empty Benefit Expense Transfer document$/ do
   @benefit_expense_transfer = create BenefitExpenseTransferObject
 end
 
-And /^I select employee '(.*)'$/ do |emp|
+Given /^I select employee (\d+)$/ do|emp|
   on SalaryExpenseTransferPage do |page|
-    page.empl_id.fit ''
+    page.employee_id.fit ''
     page.search_empl_id
   end
   on PersonLookup do |search|
-    search.principal_name.fit emp
+    search.employee_id.fit emp
     search.search
     search.return_value(emp)
   end
@@ -16,55 +16,90 @@ And /^I select employee '(.*)'$/ do |emp|
 end
 
 And /^I search and retrieve Ledger Balance entry$/ do
-
-  on(LaborDistributionPage).import_search
+  on(LaborDistributionPage) do |ldlookup|
+    #look back to previous fiscal year at start of new fiscal year because we do not have labor data yet
+    if fiscal_period_conversion(right_now[:MON]).to_i < 2
+      previous_fiscal_year = ldlookup.fiscal_year.value.to_i - 1
+      ldlookup.fiscal_year.set previous_fiscal_year
+    end
+    ldlookup.import_search
+  end
   on LedgerBalanceLookupPage do |lblookup|
+    #TODO Change to select first month with a positive balance.  Currently, first month regardless of balance is being selected.
     lblookup.check_first_month
     lblookup.return_selected
   end
 end
 
-And /^I copy source account to target account$/ do
-  on(BenefitExpenseTransferPage).copy_source_accounting_line
+And /^I copy (.*) source account to target account$/ do |document|
+  target_page = page_class_for(document)
+  on(target_page).copy_source_accounting_line
 end
 
-And /^I change target account number to '(.*)'$/ do |account_number|
-  on(BenefitExpenseTransferPage).update_target_account_number.fit account_number
+And /^I change (.*) target account number to '(.*)'$/ do |document, account_number|
+  target_page = page_class_for(document)
+  on(target_page).update_target_account_number.fit account_number
 end
+
+And /^I transfer the Salary to another Account in my Organization$/ do |table|
+  arguments = table.rows_hash
+  @to_account = arguments['To Account']
+
+  # do not continue, required parameters not sent
+  fail ArgumentError, 'Required parameter "To Account" was not specified.' if @to_account.nil?
+
+  step "And I change Salary Expense Transfer target account number to '#@to_account'"
+end
+
+And /^I transfer the Salary between accounts with different Account Types$/ do |table|
+  arguments = table.rows_hash
+  @to_account_different_types = arguments['To Account']
+
+  # do not continue, required parameters not sent
+  fail ArgumentError, 'Required parameter To Account was not specified.' if @to_account_different_types.nil?
+
+  step "I change Salary Expense Transfer target account number to '#@to_account_different_types'"
+end
+
+And /^I transfer the Salary to an Account with a different Rate but the same Account Type and Organization$/ do |table|
+  # fedrate (FD) vs nonfedrate (NF)
+  arguments = table.rows_hash
+  @to_account_different_rates = arguments['To Account']
+
+  # do not continue, required parameters not sent
+  fail ArgumentError, 'Required parameter To Account was not specified.' if @to_account_different_rates.nil?
+
+  step "I change Salary Expense Transfer target account number to '#@to_account_different_rates'"
+end
+
 
 And /^I change target sub account number to '(.*)'$/ do |sub_account_number|
   on(BenefitExpenseTransferPage).update_target_sub_account_code.fit sub_account_number
 end
 
-When /^I start an empty Salary Expense Transfer document$/ do
+Given /^I start an empty Salary Expense Transfer document$/ do
   @salary_expense_transfer = create SalaryExpenseTransferObject
 end
 
-Given  /^I CREATE A SALARY EXPENSE TRANSFER with following:$/ do |table|
-  arguments = table.rows_hash
-  user_name = arguments['Employee']
-  to_account_number = arguments['To Account']
-  steps %Q{ Given I Login as a Salary Transfer Initiator
-            And   I start an empty Salary Expense Transfer document
-  }
-  if !arguments['Employee'].nil?
-      step "I select employee '#{user_name}'"
-  end
-  steps %Q{ And   I search and retrieve Ledger Balance entry
-            And   I copy source account to target account
-  }
-  if !arguments['To Account'].nil?
-     step "I change target account number to '#{to_account_number}'"
-  end
-  steps %Q{ And   I submit the Salary Expense Transfer document
-            And   the Salary Expense Transfer document goes to ENROUTE
-            And   I route the Salary Expense Transfer document to final
-            Then  the Salary Expense Transfer document goes to FINAL
-      }
 
+Given  /^I create a Salary Expense Transfer with following:$/ do |table|
+  arguments = table.rows_hash
+  @user_principal = arguments['User Name']
+  @employee_id = arguments['Employee']
+
+  # do not continue, required parameters not sent
+  fail ArgumentError, 'One or more required parameters were not specified.'if @user_principal.nil? || @employee_id.nil?
+
+  step "I am User #@user_principal who is a Salary Transfer Initiator"
+
+  step "I start an empty Salary Expense Transfer document"
+  step "I select employee #@employee_id"
+
+  step "I search and retrieve Ledger Balance entry"
+  step "I copy Salary Expense Transfer source account to target account"
 end
 
-Given  /^I CREATE A BENEFIT EXPENSE TRANSFER with following:$/ do |table|
+Given  /^I create a Benefit Expense Transfer with following:$/ do |table|
   arguments = table.rows_hash
   steps %Q{ Given I Login as a Benefit Transfer Initiator
             And   I start an empty Benefit Expense Transfer document
@@ -73,11 +108,11 @@ Given  /^I CREATE A BENEFIT EXPENSE TRANSFER with following:$/ do |table|
     step "I set transfer from account number to '#{arguments['From Account']}' on Benefit Expense Transfer document"
   end
   steps %Q{ And   I search and retrieve Ledger Balance entry
-            And   I copy source account to target account
+            And   I copy Benefit Expense Transfer source account to target account
   }
 
   if !arguments['To Account'].nil?
-    step "I change target account number to '#{arguments['To Account']}'"
+    step "I change Benefit Expense Transfer target account number to '#{arguments['To Account']}'"
   end
   steps %Q{ And   I submit the Benefit Expense Transfer document
             And   the Benefit Expense Transfer document goes to ENROUTE
@@ -91,7 +126,7 @@ And /^I set transfer from account number to '(.*)' on Benefit Expense Transfer d
   on(BenefitExpenseTransferPage).account_number.fit account_number
 end
 
-Then /^I RUN THE NIGHTLY LABOR BATCH PROCESSES$/ do
+Then /^I run the nightly Labor batch process$/ do
   steps %Q{
     Given I am logged in as a KFS Operations
     And I run the Labor Enterprise Feed Process
@@ -132,4 +167,27 @@ Then /^the labor ledger pending entry for employee '(.*)' is empty$/ do |empl_id
     page.frm.divs(id: 'view_div')[0].text.should include 'No values match this search.'
   end
 
+end
+
+And /^a Salary Expense Transfer initiator outside the organization cannot view the document$/ do |table|
+  arguments = table.rows_hash
+  @user_outside_organization = arguments['User Name']
+
+  # do not continue, required parameters not sent
+  fail ArgumentError, 'Required parameter User Name was not specified.' if @user_outside_organization.nil?
+
+  step "I am logged in as \"#{@user_outside_organization}\""
+  step "I open the document with ID #{@remembered_document_id}"
+  step "I should get an Authorization Exception Report error"
+end
+
+And /^a Salary Expense Transfer initiator inside the organization can view the document$/ do |table|
+  arguments = table.rows_hash
+  @user_inside_organization = arguments['User Name']
+
+  # do not continue, required parameters not send
+  fail ArgumentError, 'Required parameter User Name was not specified.' if @user_inside_organization.nil?
+
+  step "I am logged in as \"#{@user_inside_organization}\""
+  step "I open the document with ID #{@remembered_document_id}"
 end

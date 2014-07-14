@@ -1,4 +1,5 @@
-Given  /^I initiate a Requisition document with the following:$/ do |table|
+Given  /^I (initiate|submit) a Requisition document with the following:$/ do |action, table|
+
   arguments = table.rows_hash
 
   step 'I login as a KFS user to create an REQS'
@@ -65,11 +66,17 @@ Given  /^I initiate a Requisition document with the following:$/ do |table|
     And  I calculate my Requisition document
     And  I submit the Requisition document
     Then the Requisition document goes to ENROUTE
-
-    And  I switch to the user with the next Pending Action in the Route Log to approve Requisition document to Final
-    Then the Requisition document goes to FINAL
-    And  users outside the Route Log can not search and retrieve the REQS
   }
+
+  case action
+    when 'initiate'
+      steps %q{
+        And  I switch to the user with the next Pending Action in the Route Log to approve Requisition document to Final
+        Then the Requisition document goes to FINAL
+    }
+    when 'submit'
+    warn 'Submitting Requisition document not taking to final'
+  end
 end
 
 And /^users outside the Route Log can not search and retrieve the REQS$/ do
@@ -245,6 +252,8 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
         (@org_review_users & po_reviewer_100k).length.should >= 1
         @org_review_users.should include po_reviewer_500k
         @org_review_users.should include po_reviewer_5m
+      else
+        pending "Warning: Level not handled for Purchase Order, the level was #{@level}"
     end
   elsif document == 'Requisition' || document == 'Payment Request'
     case @level
@@ -254,6 +263,8 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
        (@org_review_users & reqs_org_reviewers_level_2).length.should >= 1
      when 3
        (@org_review_users & reqs_org_reviewers_level_2).length.should >= 1
+      else
+        pending "Warning: Level not handled for the Requisition, the level was #{@level}"
     end
   end
 
@@ -292,7 +303,15 @@ When /^I initiate a Purchase Order Amendment document$/ do
   step 'I initiate a Purchase Order Amendment document with the following:', table(%q{| Default |  |})
 end
 
-When /^I initiate a Purchase Order Amendment document with the following:$/ do |table|
+And /^I submit a Purchase Order Amendment document$/ do
+  step 'I submit a Purchase Order Amendment document with the following:',
+       table(%Q{
+         | All | Default |
+       })
+end
+
+
+When /^I (initiate|submit) a Purchase Order Amendment document with the following:$/ do |action, table|
   arguments = table.rows_hash
 
   step "I am logged in as \"#{@requisition_initiator}\""
@@ -317,8 +336,16 @@ When /^I initiate a Purchase Order Amendment document with the following:$/ do |
 
   step 'I submit the Purchase Order Amendment document'
   step 'the Purchase Order Amendment document goes to ENROUTE'
-  step 'I switch to the user with the next Pending Action in the Route Log to approve Purchase Order Amendment document to Final'
-  step 'the Purchase Order Amendment document goes to FINAL'
+
+  case action
+    when 'initiate'
+      steps %q{
+        Given I switch to the user with the next Pending Action in the Route Log to approve Purchase Order Amendment document to Final
+        Then  the Purchase Order Amendment document goes to FINAL
+    }
+    when 'submit'
+      warn 'Just submitting Purchase Order Amendment document, not taking POA document to final'
+  end
 
 end
 
@@ -502,6 +529,14 @@ end
 
 And /^I add a random address to the Delivery tab on the Requisition document$/ do
   @requisition.add_random_building_address
+end
+
+And /^I set the added account percent to 50$/ do
+  on RequisitionPage do |page|
+    page.expand_all
+    page.added_percent.fit '50'
+    page.added_amount.set ' '
+  end
 end
 
 And /^I add a random Requestor Phone number to the Requisition document$/ do

@@ -62,6 +62,7 @@ end
 
 And /^the Template Accounting Line Description for (.*) equals the General Ledger entry$/ do |document|
   # This step requires that the CSV file content is placed into an array and that the CSV file was the last one loaded
+  @imported_file.any?.should
   @imported_file.each { |line| line.collect{|c| c.nil? ? c : c.upcase}.should include on(AccountingLine).result_source_line_description.upcase }
 end
 
