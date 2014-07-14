@@ -52,8 +52,7 @@ Feature: Requistion
     And  I calculate my Requisition document
     And  I approve the Requisition document
     When I extract the Requisition document to SciQuest
-    And  I submit a Purchase Order Amendment document with the following:
-      | All | Default |
+    And  I submit a Purchase Order Amendment document
     And  I view the Requisition document from the Requisitions search
     And  I open the Purchase Order Amendment on the Requisition document
     Then the next pending action for the Requisition document is an APPROVE from a  KFS-SYS Fiscal Officer IT

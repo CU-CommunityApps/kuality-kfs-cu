@@ -306,6 +306,14 @@ When /^I initiate a Purchase Order Amendment document$/ do
   step 'I initiate a Purchase Order Amendment document with the following:', table(%q{| Default |  |})
 end
 
+And /^I submit a Purchase Order Amendment document$/ do
+  step 'I submit a Purchase Order Amendment document with the following:',
+       table(%Q{
+         | All | Default |
+       })
+end
+
+
 When /^I (initiate|submit) a Purchase Order Amendment document with the following:$/ do |action, table|
   arguments = table.rows_hash
 
@@ -339,7 +347,7 @@ When /^I (initiate|submit) a Purchase Order Amendment document with the followin
         Then  the Purchase Order Amendment document goes to FINAL
     }
     when 'submit'
-      pending 'Just submitting Purchase Order Amendment document, not taking POA document to final'
+      warn 'Just submitting Purchase Order Amendment document, not taking POA document to final'
   end
 
 end
