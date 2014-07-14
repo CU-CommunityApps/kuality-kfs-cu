@@ -75,7 +75,6 @@ And /^I view the (.*) document on my action list$/ do |document|
   if document.eql?('Requisition')
     on RequisitionPage do |page|
       @requisition.requisition_id = page.requisition_id
-      #@requisition_id = page.requisition_id
       @requisition_initiator = page.initiator
     end
   end
@@ -95,7 +94,6 @@ And /^I (submit|close|cancel) a Contract Manager Assignment of '(\d+)' for the R
   visit(MainPage).contract_manager_assignment
   on ContractManagerAssignmentPage do |page|
     page.set_contract_manager(@requisition.requisition_id, contract_manager_number)
-    #page.set_contract_manager(@requisition_id, contract_manager_number)
     page.send(btn)
   end
   sleep 5
@@ -106,7 +104,6 @@ And /^I retrieve the Requisition document$/ do
   on DocumentSearch do |page|
     page.document_type.set 'REQS'
     page.requisition_num.fit @requisition.requisition_id
-    #page.requisition_num.fit @requisition_id
     page.search
     page.open_item(@requisition.document_id)
   end
@@ -116,7 +113,6 @@ And /^the View Related Documents Tab PO Status displays$/ do
   on RequisitionPage do |page|
     page.show_related_documents
     page.show_purchase_order
-    @purchase_order_number = page.purchase_order_number
     # verify unmasked and 'UNAPPROVED'
     page.purchase_order_number.should_not include '*****' # unmasked
     if !@auto_gen_po.nil? && !@auto_gen_po
@@ -124,8 +120,11 @@ And /^the View Related Documents Tab PO Status displays$/ do
     end
     page.purchase_order_number_link
 
-    sleep 10
-    @purchase_order = create PurchaseOrderObject
+  end
+  sleep 10
+  on PurchaseOrderPage do |page|
+    @purchase_order = make PurchaseOrderObject, purchase_order_number: page.purchase_order_number,
+                                                document_id: page.document_id # FIXME: This should really use #absorb! to pull in existing data
   end
 end
 
@@ -280,7 +279,7 @@ end
 And /^I fill out the PREQ initiation page and continue$/ do
   visit(MainPage).payment_request
   on PaymentRequestInitiationPage do |page|
-    page.purchase_order.fit        @purchase_order_number
+    page.purchase_order.fit        @purchase_order.purchase_order_number
     page.invoice_date.fit          yesterday[:date_w_slashes]
     page.invoice_number.fit        rand(100000)
     page.vendor_invoice_amount.fit @requisition.items.first.quantity.delete(',').to_f * @requisition.items.first.unit_cost.to_i
@@ -323,18 +322,12 @@ And /^I calculate PREQ$/ do
 end
 
 And /^I view the Purchase Order document via e-SHOP$/ do
-  on(EShopPage).goto_doc_search
-  on EShopAdvancedDocSearchPage do |page|
-    page.search_doc_type.fit 'Purchase Orders'
-    page.po_id.fit      @purchase_order_number
-    page.date_range.fit 'Today'
-    sleep 2
-    page.go_button.click
-  end
+  @purchase_order.view_via 'e-SHOP'
 end
 
 And /^the Document Status displayed '(\w+)'$/ do |doc_status|
-  on(EShopAdvancedDocSearchPage).return_po_value @purchase_order_number
+  on(EShopAdvancedDocSearchPage).return_po_value @purchase_order.purchase_order_number
+  on(EShopSummaryPage).results_column.text.should_not include 'No Documents found'
   on(EShopSummaryPage).doc_summary[1].text.should include "Workflow  #{doc_status}"
 end
 

@@ -95,8 +95,12 @@ And /^I extract the Requisition document to SciQuest$/ do
   step 'I check Related Documents Tab on Requisition Document'
 
   if !@auto_gen_po.nil? && !@auto_gen_po
-   step 'I assign Contract Manager and approve Purchase Order Document to FINAL'
+    step 'I assign Contract Manager and approve Purchase Order Document to FINAL'
   end
+
+  puts "AGP?: #{@auto_gen_po}"
+  puts @requisition.inspect
+  puts @purchase_order.inspect
 
   step 'I am logged in as "db18"' # FIXME: This should log in using a role instead of a netid
   step 'I visit the "e-SHOP" page'
@@ -121,6 +125,7 @@ And /^I assign Contract Manager and approve Purchase Order Document to FINAL$/ d
 
   step 'I enter a Vendor Choice of \'Lowest Price\''
   step 'I calculate and verify the GLPE tab'
+  step 'I add a random Delivery Phone number to the Purchase Order document'
   step 'I submit the Purchase Order document'
 
   step 'the Purchase Order document goes to one of the following statuses:',
