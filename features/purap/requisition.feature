@@ -12,7 +12,7 @@ Feature: Requistion
     When  I route the Requisition document to final
     Then  Award Review is not in the Requisition document workflow history
 
-  @wip @KFSQA-864 @REQS @PREQ @Routing @PDP @POA
+  @wip @KFSQA-864 @REQS @PREQ @Routing @PDP @POA @coral
   Scenario: Financial Officer can add other accounts to REQ and document route to another FO - Implement KFSMI-8165 Test 1
   Given I submit a Requisition document with the following:
     | Vendor Type        | NonB2B    |
@@ -53,7 +53,7 @@ Feature: Requistion
     And  I approve the Requisition document
     When I extract the Requisition document to SciQuest
     And  I submit a Purchase Order Amendment document with the following:
-      | Default |      |
+      | All | Default |
     And  I view the Requisition document from the Requisitions search
     And  I open the Purchase Order Amendment on the Requisition document
     Then the next pending action for the Requisition document is an APPROVE from a  KFS-SYS Fiscal Officer IT

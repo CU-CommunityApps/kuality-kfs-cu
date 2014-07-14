@@ -1,4 +1,4 @@
-Given  /^I (initiate|submit) a Requisition document with the following:$/ do |type, table|
+Given  /^I (initiate|submit) a Requisition document with the following:$/ do |action, table|
 
   arguments = table.rows_hash
 
@@ -68,14 +68,14 @@ Given  /^I (initiate|submit) a Requisition document with the following:$/ do |ty
     Then the Requisition document goes to ENROUTE
   }
 
-  case type
+  case action
     when 'initiate'
       steps %q{
         And  I switch to the user with the next Pending Action in the Route Log to approve Requisition document to Final
         Then the Requisition document goes to FINAL
     }
     when 'submit'
-    puts 'just submitting Requisition document not taking to final'
+    warn 'Submitting Requisition document not taking to final'
   end
 end
 
@@ -256,7 +256,7 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
         @org_review_users.should include po_reviewer_500k
         @org_review_users.should include po_reviewer_5m
       else
-        warn "Warning: Level not handled for Purchase Order, the level was #{@level}"
+        pending "Warning: Level not handled for Purchase Order, the level was #{@level}"
     end
   elsif document == 'Requisition' || document == 'Payment Request'
     case @level
@@ -267,7 +267,7 @@ Then /^the (.*) document routes to the correct individuals based on the org revi
      when 3
        (@org_review_users & reqs_org_reviewers_level_2).length.should >= 1
       else
-        warn "Warning: Level not handled for the Requisition, the level was #{@level}"
+        pending "Warning: Level not handled for the Requisition, the level was #{@level}"
     end
   end
 
@@ -306,7 +306,7 @@ When /^I initiate a Purchase Order Amendment document$/ do
   step 'I initiate a Purchase Order Amendment document with the following:', table(%q{| Default |  |})
 end
 
-When /^I (initiate|submit) a Purchase Order Amendment document with the following:$/ do |type, table|
+When /^I (initiate|submit) a Purchase Order Amendment document with the following:$/ do |action, table|
   arguments = table.rows_hash
 
   step "I am logged in as \"#{@requisition_initiator}\""
@@ -332,14 +332,14 @@ When /^I (initiate|submit) a Purchase Order Amendment document with the followin
   step 'I submit the Purchase Order Amendment document'
   step 'the Purchase Order Amendment document goes to ENROUTE'
 
-  case type
+  case action
     when 'initiate'
       steps %q{
         Given I switch to the user with the next Pending Action in the Route Log to approve Purchase Order Amendment document to Final
         Then  the Purchase Order Amendment document goes to FINAL
     }
     when 'submit'
-      puts 'Just submitting Purchase Order Amendment document, not taking POA document to final'
+      pending 'Just submitting Purchase Order Amendment document, not taking POA document to final'
   end
 
 end

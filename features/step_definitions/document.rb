@@ -116,3 +116,7 @@ end
 And /^I expand all tabs$/ do
   on(KFSBasePage).expand_all
 end
+
+And /^I select yes to the question$/ do
+  on(YesOrNoPage).yes
+end
