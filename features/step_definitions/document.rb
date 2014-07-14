@@ -29,6 +29,8 @@ When /^I (#{BasePage::available_buttons}) the (.*) document$/ do |button, docume
   document_object_for(document).send(button)
   on(YesOrNoPage).yes if button == 'cancel'
   sleep 10 if (button == 'blanket approve' || button == 'approve' || 'submit')
+
+  @requisition_id = on(RequisitionPage).requisition_id if document == 'Requisition' && button == 'submit'
 end
 
 When /^I (#{BasePage::available_buttons}) the (.*) document if it is not already FINAL/ do |button, document|
@@ -113,4 +115,8 @@ end
 
 And /^I expand all tabs$/ do
   on(KFSBasePage).expand_all
+end
+
+And /^I select yes to the question$/ do
+  on(YesOrNoPage).yes
 end
