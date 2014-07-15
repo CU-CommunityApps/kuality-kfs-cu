@@ -109,6 +109,8 @@ And /^I extract the Requisition document to SciQuest$/ do
   puts @requisition.inspect
   puts @purchase_order.inspect
 
+  sleep 10 # We'll give a little time for this to process to SciQuest
+
   step 'I am logged in as "db18"' # FIXME: This should log in using a role instead of a netid
   step 'I visit the "e-SHOP" page'
   step 'I view the Purchase Order document via e-SHOP'

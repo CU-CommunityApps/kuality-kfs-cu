@@ -32,7 +32,7 @@ Feature: GLPE validation tests for Purchase Orders
    When  I view the Requisition document
    Then  On the Purchase Order the GLPE displays "There are currently no General Ledger Pending Entries associated with this Transaction Processing document."
 
-  @KFSQA-880 @PO @coral @nightly-jobs
+  @KFSQA-880 @PO @coral @nightly-jobs @wip
   Scenario: Encumbrances incorrect for a PO and PO Void done on the same day 2
     Given I initiate a Requisition document with the following:
       | Vendor Type        | NonB2B    |

@@ -69,8 +69,8 @@ When /^I view my e\-SHOP cart$/ do
 end
 
 Given /^I initiate an e\-SHOP order$/ do
-  #step 'I am logged in as an e-SHOP User'
-  step 'I am logged in as an e-SHOP User who can initiate a Requisition document'
+  step 'I am logged in as an e-SHOP User'
+  #step 'I am logged in as an e-SHOP User who can initiate a Requisition document'
   step 'I go to the e-SHOP main page'
   step 'I search for an e-SHOP item with a Non-Sensitive Commodity Code'
   step 'I add e-SHOP items to my cart until the cart total reaches the Business to Business Total Amount For Automatic Purchase Order limit'
@@ -84,6 +84,9 @@ Given /^I initiate an e\-SHOP order$/ do
             | chart_code | account_number       | object_code | amount |
             | Default    | Unrestricted Account | Expenditure | 10     |
           })
+  step 'I add an attachment to the Requisition document'
+  step 'I add a file attachment to the Notes and Attachment Tab of the Requisition document'
+  #step 'I enter Delivery Instructions and Notes to Vendor'
   step 'I calculate my Requisition document'
   step 'I submit the Requisition document'
   step 'the document should have no errors'

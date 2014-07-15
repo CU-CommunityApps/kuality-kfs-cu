@@ -353,8 +353,10 @@ end
 
 And /^the Document Status displayed '(\w+)'$/ do |doc_status|
   on(EShopAdvancedDocSearchPage).return_po_value @purchase_order.purchase_order_number
-  on(EShopSummaryPage).results_column.text.should_not include 'No Documents found'
-  on(EShopSummaryPage).doc_summary[1].text.should include "Workflow  #{doc_status}"
+  on EShopSummaryPage do |page|
+    page.results_column.text.should_not include 'No Documents found' if page.results_column.present?
+    page.doc_summary[1].text.should include "Workflow  #{doc_status}"
+  end
 end
 
 And /^the Delivery Instructions displayed equals what came from the PO$/ do
@@ -419,12 +421,15 @@ And /^I add an Attachment to the Requisition document$/ do
 end
 
 And /^I enter Delivery Instructions and Notes to Vendor$/ do
-  on RequisitionPage do |page|
-    page.vendor_notes.fit random_alphanums(40, 'AFT-ToVendorNote')
-    page.delivery_instructions.fit random_alphanums(40, 'AFT-DelvInst')
-    @requisition.delivery_instructions = page.delivery_instructions.value
-    @requisition.vendor_notes = page.vendor_notes.value
-  end
+  # FIXME: This is a prime example of a step that could use #edit
+  # on RequisitionPage do |page|
+  #   page.vendor_notes.fit random_alphanums(40, 'AFT-ToVendorNote')
+  #   page.delivery_instructions.fit random_alphanums(40, 'AFT-DelvInst')
+  #   @requisition.delivery_instructions = page.delivery_instructions.value
+  #   @requisition.vendor_notes = page.vendor_notes.value
+  # end
+  @requisition.edit vendor_notes:          random_alphanums(40, 'AFT-ToVendorNote'),
+                    delivery_instructions: random_alphanums(40, 'AFT-DelvInst')
 end
 
 When /^I visit the "(.*)" page$/  do   |go_to_page|
