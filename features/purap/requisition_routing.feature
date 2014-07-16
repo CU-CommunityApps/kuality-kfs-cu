@@ -22,47 +22,7 @@ Feature: Requisition routing testing
     Then the next pending action for the Payment Request document is an APPROVE from a  KFS-SYS Fiscal Officer IT
   Examples:
     | item type     | cart value |
-#    | Non-Sensitive |  50        |
+    | Non-Sensitive |  50        |
     | Non-Sensitive |  1500      |
-#    | Sensitive     |  50        |
-#    | Sensitive     |  1500      |
-
-#  @wip @KFSQA-865 @PURAP @REQS @ESHOP @PREQS @routing
-#  Scenario: Requisition routing test with commodity review and make sure the PO does route to commodity reviewer.
-#    Given  I create an e-SHOP Requisition document with a Sensitive item
-#    Given  I create an e-SHOP Requisition document with a Non-Sensitive item
-#    Then the Requisition document does not route to the Financial Officer
-#    When I take the e-SHOP Requisition document through SciQuest till the Payment Request document is ENROUTE
-#    Then the next pending action for the Payment Request document is an APPROVE from a  KFS-SYS Fiscal Officer IT
-
-  @wip @KFSQA-865 @PURAP @REQS @ESHOP @PREQS @routing
-  Scenario: Requisition routing the applicable role, verify approval not needed by the FO. PREQ requires positive approval.
-    Given I INITIATE AN ESHOP ORDER
-    And  I Login as an eShop Super User
-    And  Items total greater than B2B_TOTAL_AMOUNT_ FOR_AUTO_PO and less than B2B_TOTAL_AMOUNT_ FOR_SUPER_USER_AUTO_PO
-    Then the Requisition document does not route to the Financial Officer
-    And  I extract the Requisition document to SciQuest
-    And  I initiate a Payment Request document
-
-    And The PREQ requires Positive Approval by the FO
-
-  @wip @KFSQA-865 @PURAP @REQS @ESHOP @PREQS @routing
-  Scenario: Requisition routing test with commodity review and make sure the PO does route to commodity reviewer.  Do a negative test
-    Given I INITIATE AN ESHOP ORDER
-    And  I Login as an eShop Super User
-    And  I Order a Sensitive Item
-    And  Items Total GT less than B2B_TOTAL_AMOUNT_ FOR_AUTO_PO and less than B2B_TOTAL_AMOUNT_ FOR_SUPER_USER_AUTO_PO
-    Then the Requisition document does not route to the Financial Officer
-    And  The REQS is approved by Animal Review
-    And  I extract the Requisition document to SciQuest
-    And  I initiate a Payment Request document
-    And  The PREQ requires Positive Approval by the FO
-
-  @wip @KFSQA-865 @PURAP @REQS @ESHOP @PREQS @routing
-  Scenario: Requisition routing test with a regular orders of the same amounts.
-    Given I INITIATE AN ESHOP ORDER
-    And   the Items are less than 0
-    Then  the Requisition document does not route to the Financial Officer
-    And   I extract the Requisition document to SciQuest
-    And   I initiate a Payment Request document
-    And   The PREQ requires Positive Approval by the FO
+    | Sensitive     |  50        |
+    | Sensitive     |  1500      |

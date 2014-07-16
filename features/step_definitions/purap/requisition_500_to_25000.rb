@@ -305,11 +305,11 @@ And /^I fill out the PREQ initiation page and continue$/ do
     page.continue
   end
 
- sleep 120
-  on(YesOrNoPage) { |yonp| yonp.yes if yonp.yes_button.exists? }
-  sleep 10
+ # sleep 120
+ #  on(YesOrNoPage) { |yonp| yonp.yes if yonp.yes_button.exists? }
+ #  sleep 10
 
-  # on(PaymentRequestInitiationPage).description.wait_until_present(120)
+  on(PaymentRequestInitiationPage).description.wait_until_present(120)
 
   @payment_request = create PaymentRequestObject
 end
