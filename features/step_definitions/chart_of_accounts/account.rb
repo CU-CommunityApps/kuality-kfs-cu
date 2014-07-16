@@ -273,7 +273,6 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
       page.name.fit        @account.name
       page.chart_code.fit  @account.chart_code
       page.number.fit      @account.number
-      page.account_expiration_date.fit     ''
       page.supervisor_principal_name.fit @account.supervisor_principal_name
       page.indirect_cost_recovery_chart_of_accounts_code.fit @account.indirect_cost_recovery_chart_of_accounts_code unless @account.indirect_cost_recovery_chart_of_accounts_code.nil?
       page.indirect_cost_recovery_account_number.fit         @account.indirect_cost_recovery_account_number unless @account.indirect_cost_recovery_account_number.nil?
