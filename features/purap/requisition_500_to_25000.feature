@@ -58,7 +58,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
       | Item Commodity Code | 12142203 |
       | Item Catalog Number | 10101157 |
       | Item Description    | ANIM     |
-      | Account Number      | R589854  |
+      | Account Number      | 1093603  |
       | Object Code         | 6540     |
       | Percent             | 100      |
     And   I add an attachment to the Requisition document
