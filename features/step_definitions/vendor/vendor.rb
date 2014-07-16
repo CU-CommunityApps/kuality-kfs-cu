@@ -370,6 +370,7 @@ And /^I create a DV Vendor$/  do
                    ownership:                  'CORPORATION',
                    w9_received:                'Yes',
                    w9_received_date:           yesterday[:date_w_slashes],
+                   note_text:                  'here is a note',
                    initial_supplier_diversities: [{
                                                     type:                          'HUBZONE',
                                                     certification_expiration_date: tomorrow[:date_w_slashes]
@@ -398,9 +399,10 @@ And /^I can not view the Tax ID and Attachments on Vendor page$/ do
 end
 
 And /^I enter a default payment method (\w+) on Vendor Page$/ do |payment_method|
+  sleep 1
+  on(VendorPage).default_payment_method.fit payment_method
   # FIXME: Should probably use the VendorObject#edit method...
   @vendor.default_payment_method = payment_method
-  on(VendorPage).default_payment_method.fit payment_method
 end
 
 And /^the Address changes persist$/ do

@@ -117,7 +117,7 @@ Given /^I am logged in as a Tax Manager$/ do
 end
 
 Given /^I am logged in as a Disbursement Method Reviewer$/ do
-  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-FP', 'Disbursement Method Reviewer'))
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-SYS', 'Disbursement Method Reviewer'))
 end
 
 Given /^I login as a KFS user to create an REQS$/ do

@@ -14,7 +14,7 @@ class VendorObject
                 :insurance_requirements_complete, :insurance_requirement_indicator
 
   def extended_defaults
-    { w9_received_date: yesterday[:date_w_slashes] }.merge(default_supplier_diversities)
+    { default_payment_method: 'P - ACH/CHECK', w9_received_date: yesterday[:date_w_slashes] }.merge(default_supplier_diversities)
   end
 
   def fill_out_extended_attributes
