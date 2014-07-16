@@ -16,8 +16,8 @@ Feature: Vendor Edit
   @KFSQA-755 @cornell @slug @E2E @VendorEdit @wip
   Scenario: I want to edit a vendor with ownership type INDIVIDUAL
     Given   I am logged in as a Vendor Initiator
-    And     I edit a Vendor with Vendor Number 35495-0
-#    When    I edit a Vendor with Ownership Type ID
+#    And     I edit a Vendor with Vendor Number 35495-0
+    When    I edit a Vendor with Ownership Type ID
 #    Then    the Tax Number and Notes are Not Visible on Vendor page
 #    And     I change the Address Line 1 on Vendor Address tab
 #    And     I change the Phone Number on Vendor Phone tab
