@@ -58,10 +58,6 @@ And /^I submit the Requisition document with items that total more than the doll
 
 end
 
-And /^I select yes to the question$/ do
-  on(YesOrNoPage).yes
-end
-
 And /^I add an item to the Requisition document with:$/ do |table|
   add_item = table.rows_hash
 
@@ -308,8 +304,13 @@ And /^I fill out the PREQ initiation page and continue$/ do
     page.vendor_invoice_amount.fit @requisition.items.first.quantity.delete(',').to_f * @requisition.items.first.unit_cost.to_i
     page.continue
   end
+
+ sleep 120
   on(YesOrNoPage) { |yonp| yonp.yes if yonp.yes_button.exists? }
   sleep 10
+
+  # on(PaymentRequestInitiationPage).description.wait_until_present(120)
+
   @payment_request = create PaymentRequestObject
 end
 
@@ -344,7 +345,11 @@ And /^I calculate PREQ$/ do
 end
 
 And /^I view the Purchase Order document via e-SHOP$/ do
-  on(EShopPage).goto_doc_search
+  on EShopPage do |page|
+    page.order_doc_element.wait_until_present
+    page.goto_doc_search
+  end
+
   on EShopAdvancedDocSearchPage do |page|
     page.search_doc_type.fit 'Purchase Orders'
     page.po_id.fit      @purchase_order_number

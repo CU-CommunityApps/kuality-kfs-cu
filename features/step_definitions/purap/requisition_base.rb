@@ -112,9 +112,13 @@ And /^I extract the Requisition document to SciQuest$/ do
     When  I visit the "e-SHOP" page
     And   I view the Purchase Order document via e-SHOP
     Then  the Document Status displayed 'Completed'
-    And   the Delivery Instructions displayed equals what came from the PO
-    And   the Attachments for Supplier came from the PO
   }
+  #need to move this some where else to validate but should not be in base as not all docs have attachments.
+    # And   the Delivery Instructions displayed equals what came from the PO
+    # And   the Attachments for Supplier came from the PO
+  # }
+
+
 end
 
 And /^I assign Contract Manager and approve Purchase Order Document to FINAL$/ do
@@ -151,7 +155,7 @@ And /^I assign Contract Manager and approve Purchase Order Document to FINAL$/ d
 
 end
 
-When /^I initiate a Payment Request document$/ do
+When /^I (initiate|submit) a Payment Request document$/ do | action|
   step 'I login as a Accounts Payable Processor to create a PREQ'
   step 'I fill out the PREQ initiation page and continue'
   step 'I change the Remit To Address'
@@ -160,10 +164,19 @@ When /^I initiate a Payment Request document$/ do
   step 'I attach an Invoice Image to the Payment Request document'
   step 'I calculate PREQ'
   step 'I submit the Payment Request document'
+  #If current amount does not match starting amount there is a question page
+  step 'I select yes to the question if present'
   step 'the Payment Request document goes to ENROUTE'
-  step 'I route the Payment Request document to final'
-  step 'the Payment Request Doc Status is Department-Approved'
-  step 'the Payment Request document\'s GLPE tab shows the Requisition document submissions'
+
+  case action
+    when 'submit'
+      warn 'Just submitting Payment Request not taking to final'
+    when 'initiate'
+      step 'I route the Payment Request document to final'
+      step 'the Payment Request Doc Status is Department-Approved'
+      step 'the Payment Request document\'s GLPE tab shows the Requisition document submissions'
+  end
+
 end
 
 Then /^I FORMAT AND PROCESS THE CHECK WITH PDP$/ do
@@ -286,10 +299,6 @@ And /^I validate Commodity Review Routing for (.*) document$/ do |document|
       @commodity_review_users.length.should == 0
     end
   end
-end
-
-And /^the POA Routes to the FO$/ do
-  @fo_users.length.should >= 1
 end
 
 And /^I amend the Purchase Order$/ do

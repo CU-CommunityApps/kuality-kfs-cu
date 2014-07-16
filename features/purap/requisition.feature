@@ -12,7 +12,7 @@ Feature: Requistion
     When  I route the Requisition document to final
     Then  Award Review is not in the Requisition document workflow history
 
-  @wip @KFSQA-864 @REQS @PREQ @Routing @PDP @POA @coral
+   @KFSQA-864 @REQS @PREQ @Routing @PDP @POA @coral
   Scenario: Financial Officer can add other accounts to REQ and document route to another FO - Implement KFSMI-8165 Test 1
   Given I submit a Requisition document with the following:
     | Vendor Type        | NonB2B    |
@@ -33,7 +33,7 @@ Feature: Requistion
     And  I view the Requisition document from the Requisitions search
     Then the next pending action for the Requisition document is an IN ACTION LIST from a  KFS-SYS Accounting Reviewer
 
-  @wip @KFSQA-864 @REQS @PREQ @Routing @PDP @POA @coral
+  @KFSQA-864 @REQS @PREQ @Routing @PDP @POA @coral
   Scenario: Financial Officer can add other accounts to POA and docs route to another FO - Implement KFSMI-8165 Test 2
     Given I submit a Requisition document with the following:
       | Vendor Type        | NonB2B    |

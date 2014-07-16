@@ -105,3 +105,16 @@ And /^the initiator is not an approver in the Future Actions table$/ do
     page.future_actions_table.rows(text: /APPROVE/m).any? { |r| r.text.include? 'Initiator' }.should_not
   end
 end
+
+And /^the POA Routes to the FO$/ do
+  @fo_users.length.should >= 1
+end
+
+And /^the (.*) document does not route to the Financial Officer$/ do  |document|
+  puts "the req id is: #{@requisition_id} so that we not capture here?" #debug
+  @requisition_id = on(page_class_for(document)).requisition_id if @requisition_id.nil? && on(page_class_for(document)).third_header_title == 'Requisition #:'
+
+  on(page_class_for(document)).app_doc_status.should_not include 'Fiscal Officer'
+end
+
+
