@@ -101,7 +101,7 @@ Feature: General Ledger
   @KFSQA-649 @smoke @nightly-jobs @tortoise
   Scenario: Accounting Line Description from eDoc updates General Ledger, part 3
     Given I am logged in as a KFS Manager for the ICA document
-    And   I clone Account 1093600 with the following changes:
+    And   I clone a random Account with the following changes:
       | Name                                          | Indirect Cost Adjustment Test Account S |
       | Chart Code                                    | IT                                      |
       | Description                                   | Indirect Cost Adjustment Test Account S |
@@ -109,7 +109,7 @@ Feature: General Ledger
       | Indirect Cost Recovery Account Number         | A463200                                 |
       | Indirect Cost Recovery Account Line Percent   | 100                                     |
       | Indirect Cost Recovery Active Indicator       | set                                     |
-    And   I clone Account GACLOSE with the following changes:
+    And   I clone a random Account with the following changes:
       | Name                              | Indirect Cost Adjustment Test Account T |
       | Chart Code                        | IT                                      |
       | Description                       | Indirect Cost Adjustment Test Account T |

@@ -12,7 +12,7 @@ Feature: Requistion
     When  I route the Requisition document to final
     Then  Award Review is not in the Requisition document workflow history
 
-   @KFSQA-864 @REQS @PREQ @Routing @PDP @POA @coral
+  @KFSQA-864 @REQS @PREQ @Routing @PDP @POA @coral
   Scenario: Financial Officer can add other accounts to REQ and document route to another FO - Implement KFSMI-8165 Test 1
   Given I submit a Requisition document with the following:
     | Vendor Type        | NonB2B    |
