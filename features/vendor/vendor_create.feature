@@ -180,7 +180,7 @@ Feature: Vendor Create
     When    I view the Vendor document
     Then    I can not view the Tax ID and Attachments on Vendor page
 
-    @KFSQA-840 @cornell @Create @E2E @Routing @smoke @slug
+    @KFSQA-840 @cornell @Create @E2E @Routing @smoke @slug @wip
     Scenario: Creating a new vendor to test cornell specific mods, separation of duties, and vendor address and attachments persist.
       Given I am logged in as a Vendor Initiator
       When  I start a Purchase Order Vendor document with the following fields:
@@ -197,12 +197,12 @@ Feature: Vendor Create
       And   I note how many attachments the Vendor document has already
       And   I add an attachment to the Vendor document
       And   I submit the Vendor document
-      Then  I should get an error saying "Date cannot be in the future"
-      When  I change the Vendor document's W9 Received Date field to today
+      And   I should get an error saying "Date cannot be in the future"
+      And   I change the Vendor document's W9 Received Date field to today
       And   I submit the Vendor document
-      Then  the Vendor document goes to ENROUTE
+      And   the Vendor document goes to ENROUTE
       And   the initiator is not an approver in the Future Actions table
-      Given I route the Vendor document to FINAL by clicking approve for each request
+      And   I route the Vendor document to final
       And   I am logged in as a Vendor Initiator
       When  I view the Vendor document
       Then  the default Purchase Order Vendor address(es) are shown on the Vendor document
