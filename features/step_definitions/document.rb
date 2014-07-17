@@ -123,6 +123,6 @@ end
 
 And /^I select yes to the question if present$/ do
       on YesOrNoPage do |page|
-        page.yes unless page.yes_button.nil?
+        page.yes if page.yes_button.present?
       end
 end

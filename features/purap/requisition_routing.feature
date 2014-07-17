@@ -6,23 +6,23 @@ Feature: Requisition routing testing
   @wip @KFSQA-865 @PURAP @REQS @ESHOP @PREQS @routing @coral
   Scenario Outline: EShop routing verification with total cost between B2B_TOTAL_AMOUNT_FOR_AUTO_PO and B2B_TOTAL_AMOUNT_FOR_SUPER_USER_AUTO_PO
     Given  I create an e-SHOP Requisition document with a <item type> item type
-    Then  the Requisition document does not route to the Financial Officer
-    When I take the e-SHOP Requisition document through SciQuest till the Payment Request document is ENROUTE
-    Then the next pending action for the Payment Request document is an APPROVE from a  KFS-SYS Fiscal Officer IT
-    Examples:
-      | item type     |
-      | Non-Sensitive |
-      | Sensitive     |
+    Then   the Requisition document does not route to the Financial Officer
+    When   I route the e-SHOP Requisition document through SciQuest until the Payment Request document is ENROUTE
+    Then   the next pending action for the Payment Request document is an APPROVE from a  KFS-SYS Fiscal Officer IT
+  Examples:
+          | item type     |
+          | Non-Sensitive |
+          | Sensitive     |
 
   @wip @KFSQA-865 @PURAP @REQS @ESHOP @PREQS @routing @coral
   Scenario Outline: Create ESHOP order 500 and one for 1500
     Given  I create an e-SHOP Requisition document with a <item type> item type that is at least <cart value> in value
-    Then  the Requisition document does not route to the Financial Officer
-    When I take the e-SHOP Requisition document through SciQuest till the Payment Request document is ENROUTE
-    Then the next pending action for the Payment Request document is an APPROVE from a  KFS-SYS Fiscal Officer IT
+    Then   the Requisition document does not route to the Financial Officer
+    When   I route the e-SHOP Requisition document through SciQuest until the Payment Request document is ENROUTE
+    Then   the next pending action for the Payment Request document is an APPROVE from a  KFS-SYS Fiscal Officer IT
   Examples:
-    | item type     | cart value |
-    | Non-Sensitive |  50        |
-    | Non-Sensitive |  1500      |
-    | Sensitive     |  50        |
-    | Sensitive     |  1500      |
+           | item type     | cart value |
+           | Non-Sensitive |  501       |
+           | Non-Sensitive |  1501      |
+           | Sensitive     |  501       |
+           | Sensitive     |  1501      |

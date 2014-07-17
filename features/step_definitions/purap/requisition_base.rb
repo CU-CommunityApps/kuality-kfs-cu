@@ -113,7 +113,7 @@ And /^I extract the Requisition document to SciQuest$/ do
     And   I view the Purchase Order document via e-SHOP
     Then  the Document Status displayed 'Completed'
   }
-  #need to move this some where else to validate but should not be in base as not all docs have attachments.
+  #TODO:: need to move this validation should not be in base function as not all docs have attachments.
     # And   the Delivery Instructions displayed equals what came from the PO
     # And   the Attachments for Supplier came from the PO
   # }
@@ -155,7 +155,7 @@ And /^I assign Contract Manager and approve Purchase Order Document to FINAL$/ d
 
 end
 
-When /^I (initiate|submit) a Payment Request document$/ do | action|
+When /^I (initiate|submit) a Payment Request document$/ do |action|
   step 'I login as a Accounts Payable Processor to create a PREQ'
   step 'I fill out the PREQ initiation page and continue'
   step 'I change the Remit To Address'

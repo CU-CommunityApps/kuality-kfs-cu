@@ -305,11 +305,10 @@ And /^I fill out the PREQ initiation page and continue$/ do
     page.continue
   end
 
- # sleep 120
  #  on(YesOrNoPage) { |yonp| yonp.yes if yonp.yes_button.exists? }
  #  sleep 10
 
-  on(PaymentRequestInitiationPage).description.wait_until_present(120)
+  on(PaymentRequestInitiationPage).description.wait_until_present(150)
 
   @payment_request = create PaymentRequestObject
 end
@@ -383,6 +382,13 @@ end
 
 And  /^I select the Payment Request Positive Approval Required$/ do
   on(RequisitionPage).payment_request_positive_approval_required.set
+end
+And /^I add a random delivery address to the Requisition document if there is not one present$/ do
+  @requisition.add_random_building_address
+end
+
+And /^I add a random phone number to the Requestor Phone on the Requisition document$/ do
+  on(RequisitionPage).requestor_phone.fit random_phone_number
 end
 
 Then /^I update the Tax Tab$/ do
