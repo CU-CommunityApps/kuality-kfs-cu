@@ -608,3 +608,23 @@ And /^I open the Purchase Order Amendment on the Requisition document$/ do
     page.purchase_order_amendment
   end
 end
+
+And /^I (submit|close|cancel) a Contract Manager Assignment for the Requisition$/ do |btn|
+  visit(MainPage).contract_manager_assignment
+  on ContractManagerAssignmentPage do |page|
+    page.contract_manager_table.rows.each_with_index do |row, index|
+      if row.a(text: @requisition_id).exists?
+        page.search_contract_manager_links[index-1].click
+        break
+      end
+    end
+  end
+  on (ContractManagerLookupPage) do |page|
+    page.search
+    # click twice to have the highest dollar limit at top
+    page.sort_results_by('Contract Manager Delegation Dollar Limit')
+    page.sort_results_by('Contract Manager Delegation Dollar Limit')
+    page.return_value_links.first.click
+  end
+  on(ContractManagerAssignmentPage).send(btn)
+end
