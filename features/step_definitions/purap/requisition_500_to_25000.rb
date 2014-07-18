@@ -24,8 +24,6 @@ And /^I create the Requisition document with an Award Account and items that tot
   cost_from_param = get_parameter_values('KFS-PURAP', 'DOLLAR_THRESHOLD_REQUIRING_AWARD_REVIEW', 'Requisition')[0].to_i
   cost_from_param = cost_from_param - 1
 
-  @level = arguments['Level'].nil? ? 0 : arguments['Level'].to_i
-
   step 'I create the Requisition document with:',
        table(%Q{
          | Vendor Number       | 4471-0                  |

@@ -15,7 +15,7 @@ Feature: Purap Preq Building Blocks
       | Item Commodity Code | 12142203 |
       | Item Catalog Number | 10101157 |
       | Item Description    | ANIM     |
-      | Account Number      | R589854  |
+      | Account Number      | 1093603  |
       | Object Code         | 6540     |
       | Percent             | 100      |
     And   I add an attachment to the Requisition document
@@ -57,7 +57,7 @@ Feature: Purap Preq Building Blocks
     And   the Purchase Order document goes to FINAL
     Then  in Pending Action Requests an FYI is sent to FO and Initiator
     And   the Purchase Order Doc Status is Open
-    Given I am logged in as "db18"
+    Given I am logged in as the Initiator of the Requisition document
     And   I visit the "e-SHOP" page
     And   I view the Purchase Order document via e-SHOP
     Then  the Document Status displayed 'Completed'
@@ -135,7 +135,7 @@ Feature: Purap Preq Building Blocks
 
   @KFSQA-770 @E2E @M-ENTRY @PURAP @PREQ @cornell @coral
   Scenario: PURAP E2E-004d PREQ - Manual Entry, >$500, <$5000, Internal Vendor
-    Given I login as a KFS user to create an REQS
+    Given I am logged in as an e-SHOP User
     And   I create the Requisition document with:
       | Item Quantity       | 201      |
       | Item Cost           | 1000     |
@@ -181,7 +181,7 @@ Feature: Purap Preq Building Blocks
     And   the Purchase Order document goes to FINAL
     Then  in Pending Action Requests an FYI is sent to FO and Initiator
     And   the Purchase Order Doc Status is Open
-    Given I am logged in as "db18"
+    Given I am logged in as the Initiator of the Requisition document
     And   I visit the "e-SHOP" page
     And   I view the Purchase Order document via e-SHOP
     Then  the Document Status displayed 'Completed'
