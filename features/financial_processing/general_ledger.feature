@@ -124,7 +124,7 @@ Feature: General Ledger
     And   the Indirect Cost Adjustment document goes to one of the following statuses:
       | PROCESSED |
       | FINAL     |
-    Given Nightly Batch Jobs run
+    Given Nightly Batch Jobs run, waiting at most 600 seconds for each step
     And   I am logged in as a KFS Chart Administrator
     When  I lookup the document ID for the Indirect Cost Adjustment document from the General Ledger
     Then  the Accounting Line Description for the Indirect Cost Adjustment document equals the General Ledger Accounting Line Description
