@@ -3,7 +3,7 @@ Feature: Asset Payment
   [KFSQA-969] Submit an allocated asset manual payment where total allocations are not equal to the asset line. Test that trying to submit the out of balance payment
               displays an error. Correct the transaction so that allocations equal asset line and test payment can be submitted without an error.
 
-  @KFSQA-969 @KFSMI-8992 @cornell @slug
+  @KFSQA-969 @KFSMI-8992 @cornell @slug @smoke
   Scenario: Capital Asset Allocations of Manual Payment Out of Balance with Asset Line
     Given I Login as an Asset Processor
     And   I start an empty Asset Manual Payment document
