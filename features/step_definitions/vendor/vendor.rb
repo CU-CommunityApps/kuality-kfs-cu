@@ -436,7 +436,11 @@ And /^I open the Vendor from the Vendor document$/ do
 end
 
 And /^I lookup a PO Vendor$/ do
-  step "I lookup a Vendor with Vendor Number #{get_aft_parameter_value(ParameterConstants::DEFAULT_VENDOR_NUMBER)}"
+  vendor_info = get_kuali_business_object('KFS-VND','VendorDetail','vendorHeader.vendorTypeCode=PO')
+  vendor_number = vendor_info['vendorHeaderGeneratedIdentifier']
+  puts vendor_number
+
+  step "I lookup a Vendor with Vendor Number #{vendor_number}"
 end
 
 And /^I edit a PO Vendor$/ do
