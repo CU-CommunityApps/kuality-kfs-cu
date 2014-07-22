@@ -26,7 +26,7 @@ Feature: GLPE validation tests for Purchase Orders
    And   I view the Requisition document on my action list
    And   I approve the Requisition document
    And   I am logged in as a Purchasing Processor
-   And   I submit a Contract Manager Assignment of '10' for the Requisition
+   And   I submit a Contract Manager Assignment for the Requisition
    And   I am logged in as a PURAP Contract Manager
    And   I cancel the Purchase Order on the Requisition
    When  I view the Requisition document

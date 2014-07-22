@@ -108,7 +108,7 @@ And /^I extract the Requisition document to SciQuest$/ do
   end
 
   steps %Q{
-    Given I am logged in as "db18"
+    Given I am logged in as the Initiator of the Requisition document
     When  I visit the "e-SHOP" page
     And   I view the Purchase Order document via e-SHOP
     Then  the Document Status displayed 'Completed'
@@ -121,7 +121,7 @@ And /^I assign Contract Manager and approve Purchase Order Document to FINAL$/ d
 
   steps %Q{
     Given I am logged in as a Purchasing Processor
-    When  I submit a Contract Manager Assignment of '10' for the Requisition
+    When  I submit a Contract Manager Assignment for the Requisition
     Given I am logged in as a PURAP Contract Manager
     When  I retrieve the Requisition document
     Then  the View Related Documents Tab PO Status displays

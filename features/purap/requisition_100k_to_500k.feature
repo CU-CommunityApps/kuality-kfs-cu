@@ -37,7 +37,7 @@ Feature: Purap Preq Building Blocks
     And   I approve the Requisition document
     And   the Requisition document goes to FINAL
     And   I am logged in as a Purchasing Processor
-    And   I submit a Contract Manager Assignment of '10' for the Requisition
+    And   I submit a Contract Manager Assignment for the Requisition
     And   I am logged in as a PURAP Contract Manager
     And   I retrieve the Requisition document
     And   the View Related Documents Tab PO Status displays
@@ -96,7 +96,7 @@ Feature: Purap Preq Building Blocks
     And   I approve the Requisition document
     And   the Requisition document goes to FINAL
     And   I am logged in as a Purchasing Processor
-    And   I submit a Contract Manager Assignment of '10' for the Requisition
+    And   I submit a Contract Manager Assignment for the Requisition
     And   I am logged in as a PURAP Contract Manager
     And   I retrieve the Requisition document
     And   the View Related Documents Tab PO Status displays
@@ -165,7 +165,7 @@ Feature: Purap Preq Building Blocks
     And   I approve the Requisition document
     And   the Requisition document goes to FINAL
     And   I am logged in as a Purchasing Processor
-    And   I submit a Contract Manager Assignment of '10' for the Requisition
+    And   I submit a Contract Manager Assignment for the Requisition
     And   I am logged in as a PURAP Contract Manager
     And   I retrieve the Requisition document
     And   the View Related Documents Tab PO Status displays
