@@ -192,3 +192,8 @@ end
 Given /^I am logged in as an e\-SHOP User$/ do
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'eShop User (cu)'))
 end
+
+Given /^I am logged in as the Initiator of the Requisition document$/ do
+  # this is not to find the REQS initiator role.  It is the 'initiator' who created the REQS for this scenario
+  step "I am logged in as \"#{@requisition_initiator}\""
+end
