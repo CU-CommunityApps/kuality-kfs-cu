@@ -213,8 +213,7 @@ end
 
 And /^I edit a Vendor with Ownership Type (.*)$/ do |ownership_type|
   vendor_info = get_kuali_business_object('KFS-VND','VendorDetail','vendorHeader.vendorOwnershipCode=' + ownership_type)
-  vendor_number = vendor_info['vendorHeaderGeneratedIdentifier']
-  puts vendor_number
+  vendor_number = vendor_info['vendorNumber'][0]
   step "I edit a Vendor with Vendor Number #{vendor_number}"
 end
 
