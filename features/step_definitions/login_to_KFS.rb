@@ -57,6 +57,7 @@ Given /^I am logged in as a KFS System Manager$/ do
 end
 
 Given /^I am logged in as a KFS User for the (.*) document$/ do |eDoc|
+  puts get_document_initiators(eDoc)
   case eDoc
     when 'AD'
       visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
