@@ -83,14 +83,14 @@ Feature: Vendor Edit
   Scenario: Edit a vendor and ensure routing to the second reviewer. Confirm display of Vendor Address Generated Identifier. Confirm previously added attachments persist.
     Given I am logged in as a Vendor Initiator
     And   I edit a PO Vendor
-#    When  I add a Supplier Diversity to the Vendor document
-#    And   I add a Search Alias to the Vendor document
-#    And   I note how many attachments the Vendor document has already
-#    And   I add an attachment to the Vendor document
-#    And   I submit the Vendor document
-#    Then  the next pending action for the Vendor document is an APPROVE from a KFS-VND Reviewer
-#    Given I route the Vendor document to final
-#    And   I am logged in as a Vendor Attachment viewer (cu)
-#    When  I open the Vendor from the Vendor document
-#    Then  the Address Tab displays Vendor Address Generated Identifiers for each Address
-#    And   the Vendor document's Notes Tab displays the added attachment
+    When  I add a Supplier Diversity to the Vendor document
+    And   I add a Search Alias to the Vendor document
+    And   I note how many attachments the Vendor document has already
+    And   I add an attachment to the Vendor document
+    And   I submit the Vendor document
+    Then  the next pending action for the Vendor document is an APPROVE from a KFS-VND Reviewer
+    Given I route the Vendor document to final
+    And   I am logged in as a Vendor Attachment viewer (cu)
+    When  I open the Vendor from the Vendor document
+    Then  the Address Tab displays Vendor Address Generated Identifiers for each Address
+    And   the Vendor document's Notes Tab displays the added attachment

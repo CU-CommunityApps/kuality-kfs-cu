@@ -437,8 +437,7 @@ end
 
 And /^I lookup a PO Vendor$/ do
   vendor_info = get_kuali_business_object('KFS-VND','VendorDetail','vendorHeader.vendorTypeCode=PO')
-  vendor_number = vendor_info['vendorHeaderGeneratedIdentifier']
-  puts vendor_number
+  vendor_number = vendor_info['vendorNumber'][0]
 
   step "I lookup a Vendor with Vendor Number #{vendor_number}"
 end
