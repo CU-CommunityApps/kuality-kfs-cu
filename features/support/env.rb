@@ -28,7 +28,7 @@ if ENV['HEADLESS']
 end
 
 if ENV['BROWSER']
-  @config[:browser] = ENV['BROWSER'].to_sym
+#  @config[:browser] = ENV['BROWSER'].to_sym
 end
 
 kuality = KualityKFS.new @config[:browser]
