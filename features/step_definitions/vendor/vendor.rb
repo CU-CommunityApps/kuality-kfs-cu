@@ -259,7 +259,7 @@ end
 
 When /^I select Vendor document from my Action List$/ do
   visit(MainPage).action_list
-  on(ActionList).last if on(ActionList).last_link.exists?
+  on(ActionList).last if on(ActionList).last_link.exists? && !on(ActionList).result_item(@vendor.document_id).exists?
   on(ActionList).open_item(@vendor.document_id)
 end
 

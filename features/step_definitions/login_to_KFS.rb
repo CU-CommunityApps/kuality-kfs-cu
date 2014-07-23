@@ -197,3 +197,11 @@ Given /^I am logged in as the Initiator of the Requisition document$/ do
   # this is not to find the REQS initiator role.  It is the 'initiator' who created the REQS for this scenario
   step "I am logged in as \"#{@requisition_initiator}\""
 end
+
+Given /^I am logged in as a Vendor Initiator and Manager$/ do
+  # initiator can edit Vendor and Manager can blanket approve vendor
+  managers = get_principal_name_for_role('KFS-SYS', 'Manager');
+  initiators = get_principal_name_for_role('KFS-VND', 'CU Vendor Initiator')
+  users = managers & initiators
+  visit(BackdoorLoginPage).login_as(users[0])
+end
