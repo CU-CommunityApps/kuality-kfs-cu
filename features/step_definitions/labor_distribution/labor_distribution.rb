@@ -48,7 +48,7 @@ And /^I transfer the Salary to another Account in my Organization$/ do |table|
   # do not continue, required parameters not sent
   fail ArgumentError, 'Required parameter "To Account" was not specified.' if @to_account.nil?
 
-  step "And I change Salary Expense Transfer target account number to '#@to_account'"
+  step "I change Salary Expense Transfer target account number to '#@to_account'"
 end
 
 And /^I transfer the Salary between accounts with different Account Types$/ do |table|
