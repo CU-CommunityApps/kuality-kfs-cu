@@ -81,7 +81,7 @@ Feature: Vendor Edit
     When    I edit a Vendor with Vendor Number 12587-1
     Then    the changes to Vendor document have persisted
 
-  @KFSQA-839 @cornell @VendorEdit @Routing @smoke @coral @wip
+  @KFSQA-839 @cornell @VendorEdit @Routing @smoke @coral
   Scenario: Edit a vendor and ensure routing to the second reviewer. Confirm display of Vendor Address Generated Identifier. Confirm previously added attachments persist.
     Given I am logged in as a Vendor Initiator
     And   I edit a PO Vendor
