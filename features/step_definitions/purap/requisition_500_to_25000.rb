@@ -112,7 +112,8 @@ end
 And /^I view the Requisition document from the Requisitions search$/ do
   visit(MainPage).requisitions
   on DocumentSearch do |page|
-    page.requisition_num.fit @requisition.document_id
+    page.document_id_field.fit @requisition.document_id
+    page.requisition_num.fit @requisition.requisition_id unless @requisition.requisition_id.nil?
     page.search
     page.open_item(@requisition.document_id)
   end
@@ -153,8 +154,11 @@ And /^the View Related Documents Tab PO Status displays$/ do
   end
   sleep 10
   on PurchaseOrderPage do |page|
+    page.po_doc_status.should_not match(/Error occurred sending cxml/m),
+                                  "There was an error sending the Purchase Order to SciQuest. Please check the notes on Purchase Order ##{page.purchase_order_number}"
     @purchase_order = make PurchaseOrderObject, purchase_order_number: page.purchase_order_number,
-                                                document_id: page.document_id # FIXME: This should really use #absorb! to pull in existing data
+                                                document_id:           page.document_id,
+                                                initial_item_lines:    [] # FIXME: This should really use #absorb! to pull in existing data
   end
 end
 
@@ -305,28 +309,37 @@ end
 
 And /^I fill out the PREQ initiation page and continue$/ do
   visit(MainPage).payment_request
-  on PaymentRequestInitiationPage do |page|
-    page.purchase_order.fit        @purchase_order.purchase_order_number
-    page.invoice_date.fit          yesterday[:date_w_slashes]
-    page.invoice_number.fit        rand(100000)
-    page.vendor_invoice_amount.fit @requisition.items.first.quantity.delete(',').to_f * @requisition.items.first.unit_cost.to_i
-    page.continue
-  end
-  on(YesOrNoPage) { |yonp| yonp.yes if yonp.yes_button.exists? }
-  sleep 10
-  @payment_request = create PaymentRequestObject
+  # TODO: Replace this with create and/or add an absorb!:
+  @payment_request = make PaymentRequestObject, purchase_order_number: @purchase_order.purchase_order_number,
+                                                invoice_date:          yesterday[:date_w_slashes],
+                                                invoice_number:        rand(100000),
+                                                vendor_invoice_amount: @requisition.items.first.quantity.to_f * @requisition.items.first.unit_cost.to_i
+  # on PaymentRequestInitiationPage do |page|
+  #   page.purchase_order.fit        @purchase_order.purchase_order_number
+  #   page.invoice_date.fit          yesterday[:date_w_slashes]
+  #   page.invoice_number.fit        rand(100000)
+  #   page.vendor_invoice_amount.fit @requisition.items.first.quantity.delete(',').to_f * @requisition.items.first.unit_cost.to_i
+  #   puts right_now[:samigo]
+  #   page.continue
+  # end
+  puts right_now[:samigo]
+  @payment_request.initiate_request
+  puts right_now[:samigo]
 end
 
-And  /^I change the Remit To Address$/ do
-  on(PaymentRequestPage) { |p| p.vendor_address_1.fit "Apt1#{p.vendor_address_1.value}" }
+And /^I change the Remit To Address$/ do
+  #on(PaymentRequestPage) { |p| p.vendor_address_1.fit "Apt1#{p.vendor_address_1.value}" }
+  @payment_request.edit vendor_address_1: "Apt1#{p.vendor_address_1.value}"
 end
 
-And  /^I enter the Qty Invoiced and calculate$/ do
+And /^I enter the Qty Invoiced and calculate$/ do
+  pending
   on PaymentRequestPage do |page|
     @preq_id = page.preq_id
     page.item_qty_invoiced.fit @requisition.items.first.quantity # same as REQS item qty
     page.item_calculate
   end
+  @payment_request.items.add_item_line quantity: @requisition.items.first.quantity
 end
 
 And  /^I enter a Pay Date$/ do

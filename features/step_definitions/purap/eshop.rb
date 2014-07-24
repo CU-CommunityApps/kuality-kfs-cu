@@ -86,10 +86,10 @@ Given /^I initiate an e\-SHOP order$/ do
           })
   step 'I add an attachment to the Requisition document'
   step 'I add a file attachment to the Notes and Attachment Tab of the Requisition document'
-  #step 'I enter Delivery Instructions and Notes to Vendor'
   step 'I calculate my Requisition document'
   step 'I submit the Requisition document'
   step 'the document should have no errors'
   step 'I reload the Requisition document'
-  step 'Payment Request Positive Approval Required is not required'
+  #step 'Payment Request Positive Approval Required is not required'
+  step 'Payment Request Positive Approval Required is required'
 end

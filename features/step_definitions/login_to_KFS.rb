@@ -190,23 +190,20 @@ Given /^I Login as an Asset Processor$/ do
 end
 
 Given /^I am logged in as an e\-SHOP User$/ do
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'eShop User (cu)'))
+  #visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-PURAP', 'eShop User (cu)'))
+  step 'I am logged in as an e-SHOP Plus User'
 end
 
-Given /^I am logged in as an e\-SHOP User who can initiate a Requisition document$/ do
-  # e_shop_users = get_principal_name_for_role('KFS-PURAP', 'eShop User (cu)')
-  # req_users = get_principal_name_for_role('KFS-PURAP', 'Accounts Payable Processor')
-  # result = req_users & e_shop_users
-  # netid = result.sample
-  #
-  # puts "Got back EU: #{e_shop_users}"
-  # puts "Got back RU: #{req_users}"
-  # puts "Merged: #{result}"
-  # puts "Going to log in as #{netid}"
+Given /^I am logged in as an e\-SHOP User with a phone number$/ do
+  # get_random_principal_id_with_phone_number_for_role('KFS-PURAP', 'eShop User (cu)')
   # pending
-  #visit(BackdoorLoginPage).login_as(netid)
-  #visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'eShop User (cu)'))
-  #puts get_kuali_business_object('KFS-COA','Account','organizationCode=01**&subFundGroupCode=GNDEPT&active=Y&accountExpirationDate=NULL')['accountNumber'].sample
-  #pending
+  visit(BackdoorLoginPage).login_as(get_random_principal_with_phone_name_for_role('KFS-PURAP', 'eShop User (cu)'))
+end
 
+Given /^I am logged in as an e\-SHOP Plus User$/ do
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-PURAP', 'eShop Plus User(cu)'))
+end
+
+Given /^I am logged in as an e\-SHOP Shopper Office User$/ do
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-PURAP', 'eShop Shopper Office(cu)'))
 end
