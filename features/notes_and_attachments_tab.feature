@@ -3,7 +3,7 @@ Feature: Notes And Attachments Tab
   [KFSQA-644] Cornell University sequential easy-to-follow tab flow between
               fields in the Notes and Attachment Tab of all FP Docs.
 
-  @KFSQA-644 @AD @pending @wip
+  @KFSQA-644 @AD @pending
   Scenario: Sequential tab flow of Notes and Attachment Tab
     Given I am logged in as a KFS User for the BA document
     When  I start an empty Budget Adjustment document

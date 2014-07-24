@@ -57,45 +57,8 @@ Given /^I am logged in as a KFS System Manager$/ do
 end
 
 Given /^I am logged in as a KFS User for the (.*) document$/ do |eDoc|
-  puts get_document_initiators(eDoc)
-  case eDoc
-    when 'AD'
-      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-    when 'AV'
-      visit(BackdoorLoginPage).login_as('scu1') #TODO get from role service
-    when 'BA'
-      visit(BackdoorLoginPage).login_as('sag3') #TODO get from role service
-    when 'CCR'
-      visit(BackdoorLoginPage).login_as('ccs1') #TODO get from role service
-    when 'DV'
-      visit(BackdoorLoginPage).login_as('rlc56') #TODO get from role service
-    when 'DI'
-      visit(BackdoorLoginPage).login_as('sag3') #TODO get from role service
-    when 'GEC'
-      visit(BackdoorLoginPage).login_as('sag3') #TODO get from role service
-    when 'IB'
-      visit(BackdoorLoginPage).login_as('djj1') #TODO get from role service
-    when 'ICA'
-      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-    when 'JV-1'
-      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-    when 'JV-2'
-      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-    when 'JV-3'
-      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-    when 'LLJV'
-      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-    when 'ND'
-      visit(BackdoorLoginPage).login_as('kpg1') #TODO get from role service
-    when 'PE'
-      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-    when 'SB'
-      visit(BackdoorLoginPage).login_as('chl52') #TODO get from role service
-    when 'TF'
-      visit(BackdoorLoginPage).login_as('mdw84') #TODO get from role service
-    else
-      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-  end
+  puts eDoc + ' ' + get_document_initiator(eDoc)
+  visit(BackdoorLoginPage).login_as(get_document_initiator(eDoc))
 end
 
 Given /^I am logged in as a KFS Manager for the (.*) document$/ do |eDoc|
@@ -121,10 +84,6 @@ Given /^I am logged in as a Disbursement Method Reviewer$/ do
   visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-SYS', 'Disbursement Method Reviewer'))
 end
 
-Given /^I login as a KFS user to create an REQS$/ do
-  visit(BackdoorLoginPage).login_as('der9') #TODO get from role service
-end
-
 And /^I am logged in as a PURAP Contract Manager$/ do
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'Contract Manager'))
 end
@@ -135,7 +94,7 @@ Given /^I am logged in as a Purchasing Processor$/ do
 end
 
 Given /^I am logged in as a Commodity Reviewer$/ do
-  visit(BackdoorLoginPage).login_as('am28') #TODO get from role service
+TONY  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Commodity Reviewer'))
 end
 
 Given /^I am logged in as FTC\/BSC member User$/ do
@@ -165,8 +124,7 @@ end
 
 
 Given /^I Login as a PDP Format Disbursement Processor$/ do
-  visit(BackdoorLoginPage).login_as('mo14') #TODO get from role service
-  #visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PDP', 'Processor'))
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PDP', 'Processor'))
 end
 
 Given /^I am logged in as a Salary Transfer Initiator$/ do
