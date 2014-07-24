@@ -75,7 +75,6 @@ Feature: FP Auditing
   @KFSQA-631 @DI @IB @TF @cornell @tortoise
   Scenario Outline: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for All with basic from and to accounting lines
     Given   I am logged in as a KFS User
-    #TODO login based on doc type
     And     I start an empty <document> document
     And     I add a From accounting line to the <document> document with:
             | from account number |<from account number>|
@@ -88,7 +87,6 @@ Feature: FP Auditing
     And     I submit the <document> document
     And     the <document> document goes to ENROUTE
     And     I am logged in as a <From or To> Account Fiscal Officer
-    #TODO login as the next person in the route log
     And     I view the <document> document
     And     on the <document> document I modify the <From or To> Object Code line item <line item> to be <modify object code>
     And     I save the <document> document
