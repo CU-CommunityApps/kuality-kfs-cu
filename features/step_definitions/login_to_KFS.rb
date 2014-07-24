@@ -85,7 +85,7 @@ Given /^I am logged in as a KFS User for the (.*) document$/ do |eDoc|
     when 'LLJV'
       visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
     when 'ND'
-      visit(BackdoorLoginPage).login_as('kpg1') #TODO get from role service
+      visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-FP', 'Non-Check Disbursement Initiator (cu)'))
     when 'PE'
       visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
     when 'SB'
@@ -205,3 +205,13 @@ Given /^I am logged in as a Vendor Initiator and Manager$/ do
   users = managers & initiators
   visit(BackdoorLoginPage).login_as(users[0])
 end
+
+Given /^I am logged in as a (Source|Target|From|To) Account Fiscal Officer$/ do |acct_type|
+  if acct_type == 'Source' || acct_type == 'From'
+    acct_number = on(AccountingLine).result_source_account_number(0)
+  else
+    acct_number = on(AccountingLine).result_target_account_number(0)
+  end
+  step "I am logged in as a KFS Fiscal Officer for account number #{acct_number}"
+end
+
