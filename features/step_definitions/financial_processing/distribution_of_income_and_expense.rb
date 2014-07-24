@@ -78,7 +78,7 @@ And /^I build a Capital Asset from the General Ledger$/ do
     Given I Login as an Asset Processor
     And   I lookup a Capital Asset from GL transaction to process
     And   I create asset from General Ledger Processing
-    And   I submit the Asset Global document
+    When  I submit the Asset Global document
     Then  the Asset Global document goes to FINAL
    }
 end
