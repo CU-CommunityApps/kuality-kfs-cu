@@ -333,17 +333,20 @@ And /^I change the Remit To Address$/ do
 end
 
 And /^I enter the Qty Invoiced and calculate$/ do
-  pending
-  on PaymentRequestPage do |page|
-    @preq_id = page.preq_id
-    page.item_qty_invoiced.fit @requisition.items.first.quantity # same as REQS item qty
-    page.item_calculate
-  end
+  # on PaymentRequestPage do |page|
+  #   @preq_id = page.preq_id
+  #   page.item_qty_invoiced.fit @requisition.items.first.quantity # same as REQS item qty
+  #   page.item_calculate
+  # end
+  @preq_id = on(PaymentRequestPage).preq_id # FIXME: Steps that need this variable should use @payment_request.number instead!
   @payment_request.items.add_item_line quantity: @requisition.items.first.quantity
+  @payment_request.items.first.calculate
+  pending
 end
 
 And  /^I enter a Pay Date$/ do
-  on(PaymentRequestPage).pay_date.fit right_now[:date_w_slashes]
+  #on(PaymentRequestPage).pay_date.fit right_now[:date_w_slashes]
+  @payment_request.edit pay_date: right_now[:date_w_slashes]
 end
 
 And /^I attach an Invoice Image to the (.*) document$/ do |document|
@@ -354,10 +357,11 @@ And /^I attach an Invoice Image to the (.*) document$/ do |document|
 end
 
 And /^I calculate PREQ$/ do
-  on PaymentRequestPage do |page|
-    page.expand_all
-    page.calculate
-  end
+  # on PaymentRequestPage do |page|
+  #   page.expand_all
+  #   page.calculate
+  # end
+  @payment_request.calculate
 end
 
 And /^I view the Purchase Order document via e-SHOP$/ do
@@ -394,12 +398,16 @@ And  /^I select the Payment Request Positive Approval Required$/ do
 end
 
 Then /^I update the Tax Tab$/ do
-  on PaymentRequestPage do |page|
-    page.income_class_code.fit   'A - Honoraria, Prize'
-    page.federal_tax_pct.fit     '0'
-    page.state_tax_pct.fit       '0'
-    page.postal_country_code.fit 'Canada'
-  end
+  # on PaymentRequestPage do |page|
+  #   page.income_class_code.fit   'A - Honoraria, Prize'
+  #   page.federal_tax_pct.fit     '0'
+  #   page.state_tax_pct.fit       '0'
+  #   page.postal_country_code.fit 'Canada'
+  # end
+  @payment_request.update_tax_tab income_class_code:   'A - Honoraria, Prize',
+                                  federal_tax_pct:     '0',
+                                  state_tax_pct:       '0',
+                                  postal_country_code: 'Canada'
 end
 
 And /^I verified the GLPE on Payment Request page with the following:$/ do |table|
