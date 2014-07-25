@@ -64,7 +64,6 @@ Given  /^I (initiate|submit) a Requisition document with the following:$/ do |ac
     And  I enter Delivery Instructions and Notes to Vendor
 
     And  I calculate my Requisition document
-    And  I inspect the Requisition document
     And  I submit the Requisition document
     Then the Requisition document goes to ENROUTE
   }
@@ -112,7 +111,7 @@ And /^I extract the Requisition document to SciQuest$/ do
 
   sleep 10 # We'll give a little time for this to process to SciQuest
 
-  step 'I am logged in as "db18"' # FIXME: This should log in using a role instead of a netid
+  step 'I am logged in as the Initiator of the Requisition document'
   step 'I visit the "e-SHOP" page'
   step 'I view the Purchase Order document via e-SHOP'
   step 'the Document Status displayed \'Completed\''
@@ -129,7 +128,6 @@ And /^I assign Contract Manager and approve Purchase Order Document to FINAL$/ d
   step 'I retrieve the Requisition document'
   step 'the View Related Documents Tab PO Status displays'
   step 'the Purchase Order Number is unmasked'
-
 
   step "I Complete Selecting Vendor #{@vendor_number}" unless @add_vendor_on_reqs == 'Yes'
 

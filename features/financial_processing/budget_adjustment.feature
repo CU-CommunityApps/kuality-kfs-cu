@@ -15,10 +15,10 @@ Feature: Budget Adjustment
   Scenario: Budget Adjustment not allowed to cross Account Sub-Fund Group Codes
     Given   I am logged in as a KFS User
     And     I start a Budget Adjustment document
-    And     I add a From amount of "100.00" for account "1258322" with object code "4480" with a line description of "aft from1"
-    And     I add a To amount of "100" for account "1258323" with object code "4480" with a line description of "aft to 1"
+    And     I add a From amount of "100.00" for account "1002000" with object code "4480" with a line description of "aft from1"
+    And     I add a To amount of "100" for account "1002001" with object code "4480" with a line description of "aft to 1"
     When    I submit the Budget Adjustment document
-    Then    I should get an error saying "The Budget Adjustment document is not balanced within the account."
+    Then    I should get an error saying "To use account 1002000, all accounting lines must match on Sub-Fund Group Code."
 
   @KFSQA-628 @BA @E2E @hare
   Scenario: IT is the default value for Budget Adjustment Chart Values

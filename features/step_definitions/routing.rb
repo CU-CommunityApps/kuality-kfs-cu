@@ -2,7 +2,7 @@ include Utilities
 
 And /^the next pending action for the (.*) document is an? (.*) from a (.*)$/ do |document, action, user_type|
 
-  root_action_requests =  get_root_action_requests(@requisition.document_id).getRootActionRequest().to_a
+  root_action_requests =  get_root_action_requests(document_object_for(document).document_id).getRootActionRequest().to_a
   root_action_requests.each do |root_action|
     puts root_action.annotation.inspect
     puts 'next action'

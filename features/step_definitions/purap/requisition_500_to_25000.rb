@@ -24,8 +24,6 @@ And /^I create the Requisition document with an Award Account and items that tot
   cost_from_param = get_parameter_values('KFS-PURAP', 'DOLLAR_THRESHOLD_REQUIRING_AWARD_REVIEW', 'Requisition')[0].to_i
   cost_from_param = cost_from_param - 1
 
-  @level = arguments['Level'].nil? ? 0 : arguments['Level'].to_i
-
   step 'I create the Requisition document with:',
        table(%Q{
          | Vendor Number       | 4471-0                  |
@@ -633,4 +631,24 @@ And /^I open the Purchase Order Amendment on the Requisition document$/ do
     @purchase_order_amendment_id = page.purchase_order_amendment_value
     page.purchase_order_amendment
   end
+end
+
+And /^I (submit|close|cancel) a Contract Manager Assignment for the Requisition$/ do |btn|
+  visit(MainPage).contract_manager_assignment
+  on ContractManagerAssignmentPage do |page|
+    page.contract_manager_table.rows.each_with_index do |row, index|
+      if row.a(text: @requisition_id).exists?
+        page.search_contract_manager_links[index-1].click
+        break
+      end
+    end
+  end
+  on (ContractManagerLookupPage) do |page|
+    page.search
+    # click twice to have the highest dollar limit at top
+    page.sort_results_by('Contract Manager Delegation Dollar Limit')
+    page.sort_results_by('Contract Manager Delegation Dollar Limit')
+    page.return_value_links.first.click
+  end
+  on(ContractManagerAssignmentPage).send(btn)
 end
