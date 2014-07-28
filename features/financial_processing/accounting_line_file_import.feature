@@ -46,8 +46,7 @@ Feature: import csv for accounting lines on multiple documents
     And     on the <document> I import the From Accounting Lines from a csv file
     And     on the <document> I import the To Accounting Lines from a csv file
     And     I submit the <document> document
-    And     I am logged in as "dh273"
-    #TODO get from role service? chart manager
+    And     I am logged in as a KFS Chart Manager
     When    I view the <document> document
     When    I blanket approve the <document> document
     And     Nightly Batch Jobs run
