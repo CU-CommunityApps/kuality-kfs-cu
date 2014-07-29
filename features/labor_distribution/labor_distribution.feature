@@ -67,10 +67,18 @@ Feature: Labor Distribution
 
    @KFSQA-1012 @ST @smoke @wip
   Scenario: Submit a salary transfer edoc between account types, edit the object code, verify pending entries, and submit successfully.
-    Given logged in as an ST initiator role 10004
-    When  run SALARY EXPENSE
-    And   transfer between accounts with different account types
-    And   Edit object code to replace with a different labor object code
-    And   verify pending entries
-    And   submit
-    Then  doc should become FINAL
+    Given I create a Salary Expense Transfer as a Labor Distribution Manager:
+      | Employee | 1013939 |
+    And   I transfer the Salary between accounts with different Account Types
+      | To Account | 7543814 |
+    And   I edit object code and replace with a different labor object code
+      | Labor Object Code | 5370 |
+    And   I save the Salary Expense Transfer document
+    And   the Labor Ledger Pending entries verify for the accounting lines on the Salary Expense Transfer document
+    And   I submit the Salary Expense Transfer document
+    And   the Salary Expense Transfer document goes to ENROUTE
+    And   I blanket approve the Salary Expense Transfer document
+    Then  the Salary Expense Transfer document goes to FINAL
+    And   I run the nightly Labor batch process
+    And   I am logged in as a Labor Distribution Manager
+    Then  the labor ledger pending entry for employee '1013939' is empty
