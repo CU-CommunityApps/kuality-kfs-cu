@@ -94,7 +94,7 @@ Feature: Disbursement Voucher
 
   @KFSQA-697 @DV @tortoise
   Scenario: Disbursement Voucher Address Types to persist when copied to a new Disbursement Voucher
-    Given I am logged in as a KFS User
+    Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document with Payment to Vendor 4362-0 and Reason Code B
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | G003704        |
@@ -109,7 +109,7 @@ Feature: Disbursement Voucher
     And   I am logged in as a Disbursement Manager
     And   I view the Disbursement Voucher document
     And   I approve the Disbursement Voucher document
-    And   I am logged in as a KFS User
+    And   I am logged in as a KFS User for the DV document
     When  I view the Disbursement Voucher document
     Then  I copy a Disbursement Voucher document with Tax Address to persist
 
@@ -117,9 +117,8 @@ Feature: Disbursement Voucher
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payee's EmplID is the same as Initiator's Entity/Principal ID
 # '1009867' is lk26's principanId/entityId, and arm2's employee_id.
     Given I am logged in as "LK26"
-    #TODO as a user for xx document type
+    #TODO This is a unique case that initiator's principalid=payee's employeeid.  so, keep it hard coded
     And   I start an empty Disbursement Voucher document with Payment to Employee arm2
-    #TODO should change to "an employee with xx characteristic"
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | G003704            |
       | Object Code  | 6540               |
@@ -132,15 +131,18 @@ Feature: Disbursement Voucher
   Scenario: Email Not defaulting in Contact Information Tab
     Given   I am logged in as a KFS User for the DV document
     When    I start an empty Disbursement Voucher document
-    Then    The eMail Address shows up in the Contact Information Tab
+    Then    the eMail Address shows up in the Contact Information Tab
 
   @KFSQA-699 @Create @DV @Search @hare @cornell
   Scenario: Retrieve a DV Payee with their NetID (Cornell Modification)
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
-    And   I add the only payee with Payee Id as57 and Reason Code B to the Disbursement Voucher
-    When  the Payee Name shows as "Shapiro, Anne"
+    # it was using 'as57' which is a 'retiree'
+    And   I add a Retiree as payee and Reason Code B to the Disbursement Voucher
+    When  the Payee Name should match
     Then  the eMail Address shows up in the Contact Information Tab
+    When  I submit the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
 
   @KFSQA-709 @DV @hare
   Scenario: KFS User Initiates a Disbursement Voucher document with only a description field
@@ -164,7 +166,6 @@ Feature: Disbursement Voucher
     And   I submit the Disbursement Voucher document
     And   the Disbursement Voucher document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Disbursement Voucher document
-    #TODO and i follow the route log
     And   I view the Disbursement Voucher document
     When  I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to FINAL
@@ -183,7 +184,6 @@ Feature: Disbursement Voucher
     And   I submit the Disbursement Voucher document
     And   the Disbursement Voucher document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Disbursement Voucher document
-    #TODO and i follow the route log
     And   I view the Disbursement Voucher document
     When  I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to ENROUTE
@@ -207,7 +207,6 @@ Feature: Disbursement Voucher
     And   I submit the Disbursement Voucher document
     And   the Disbursement Voucher document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Disbursement Voucher document
-    #TODO and i follow the route log
     And   I view the Disbursement Voucher document
     And   I approve the Disbursement Voucher document
     And   the Disbursement Voucher document goes to FINAL
@@ -261,7 +260,6 @@ Feature: Disbursement Voucher
     And   I submit the Disbursement Voucher document
     And   the Disbursement Voucher document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Disbursement Voucher document
-    #TODO i logon as next peron in route log
     And   I view the Disbursement Voucher document
     And   I uncheck Special Handling on Payment Information tab
     And   I add note 'Check no longer needs to be picked up in person' to the Disbursement Voucher document
@@ -272,10 +270,8 @@ Feature: Disbursement Voucher
   @KFSQA-716 @DV @cornell @tortoise
   Scenario: DV payee can not be the same as initiator.
     Given I am logged in as a KFS User for the DV document
-    #TODO loggin as a DV user
     And   I start an empty Disbursement Voucher document
     And   I search and retrieve Initiator as DV Payee with Reason Code B
-    #TODO change to "set the current user as the payee with reason code B"
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | G003704            |
       | Object Code  | 6540               |
@@ -285,14 +281,11 @@ Feature: Disbursement Voucher
     Then  I should get an error saying "Payee cannot be same as initiator."
     And   I should get payee id error
     And   I search and retrieve a DV Payee other than Initiator with Reason Code B
-    #TODO find a different user
     And   I search and retrieve Initiator as DV Payee with Reason Code B
-    #TODO add initiator as payee again
     And   I submit the Disbursement Voucher document
     Then  I should get an error saying "Payee cannot be same as initiator."
     And   I should get payee id error
     And   I search and retrieve a DV Payee other than Initiator with Reason Code B
-    #TODO find a different user
     And   I submit the Disbursement Voucher document
     And   the Disbursement Voucher document goes to ENROUTE
 
@@ -318,7 +311,6 @@ Feature: Disbursement Voucher
     And   I submit the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to ENROUTE
     When  I switch to the user with the next Pending Action in the Route Log for the Disbursement Voucher document
-    #TODO i am logged in as next person in route log
     And   I view the Disbursement Voucher document
           # change to account not belong to 'lc88'
     And   I change the Account Number for Accounting Line 1 to G003704 on the Disbursement Voucher
@@ -358,7 +350,6 @@ Feature: Disbursement Voucher
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
     And   I add an Inactive Employee and Alumnus as payee and Reason Code B to the Disbursement Voucher
-    #TODO FIX hard coded payee
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | G003704            |
       | Object Code  | 6100               |

@@ -56,7 +56,7 @@ When /^I start an empty Disbursement Voucher document with only the Description 
 end
 
 And /^I search for the payee with Terminated Employee and Reason Code (\w+) for Disbursement Voucher document with no result found$/ do |reason_code|
-  net_id = "msw13" # TODO : should get this from web services
+  net_id = "msw13" # TODO : should get this from web services. Inactive employee with no other affiliation
   case reason_code
     when 'B'
       @disbursement_voucher.payment_reason_code = 'B - Reimbursement for Out-of-Pocket Expenses'
@@ -99,7 +99,7 @@ And /^I copy a Disbursement Voucher document with Tax Address to persist$/ do
 end
 
 
-Then /^The eMail Address shows up in the Contact Information Tab$/ do
+Then /^the eMail Address shows up in the Contact Information Tab$/ do
   on(DisbursementVoucherPage).email_address.value.should_not == ''
 end
 
@@ -156,7 +156,7 @@ And /^I add a random vendor payee to the Disbursement Voucher$/ do
       plookup.search
       plookup.return_random
       sleep 1
-      plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
+      plookup.return_random unless on(KFSBasePage).header_title.include?('Disbursement Voucher')
     end
     @disbursement_voucher.fill_in_payment_info(tab)
   end
@@ -528,13 +528,19 @@ end
 And /^I add an? (.*) as payee and Reason Code (\w+) to the Disbursement Voucher$/ do |payee_status, reason_code|
   case payee_status
     when 'Retiree'
-      net_id = "map3" # TODO : should get from web service
+      @payee_net_id = "map3" # TODO : should get from web service
     when 'Active Staff, Former Student, and Alumnus'
-      net_id = "nms32" # TODO : should get from web service or parameter
+      @payee_net_id = "nms32" # TODO : should get from web service or parameter
     when 'Active Employee, Former Student, and Alumnus'
-      net_id = "vk76" # TODO : should get from web service or parameter. vk76 is inactive now.
+      @payee_net_id = "vk76" # TODO : should get from web service or parameter. vk76 is inactive now.
     when 'Inactive Employee and Alumnus'
-      net_id = "rlg3" # TODO : should get from web service or parameter.
+      @payee_net_id = "rlg3" # TODO : should get from web service or parameter.
   end
-  step "I add the only payee with Payee Id #{net_id} and Reason Code #{reason_code} to the Disbursement Voucher"
+  step "I add the only payee with Payee Id #{@payee_net_id} and Reason Code #{reason_code} to the Disbursement Voucher"
+end
+
+Then /^the Payee Name should match$/ do
+  #payee_name = get_person_name(@payee_net_id)
+  payee_name = "Page, Marcia A." # should get this from web services
+  on(PaymentInformationTab).payee_name.should == payee_name
 end
