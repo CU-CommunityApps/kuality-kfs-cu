@@ -227,20 +227,20 @@ And /^the Labor Ledger Pending entries verify for the accounting lines on the (.
   #    for fiscal period selected in test (returned value)
   # 3. The associated benefit accounts will appear and post in the same manner as #1 and #2 described above
   # flags for condition #1 described above
-  from_reg_credit_actuals_period_empty_found = false
-  to_reg_acct_debit_actuals_period_empty_found = false
+  from_reg_crdt_actual_per_empt = false
+  to_reg_act_dbt_actual_per_empt = false
   # flags for condition #2 described above
-  from_reg_debit_labor_period_empty_found = false
-  from_reg_credit_labor_period_chosen_found = false
-  to_reg_credit_labor_period_empty_found = false
-  to_reg_debit_labor_period_chosen_found = false
+  from_reg_dbt_labor_per_empt = false
+  from_reg_crdt_labor_per_chosen = false
+  to_reg_crdt_labor_per_empt = false
+  to_reg_dbt_labor_per_chosen = false
   # flags for condition #3 described above
-  from_ben_credit_actuals_period_empty_found = false
-  to_ben_acct_debit_actuals_period_empty_found = false
-  from_ben_debit_labor_period_empty_found = false
-  from_ben_credit_labor_period_chosen_found = false
-  to_ben_credit_labor_period_empty_found = false
-  to_ben_debit_labor_period_chosen_found = false
+  from_ben_crdt_actual_per_empt = false
+  to_ben_act_dbt_actual_per_empt = false
+  from_ben_dbt_labor_per_empt = false
+  from_ben_crdt_labor_per_chosen = false
+  to_ben_crdt_labor_per_empt = false
+  to_ben_dbt_labor_per_chosen = false
 
 
   # FROM ACCOUNTING LINES
@@ -250,22 +250,15 @@ And /^the Labor Ledger Pending entries verify for the accounting lines on the (.
     page.close_children   #only way to get Fringe Benefit Inquiry to close
 
     # get labor benefit rate category code on account
-    from_labor_benefit_rate_category_code = "CC"
-    # #TODO dynamically determine
-    acct_num = from_line[:account_number]
-    data = "closed=N&accountNumber=#{from_line[:account_number].to_s}"
-    account_info = get_kuali_business_object('KFS-COA','Account',data)
-    account_info = get_kuali_business_object('KFS-COA','Account','accountNumber=7543814')
-    award_account_number = account_info['accountNumber'][0]    # lbrcc = account_info['laborBenefitRateCategoryCode']
+    account_info = get_kuali_business_object('KFS-COA','Account',"closed=N&accountNumber=#{from_line[:account_number]}")
+    from_labor_ben_rate_cat_cd = account_info['laborBenefitRateCategoryCode'][0]
 
-    # use Labor Object Code Benefits Lookup to get labor benefits type code (account => FY, chart code, )
-    from_labor_benefit_type_code = @salary_expense_transfer.lookup_labor_benefits_type_code(from_line[:chart_code], from_line[:object_code])
+    # Labor Object Code Benefits Lookup as webservice call to get labor benefits type code
+    from_labor_benefit_type_info = get_kuali_business_object('KFS-LD','PositionObjectBenefit',"universityFiscalYear=#{@fiscal_year}&chartOfAccountsCode=#{from_line[:chart_code]}&financialObjectCode=#{from_line[:object_code]}")
+    from_labor_benefit_type_code = from_labor_benefit_type_info['financialObjectBenefitsTypeCode'][0]
 
-
-    # use Labor Benefits Calculation Lookup
-    # @fiscal_year, from_line[:chart_code], from_labor_benefit_type_code, from_labor_benefit_category_rate_code
-
-
+    # Labor Benefits Calculation Lookup as webservice call to get
+    from_labor_calc_info = get_kuali_business_object('KFS-LD','BenefitsCalculation',"universityFiscalYear=#{@fiscal_year}&chartOfAccountsCode=#{from_line[:chart_code]}&positionBenefitTypeCode=#{from_labor_benefit_type_code}&laborBenefitRateCategoryCode=#{from_labor_ben_rate_cat_cd}")
 
   end #for-loop
 
