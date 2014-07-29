@@ -15,9 +15,7 @@ Feature: Vendor Edit
 
   @KFSQA-755 @cornell @slug @E2E @VendorEdit
   Scenario: I want to edit a vendor with ownership type INDIVIDUAL
-    # "rlc56" can't view notes
-    Given   I am logged in as "rlc56"
-    #TODO login as a vendor initiqtor
+    Given   I am logged in as a Vendor Initiator
     When    I edit a Vendor with Vendor Number 35495-0
     Then    the Tax Number and Notes are Not Visible on Vendor page
     And     I change the Address Line 1 on Vendor Address tab
@@ -30,42 +28,39 @@ Feature: Vendor Edit
     And     I change the Phone Number on Vendor Phone tab
     And     I approve the Vendor document
     And     the Vendor document goes to FINAL
-    Given   I am logged in as "rlc56"
-    #TODO login as the document initiator
+    Given   I am logged in as a Vendor Initiator
     When    I edit a Vendor with Vendor Number 35495-0
     Then    the Tax Number and Notes are Not Visible on Vendor page
     And     I change the Address Line 2 on Vendor Address tab
     And     I change the Phone Extension on Vendor Phone tab
     And     I submit the Vendor document
     And     the Vendor document goes to ENROUTE
-    And     I am logged in as "pag4"
-    #TODO and i login as the next user in route log
+    And     I switch to the user with the next Pending Action in the Route Log for the Vendor document
     And     I select Vendor document from my Action List
     And     I change the Address Attention on Vendor Address tab
     And     I change the Phone Type on Vendor Phone tab
     And     I approve the Vendor document
     And     the Vendor document goes to FINAL
-    Given   I am logged in as "rlc56"
-    #TODO login as THE document initiqtor
+    Given   I am logged in as a Vendor Initiator
     When    I edit a Vendor with Vendor Number 35495-0
     Then    the Tax Number and Notes are Not Visible on Vendor page
     And     the Address and Phone Number changes persist
 
   @KFSQA-773 @cornell @slug @E2E @VendorEdit
   Scenario: PO Vendor Edit, with Expired Insurance.
-    # "ccs1" can blanket approve
-    Given   I am logged in as "ccs1"
+    # user who can initiate/blanket approve vendor
+    Given   I am logged in as a Vendor Initiator and Manager
     When    I edit a Vendor with Vendor Number 12587-1
     And     I update the General Liability with expired date
     And     I blanket approve the Vendor document with expired liability date
     Then    the Vendor document goes to FINAL
-    Given   I am logged in as "lda22"
+    Given   I am logged in as a Vendor Initiator
     When    I edit a Vendor with Vendor Number 12587-1
     And     I change the Address Line 1 on Vendor Address tab
     And     I change the Phone Number on Vendor Phone tab
     And     I submit the Vendor document with expired liability date
     Then    the Vendor document goes to ENROUTE
-    Given   I am logged in as "pag4"
+    And     I switch to the user with the next Pending Action in the Route Log for the Vendor document
     And     I select Vendor document from my Action List
     Then    the changes to Vendor document have persisted
     And     I change the Address Line 2 on Vendor Address tab
@@ -75,7 +70,8 @@ Feature: Vendor Edit
     Then    the changes to Vendor document have persisted
     And     I approve the Vendor document with expired liability date
     Then    the Vendor document goes to FINAL
-    Given   I am logged in as "lda22"
+    # TODO : This should be the person whe just created the Vendor document.  'vendor initiator' is the first member in the role, so it should be ok in the same run
+    Given   I am logged in as a Vendor Initiator
     And     I select Vendor document from my Action List
     And     I fyi the Vendor document
     When    I edit a Vendor with Vendor Number 12587-1
@@ -84,15 +80,15 @@ Feature: Vendor Edit
   @KFSQA-839 @cornell @VendorEdit @Routing @smoke @coral
   Scenario: Edit a vendor and ensure routing to the second reviewer. Confirm display of Vendor Address Generated Identifier. Confirm previously added attachments persist.
     Given I am logged in as a Vendor Initiator
-    And   I edit a PO Vendor
-    When  I add a Supplier Diversity to the Vendor document
+    And   I edit a PO Vendor with Supplier Diversity
+    And   I add a Supplier Diversity to the Vendor document
     And   I add a Search Alias to the Vendor document
     And   I note how many attachments the Vendor document has already
     And   I add an attachment to the Vendor document
     And   I submit the Vendor document
-    Then  the next pending action for the Vendor document is an APPROVE from a KFS-VND Reviewer
-    Given I route the Vendor document to final
+    And   the next pending action for the Vendor document is an APPROVE from a KFS-VND Reviewer
+    And   I route the Vendor document to final
     And   I am logged in as a Vendor Attachment viewer (cu)
-    When  I open the Vendor from the Vendor document
-    Then  the Address Tab displays Vendor Address Generated Identifiers for each Address
-    And   the Vendor document's Notes Tab displays the added attachment
+    And   I open the Vendor from the Vendor document
+    When  the Address Tab displays Vendor Address Generated Identifiers for each Address
+    Then  the Vendor document's Notes Tab displays the added attachment

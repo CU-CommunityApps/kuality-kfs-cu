@@ -16,9 +16,9 @@ Feature: Advance Deposit
     Given I am logged in as a KFS User
     And   I save an Advance Deposit document
     And   Nightly Batch Jobs run
-    And   I am logged in as a KFS Chart Manager
+    And   I am logged in as a KFS User
     And   I view the Advance Deposit document
-    When  I blanket approve the Advance Deposit document
+    When  I submit the Advance Deposit document
     Then  the Advance Deposit document goes to FINAL
 
   @KFSQA-609 @DVCreate @KFSPTS-1632 @KFSUPGRADE-140 @sloth

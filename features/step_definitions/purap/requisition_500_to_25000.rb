@@ -23,6 +23,7 @@ And /^I create the Requisition document with an Award Account and items that tot
   award_account_number = account_info['accountNumber'][0]
   cost_from_param = get_parameter_values('KFS-PURAP', 'DOLLAR_THRESHOLD_REQUIRING_AWARD_REVIEW', 'Requisition')[0].to_i
   cost_from_param = cost_from_param - 1
+
   step 'I create the Requisition document with:',
        table(%Q{
          | Vendor Number       | 4471-0                  |
@@ -33,6 +34,30 @@ And /^I create the Requisition document with an Award Account and items that tot
          | Object Code         | 6570                    |
          | Percent             | 100                     |
        })
+end
+
+And /^I submit the Requisition document with items that total more than the dollar threshold Requiring Award Review$/ do
+  account_info = get_kuali_business_object('KFS-COA','Account','subFundGroupCode=APFEDL&closed=N&contractsAndGrantsAccountResponsibilityId=5&accountExpirationDate=NULL')
+  award_account_number = account_info['accountNumber'][0]
+  cost_from_param = get_parameter_values('KFS-PURAP', 'DOLLAR_THRESHOLD_REQUIRING_AWARD_REVIEW', 'Requisition')[0].to_i
+  cost_from_param = cost_from_param + 100
+
+  step 'I create the Requisition document with:',
+       table(%Q{
+         | Vendor Number       | 4471-0                  |
+         | Item Quantity       | 1                       |
+         | Item Cost           | #{cost_from_param}      |
+         | Item Commodity Code | 12142203                |
+         | Account Number      | #{award_account_number} |
+         | Object Code         | 6570                    |
+         | Percent             | 100                     |
+       })
+    step "I submit the Requisition document"
+
+end
+
+And /^I select yes to the question$/ do
+  on(YesOrNoPage).yes
 end
 
 And /^I add an item to the Requisition document with:$/ do |table|
@@ -69,6 +94,7 @@ And /^I view the (.*) document on my action list$/ do |document|
     #sort the date
     # if previous user already clicked this sort, then action list for next user will be sorted with 'Date created'.  So, add this 'unless' check
     page.sort_results_by('Date Created') unless page.result_item(document_object_for(document).document_id).exists?
+
     page.result_item(document_object_for(document).document_id).wait_until_present
     page.open_item(document_object_for(document).document_id)
   end
@@ -84,10 +110,12 @@ end
 And /^I view the Requisition document from the Requisitions search$/ do
   visit(MainPage).requisitions
   on DocumentSearch do |page|
-    page.requisition_num
+    page.requisition_num.fit @requisition_id unless @requisition_id.nil?
     page.search
     page.open_item(@requisition.document_id)
   end
+  on(RequisitionPage).expand_all
+
 end
 
 And /^I (submit|close|cancel) a Contract Manager Assignment of '(\d+)' for the Requisition$/ do |btn, contract_manager_number|
@@ -111,8 +139,7 @@ end
 
 And /^the View Related Documents Tab PO Status displays$/ do
   on RequisitionPage do |page|
-    page.show_related_documents
-    page.show_purchase_order
+    page.expand_all
     @purchase_order_number = page.purchase_order_number
     # verify unmasked and 'UNAPPROVED'
     page.purchase_order_number.should_not include '*****' # unmasked
@@ -121,7 +148,6 @@ And /^the View Related Documents Tab PO Status displays$/ do
     end
     page.purchase_order_number_link
 
-    sleep 10
     @purchase_order = create PurchaseOrderObject
   end
 end
@@ -182,12 +208,9 @@ And /^I submit the PO eDoc Status is$/ do
   pending # express the regexp above with the code you wish you had
 end
 
-
-
 And /^The PO eDoc Status is$/ do
   pending # express the regexp above with the code you wish you had
 end
-
 
 And(/^the (.*) Doc Status is (.*)/) do |document, doc_status|
   on(KFSBasePage).app_doc_status.should == doc_status
@@ -235,7 +258,7 @@ Then /^in Pending Action Requests an FYI is sent to FO and Initiator$/ do
         else
           if page.pnd_act_req_table[i][4].text.include? 'Initiator'
             fyi_initiator += 1
-           end
+          end
         end
       end
     end
@@ -303,7 +326,6 @@ end
 And  /^I enter a Pay Date$/ do
   on(PaymentRequestPage).pay_date.fit right_now[:date_w_slashes]
 end
-
 
 And /^I attach an Invoice Image to the (.*) document$/ do |document|
   document_object_for(document).notes_and_attachments_tab
@@ -419,15 +441,15 @@ And /^I enter Payment Information for recurring payment type (.*)$/ do |recurrin
   end
 end
 
-  Then /^the Payment Request document's GLPE tab shows the Requisition document submissions$/ do
-    on PaymentRequestPage do |page|
-      page.show_glpe
+Then /^the Payment Request document's GLPE tab shows the Requisition document submissions$/ do
+  on PaymentRequestPage do |page|
+    page.show_glpe
 
       page.glpe_results_table.text.include? @requisition.items.first.accounting_lines.first.object_code
       page.glpe_results_table.text.include? @requisition.items.first.accounting_lines.first.account_number
       # credit object code should be 3110 (depends on parm)
     end
-  end
+end
 
 And /^I Complete Selecting an External Vendor$/ do
   on(PurchaseOrderPage).vendor_search
@@ -501,7 +523,7 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
           @commodity_review_users.push(new_user)
         else
           if (on(page_class_for(document)).app_doc_status == 'Awaiting Fiscal Officer')
-             @fo_users.push(new_user)
+            @fo_users.push(new_user)
           end
         end
       end
@@ -513,7 +535,7 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
     end
 
     if on(page_class_for(document)).document_status == 'FINAL'
-        break
+      break
     end
     x += 1
   end
@@ -526,4 +548,83 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
     end
   end
 
+end
+
+And /^During Approval of the (.*) document the Financial Officer adds a second line item with:$/ do |document, table|
+  step "I view the Requisition document from the Requisitions search"
+  step 'I switch to the user with the next Pending Action in the Route Log for the Requisition document'
+  step "I view the Requisition document on my action list"
+  on RequisitionPage do |page|
+    page.expand_all
+    accounting_line_info = table.rows_hash
+
+    doc_object = snake_case document
+
+    on page_class_for(document) do |page|
+      page.added_percent.fit '50'
+
+      AccountingLinesMixin.add_source_line({
+                                       account_number: accounting_line_info['Number'],
+                                       object:         accounting_line_info['Object Code'],
+                                       percent:         accounting_line_info['Percent']
+                                  })
+
+      page.calculate
+      sleep 2
+      page.approve
+    end
+  end
+end
+
+And /^During Approval of the Purchase Order Amendment the Financial Officer adds a line item$/ do
+  step "I view the Requisition document from the Requisitions search"
+  step 'I switch to the user with the next Pending Action in the Route Log for the Requisition document'
+  step 'I open the Purchase Order Amendment on the Requisition document'
+  step 'I switch to the user with the next Pending Action in the Route Log for the Purchase Order document'
+  step 'I open the Purchase Order Amendment on the Requisition document'
+
+  on PurchaseOrderPage do |page|
+    page.expand_all
+
+    page.account_number.fit '1271001'
+    page.object_code.fit '6570'
+    page.percent.fit '50'
+
+    page.old_percent.fit '50'
+    page.old_amount.fit ''
+
+    page.add_account
+    page.calculate
+    sleep 2
+    page.approve
+  end
+end
+
+And /^I open the Purchase Order Amendment on the Requisition document$/ do
+  step "I view the Requisition document"
+  on RequisitionPage do |page|
+    page.expand_all
+    @purchase_order_amendment_id = page.purchase_order_amendment_value
+    page.purchase_order_amendment
+  end
+end
+
+And /^I (submit|close|cancel) a Contract Manager Assignment for the Requisition$/ do |btn|
+  visit(MainPage).contract_manager_assignment
+  on ContractManagerAssignmentPage do |page|
+    page.contract_manager_table.rows.each_with_index do |row, index|
+      if row.a(text: @requisition_id).exists?
+        page.search_contract_manager_links[index-1].click
+        break
+      end
+    end
+  end
+  on (ContractManagerLookupPage) do |page|
+    page.search
+    # click twice to have the highest dollar limit at top
+    page.sort_results_by('Contract Manager Delegation Dollar Limit')
+    page.sort_results_by('Contract Manager Delegation Dollar Limit')
+    page.return_value_links.first.click
+  end
+  on(ContractManagerAssignmentPage).send(btn)
 end

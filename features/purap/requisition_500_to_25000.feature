@@ -32,7 +32,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   the Requisition document goes to FINAL
     And   I am logged in as a Purchasing Processor
     #<ml284>
-    And   I submit a Contract Manager Assignment of '10' for the Requisition
+    And   I submit a Contract Manager Assignment for the Requisition
     And   I am logged in as an e-SHOP User
     #der9
     And   I view the Requisition document from the Requisitions search
@@ -58,7 +58,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
       | Item Commodity Code | 12142203 |
       | Item Catalog Number | 10101157 |
       | Item Description    | ANIM     |
-      | Account Number      | R589854  |
+      | Account Number      | 1093603  |
       | Object Code         | 6540     |
       | Percent             | 100      |
     And   I add an attachment to the Requisition document
@@ -76,7 +76,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   I approve the Requisition document
     And   the Requisition document goes to FINAL
     And   I am logged in as a Purchasing Processor
-    And   I submit a Contract Manager Assignment of '10' for the Requisition
+    And   I submit a Contract Manager Assignment for the Requisition
     And   I am logged in as a PURAP Contract Manager
     And   I retrieve the Requisition document
     And   the View Related Documents Tab PO Status displays
@@ -111,7 +111,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   I approve the Requisition document
     And   the Requisition document goes to FINAL
     And   I am logged in as a Purchasing Processor
-    And   I submit a Contract Manager Assignment of '10' for the Requisition
+    And   I submit a Contract Manager Assignment for the Requisition
     And   I am logged in as a PURAP Contract Manager
     And   I retrieve the Requisition document
     And   the View Related Documents Tab PO Status displays
@@ -123,7 +123,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     Then  the Purchase Order document goes to FINAL
     And   in Pending Action Requests an FYI is sent to FO and Initiator
     And   the Purchase Order Doc Status is Open
-    Given I am logged in as "db18"
+    Given I am logged in as the Initiator of the Requisition document
     And   I visit the "e-SHOP" page
     And   I view the Purchase Order document via e-SHOP
     Then  the Document Status displayed 'Completed'
@@ -172,7 +172,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   I approve the Requisition document
     Then  the Requisition document goes to FINAL
     Given I am logged in as a Purchasing Processor
-    When  I submit a Contract Manager Assignment of '10' for the Requisition
+    When  I submit a Contract Manager Assignment for the Requisition
     Given I am logged in as a PURAP Contract Manager
     When  I retrieve the Requisition document
     Then  the View Related Documents Tab PO Status displays
@@ -184,8 +184,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     Then  the Purchase Order document goes to FINAL
     And   in Pending Action Requests an FYI is sent to FO and Initiator
     And   the Purchase Order Doc Status is Open
-    # TODO : This is a little tricky. using eshop user/eshop super user role will not work.  Also, this need some permission set up on SQ side
-    Given I am logged in as "db18"
+    Given I am logged in as the Initiator of the Requisition document
     When  I visit the "e-SHOP" page
     And   I view the Purchase Order document via e-SHOP
     Then  the Document Status displayed 'Completed'
@@ -236,7 +235,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     When  I approve the Requisition document
     Then  the Requisition document goes to FINAL
     Given I am logged in as a Purchasing Processor
-    When  I submit a Contract Manager Assignment of '10' for the Requisition
+    When  I submit a Contract Manager Assignment for the Requisition
     Given I am logged in as a PURAP Contract Manager
     When  I retrieve the Requisition document
     Then  the View Related Documents Tab PO Status displays
@@ -248,7 +247,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     Then  the Purchase Order document goes to FINAL
     And   in Pending Action Requests an FYI is sent to FO and Initiator
     And   the Purchase Order Doc Status is Open
-    Given I am logged in as "db18"
+    Given I am logged in as the Initiator of the Requisition document
     When  I visit the "e-SHOP" page
     And   I view the Purchase Order document via e-SHOP
     Then  the Document Status displayed 'Completed'
@@ -272,7 +271,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
 
   @KFSQA-766 @Approving @E2E @Encumbrance @MultiDay @PO @PREQ @PendingEntries @REQS @cornell @coral
   Scenario: PURAP E2E-004d PREQ - Manual Entry, >$500, <$5000, Internal Vendor
-    Given I login as a KFS user to create an REQS
+    Given I am logged in as an e-SHOP User
     When  I create the Requisition document with:
       | Item Quantity       | 3        |
       | Item Cost           | 1000     |
@@ -298,7 +297,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     When  I approve the Requisition document
     Then  the Requisition document goes to FINAL
     Given I am logged in as a Purchasing Processor
-    When  I submit a Contract Manager Assignment of '10' for the Requisition
+    When  I submit a Contract Manager Assignment for the Requisition
     Given I am logged in as a PURAP Contract Manager
     When  I retrieve the Requisition document
     Then  the View Related Documents Tab PO Status displays
@@ -311,7 +310,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     Then  the Purchase Order document goes to FINAL
     And   in Pending Action Requests an FYI is sent to FO and Initiator
     And   the Purchase Order Doc Status is Open
-    Given I am logged in as "db18"
+    Given I am logged in as the Initiator of the Requisition document
     When  I visit the "e-SHOP" page
     And   I view the Purchase Order document via e-SHOP
     Then  the Document Status displayed 'Completed'

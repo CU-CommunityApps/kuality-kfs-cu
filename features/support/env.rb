@@ -7,13 +7,8 @@ require 'headless'
 
 $base_url = @config[:kfs_url]
 $base_rice_url = @config[:rice_url]
-
 if ENV['URL']
   $base_url = ENV['URL']
-end
-
-if ENV['RICE_URL']
-  $base_rice_url = ENV['RICE_URL']
 end
 
 $file_folder = "#{File.dirname(__FILE__)}/../../lib/resources/"
@@ -33,7 +28,7 @@ if ENV['HEADLESS']
 end
 
 if ENV['BROWSER']
-  @config[:browser] = ENV['BROWSER'].to_sym
+#  @config[:browser] = ENV['BROWSER'].to_sym
 end
 
 kuality = KualityKFS.new @config[:browser]
