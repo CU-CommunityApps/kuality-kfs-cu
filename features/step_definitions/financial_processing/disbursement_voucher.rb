@@ -157,7 +157,6 @@ And /^I add a random vendor payee to the Disbursement Voucher$/ do
       plookup.search
       plookup.return_random
       sleep 1
-      plookup.return_random unless on(KFSBasePage).header_title.include?('Disbursement Voucher')
     end
     @disbursement_voucher.fill_in_payment_info(tab)
   end
