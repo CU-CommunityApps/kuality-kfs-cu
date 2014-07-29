@@ -441,8 +441,23 @@ And /^I lookup a PO Vendor$/ do
   step "I lookup a Vendor with Vendor Number #{vendor_number}"
 end
 
+And /^I lookup a PO Vendor with Supplier Diversity$/ do
+  vendor_info = get_kuali_business_object('KFS-VND','VendorDetail','vendorHeader.vendorOwnershipCode=ID&vendorHeader.vendorSupplierDiversities.vendorSupplierDiversityCode=WO&vendorHeader.vendorSupplierDiversities.extension.vendorSupplierDiversityExpirationDate=07/25/2014&active=Y&vendorNumber=*-0')
+  vendor_number = vendor_info['vendorNumber'][0]
+
+  step "I lookup a Vendor with Vendor Number #{vendor_number}"
+end
+
 And /^I edit a PO Vendor$/ do
   step 'I lookup a PO Vendor'
+  @vendor = make VendorObject
+  on(VendorPage).description.fit @vendor.description
+  @vendor.absorb! :old
+  @document_id = @vendor.document_id
+end
+
+And /^I edit a PO Vendor with Supplier Diversity$/ do
+  step 'I lookup a PO Vendor with Supplier Diversity'
   @vendor = make VendorObject
   on(VendorPage).description.fit @vendor.description
   @vendor.absorb! :old
