@@ -148,3 +148,24 @@ Given /^I am logged in as the Initiator of the Requisition document$/ do
   # this is not to find the REQS initiator role.  It is the 'initiator' who created the REQS for this scenario
   step "I am logged in as \"#{@requisition_initiator}\""
 end
+
+Given /^I am logged in as a Vendor Initiator and Manager$/ do
+  # initiator can edit Vendor and Manager can blanket approve vendor
+  managers = get_principal_name_for_role('KFS-SYS', 'Manager');
+  initiators = get_principal_name_for_role('KFS-VND', 'CU Vendor Initiator')
+  users = managers & initiators
+  visit(BackdoorLoginPage).login_as(users[0])
+end
+
+Given /^I am logged in as a (Source|Target|From|To) Account Fiscal Officer$/ do |acct_type|
+  if acct_type == 'Source' || acct_type == 'From'
+    acct_number = on(AccountingLine).result_source_account_number(0)
+  else
+    acct_number = on(AccountingLine).result_target_account_number(0)
+  end
+  step "I am logged in as a KFS Fiscal Officer for account number #{acct_number}"
+end
+
+Given /^I am logged in as a FP document Blanket Approver$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'FP Doc Blanket Approver (cu)'))
+end
