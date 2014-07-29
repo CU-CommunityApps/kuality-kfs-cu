@@ -491,8 +491,10 @@ end
 
 And /^I search and retrieve a DV Payee other than Initiator with Reason Code (\w)$/ do |reason_code|
   user_id = get_random_principal_name_for_role('KFS-SYS', 'User')
-  while user_id == @dv_initiator
+  i = 0 # just in case to prevent infinite loop
+  while user_id == @dv_initiator && i < 10
     user_id = get_random_principal_name_for_role('KFS-SYS', 'User')
+    i += 1
   end
   step "I search and retrieve a DV Payee ID #{user_id} with Reason Code #{reason_code}"
 end
