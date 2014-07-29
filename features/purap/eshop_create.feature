@@ -37,3 +37,9 @@ Feature: eSHOP Create
     And   I extract the Requisition document to SciQuest
     And   I initiate a Payment Request document
     Then  I FORMAT AND PROCESS THE CHECK WITH PDP
+
+  @wip1
+  Scenario: test test
+    Given I am logged in as "pp28"
+    And   I open the document with ID 5692846
+    When  I inspect the variable named blah

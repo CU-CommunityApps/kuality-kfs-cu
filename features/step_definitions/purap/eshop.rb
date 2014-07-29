@@ -69,8 +69,7 @@ When /^I view my e\-SHOP cart$/ do
 end
 
 Given /^I initiate an e\-SHOP order$/ do
-  step 'I am logged in as an e-SHOP User'
-  #step 'I am logged in as an e-SHOP User who can initiate a Requisition document'
+  step 'I am logged in as an e-SHOP Plus User'
   step 'I go to the e-SHOP main page'
   step 'I search for an e-SHOP item with a Non-Sensitive Commodity Code'
   step 'I add e-SHOP items to my cart until the cart total reaches the Business to Business Total Amount For Automatic Purchase Order limit'
@@ -90,6 +89,5 @@ Given /^I initiate an e\-SHOP order$/ do
   step 'I submit the Requisition document'
   step 'the document should have no errors'
   step 'I reload the Requisition document'
-  #step 'Payment Request Positive Approval Required is not required'
   step 'Payment Request Positive Approval Required is required'
 end

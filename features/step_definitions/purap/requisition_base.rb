@@ -105,10 +105,6 @@ And /^I extract the Requisition document to SciQuest$/ do
     step 'I assign Contract Manager and approve Purchase Order Document to FINAL'
   end
 
-  puts "AGP?: #{@auto_gen_po}"
-  puts @requisition.inspect
-  puts @purchase_order.inspect
-
   sleep 10 # We'll give a little time for this to process to SciQuest
 
   step 'I am logged in as the Initiator of the Requisition document'
@@ -315,7 +311,7 @@ end
 When /^I (initiate|submit) a Purchase Order Amendment document with the following:$/ do |action, table|
   arguments = table.rows_hash
 
-  step "I am logged in as \"#{@requisition_initiator}\""
+  step "I am logged in as \"#{@requisition.initiator}\""
   step 'I view the Purchase Order document'
   step 'I amend the Purchase Order'
 

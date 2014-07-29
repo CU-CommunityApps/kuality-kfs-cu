@@ -101,7 +101,7 @@ And /^I view the (.*) document on my action list$/ do |document|
   if document.eql?('Requisition')
     on RequisitionPage do |page|
       @requisition.requisition_id = page.requisition_id
-      @requisition_initiator = page.initiator
+      @requisition_initiator = page.initiator # FIXME: Retrofit anything using this to use @requisition.initiator
     end
   end
 
@@ -320,14 +320,12 @@ And /^I fill out the PREQ initiation page and continue$/ do
   #   puts right_now[:samigo]
   #   page.continue
   # end
-  puts right_now[:samigo]
   @payment_request.initiate_request
-  puts right_now[:samigo]
 end
 
 And /^I change the Remit To Address$/ do
   #on(PaymentRequestPage) { |p| p.vendor_address_1.fit "Apt1#{p.vendor_address_1.value}" }
-  @payment_request.edit vendor_address_1: "Apt1#{p.vendor_address_1.value}"
+  @payment_request.edit vendor_address_1: "#{on(PaymentRequestPage).vendor_address_1.value}, Apt1" # FIXME: Once PaymentRequestObject#absorb! is implemented
 end
 
 And /^I enter the Qty Invoiced and calculate$/ do
@@ -336,9 +334,12 @@ And /^I enter the Qty Invoiced and calculate$/ do
   #   page.item_qty_invoiced.fit @requisition.items.first.quantity # same as REQS item qty
   #   page.item_calculate
   # end
-  @preq_id = on(PaymentRequestPage).preq_id # FIXME: Steps that need this variable should use @payment_request.number instead!
-  @payment_request.items.add_item_line quantity: @requisition.items.first.quantity
+  @preq_id = on(PaymentRequestPage).preq_id # FIXME: Steps that need this variable should use @payment_request.number instead! If there are none, this line can be removed.
+  @payment_request.update_line_objects_from_page! # TODO: Remove this when PaymentRequestObject#absorb! has been implemented since we'll assume the items have already been set up
+  puts @payment_request.inspect
+  @payment_request.items.first.edit quantity: @requisition.items.first.quantity
   @payment_request.items.first.calculate
+  puts @payment_request.items.first.inspect
   pending
 end
 
