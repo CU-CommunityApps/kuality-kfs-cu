@@ -141,8 +141,6 @@ Feature: Disbursement Voucher
     And   I add a Retiree as payee and Reason Code B to the Disbursement Voucher
     When  the Payee Name should match
     Then  the eMail Address shows up in the Contact Information Tab
-    When  I submit the Disbursement Voucher document
-    Then  the Disbursement Voucher document goes to ENROUTE
 
   @KFSQA-709 @DV @hare
   Scenario: KFS User Initiates a Disbursement Voucher document with only a description field
