@@ -114,6 +114,7 @@ And /^I add a random employee payee to the Disbursement Voucher$/ do
     end
     @disbursement_voucher.fill_in_payment_info(tab)
   end
+  # TODO : may need to fill contact phone# if this employee does not have phone number
 end
 
 And /^I add a Pre-Paid Travel Expense$/ do
