@@ -167,6 +167,7 @@ Given /^I am logged in as a (Source|Target|From|To) Account Fiscal Officer$/ do 
   step "I am logged in as a KFS Fiscal Officer for account number #{acct_number}"
 end
 
-Given /^I am logged in as an Adhoc Approver$/ do
-  step "I am logged in as \"#{@adhoc_approver}\""
+And /^I am logged in as the adhoc user$/ do
+  step "I am logged in as \"#{@adhoc_user}\""
 end
+
