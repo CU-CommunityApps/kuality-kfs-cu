@@ -36,8 +36,8 @@ Feature: Disbursement Voucher
   [KFSQA-677] Disbursement Voucher foreign draft with non resident tax, special handling, and workflow changes for Account, Object Code, and Amount.
 
   [KFSQA-711] Foreign Check and NRA Tax GLPE. As a KFS User I will pay vendors in foreign monies if requested , because
-  Cornell does business outside the United States. I also want to change the document during workflow. as
-  reviewers may need to change the document. Object Code, and Amount.
+              Cornell does business outside the United States. I also want to change the document during workflow. as
+              reviewers may need to change the document. Object Code, and Amount.
 
   [KFSQA-702] FO can do a search on the account and verify the payee id still displays on the DV. Approve it to final.
 

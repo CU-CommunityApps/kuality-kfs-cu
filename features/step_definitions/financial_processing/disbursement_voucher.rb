@@ -311,7 +311,6 @@ Then /^I complete the Nonresident Alien Tax Tab and generate accounting line for
 end
 
 When /^I select Disbursement Voucher document from my Action List$/ do
-  sleep 5
   visit(MainPage).action_list
   on(ActionList).last if on(ActionList).last_link.exists? && !on(ActionList).result_item(@disbursement_voucher.document_id).exists?
   on(ActionList).open_item(@disbursement_voucher.document_id)
