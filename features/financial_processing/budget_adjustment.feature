@@ -59,7 +59,7 @@ Feature: Budget Adjustment
   Scenario Outline: Upload only Base Budget budget transactions using BA Import Template.
 # GETTING ERROR FOR NOT ALLOWING BASE ADJUSTMENT FOR YEARS 2014 and 2015 (only available)
     #TODO : There is only 1 example; do we really need 'scenario outline'
-    Given   I am logged in as a KFS Manager for the BA document
+    Given   I am logged in as a KFS Manager for the <type code> document
     And     I start a <document> document for from "<From file name>" file import and to "<To file name>" file import
     And     on the <document> I import the From Accounting Lines from a csv file
     And     on the <document> I import the To Accounting Lines from a csv file
@@ -81,7 +81,7 @@ Feature: Budget Adjustment
     And     on the <document> I import the To Accounting Lines from a csv file
     And     I capture the To Accounting Lines for the <document>
     And     I submit the <document> document
-    And     I am logged in as a KFS Manager for the BA document
+    And     I am logged in as a KFS Manager for the <type code> document
     When    I view the <document> document
     And     I blanket approve the Budget Adjustment document
     And     the Budget Adjustment document goes to FINAL
