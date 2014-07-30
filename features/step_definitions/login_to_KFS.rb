@@ -62,14 +62,7 @@ end
 
 Given /^I am logged in as a KFS Manager for the (.*) document$/ do |eDoc|
 #  visit(BackdoorLoginPage).login_as(get_document_blanket_approver(eDoc))
-  case eDoc
-    when 'CCR'
-      visit(BackdoorLoginPage).login_as('ccs1') #TODO get from role service
-    when 'SB'
-      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-    else
-      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-  end
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-SYS', 'Workflow Administrator'))
 end
 
 Given /^I am logged in as a Disbursement Manager$/ do

@@ -72,28 +72,28 @@ Feature: General Ledger
       | Service Billing   | SB      | U243700        | G013300        |
   #TODO grab account from parameter
 
-  @KFSQA-649 @smoke @nightly-jobs @tortoise @broken
+  @KFSQA-649 @smoke @nightly-jobs @tortoise @broken @wip
   Scenario: Accounting Line Description from eDoc updates General Ledger, part 2
-    Given I am logged in as a KFS Manager for the DV document
+    Given I am logged in as a KFS System Manager
     And   I clone Account 1490000 with the following changes:
       | Name        | Disbursement Voucher Test Account S |
       | Chart Code  | IT                                  |
       | Description | Disbursement Voucher Test Account S |
     #TODO KYLE try using the default account for DV
     And   I am logged in as a KFS User for the DV document
-    When  I start an empty Disbursement Voucher document with Payment to Vendor 12076-0 and Reason Code B
+    And   I start an empty Disbursement Voucher document with Payment to Vendor 12076-0 and Reason Code B
     #TODO loookup/calculate this
     And   I add balanced Accounting Lines to the Disbursement Voucher document
     And   I save the Disbursement Voucher document
-    Then  I submit the Disbursement Voucher document
-    When  I route the Disbursement Voucher document to final
-    Given I am logged in as a KFS Manager for the DV document
+    And   I submit the Disbursement Voucher document
+    And   I route the Disbursement Voucher document to final
+    And   I am logged in as a KFS Manager for the DV document
     And   I view the Disbursement Voucher document
     And   I blanket approve the Disbursement Voucher document if it is not already FINAL
     And   the Disbursement Voucher document goes to one of the following statuses:
       | PROCESSED |
       | FINAL     |
-    Given Nightly Batch Jobs run
+    And   Nightly Batch Jobs run
     And   I am logged in as a KFS Chart Administrator
     When  I lookup the document ID for the Disbursement Voucher document from the General Ledger
     Then  the Accounting Line Description for the Disbursement Voucher document equals the General Ledger Accounting Line Description
