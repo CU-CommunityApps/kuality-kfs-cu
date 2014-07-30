@@ -38,23 +38,17 @@ And /^The Sub-Account document should be in my action list$/ do
   on(ActionList).result_item(@sub_account.document_id).should exist
 end
 
-And /^I (#{SubAccountPage::available_buttons}) a Sub-Account through action list routing with adhoc approver user "(.*)"$/ do |button, approver_user|
+And /^I (#{SubAccountPage::available_buttons}) a Sub-Account with an adhoc approver$/ do |button|
+  @adhoc_user = get_random_principal_name_for_role('KFS-SYS', 'User')
+
+  account_info = get_kuali_business_object('KFS-COA','Account','active=Y&accountExpirationDate=NULL')
+  account_number = account_info['accountNumber'][0]
+
   options = {
-    account_number:                      '1258321',
-    cost_sharing_chart_of_accounts_code: 'IT - Ithaca Campus',
-    cost_share_account_number:           '1254601',
-    sub_account_type_code:               'CS',
-    cost_sharing_account_number:         '1254601',
-    adhoc_approver_userid:               approver_user,
-    press: button.gsub(' ', '_')
+    account_number:        account_number,
+    adhoc_approver_userid: @adhoc_user,
+    press:                 button.gsub(' ', '_')
   }
 
   @sub_account = create SubAccountObject, options
-end
-
-When /^the Sub\-Account Document is in my Action List$/ do
-  visit(MainPage).action_list
-  on(ActionList).last if on(ActionList).last_link.exists?
-
-  on(ActionList).open_item(@sub_account.document_id)
 end
