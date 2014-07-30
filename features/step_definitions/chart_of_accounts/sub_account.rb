@@ -58,3 +58,18 @@ When /^the Sub\-Account Document is in my Action List$/ do
 
   on(ActionList).open_item(@sub_account.document_id)
 end
+
+And /^I (#{SubAccountPage::available_buttons}) a Sub-Account through action list routing with a member of the Contracts & Grants Processor as adhoc approver$/ do |button|
+  @adhoc_approver = get_random_principal_name_for_role('KFS-SYS', 'Contracts & Grants Processor')
+  options = {
+      account_number:                      'G398338',
+      cost_sharing_chart_of_accounts_code: 'IT - Ithaca Campus',
+      cost_share_account_number:           '1254601',
+      sub_account_type_code:               'CS',
+      cost_sharing_account_number:         '1254601',
+      adhoc_approver_userid:               @adhoc_approver,
+      press: button.gsub(' ', '_')
+  }
+
+  @sub_account = create SubAccountObject, options
+end
