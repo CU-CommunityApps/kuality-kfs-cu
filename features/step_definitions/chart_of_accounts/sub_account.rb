@@ -39,7 +39,8 @@ And /^The Sub-Account document should be in my action list$/ do
 end
 
 And /^I (#{SubAccountPage::available_buttons}) a Sub-Account with an adhoc approver$/ do |button|
-  @adhoc_user = get_random_principal_name_for_role('KFS-SYS', 'User')
+   #The requirement for @KFSQA-589 is C&G processor
+  @adhoc_user = get_random_principal_name_for_role('KFS-SYS', 'Contracts & Grants Processor')
 
   account_info = get_kuali_business_object('KFS-COA','Account','active=Y&accountExpirationDate=NULL')
   account_number = account_info['accountNumber'][0]
