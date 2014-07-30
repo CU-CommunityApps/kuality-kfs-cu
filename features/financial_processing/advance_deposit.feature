@@ -37,9 +37,9 @@ Feature: Advance Deposit
 
   @KFSQA-728 @sloth
   Scenario: Copy a Final Advance Deposit, and then create a new one
-    Given I am logged in as a KFS Chart Manager
+    Given I am logged in as a KFS Cash Manager
     And   I search for all AD documents
-    And   I copy a document with a FINAL status
-    And   I blanket approve the document
-    When  I reopen the document
+    And   I copy a random Advance Deposit document with FINAL status
+    When  I submit the Advance Deposit document
+    When  I view the Advance Deposit document
     Then  the document status is FINAL
