@@ -118,7 +118,7 @@ Feature: Purap Preq Building Blocks
     And   I enter the Qty Invoiced and calculate
     And   I enter a Pay Date
     And   I attach an Invoice Image to the Payment Request document
-    And   I calculate PREQ
+    And   I calculate the Payment Request document
     And   I submit the Payment Request document
     And   the Payment Request document goes to ENROUTE
     # FO
@@ -193,7 +193,7 @@ Feature: Purap Preq Building Blocks
     And   I enter the Qty Invoiced and calculate
     And   I enter a Pay Date
     And   I attach an Invoice Image to the Payment Request document
-    And   I calculate PREQ
+    And   I calculate the Payment Request document
     And   I submit the Payment Request document
     And   the Payment Request document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Payment Request document

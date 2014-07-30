@@ -36,10 +36,11 @@ Feature: eSHOP Create
     When  I route the Requisition document to final
     And   I extract the Requisition document to SciQuest
     And   I initiate a Payment Request document
-    Then  I FORMAT AND PROCESS THE CHECK WITH PDP
+    Then  I format and process the check with PDP
 
   @wip1
   Scenario: test test
     Given I am logged in as "pp28"
-    And   I open the document with ID 5692846
+    #And   I open the document with ID 5692008
+    And   I open the document with ID 5691991
     When  I inspect the variable named blah

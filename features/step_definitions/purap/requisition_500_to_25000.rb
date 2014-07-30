@@ -79,9 +79,11 @@ And /^I add an item to the Requisition document with:$/ do |table|
 end
 
 And /^I calculate my Requisition document$/ do
-  on(RequisitionPage).calculate
-  #need to let calculate process, no other way to verify calculate is completed
-  sleep 3
+  step 'I calculate the Requisition document'
+  # FIXME: Replace calls to 'I calculate my Requisition document' with 'I calculate the Requisition document' if acceptable
+  # on(RequisitionPage).calculate
+  # #need to let calculate process, no other way to verify calculate is completed
+  # sleep 3
 end
 
 And /^the Requisition status is '(.*)'$/ do |req_status|
@@ -336,11 +338,8 @@ And /^I enter the Qty Invoiced and calculate$/ do
   # end
   @preq_id = on(PaymentRequestPage).preq_id # FIXME: Steps that need this variable should use @payment_request.number instead! If there are none, this line can be removed.
   @payment_request.update_line_objects_from_page! # TODO: Remove this when PaymentRequestObject#absorb! has been implemented since we'll assume the items have already been set up
-  puts @payment_request.inspect
   @payment_request.items.first.edit quantity: @requisition.items.first.quantity
   @payment_request.items.first.calculate
-  puts @payment_request.items.first.inspect
-  pending
 end
 
 And  /^I enter a Pay Date$/ do
@@ -355,12 +354,20 @@ And /^I attach an Invoice Image to the (.*) document$/ do |document|
                                     type:           'Invoice Image'
 end
 
-And /^I calculate PREQ$/ do
+# And /^I calculate the Payment Request document$/ do
+#   # on PaymentRequestPage do |page|
+#   #   page.expand_all
+#   #   page.calculate
+#   # end
+#   @payment_request.calculate
+# end
+
+And /^I calculate the (.*) document$/ do |document|
   # on PaymentRequestPage do |page|
   #   page.expand_all
   #   page.calculate
   # end
-  @payment_request.calculate
+  document_object_for(document).calculate
 end
 
 And /^I view the Purchase Order document via e-SHOP$/ do
@@ -441,7 +448,6 @@ And /^I add an Attachment to the Requisition document$/ do
 end
 
 And /^I enter Delivery Instructions and Notes to Vendor$/ do
-  # FIXME: This is a prime example of a step that could use #edit
   # on RequisitionPage do |page|
   #   page.vendor_notes.fit random_alphanums(40, 'AFT-ToVendorNote')
   #   page.delivery_instructions.fit random_alphanums(40, 'AFT-DelvInst')
@@ -470,8 +476,8 @@ Then /^the Payment Request document's GLPE tab shows the Requisition document su
   on PaymentRequestPage do |page|
     page.show_glpe
 
-    page.glpe_results_table.text.include? @requisition.items.first.accounting_lines.first.object_code
-    page.glpe_results_table.text.include? @requisition.items.first.accounting_lines.first.account_number
+    page.glpe_results_table.text.should include @requisition.items.first.accounting_lines.first.object_code
+    page.glpe_results_table.text.should include @requisition.items.first.accounting_lines.first.account_number
     # credit object code should be 3110 (depends on parm)
   end
 end
@@ -533,7 +539,7 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
       if (document == 'Payment Request')
         if (on(page_class_for(document)).app_doc_status == 'Awaiting Tax Approval')
           step  "I update the Tax Tab"
-          step  "I calculate PREQ"
+          step  "I calculate the Payment Request document"
         else
           if (on(page_class_for(document)).app_doc_status == 'Awaiting Treasury Manager Approval')
             #TODO : wait till Alternate PM is implemented

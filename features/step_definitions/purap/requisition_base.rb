@@ -152,46 +152,38 @@ When /^I initiate a Payment Request document$/ do
   step 'I enter the Qty Invoiced and calculate'
   step 'I enter a Pay Date'
   step 'I attach an Invoice Image to the Payment Request document'
-  step 'I calculate PREQ'
-  step 'I submit the Payment Request document'
+  step 'I calculate the Payment Request document'
+  step 'I inspect the Payment Request document'
+  step 'I submit the Payment Request document and confirm any questions'
   step 'the Payment Request document goes to ENROUTE'
   step 'I route the Payment Request document to final'
   step 'the Payment Request Doc Status is Department-Approved'
   step 'the Payment Request document\'s GLPE tab shows the Requisition document submissions'
 end
 
-Then /^I FORMAT AND PROCESS THE CHECK WITH PDP$/ do
+Then /^I format and process the check with PDP$/ do
   #purap batch
-  steps %q{
-    Given I am logged in as a KFS Operations
-    When  I run Auto Approve PREQ
-    And   I extract Electronic Invoices
-    And   I extract Regular PREQS to PDP for Payment
-    And   I extract Immediate PREQS to PDP for Payment
-    And   I close POS wtih Zero Balanecs
-    And   I load PREQ into PDP
-  }
+  step 'I am logged in as a KFS Operations'
+  step 'I run Auto Approve PREQ'
+  step 'I extract Electronic Invoices'
+  step 'I extract Regular PREQS to PDP for Payment'
+  step 'I extract Immediate PREQS to PDP for Payment'
+  step 'I close POS wtih Zero Balanecs'
+  step 'I load PREQ into PDP'
 
   # format checks
-  steps %q{
-    Given I Login as a PDP Format Disbursement Processor
-    When  I format Disbursement
-  }
-    #And   I select continue on Format Disbursement Summary
-    #And   a Format Summary Lookup displays
-  #}
+  step 'I Login as a PDP Format Disbursement Processor'
+  step 'I format Disbursement'
 
   # generate output files batch jobs
-  steps %q{
-    And   I generate the ACH XML File
-    And   I generate the Check XML File
-    And   I generate the Cancelled Check XML File
-    And   I send EMAIL Notices to ACH Payees
-    And   I process Cancels and Paids
-    And   I generate the GL Files from PDP
-    And   I populate the ACH Bank Table
-    And   I clear out PDP Temporary Tables
- }
+  step 'I generate the ACH XML File'
+  step 'I generate the Check XML File'
+  step 'I generate the Cancelled Check XML File'
+  step 'I send EMAIL Notices to ACH Payees'
+  step 'I process Cancels and Paids'
+  step 'I generate the GL Files from PDP'
+  step 'I populate the ACH Bank Table'
+  step 'I clear out PDP Temporary Tables'
 end
 
 

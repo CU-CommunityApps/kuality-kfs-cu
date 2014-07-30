@@ -122,13 +122,28 @@ end
 
 When /^I inspect the variable named (.*)$/ do |var|
   #@blah = on(ItemsTab).items_table.tds(css: 'td.infoline[nowrap="nowrap"][rowspan="2"], td.infoline[nowrap="nowrap"][rowspan="3"]') #.to_a.keep_if{ |td| td.row_span == 2 || td.row_span == 3 }
-  @blah = make PaymentRequestObject
+  #@blah = #make PaymentRequestObject
   #@blah = make RequisitionObject
   #@blah.absorb! :new
   # b = on(ItemsTab)
   #@blah = (b.update_quantity(0).present? ? b.update_quantity(0).value.strip : b.result_quantity(0))
-  located_var = get(var)
-  puts located_var.inspect
+  #located_var = get(var)
+  #puts located_var.inspect
+
+  @requisition = make RequisitionObject
+  @requisition.absorb! :old
+  puts @requisition.inspect
+
+  # on PaymentRequestPage do |page|
+  #   page.show_glpe
+  #
+  #   puts page.glpe_results_table.inspect
+  #   puts page.glpe_results_table.text
+  #
+  #   #page.glpe_results_table.text.should include @requisition.items.first.accounting_lines.first.object_code
+  #   #page.glpe_results_table.text.should include @requisition.items.first.accounting_lines.first.account_number
+  #   # credit object code should be 3110 (depends on parm)
+  # end
 
   # on ItemsTab do |b|
   #   l = 0
@@ -140,7 +155,7 @@ When /^I inspect the variable named (.*)$/ do |var|
   #   puts yesno2setclear(b.update_assigned_to_trade_in(l).exists? ? b.update_assigned_to_trade_in(l).value.strip : b.result_assigned_to_trade_in(l))
   # end
 
-  @blah.update_line_objects_from_page!
-  puts located_var.inspect
+  #@blah.update_line_objects_from_page!
+  #puts located_var.inspect
   #puts located_var.to_a.each{ |t| t.text }
 end
