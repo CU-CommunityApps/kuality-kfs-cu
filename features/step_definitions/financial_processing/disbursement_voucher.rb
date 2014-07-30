@@ -262,7 +262,7 @@ And /^I add a DV foreign vendor (\d+-\d+) with Reason Code (\w)$/ do |vendor_num
       plookup.search
       plookup.return_value(vendor_number)
       sleep 1
-      plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
+      plookup.return_random unless on(KFSBasePage).header_title.include?('Disbursement Voucher')
     end
     @disbursement_voucher.fill_in_payment_info(tab)
   end
