@@ -208,6 +208,7 @@ And /^I edit a Vendor with Vendor Number (.*)$/ do |vendor_number|
                    document_id: page.document_id
     @vendor.absorb! :old
     @document_id = @vendor.document_id
+    page.default_payment_method.fit 'P - ACH/CHECK' if page.default_payment_method.value.empty?
   end
 end
 

@@ -55,7 +55,8 @@ When /^I start an empty Disbursement Voucher document with only the Description 
   @disbursement_voucher = create DisbursementVoucherObject, description: random_alphanums(40, 'AFT')
 end
 
-And /^I search for the payee with Terminated Employee (\w+) and Reason Code (\w+) for Disbursement Voucher document with no result found$/ do |net_id, reason_code|
+And /^I search for the payee with Terminated Employee and Reason Code (\w+) for Disbursement Voucher document with no result found$/ do |reason_code|
+  net_id = "msw13" # TODO : should get this from web services. Inactive employee with no other affiliation
   case reason_code
     when 'B'
       @disbursement_voucher.payment_reason_code = 'B - Reimbursement for Out-of-Pocket Expenses'
@@ -98,7 +99,7 @@ And /^I copy a Disbursement Voucher document with Tax Address to persist$/ do
 end
 
 
-Then /^The eMail Address shows up in the Contact Information Tab$/ do
+Then /^the eMail Address shows up in the Contact Information Tab$/ do
   on(DisbursementVoucherPage).email_address.value.should_not == ''
 end
 
@@ -127,7 +128,10 @@ And /^I add a Pre-Paid Travel Expense$/ do
 end
 
 And /^I enter the Total Mileage of (\d+\.?\d*) in Travel Tab$/ do |mileage|
-  on(DisbursementVoucherPage).car_mileage.fit mileage
+  on (DisbursementVoucherPage) do |page|
+    page.expand_all
+    page.car_mileage.fit mileage
+  end
 end
 
 And /^the calculated Amount in the Travel Tab should match following Total Amount for each specified Start Date:$/ do |table|
@@ -152,7 +156,7 @@ And /^I add a random vendor payee to the Disbursement Voucher$/ do
       plookup.search
       plookup.return_random
       sleep 1
-      plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
+      plookup.return_random unless on(KFSBasePage).header_title.include?('Disbursement Voucher')
     end
     @disbursement_voucher.fill_in_payment_info(tab)
   end
@@ -257,7 +261,7 @@ And /^I add a DV foreign vendor (\d+-\d+) with Reason Code (\w)$/ do |vendor_num
       plookup.search
       plookup.return_value(vendor_number)
       sleep 1
-      plookup.return_random if $current_page.url.include?('businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorAddress')
+      plookup.return_random unless on(KFSBasePage).header_title.include?('Disbursement Voucher')
     end
     @disbursement_voucher.fill_in_payment_info(tab)
   end
@@ -307,7 +311,7 @@ end
 
 When /^I select Disbursement Voucher document from my Action List$/ do
   visit(MainPage).action_list
-  on(ActionList).last if on(ActionList).last_link.exists?
+  on(ActionList).last if on(ActionList).last_link.exists? && !on(ActionList).result_item(@disbursement_voucher.document_id).exists?
   on(ActionList).open_item(@disbursement_voucher.document_id)
 end
 
@@ -335,6 +339,8 @@ And /^I search and retrieve Payee '(.*)' with Reason Code (\w)$/ do |vendor_name
   case reason_code
     when 'B'
       @disbursement_voucher.payment_reason_code = 'B - Reimbursement for Out-of-Pocket Expenses'
+    when 'P'
+      @disbursement_voucher.payment_reason_code = 'P - Travel Payment for Prepaid Travel'
   end
   on (PaymentInformationTab) do |tab|
     tab.payee_search
@@ -440,4 +446,102 @@ And /^I select a vendor payee to the (.*) document$/ do |document|
       @disbursement_voucher.fill_in_payment_info(tab)
     end
   end
+end
+
+And /^I add a random payee the Disbursement Voucher$/ do
+  on (PaymentInformationTab) do |tab|
+    tab.payee_search
+    on PayeeLookup do |plookup|
+      plookup.payment_reason_code.fit 'B - Reimbursement for Out-of-Pocket Expenses'
+      plookup.netid.fit               'aa*'
+      plookup.search
+      plookup.return_random
+    end
+    @disbursement_voucher.fill_in_payment_info(tab)
+  end
+end
+
+And /^I change the Payee address$/ do
+  on (PaymentInformationTab) do |tab|
+    tab.address_1.fit 'address_1'
+    tab.address_2.fit 'address_2'
+    tab.city.fit 'city'
+    tab.state.fit 'ST'
+    tab.postal_code.fit '12345'
+    @disbursement_voucher.fill_in_payment_info(tab)
+  end
+end
+
+Then(/^The Payment Information address equals the overwritten address information$/) do
+  on (PaymentInformationTab) do |tab|
+    tab.address_1_value.should == @disbursement_voucher.address_1
+    tab.address_2_value.should == @disbursement_voucher.address_2
+    tab.city_value.should == @disbursement_voucher.city
+    tab.state_value.should == @disbursement_voucher.state
+    tab.postal_code_value.should == @disbursement_voucher.postal_code
+  end
+end
+
+And /^I search and retrieve Initiator as DV Payee with Reason Code (\w)$/ do |reason_code|
+  @dv_initiator = on(PaymentInformationTab).initiator
+  step "I search and retrieve a DV Payee ID #{@dv_initiator} with Reason Code #{reason_code}"
+end
+
+And /^I search and retrieve a DV Payee other than Initiator with Reason Code (\w)$/ do |reason_code|
+  user_id = get_random_principal_name_for_role('KFS-SYS', 'User')
+  i = 0 # just in case to prevent infinite loop
+  while user_id == @dv_initiator && i < 10
+    user_id = get_random_principal_name_for_role('KFS-SYS', 'User')
+    i += 1
+  end
+  step "I search and retrieve a DV Payee ID #{user_id} with Reason Code #{reason_code}"
+end
+
+Then /^I should get payee id error$/ do
+  payee_id_prefix = "Payee ID " + on(PaymentInformationTab).payee_id.sub(' - (Employee ID)','')
+  step "I should get an error saying \"#{payee_id_prefix} cannot be used when Originator has the same ID or name has been entered.\""
+end
+
+And /^I search and retrieve the Fiscal Officer of account (.*) as DV Payee with Reason Code (\w)$/ do |account_number, reason_code|
+  account_info = get_kuali_business_object('KFS-COA','Account','accountNumber=' + account_number)
+  @dv_payee = account_info['accountFiscalOfficerUser.principalName'][0]
+  step "I search and retrieve a DV Payee ID #{@dv_payee} with Reason Code #{reason_code}"
+end
+
+And /^I am logged in as Payee of the Disbursement Voucher$/ do
+  step "I am logged in as \"#{@dv_payee}\""
+end
+
+Then /^I should get error for Accounting Line (\d+)$/ do |line_number|
+  line_idx = line_number.to_i - 1
+  account_number = on(AccountingLine).result_source_account_number(line_idx)
+  chart_code = on(AccountingLine).result_source_chart_code(line_idx)
+
+  puts 'acct error', account_number,chart_code,@new_approver
+  step "I should get these error messages:",
+       table("
+      | Existing accounting lines may not be updated to use Chart Code #{chart_code} by user #{@new_approver}.          |
+      | Existing accounting lines may not be updated to use Account Number #{account_number} by user #{@new_approver}.  |
+      ")
+
+end
+
+And /^I add an? (.*) as payee and Reason Code (\w+) to the Disbursement Voucher$/ do |payee_status, reason_code|
+  case payee_status
+    when 'Retiree'
+      @payee_net_id = "map3" # TODO : should get from web service
+    when 'Active Staff, Former Student, and Alumnus'
+      @payee_net_id = "nms32" # TODO : should get from web service or parameter
+    when 'Active Employee, Former Student, and Alumnus'
+      @payee_net_id = "vk76" # TODO : should get from web service or parameter. vk76 is inactive now.
+    when 'Inactive Employee and Alumnus'
+      @payee_net_id = "rlg3" # TODO : should get from web service or parameter.
+  end
+  step "I add the only payee with Payee Id #{@payee_net_id} and Reason Code #{reason_code} to the Disbursement Voucher"
+end
+
+Then /^the Payee Name should match$/ do
+  #payee_name = get_person_name(@payee_net_id)
+  payee_name = "Page, Marcia A." # should get this from web services
+  on(PaymentInformationTab).payee_name.should == payee_name
 end

@@ -85,6 +85,7 @@ Then /^I switch to the user with the next Pending Action in the Route Log for th
   page.close_children
   end
 
+  @new_approver = new_user
   step "I am logged in as \"#{new_user}\""
 end
 
