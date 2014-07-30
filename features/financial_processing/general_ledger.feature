@@ -72,7 +72,7 @@ Feature: General Ledger
       | Service Billing   | SB      | U243700        | G013300        |
   #TODO grab account from parameter
 
-  @KFSQA-649 @smoke @nightly-jobs @tortoise @broken @wip
+  @KFSQA-649 @smoke @nightly-jobs @tortoise @broken
   Scenario: Accounting Line Description from eDoc updates General Ledger, part 2
     Given I am logged in as a KFS System Manager
     And   I clone Account 1490000 with the following changes:
