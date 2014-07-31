@@ -171,3 +171,6 @@ And /^I am logged in as the adhoc user$/ do
   step "I am logged in as \"#{@adhoc_user}\""
 end
 
+Given /^I login as a KFS user to create an REQS$/ do
+  visit(BackdoorLoginPage).login_as(get_aft_parameter_value(ParameterConstants::DEFAULT_REQS_INITIATOR))
+end

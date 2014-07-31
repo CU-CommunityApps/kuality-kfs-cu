@@ -2,7 +2,7 @@ Given  /^I (initiate|submit) a Requisition document with the following:$/ do |ac
 
   arguments = table.rows_hash
 
-  step 'I am logged in as a KFS User for the REQS document'
+  step 'I login as a KFS user to create an REQS'
 
   # TODO : more work here to get all the parameters right
   if arguments['Vendor Type'].nil? || arguments['Vendor Type'] != 'Blank'
