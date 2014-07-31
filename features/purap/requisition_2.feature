@@ -14,7 +14,7 @@ Feature: Purap REQS 2 Building Blocks
 
   @KFSQA-733 @E2E @PURAP @REQS @cornell @tortoise
   Scenario: Create -- non eShop with C&G, Commodity routing
-    Given I login as a KFS user to create an REQS
+    Given I am logged in as a KFS User for the REQS document
     And   I create the Requisition document with:
     | Vendor Number       | 4471-0   |
     | Item Quantity       | 7.5      |
@@ -48,7 +48,7 @@ Feature: Purap REQS 2 Building Blocks
 
   @KFSQA-734 @KFSQA-735 @E2E @PURAP @REQS @cornell @slug
   Scenario Outline: Create -- non eShop with not C&G amount or account, Commodity routing
-    Given I login as a KFS user to create an REQS
+    Given I am logged in as a KFS User for the REQS document
     And   I create the Requisition document with:
       | Vendor Number       | 4471-0           |
       | Item Quantity       | <item_quantity>  |
@@ -81,7 +81,7 @@ Feature: Purap REQS 2 Building Blocks
 
   @KFSQA-737 @KFSQA-738 @E2E @PURAP @REQS @cornell @slug
   Scenario Outline: Create -- non eShop - recurring payment, C&G account, not Commodity
-    Given I login as a KFS user to create an REQS
+    Given I am logged in as a KFS User for the REQS document
     And   I create the Requisition document with:
       | Vendor Number       | 4471-0           |
       | Item Quantity       | 7.5              |
@@ -116,7 +116,7 @@ Feature: Purap REQS 2 Building Blocks
 
   @KFSQA-863 @PURAP @REQS @Routing @slug
   Scenario: Create requisition with two accounting lines and verify routing goes to Org reviewer after the FO
-    Given I login as a KFS user to create an REQS
+    Given I am logged in as a KFS User for the REQS document
     And   I create the Requisition document with:
       | Vendor Number       | 4471-0           |
       | Item Quantity       | 7.5              |
