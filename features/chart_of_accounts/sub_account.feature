@@ -27,7 +27,7 @@ Feature: Sub Account
     And     I approve the Sub-Account document
     Then    the Sub-Account document goes to FINAL
 
-  @KFSQA-589 @cornell @SubAcct @Bug @KFSPTS-1753 @hare
+  @KFSQA-589 @cornell @SubAcct @Bug @KFSPTS-1753 @sloth
   Scenario: Create a Sub-Account with Sub-Account Type CS and ad-hoc approval route it to a member of the Contracts & Grants Processor Role (jis45)
     Given I am logged in as a KFS User
     And   I submit a Sub-Account with an adhoc approver
