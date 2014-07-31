@@ -130,21 +130,25 @@ When /^I inspect the variable named (.*)$/ do |var|
   #located_var = get(var)
   #puts located_var.inspect
 
-  @requisition = make RequisitionObject
-  @requisition.absorb! :old
-  puts @requisition.inspect
+  if on(KFSBasePage).doc_title.match(/Requisition/m)
+    @requisition = make RequisitionObject
+    @requisition.absorb! :old
+    puts @requisition.inspect
+    pending
+  else
+    on PaymentRequestPage do |page|
+      page.show_glpe
 
-  # on PaymentRequestPage do |page|
-  #   page.show_glpe
-  #
-  #   puts page.glpe_results_table.inspect
-  #   puts page.glpe_results_table.text
-  #
-  #   #page.glpe_results_table.text.should include @requisition.items.first.accounting_lines.first.object_code
-  #   #page.glpe_results_table.text.should include @requisition.items.first.accounting_lines.first.account_number
-  #   # credit object code should be 3110 (depends on parm)
-  # end
+      puts page.glpe_results_table.inspect
+      puts page.glpe_results_table.text
 
+      @requisition.items.should have_at_least(1).items, 'Not sure if the Requisition document had Items!'
+      @requisition.items.first.accounting_lines.should have_at_least(1).accounting_lines, 'Not sure if the Requisition\'s Item had accounting lines!'
+      page.glpe_results_table.text.should include @requisition.items.first.accounting_lines.first.object_code
+      page.glpe_results_table.text.should include @requisition.items.first.accounting_lines.first.account_number
+      # credit object code should be 3110 (depends on parm)
+    end
+  end
   # on ItemsTab do |b|
   #   l = 0
   #   puts ItemsTab::result_line_index_for(l, b)

@@ -153,11 +153,12 @@ When /^I initiate a Payment Request document$/ do
   step 'I enter a Pay Date'
   step 'I attach an Invoice Image to the Payment Request document'
   step 'I calculate the Payment Request document'
-  step 'I inspect the Payment Request document'
   step 'I submit the Payment Request document and confirm any questions'
   step 'the Payment Request document goes to ENROUTE'
   step 'I route the Payment Request document to final'
   step 'the Payment Request Doc Status is Department-Approved'
+  step 'I inspect the Requisition document'
+  step 'I inspect the Payment Request document'
   step 'the Payment Request document\'s GLPE tab shows the Requisition document submissions'
 end
 
@@ -294,9 +295,7 @@ end
 
 And /^I submit a Purchase Order Amendment document$/ do
   step 'I submit a Purchase Order Amendment document with the following:',
-       table(%Q{
-         | All | Default |
-       })
+       table('| All | Default |')
 end
 
 
@@ -328,10 +327,8 @@ When /^I (initiate|submit) a Purchase Order Amendment document with the followin
 
   case action
     when 'initiate'
-      steps %q{
-        Given I switch to the user with the next Pending Action in the Route Log to approve Purchase Order Amendment document to Final
-        Then  the Purchase Order Amendment document goes to FINAL
-    }
+      step 'I switch to the user with the next Pending Action in the Route Log to approve Purchase Order Amendment document to Final'
+      step 'the Purchase Order Amendment document goes to FINAL'
     when 'submit'
       warn 'Just submitting Purchase Order Amendment document, not taking POA document to final'
   end
@@ -376,8 +373,8 @@ And /^I calculate and verify the GLPE tab with no entries$/ do
     page.calculate
     #page.show_glpe
 
-    page.glpe_results_table.text.include? 'There are currently no General Ledger Pending Entries ' <<
-                                          'associated with this Transaction Processing document.'
+    page.glpe_results_table.text.should include( 'There are currently no General Ledger Pending Entries ' <<
+                                                 'associated with this Transaction Processing document.' )
   end
 end
 
