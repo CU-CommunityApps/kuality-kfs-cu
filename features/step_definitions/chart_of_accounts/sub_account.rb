@@ -39,16 +39,35 @@ And /^The Sub-Account document should be in my action list$/ do
 end
 
 And /^I (#{SubAccountPage::available_buttons}) a Sub-Account with an adhoc approver$/ do |button|
-   #The requirement for @KFSQA-589 is C&G processor
+  #The requirement for @KFSQA-589 is C&G processor as adhoc user
   @adhoc_user = get_random_principal_name_for_role('KFS-SYS', 'Contracts & Grants Processor')
-
-  account_info = get_kuali_business_object('KFS-COA','Account','active=Y&accountExpirationDate=NULL')
-  account_number = account_info['accountNumber'][0]
+  @user_id = @adhoc_user # for actionlist check
+  account_number = ""
+  i = 0
+  while account_number.empty? && i < 10
+    # must be an account that can have subaccounttype of 'CS'
+    sub_account_info = get_kuali_business_object('KFS-COA','SubAccount','chartOfAccountsCode=IT&active=true&a21SubAccount.subAccountTypeCode=CS')
+    account_number = sub_account_info['accountNumber'][0]
+    account_info = get_kuali_business_object('KFS-COA','Account',"accountNumber=#{account_number}")
+    # check if account is closed or expired
+    if account_info['closed'][0] == 'true'
+      account_number = ""
+    else
+      if (account_info['accountExpirationDate'][0]) != 'null' && DateTime.strptime(account_info['accountExpirationDate'][0], '%Y-%m-%d') < DateTime.now
+        account_number = ""
+      end
+    end
+    i += 1
+  end
 
   options = {
-    account_number:        account_number,
-    adhoc_approver_userid: @adhoc_user,
-    press:                 button.gsub(' ', '_')
+      account_number:                      account_number,
+      cost_sharing_chart_of_accounts_code: 'IT - Ithaca Campus',
+      cost_share_account_number:           account_number,
+      sub_account_type_code:               'CS',
+      cost_sharing_account_number:         account_number,
+      adhoc_approver_userid:               @adhoc_user,
+      press:                               button.gsub(' ', '_')
   }
 
   @sub_account = create SubAccountObject, options
