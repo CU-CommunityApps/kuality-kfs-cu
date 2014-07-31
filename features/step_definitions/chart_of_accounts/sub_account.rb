@@ -46,7 +46,7 @@ And /^I (#{SubAccountPage::available_buttons}) a Sub-Account with an adhoc appro
   i = 0
   while account_number.empty? && i < 10
     # must be an account that can have subaccounttype of 'CS'
-    sub_account_info = get_kuali_business_object('KFS-COA','SubAccount','chartOfAccountsCode=IT&active=true&a21SubAccount.subAccountTypeCode=CS')
+    sub_account_info = get_kuali_business_object('KFS-COA','SubAccount','active=true&a21SubAccount.subAccountTypeCode=CS&chartOfAccountsCode=' + get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE))
     account_number = sub_account_info['accountNumber'][0]
     account_info = get_kuali_business_object('KFS-COA','Account',"accountNumber=#{account_number}")
     # check if account is closed or expired
