@@ -30,7 +30,7 @@ Feature: eSHOP Create
     And   the document status is ENROUTE
     And   the next pending action for the Requisition document is an APPROVE from a Fiscal Officer
 
-  @KFSQA-856 @BaseFunction @PDP @PO @PREQ @REQS @wip
+  @KFSQA-856 @BaseFunction @PDP @PO @PREQ @REQS @coral @wip
   Scenario: e-SHOP to PO to PREQ to PDP
     Given I initiate an e-SHOP order
     When  I route the Requisition document to final

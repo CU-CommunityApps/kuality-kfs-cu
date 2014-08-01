@@ -56,18 +56,11 @@ end
 When /^I (#{BasePage::available_buttons}) the (.*) document and confirm any questions$/ do |button, document|
   step "I #{button} the #{document} document"
   on(YesOrNoPage).yes_if_possible
-  # on YesOrNoPage do |page|
-  #   sleep 10
-  #   page.yes if page.yes_button.exists?
-  # end
 end
 
 When /^I (#{BasePage::available_buttons}) the (.*) document and deny any questions$/ do |button, document|
   step "I #{button} the #{document} document"
-  on YesOrNoPage do |page|
-    sleep 10
-    page.no if page.no_button.exists?
-  end
+  on(YesOrNoPage).no_if_possible
 end
 
 Then /^the (.*) document goes to (PROCESSED|ENROUTE|FINAL|INITIATED|SAVED)$/ do |document, doc_status|
