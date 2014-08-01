@@ -80,7 +80,7 @@ Feature: Vendor Edit
   @KFSQA-839 @cornell @VendorEdit @Routing @smoke @coral
   Scenario: Edit a vendor and ensure routing to the second reviewer. Confirm display of Vendor Address Generated Identifier. Confirm previously added attachments persist.
     Given I am logged in as a Vendor Initiator
-    And   I edit a PO Vendor
+    And   I edit a PO Vendor with Supplier Diversity
     And   I add a Supplier Diversity to the Vendor document
     And   I add a Search Alias to the Vendor document
     And   I note how many attachments the Vendor document has already

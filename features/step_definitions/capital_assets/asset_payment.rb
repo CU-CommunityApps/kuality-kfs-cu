@@ -2,27 +2,21 @@ When /^I start an empty Asset Manual Payment document$/ do
   @asset_manual_payment = create AssetManualPaymentObject
 end
 
-And /^I add an Asset with the following fields:$/ do |table|
-  asset_info = table.rows_hash
-  asset_info.delete_if { |k,v| v.empty? }
-  puts asset_info,asset_info['Asset Number']
+And /^I add Asset Line (\d+) with Allocation Amount (\w+)$/ do |line_number, amount|
   on AssetManualPaymentPage do |page|
-    page.asset_number.fit asset_info['Asset Number']
+    page.asset_number.fit fetch_random_capital_asset_number
     page.add_asset_number
-    page.allocate_amount(asset_info['Line Number'].to_i).fit asset_info['Allocation Amount']
+    page.allocate_amount(line_number.to_i - 1).fit amount
   end
 
 end
 
-And /^I add an Accounting Line to the Asset Manual Payment with the following fields:$/ do |table|
-  accounting_line_info = table.rows_hash
-  accounting_line_info.delete_if { |k,v| v.empty? }
-  puts accounting_line_info
+And /^I add an Accounting Line to the Asset Manual Payment with Amount (\w+)$/ do |amount|
   on AssetManualPaymentPage do |page|
-    page.account_number.fit accounting_line_info['Number']
-    page.object.fit accounting_line_info['Object Code']
-    page.amount.fit accounting_line_info['Amount']
-    page.post_date.fit right_now[:date_w_slashes]
+    page.account_number.fit  fetch_random_account_number
+    page.object.fit fetch_random_capital_asset_object_code
+    page.amount.fit amount
+    page.post_date.fit right_now[:date_w_slashes] # add_source_line does not have this.  This is required
     page.add_acct_line
   end
   #@asset_manual_payment.add_source_line({

@@ -2,16 +2,6 @@ include Utilities
 
 And /^the next pending action for the (.*) document is an? (.*) from a (.*)$/ do |document, action, user_type|
 
-  root_action_requests =  get_root_action_requests(document_object_for(document).document_id).getRootActionRequest().to_a
-  root_action_requests.each do |root_action|
-    puts root_action.annotation.inspect
-    puts 'next action'
-    # unless root_action.annotation.nil?
-    #   root_action.annotation.should_not include 'Contracts'
-    # end
-  end
-
-
   on page_class_for(document) do |page|
     page.show_route_log_button.wait_until_present
     page.show_route_log unless page.route_log_shown?
@@ -95,6 +85,7 @@ Then /^I switch to the user with the next Pending Action in the Route Log for th
   page.close_children
   end
 
+  @new_approver = new_user
   step "I am logged in as \"#{new_user}\""
 end
 
