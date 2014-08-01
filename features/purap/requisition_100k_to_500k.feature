@@ -20,7 +20,7 @@ Feature: Purap Preq Building Blocks
       | Percent             | 100      |
     And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     And   the Requisition document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
@@ -79,7 +79,7 @@ Feature: Purap Preq Building Blocks
     And   I select the Payment Request Positive Approval Required
     And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     And   the Requisition document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
@@ -148,7 +148,7 @@ Feature: Purap Preq Building Blocks
     And   I select the Payment Request Positive Approval Required
     And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     And   the Requisition document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Requisition document

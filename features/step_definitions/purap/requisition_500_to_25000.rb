@@ -52,12 +52,8 @@ And /^I submit the Requisition document with items that total more than the doll
          | Object Code         | 6570                    |
          | Percent             | 100                     |
        })
-    step "I submit the Requisition document"
+    step 'I submit the Requisition document'
 
-end
-
-And /^I select yes to the question$/ do
-  on(YesOrNoPage).yes
 end
 
 And /^I add an item to the Requisition document with:$/ do |table|
@@ -76,14 +72,6 @@ And /^I add an item to the Requisition document with:$/ do |table|
                                 percent:        add_item['Percent']
                                }]
   })
-end
-
-And /^I calculate my Requisition document$/ do
-  step 'I calculate the Requisition document'
-  # FIXME: Replace calls to 'I calculate my Requisition document' with 'I calculate the Requisition document' if acceptable
-  # on(RequisitionPage).calculate
-  # #need to let calculate process, no other way to verify calculate is completed
-  # sleep 3
 end
 
 And /^the Requisition status is '(.*)'$/ do |req_status|
@@ -308,42 +296,23 @@ And /^I select the purchase order '(\d+)' with the doc id '(\d+)'$/ do |req_num,
 end
 
 And /^I fill out the PREQ initiation page and continue$/ do
-  visit(MainPage).payment_request
-  # TODO: Replace this with create and/or add an absorb!:
-  @payment_request = make PaymentRequestObject, purchase_order_number: @purchase_order.purchase_order_number,
-                                                invoice_date:          yesterday[:date_w_slashes],
-                                                invoice_number:        rand(100000),
-                                                vendor_invoice_amount: @requisition.items.first.quantity.to_f * @requisition.items.first.unit_cost.to_i
-  # on PaymentRequestInitiationPage do |page|
-  #   page.purchase_order.fit        @purchase_order.purchase_order_number
-  #   page.invoice_date.fit          yesterday[:date_w_slashes]
-  #   page.invoice_number.fit        rand(100000)
-  #   page.vendor_invoice_amount.fit @requisition.items.first.quantity.delete(',').to_f * @requisition.items.first.unit_cost.to_i
-  #   puts right_now[:samigo]
-  #   page.continue
-  # end
-  @payment_request.initiate_request
+  @payment_request = create PaymentRequestObject, purchase_order_number: @purchase_order.purchase_order_number,
+                                                  invoice_date:          yesterday[:date_w_slashes],
+                                                  invoice_number:        rand(100000),
+                                                  vendor_invoice_amount: @requisition.items.first.quantity.to_f * @requisition.items.first.unit_cost.to_i
 end
 
 And /^I change the Remit To Address$/ do
-  #on(PaymentRequestPage) { |p| p.vendor_address_1.fit "Apt1#{p.vendor_address_1.value}" }
   @payment_request.edit vendor_address_1: "#{on(PaymentRequestPage).vendor_address_1.value}, Apt1" # FIXME: Once PaymentRequestObject#absorb! is implemented
 end
 
 And /^I enter the Qty Invoiced and calculate$/ do
-  # on PaymentRequestPage do |page|
-  #   @preq_id = page.preq_id
-  #   page.item_qty_invoiced.fit @requisition.items.first.quantity # same as REQS item qty
-  #   page.item_calculate
-  # end
   @preq_id = on(PaymentRequestPage).preq_id # FIXME: Steps that need this variable should use @payment_request.number instead! If there are none, this line can be removed.
-  @payment_request.update_line_objects_from_page! # TODO: Remove this when PaymentRequestObject#absorb! has been implemented since we'll assume the items have already been set up
   @payment_request.items.first.edit quantity: @requisition.items.first.quantity
   @payment_request.items.first.calculate
 end
 
 And  /^I enter a Pay Date$/ do
-  #on(PaymentRequestPage).pay_date.fit right_now[:date_w_slashes]
   @payment_request.edit pay_date: right_now[:date_w_slashes]
 end
 
@@ -352,22 +321,6 @@ And /^I attach an Invoice Image to the (.*) document$/ do |document|
                                .add note_text:      'Testing note text.',
                                     file:           'vendor_attachment_test.png',
                                     type:           'Invoice Image'
-end
-
-# And /^I calculate the Payment Request document$/ do
-#   # on PaymentRequestPage do |page|
-#   #   page.expand_all
-#   #   page.calculate
-#   # end
-#   @payment_request.calculate
-# end
-
-And /^I calculate the (.*) document$/ do |document|
-  # on PaymentRequestPage do |page|
-  #   page.expand_all
-  #   page.calculate
-  # end
-  document_object_for(document).calculate
 end
 
 And /^I view the Purchase Order document via e-SHOP$/ do
@@ -404,12 +357,6 @@ And  /^I select the Payment Request Positive Approval Required$/ do
 end
 
 Then /^I update the Tax Tab$/ do
-  # on PaymentRequestPage do |page|
-  #   page.income_class_code.fit   'A - Honoraria, Prize'
-  #   page.federal_tax_pct.fit     '0'
-  #   page.state_tax_pct.fit       '0'
-  #   page.postal_country_code.fit 'Canada'
-  # end
   @payment_request.update_tax_tab income_class_code:   'A - Honoraria, Prize',
                                   federal_tax_pct:     '0',
                                   state_tax_pct:       '0',
@@ -448,12 +395,6 @@ And /^I add an Attachment to the Requisition document$/ do
 end
 
 And /^I enter Delivery Instructions and Notes to Vendor$/ do
-  # on RequisitionPage do |page|
-  #   page.vendor_notes.fit random_alphanums(40, 'AFT-ToVendorNote')
-  #   page.delivery_instructions.fit random_alphanums(40, 'AFT-DelvInst')
-  #   @requisition.delivery_instructions = page.delivery_instructions.value
-  #   @requisition.vendor_notes = page.vendor_notes.value
-  # end
   @requisition.edit vendor_notes:          random_alphanums(40, 'AFT-ToVendorNote'),
                     delivery_instructions: random_alphanums(40, 'AFT-DelvInst')
 end
@@ -583,6 +524,7 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
 end
 
 And /^During Approval of the (.*) document the Financial Officer adds a second line item with:$/ do |document, table|
+  pending 'This step is so very very wrong.'
   step "I view the Requisition document from the Requisitions search"
   step 'I switch to the user with the next Pending Action in the Route Log for the Requisition document'
   step "I view the Requisition document on my action list"
@@ -609,7 +551,7 @@ And /^During Approval of the (.*) document the Financial Officer adds a second l
 end
 
 And /^During Approval of the Purchase Order Amendment the Financial Officer adds a line item$/ do
-  step "I view the Requisition document from the Requisitions search"
+  step 'I view the Requisition document from the Requisitions search'
   step 'I switch to the user with the next Pending Action in the Route Log for the Requisition document'
   step 'I open the Purchase Order Amendment on the Requisition document'
   step 'I switch to the user with the next Pending Action in the Route Log for the Purchase Order document'
@@ -633,7 +575,7 @@ And /^During Approval of the Purchase Order Amendment the Financial Officer adds
 end
 
 And /^I open the Purchase Order Amendment on the Requisition document$/ do
-  step "I view the Requisition document"
+  step 'I view the Requisition document'
   on RequisitionPage do |page|
     page.expand_all
     @purchase_order_amendment_id = page.purchase_order_amendment_value

@@ -21,7 +21,7 @@ Feature: eSHOP Create
     And   I add these Accounting Lines to Item #1 on the Requisition document:
       | chart_code | account_number       | object_code | amount |
       | Default    | Unrestricted Account | Expenditure | 10     |
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     Then  the document should have no errors
     When  I reload the Requisition document

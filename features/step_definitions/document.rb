@@ -131,3 +131,7 @@ end
 And /^I select yes to the question$/ do
   on(YesOrNoPage).yes
 end
+
+And /^I calculate the (.*) document$/ do |document|
+  document_object_for(document).calculate
+end

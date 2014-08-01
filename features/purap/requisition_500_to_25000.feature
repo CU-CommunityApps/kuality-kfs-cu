@@ -23,7 +23,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
      | Account Number      | 1093603  |
      | Object Code         | 6540     |
      | Percent             | 100      |
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     And   the Requisition document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
@@ -63,7 +63,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
       | Percent             | 100      |
     And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     And   the Requisition document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
@@ -103,7 +103,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
       | Percent             | 100      |
     And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     And   the Requisition document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
@@ -159,7 +159,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   I select the Payment Request Positive Approval Required
     And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     Then  the Requisition document goes to ENROUTE
     Given I switch to the user with the next Pending Action in the Route Log for the Requisition document
@@ -227,7 +227,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   I select the Payment Request Positive Approval Required
     And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     Then  the Requisition document goes to ENROUTE
     Given I switch to the user with the next Pending Action in the Route Log for the Requisition document
@@ -284,7 +284,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   I select the Payment Request Positive Approval Required
     And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     Then  the Requisition document goes to ENROUTE
     Given I switch to the user with the next Pending Action in the Route Log for the Requisition document
