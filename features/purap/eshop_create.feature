@@ -37,11 +37,3 @@ Feature: eSHOP Create
     And   I extract the Requisition document to SciQuest
     And   I initiate a Payment Request document
     Then  I format and process the check with PDP
-
-  @wip1
-  Scenario: test test
-    Given I am logged in as "pp28"
-    And   I open the document with ID 5692259
-    When  I inspect the variable named blah
-    And   I open the document with ID 5692272
-    Then  the Payment Request document's GLPE tab shows the Requisition document submissions

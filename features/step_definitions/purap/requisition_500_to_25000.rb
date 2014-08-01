@@ -476,12 +476,10 @@ Then /^the Payment Request document's GLPE tab shows the Requisition document su
   on PaymentRequestPage do |page|
     page.show_glpe
 
-    puts @requisition.inspect
     @requisition.items.should have_at_least(1).items, 'Not sure if the Requisition document had Items!'
     @requisition.items.first.accounting_lines.should have_at_least(1).accounting_lines, 'Not sure if the Requisition\'s Item had accounting lines!'
-    page.glpe_results_table.text.should include(@requisition.items.first.accounting_lines.first.object_code)
-    page.glpe_results_table.text.should include(@requisition.items.first.accounting_lines.first.account_number)
-    # credit object code should be 3110 (depends on parm)
+    page.glpe_results_table.text.should include @requisition.items.first.accounting_lines.first.object_code
+    page.glpe_results_table.text.should include @requisition.items.first.accounting_lines.first.account_number
   end
 end
 

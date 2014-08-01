@@ -157,8 +157,6 @@ When /^I initiate a Payment Request document$/ do
   step 'the Payment Request document goes to ENROUTE'
   step 'I route the Payment Request document to final'
   step 'the Payment Request Doc Status is Department-Approved'
-  step 'I inspect the Requisition document'
-  step 'I inspect the Payment Request document'
   step 'the Payment Request document\'s GLPE tab shows the Requisition document submissions'
 end
 
