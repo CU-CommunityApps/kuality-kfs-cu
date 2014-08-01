@@ -68,8 +68,15 @@ When /^I view my e\-SHOP cart$/ do
   @eshop_cart.absorb!
 end
 
+When /^I clear my e\-SHOP cart$/ do
+  @eshop_cart.clear_items
+end
+
 Given /^I initiate an e\-SHOP order$/ do
   step 'I am logged in as an e-SHOP Plus User'
+  step 'I go to the e-SHOP main page'
+  step 'I view my e-SHOP cart'
+  step 'I clear my e-SHOP cart'
   step 'I go to the e-SHOP main page'
   step 'I search for an e-SHOP item with a Non-Sensitive Commodity Code'
   step 'I add e-SHOP items to my cart until the cart total reaches the Business to Business Total Amount For Automatic Purchase Order limit'
