@@ -628,3 +628,38 @@ And /^I (submit|close|cancel) a Contract Manager Assignment for the Requisition$
   end
   on(ContractManagerAssignmentPage).send(btn)
 end
+
+# TODO : This is first try to replace the hard coded data for PURAP tests.
+# This is for KFSQA-1054.  If it works fine, then this will be used as a template for other purap tests.
+And /^I create the Requisition document with following specifications:$/ do |table|
+  arguments = table.rows_hash
+  vendor_number = get_aft_parameter_value('REQS_' + (arguments['Vendor Type'].nil? ? 'NONB2B' : arguments['Vendor Type'].upcase) + '_VENDOR')
+  account_number = get_account_of_type(arguments['Account Type'])
+  commodity_code = get_commodity_of_type(arguments['Commodity Code'])
+  object_code = get_object_code_of_type(arguments['Object Code'])
+  item_qty = 1
+
+  apo_amount = get_parameter_values('KFS-PURAP', 'AUTOMATIC_PURCHASE_ORDER_DEFAULT_LIMIT_AMOUNT', 'Requisition')[0].to_i
+  amount = arguments['Amount']
+  if amount.nil? || amount == 'LT APO'
+    item_qty = apo_amount/1000 - 1
+  else
+    if amount == 'GT APO'
+      item_qty = apo_amount/1000 + 1
+    else
+      item_qty = amount.to_i/1000
+    end
+  end
+
+  step 'I create the Requisition document with:',
+       table(%Q{
+         | Vendor Number       | #{vendor_number}  |
+         | Item Quantity       | #{item_qty}        |
+         | Item Cost           | 1000               |
+         | Item Commodity Code | #{commodity_code}  |
+         | Account Number      | #{account_number}  |
+         | Object Code         | #{object_code}     |
+         | Percent             | 100                |
+       })
+
+end
