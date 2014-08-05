@@ -52,12 +52,8 @@ And /^I submit the Requisition document with items that total more than the doll
          | Object Code         | 6570                    |
          | Percent             | 100                     |
        })
-    step "I submit the Requisition document"
+    step 'I submit the Requisition document'
 
-end
-
-And /^I select yes to the question$/ do
-  on(YesOrNoPage).yes
 end
 
 And /^I add an item to the Requisition document with:$/ do |table|
@@ -78,12 +74,6 @@ And /^I add an item to the Requisition document with:$/ do |table|
   })
 end
 
-And /^I calculate my Requisition document$/ do
-  on(RequisitionPage).calculate
-  #need to let calculate process, no other way to verify calculate is completed
-  sleep 3
-end
-
 And /^the Requisition status is '(.*)'$/ do |req_status|
   on(RequisitionPage).requisition_status.should include req_status
 end
@@ -100,8 +90,8 @@ And /^I view the (.*) document on my action list$/ do |document|
   end
   if document.eql?('Requisition')
     on RequisitionPage do |page|
-      @requisition_id = page.requisition_id
-      @requisition_initiator = page.initiator
+      @requisition.requisition_id = page.requisition_id
+      @requisition_initiator = page.initiator # FIXME: Retrofit anything using this to use @requisition.initiator
     end
   end
 
@@ -110,7 +100,8 @@ end
 And /^I view the Requisition document from the Requisitions search$/ do
   visit(MainPage).requisitions
   on DocumentSearch do |page|
-    page.requisition_num.fit @requisition_id unless @requisition_id.nil?
+    page.document_id_field.fit @requisition.document_id
+    page.requisition_num.fit @requisition.requisition_id unless @requisition.requisition_id.nil?
     page.search
     page.open_item(@requisition.document_id)
   end
@@ -121,7 +112,7 @@ end
 And /^I (submit|close|cancel) a Contract Manager Assignment of '(\d+)' for the Requisition$/ do |btn, contract_manager_number|
   visit(MainPage).contract_manager_assignment
   on ContractManagerAssignmentPage do |page|
-    page.set_contract_manager(@requisition_id, contract_manager_number)
+    page.set_contract_manager(@requisition.requisition_id, contract_manager_number)
     page.send(btn)
   end
   sleep 5
@@ -131,7 +122,7 @@ And /^I retrieve the Requisition document$/ do
   visit(MainPage).requisitions  #remember "S" is for search
   on DocumentSearch do |page|
     page.document_type.set 'REQS'
-    page.requisition_num.fit @requisition_id
+    page.requisition_num.fit @requisition.requisition_id
     page.search
     page.open_item(@requisition.document_id)
   end
@@ -139,8 +130,8 @@ end
 
 And /^the View Related Documents Tab PO Status displays$/ do
   on RequisitionPage do |page|
-    page.expand_all
-    @purchase_order_number = page.purchase_order_number
+    page.show_related_documents
+    page.show_purchase_order
     # verify unmasked and 'UNAPPROVED'
     page.purchase_order_number.should_not include '*****' # unmasked
     if !@auto_gen_po.nil? && !@auto_gen_po
@@ -148,7 +139,14 @@ And /^the View Related Documents Tab PO Status displays$/ do
     end
     page.purchase_order_number_link
 
-    @purchase_order = create PurchaseOrderObject
+  end
+  sleep 10
+  on PurchaseOrderPage do |page|
+    page.po_doc_status.should_not match(/Error occurred sending cxml/m),
+                                  "There was an error sending the Purchase Order to SciQuest. Please check the notes on Purchase Order ##{page.purchase_order_number}"
+    @purchase_order = make PurchaseOrderObject, purchase_order_number: page.purchase_order_number,
+                                                document_id:           page.document_id,
+                                                initial_item_lines:    [] # FIXME: This should really use #absorb! to pull in existing data
   end
 end
 
@@ -298,33 +296,24 @@ And /^I select the purchase order '(\d+)' with the doc id '(\d+)'$/ do |req_num,
 end
 
 And /^I fill out the PREQ initiation page and continue$/ do
-  visit(MainPage).payment_request
-  on PaymentRequestInitiationPage do |page|
-    page.purchase_order.fit        @purchase_order_number
-    page.invoice_date.fit          yesterday[:date_w_slashes]
-    page.invoice_number.fit        rand(100000)
-    page.vendor_invoice_amount.fit @requisition.items.first.quantity.delete(',').to_f * @requisition.items.first.unit_cost.to_i
-    page.continue
-  end
-  on(YesOrNoPage) { |yonp| yonp.yes if yonp.yes_button.exists? }
-  sleep 10
-  @payment_request = create PaymentRequestObject
+  @payment_request = create PaymentRequestObject, purchase_order_number: @purchase_order.purchase_order_number,
+                                                  invoice_date:          yesterday[:date_w_slashes],
+                                                  invoice_number:        rand(100000),
+                                                  vendor_invoice_amount: @requisition.items.first.quantity.to_f * @requisition.items.first.unit_cost.to_i
 end
 
-And  /^I change the Remit To Address$/ do
-  on(PaymentRequestPage) { |p| p.vendor_address_1.fit "Apt1#{p.vendor_address_1.value}" }
+And /^I change the Remit To Address$/ do
+  @payment_request.edit vendor_address_1: "#{on(PaymentRequestPage).vendor_address_1.value}, Apt1" # FIXME: Once PaymentRequestObject#absorb! is implemented
 end
 
-And  /^I enter the Qty Invoiced and calculate$/ do
-  on PaymentRequestPage do |page|
-    @preq_id = page.preq_id
-    page.item_qty_invoiced.fit @requisition.items.first.quantity # same as REQS item qty
-    page.item_calculate
-  end
+And /^I enter the Qty Invoiced and calculate$/ do
+  @preq_id = on(PaymentRequestPage).preq_id # FIXME: Steps that need this variable should use @payment_request.number instead! If there are none, this line can be removed.
+  @payment_request.items.first.edit quantity: @requisition.items.first.quantity
+  @payment_request.items.first.calculate
 end
 
 And  /^I enter a Pay Date$/ do
-  on(PaymentRequestPage).pay_date.fit right_now[:date_w_slashes]
+  @payment_request.edit pay_date: right_now[:date_w_slashes]
 end
 
 And /^I attach an Invoice Image to the (.*) document$/ do |document|
@@ -334,27 +323,16 @@ And /^I attach an Invoice Image to the (.*) document$/ do |document|
                                     type:           'Invoice Image'
 end
 
-And /^I calculate PREQ$/ do
-  on PaymentRequestPage do |page|
-    page.expand_all
-    page.calculate
-  end
-end
-
 And /^I view the Purchase Order document via e-SHOP$/ do
-  on(EShopPage).goto_doc_search
-  on EShopAdvancedDocSearchPage do |page|
-    page.search_doc_type.fit 'Purchase Orders'
-    page.po_id.fit      @purchase_order_number
-    page.date_range.fit 'Today'
-    sleep 2
-    page.go_button.click
-  end
+  @purchase_order.view_via 'e-SHOP'
 end
 
 And /^the Document Status displayed '(\w+)'$/ do |doc_status|
-  on(EShopAdvancedDocSearchPage).return_po_value @purchase_order_number
-  on(EShopSummaryPage).doc_summary[1].text.should include "Workflow  #{doc_status}"
+  on(EShopAdvancedDocSearchPage).return_po_value @purchase_order.purchase_order_number
+  on EShopSummaryPage do |page|
+    page.results_column.text.should_not include 'No Documents found' if page.results_column.present?
+    page.doc_summary[1].text.should include "Workflow  #{doc_status}"
+  end
 end
 
 And /^the Delivery Instructions displayed equals what came from the PO$/ do
@@ -379,12 +357,10 @@ And  /^I select the Payment Request Positive Approval Required$/ do
 end
 
 Then /^I update the Tax Tab$/ do
-  on PaymentRequestPage do |page|
-    page.income_class_code.fit   'A - Honoraria, Prize'
-    page.federal_tax_pct.fit     '0'
-    page.state_tax_pct.fit       '0'
-    page.postal_country_code.fit 'Canada'
-  end
+  @payment_request.update_tax_tab income_class_code:   'A - Honoraria, Prize',
+                                  federal_tax_pct:     '0',
+                                  state_tax_pct:       '0',
+                                  postal_country_code: 'Canada'
 end
 
 And /^I verified the GLPE on Payment Request page with the following:$/ do |table|
@@ -419,12 +395,8 @@ And /^I add an Attachment to the Requisition document$/ do
 end
 
 And /^I enter Delivery Instructions and Notes to Vendor$/ do
-  on RequisitionPage do |page|
-    page.vendor_notes.fit random_alphanums(40, 'AFT-ToVendorNote')
-    page.delivery_instructions.fit random_alphanums(40, 'AFT-DelvInst')
-    @requisition.delivery_instructions = page.delivery_instructions.value
-    @requisition.vendor_notes = page.vendor_notes.value
-  end
+  @requisition.edit vendor_notes:          random_alphanums(40, 'AFT-ToVendorNote'),
+                    delivery_instructions: random_alphanums(40, 'AFT-DelvInst')
 end
 
 When /^I visit the "(.*)" page$/  do   |go_to_page|
@@ -445,10 +417,11 @@ Then /^the Payment Request document's GLPE tab shows the Requisition document su
   on PaymentRequestPage do |page|
     page.show_glpe
 
-      page.glpe_results_table.text.include? @requisition.items.first.accounting_lines.first.object_code
-      page.glpe_results_table.text.include? @requisition.items.first.accounting_lines.first.account_number
-      # credit object code should be 3110 (depends on parm)
-    end
+    @requisition.items.should have_at_least(1).items, 'Not sure if the Requisition document had Items!'
+    @requisition.items.first.accounting_lines.should have_at_least(1).accounting_lines, 'Not sure if the Requisition\'s Item had accounting lines!'
+    page.glpe_results_table.text.should include @requisition.items.first.accounting_lines.first.object_code
+    page.glpe_results_table.text.should include @requisition.items.first.accounting_lines.first.account_number
+  end
 end
 
 And /^I Complete Selecting an External Vendor$/ do
@@ -508,7 +481,7 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
       if (document == 'Payment Request')
         if (on(page_class_for(document)).app_doc_status == 'Awaiting Tax Approval')
           step  "I update the Tax Tab"
-          step  "I calculate PREQ"
+          step  "I calculate the Payment Request document"
         else
           if (on(page_class_for(document)).app_doc_status == 'Awaiting Treasury Manager Approval')
             #TODO : wait till Alternate PM is implemented
@@ -551,6 +524,7 @@ Then /^I switch to the user with the next Pending Action in the Route Log to app
 end
 
 And /^During Approval of the (.*) document the Financial Officer adds a second line item with:$/ do |document, table|
+  pending 'This step is so very very wrong.'
   step "I view the Requisition document from the Requisitions search"
   step 'I switch to the user with the next Pending Action in the Route Log for the Requisition document'
   step "I view the Requisition document on my action list"
@@ -577,7 +551,7 @@ And /^During Approval of the (.*) document the Financial Officer adds a second l
 end
 
 And /^During Approval of the Purchase Order Amendment the Financial Officer adds a line item$/ do
-  step "I view the Requisition document from the Requisitions search"
+  step 'I view the Requisition document from the Requisitions search'
   step 'I switch to the user with the next Pending Action in the Route Log for the Requisition document'
   step 'I open the Purchase Order Amendment on the Requisition document'
   step 'I switch to the user with the next Pending Action in the Route Log for the Purchase Order document'
@@ -601,7 +575,7 @@ And /^During Approval of the Purchase Order Amendment the Financial Officer adds
 end
 
 And /^I open the Purchase Order Amendment on the Requisition document$/ do
-  step "I view the Requisition document"
+  step 'I view the Requisition document'
   on RequisitionPage do |page|
     page.expand_all
     @purchase_order_amendment_id = page.purchase_order_amendment_value

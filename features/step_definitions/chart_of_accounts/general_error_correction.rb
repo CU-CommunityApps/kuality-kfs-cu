@@ -37,3 +37,17 @@ And /^I add an Accounting Line to the General Error Correction document with "Ac
     })
   end
 end
+
+And /^I add a (From|To) Accounting Line to the General Error Correction document with Amount (\w+)$/ do |type, amount|
+  account_number =  get_account_of_type('Endowed NonGrant')
+  object_code = get_object_code_of_type('Accounts Receivable Asset')
+  chart_of_accounts_code = get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
+  step "I add a #{type} Accounting Line to the General Error Correction document with the following:",
+       table(%Q{
+      | Chart Code   | #{chart_of_accounts_code} |
+      | Number       | #{account_number}         |
+      | Object Code  | #{object_code}            |
+      | Amount       | #{amount}                 |
+       })
+
+end

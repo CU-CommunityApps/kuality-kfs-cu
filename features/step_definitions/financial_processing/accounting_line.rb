@@ -90,8 +90,8 @@ And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|
                                })
       when 'General Error Correction'
         new_source_line.merge!({
-                               reference_number:      '777001',
-                               reference_origin_code: '01'
+                               reference_number:      rand(100..99999),
+                               reference_origin_code: fetch_random_origination_code
                              })
       when 'Non-Check Disbursement'
         new_source_line.merge!({

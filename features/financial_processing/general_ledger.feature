@@ -100,7 +100,7 @@ Feature: General Ledger
 
   @KFSQA-649 @smoke @nightly-jobs @tortoise
   Scenario: Accounting Line Description from eDoc updates General Ledger, part 3
-    Given I am logged in as a KFS Manager for the ICA document
+    Given I am logged in as a KFS System Manager
     And   I clone a random Account with the following changes:
       | Name                                          | Indirect Cost Adjustment Test Account S |
       | Chart Code                                    | IT                                      |

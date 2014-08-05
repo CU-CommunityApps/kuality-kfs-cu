@@ -6,17 +6,8 @@ Feature: General Error Correction
   Scenario: Reject Approver Account changes unless they are the Fiscal Officer
     Given   I am logged in as a KFS Fiscal Officer
     And     I start a General Error Correction document
-    And     I add a From Accounting Line to the General Error Correction document with the following:
-      | Chart Code   | IT      |
-      | Number       | G003704 |
-      | Object Code  | 1210    |
-      | Amount       | 100     |
-    And     I add a To Accounting Line to the General Error Correction document with the following:
-      | Chart Code   | IT      |
-      | Number       | G254700 |
-      | Object Code  | 1210    |
-      | Amount       | 100     |
-  #TODO grab chart, account and object code from parameter
+    And     I add a From Accounting Line to the General Error Correction document with Amount 100
+    And     I add a To Accounting Line to the General Error Correction document with Amount 100
     And     I blanket approve the General Error Correction document
     And     the General Error Correction document goes to FINAL
     And     I am logged in as a KFS Fiscal Officer

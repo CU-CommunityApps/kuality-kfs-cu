@@ -43,20 +43,24 @@ When /^I (#{BasePage::available_buttons}) the (.*) document if it is not already
   end
 end
 
+When /^I (#{BasePage::available_buttons}) the (.*) document, confirming any questions, if it is not already FINAL/ do |button, document|
+  doc_object = snake_case document
+  button.gsub!(' ', '_')
+  unless on(KFSBasePage).document_status == 'FINAL'
+    get(doc_object).send(button)
+    on(YesOrNoPage).yes_if_possible
+    sleep 10 if (button == 'blanket approve' || button == 'approve')
+  end
+end
+
 When /^I (#{BasePage::available_buttons}) the (.*) document and confirm any questions$/ do |button, document|
   step "I #{button} the #{document} document"
-  on YesOrNoPage do |page|
-    sleep 10
-    page.yes if page.yes_button.exists?
-  end
+  on(YesOrNoPage).yes_if_possible
 end
 
 When /^I (#{BasePage::available_buttons}) the (.*) document and deny any questions$/ do |button, document|
   step "I #{button} the #{document} document"
-  on YesOrNoPage do |page|
-    sleep 10
-    page.no if page.no_button.exists?
-  end
+  on(YesOrNoPage).no_if_possible
 end
 
 Then /^the (.*) document goes to (PROCESSED|ENROUTE|FINAL|INITIATED|SAVED)$/ do |document, doc_status|
@@ -119,4 +123,8 @@ end
 
 And /^I select yes to the question$/ do
   on(YesOrNoPage).yes
+end
+
+And /^I calculate the (.*) document$/ do |document|
+  document_object_for(document).calculate
 end
