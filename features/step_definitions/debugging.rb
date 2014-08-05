@@ -119,3 +119,8 @@ And /^I open the (.*) document with ID (\d+)$/ do |document, document_id|
     search.open_doc document_id
   end
 end
+
+When /^I inspect the variable named (.*)$/ do |var|
+  located_var = get(var)
+  puts located_var.inspect
+end

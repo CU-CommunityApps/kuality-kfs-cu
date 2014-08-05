@@ -21,7 +21,7 @@ Feature: eSHOP Create
     And   I add these Accounting Lines to Item #1 on the Requisition document:
       | chart_code | account_number       | object_code | amount |
       | Default    | Unrestricted Account | Expenditure | 10     |
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     Then  the document should have no errors
     When  I reload the Requisition document
@@ -29,3 +29,11 @@ Feature: eSHOP Create
     And   the e-SHOP cart has an associated Requisition document
     And   the document status is ENROUTE
     And   the next pending action for the Requisition document is an APPROVE from a Fiscal Officer
+
+  @KFSQA-856 @BaseFunction @PDP @PO @PREQ @REQS @coral
+  Scenario: e-SHOP to PO to PREQ to PDP
+    Given I initiate an e-SHOP order
+    When  I route the Requisition document to final
+    And   I extract the Requisition document to SciQuest
+    And   I initiate a Payment Request document
+    Then  I format and process the check with PDP

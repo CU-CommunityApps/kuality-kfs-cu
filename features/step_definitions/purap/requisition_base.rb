@@ -63,7 +63,7 @@ Given  /^I (initiate|submit) a Requisition document with the following:$/ do |ac
     And  I add a file attachment to the Notes and Attachment Tab of the Requisition document
     And  I enter Delivery Instructions and Notes to Vendor
 
-    And  I calculate my Requisition document
+    And  I calculate the Requisition document
     And  I submit the Requisition document
     Then the Requisition document goes to ENROUTE
   }
@@ -97,57 +97,51 @@ And /^users outside the Route Log can not search and retrieve the REQS$/ do
 end
 
 And /^I extract the Requisition document to SciQuest$/ do
-  steps %q{
-    Given I am logged in as a Purchasing Processor
-    And   I retrieve the Requisition document
-    When  I check Related Documents Tab on Requisition Document
-  }
+  step 'I am logged in as a Purchasing Processor'
+  step 'I retrieve the Requisition document'
+  step 'I check Related Documents Tab on Requisition Document'
 
   if !@auto_gen_po.nil? && !@auto_gen_po
-   step 'I assign Contract Manager and approve Purchase Order Document to FINAL'
+    step 'I assign Contract Manager and approve Purchase Order Document to FINAL'
   end
 
-  steps %Q{
-    Given I am logged in as the Initiator of the Requisition document
-    When  I visit the "e-SHOP" page
-    And   I view the Purchase Order document via e-SHOP
-    Then  the Document Status displayed 'Completed'
-    And   the Delivery Instructions displayed equals what came from the PO
-    And   the Attachments for Supplier came from the PO
-  }
+  sleep 10 # We'll give a little time for this to process to SciQuest
+
+  step 'I am logged in as the Initiator of the Requisition document'
+  step 'I visit the "e-SHOP" page'
+  step 'I view the Purchase Order document via e-SHOP'
+  step 'the Document Status displayed \'Completed\''
+  step 'the Delivery Instructions displayed equals what came from the PO'
+  step 'the Attachments for Supplier came from the PO'
+
 end
 
 And /^I assign Contract Manager and approve Purchase Order Document to FINAL$/ do
 
-  steps %Q{
-    Given I am logged in as a Purchasing Processor
-    When  I submit a Contract Manager Assignment for the Requisition
-    Given I am logged in as a PURAP Contract Manager
-    When  I retrieve the Requisition document
-    Then  the View Related Documents Tab PO Status displays
-    And the Purchase Order Number is unmasked
-  }
+  step 'I am logged in as a Purchasing Processor'
+  step 'I submit a Contract Manager Assignment of \'10\' for the Requisition'
+  step 'I am logged in as a PURAP Contract Manager'
+  step 'I retrieve the Requisition document'
+  step 'the View Related Documents Tab PO Status displays'
+  step 'the Purchase Order Number is unmasked'
 
   step "I Complete Selecting Vendor #{@vendor_number}" unless @add_vendor_on_reqs == 'Yes'
 
-  steps %Q{
-    When I enter a Vendor Choice of 'Lowest Price'
-    And  I calculate and verify the GLPE tab
-    And  I submit the Purchase Order document
-  }
+  step 'I enter a Vendor Choice of \'Lowest Price\''
+  step 'I calculate and verify the GLPE tab'
+  step 'I add a random Delivery Phone number to the Purchase Order document'
+  step 'I submit the Purchase Order document'
 
   step 'the Purchase Order document goes to one of the following statuses:',
        table('
-               | ENROUTE   |
-               | FINAL     |
-             ')
+              | ENROUTE   |
+              | FINAL     |
+            ')
 
-  steps %q{
-    Given I switch to the user with the next Pending Action in the Route Log to approve Purchase Order document to Final
-    Then  the Purchase Order document goes to FINAL
-    And   in Pending Action Requests an FYI is sent to FO and Initiator
-    And   the Purchase Order Doc Status is Open
-  }
+  step 'I switch to the user with the next Pending Action in the Route Log to approve Purchase Order document to Final'
+  step 'the Purchase Order document goes to FINAL'
+  step 'in Pending Action Requests an FYI is sent to FO and Initiator'
+  step 'the Purchase Order Doc Status is Open'
 
 end
 
@@ -158,46 +152,37 @@ When /^I initiate a Payment Request document$/ do
   step 'I enter the Qty Invoiced and calculate'
   step 'I enter a Pay Date'
   step 'I attach an Invoice Image to the Payment Request document'
-  step 'I calculate PREQ'
-  step 'I submit the Payment Request document'
+  step 'I calculate the Payment Request document'
+  step 'I submit the Payment Request document and confirm any questions'
   step 'the Payment Request document goes to ENROUTE'
   step 'I route the Payment Request document to final'
   step 'the Payment Request Doc Status is Department-Approved'
   step 'the Payment Request document\'s GLPE tab shows the Requisition document submissions'
 end
 
-Then /^I FORMAT AND PROCESS THE CHECK WITH PDP$/ do
+Then /^I format and process the check with PDP$/ do
   #purap batch
-  steps %q{
-    Given I am logged in as a KFS Operations
-    When  I run Auto Approve PREQ
-    And   I extract Electronic Invoices
-    And   I extract Regular PREQS to PDP for Payment
-    And   I extract Immediate PREQS to PDP for Payment
-    And   I close POS wtih Zero Balanecs
-    And   I load PREQ into PDP
-  }
+  step 'I am logged in as a KFS Operations'
+  step 'I run Auto Approve PREQ'
+  step 'I extract Electronic Invoices'
+  step 'I extract Regular PREQS to PDP for Payment'
+  step 'I extract Immediate PREQS to PDP for Payment'
+  step 'I close POS wtih Zero Balanecs'
+  step 'I load PREQ into PDP'
 
   # format checks
-  steps %q{
-    Given I Login as a PDP Format Disbursement Processor
-    When  I format Disbursement
-  }
-    #And   I select continue on Format Disbursement Summary
-    #And   a Format Summary Lookup displays
-  #}
+  step 'I Login as a PDP Format Disbursement Processor'
+  step 'I format Disbursement'
 
   # generate output files batch jobs
-  steps %q{
-    And   I generate the ACH XML File
-    And   I generate the Check XML File
-    And   I generate the Cancelled Check XML File
-    And   I send EMAIL Notices to ACH Payees
-    And   I process Cancels and Paids
-    And   I generate the GL Files from PDP
-    And   I populate the ACH Bank Table
-    And   I clear out PDP Temporary Tables
- }
+  step 'I generate the ACH XML File'
+  step 'I generate the Check XML File'
+  step 'I generate the Cancelled Check XML File'
+  step 'I send EMAIL Notices to ACH Payees'
+  step 'I process Cancels and Paids'
+  step 'I generate the GL Files from PDP'
+  step 'I populate the ACH Bank Table'
+  step 'I clear out PDP Temporary Tables'
 end
 
 
@@ -308,16 +293,14 @@ end
 
 And /^I submit a Purchase Order Amendment document$/ do
   step 'I submit a Purchase Order Amendment document with the following:',
-       table(%Q{
-         | All | Default |
-       })
+       table('| All | Default |')
 end
 
 
 When /^I (initiate|submit) a Purchase Order Amendment document with the following:$/ do |action, table|
   arguments = table.rows_hash
 
-  step "I am logged in as \"#{@requisition_initiator}\""
+  step "I am logged in as \"#{@requisition.initiator}\""
   step 'I view the Purchase Order document'
   step 'I amend the Purchase Order'
 
@@ -342,10 +325,8 @@ When /^I (initiate|submit) a Purchase Order Amendment document with the followin
 
   case action
     when 'initiate'
-      steps %q{
-        Given I switch to the user with the next Pending Action in the Route Log to approve Purchase Order Amendment document to Final
-        Then  the Purchase Order Amendment document goes to FINAL
-    }
+      step 'I switch to the user with the next Pending Action in the Route Log to approve Purchase Order Amendment document to Final'
+      step 'the Purchase Order Amendment document goes to FINAL'
     when 'submit'
       warn 'Just submitting Purchase Order Amendment document, not taking POA document to final'
   end
@@ -390,8 +371,8 @@ And /^I calculate and verify the GLPE tab with no entries$/ do
     page.calculate
     #page.show_glpe
 
-    page.glpe_results_table.text.include? 'There are currently no General Ledger Pending Entries ' <<
-                                          'associated with this Transaction Processing document.'
+    page.glpe_results_table.text.should include( 'There are currently no General Ledger Pending Entries ' <<
+                                                 'associated with this Transaction Processing document.' )
   end
 end
 

@@ -142,20 +142,32 @@ Given /^I Login as an Asset Processor$/ do
 end
 
 Given /^I am logged in as an e\-SHOP User$/ do
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'eShop User (cu)'))
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-PURAP', 'eShop User (cu)'))
 end
 
-Given /^I am logged in as the Initiator of the Requisition document$/ do
-  # this is not to find the REQS initiator role.  It is the 'initiator' who created the REQS for this scenario
-  step "I am logged in as \"#{@requisition_initiator}\""
+Given /^I am logged in as an e\-SHOP User with a phone number$/ do
+  visit(BackdoorLoginPage).login_as(get_random_principal_with_phone_name_for_role('KFS-PURAP', 'eShop Plus User(cu)'))
+end
+
+Given /^I am logged in as an e\-SHOP Plus User$/ do
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-PURAP', 'eShop Plus User(cu)'))
+end
+
+Given /^I am logged in as an e\-SHOP Shopper Office User$/ do
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-PURAP', 'eShop Shopper Office(cu)'))
+end
+
+Given /^I am logged in as the Initiator of the (.*) document$/ do |document|
+  # this is not to find the document initiator role.  It is the 'initiator' who created the particular document for this scenario
+  step "I am logged in as \"#{document_object_for(document).initiator}\""
 end
 
 Given /^I am logged in as a Vendor Initiator and Manager$/ do
   # initiator can edit Vendor and Manager can blanket approve vendor
-  managers = get_principal_name_for_role('KFS-SYS', 'Manager');
+  managers = get_principal_name_for_role('KFS-SYS', 'Manager')
   initiators = get_principal_name_for_role('KFS-VND', 'CU Vendor Initiator')
   users = managers & initiators
-  visit(BackdoorLoginPage).login_as(users[0])
+  visit(BackdoorLoginPage).login_as(users[0]) # FIXME: Shouldn't this be users.sample ?
 end
 
 Given /^I am logged in as a (Source|Target|From|To) Account Fiscal Officer$/ do |acct_type|

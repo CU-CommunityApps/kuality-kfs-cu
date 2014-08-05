@@ -69,3 +69,7 @@ And /^The GLPE from the Purchase Order are reversed by the void$/ do
     page.frm.link(text: 'POV').should exist
   end
 end
+
+And /^I add a random Delivery Phone number to the Purchase Order document$/ do
+  @purchase_order.edit delivery_phone_number: random_phone_number
+end
