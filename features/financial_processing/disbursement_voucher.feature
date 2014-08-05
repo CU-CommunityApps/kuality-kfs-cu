@@ -47,7 +47,7 @@ Feature: Disbursement Voucher
 
   @KFSQA-681 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
-    Given I am logged in as a KFS User
+    Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
     And   I add a Retiree as payee and Reason Code B to the Disbursement Voucher
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
@@ -60,13 +60,13 @@ Feature: Disbursement Voucher
 
   @KFSQA-682 @smoke @hare
   Scenario: KFS User Initiates a Disbursement Voucher document and Payee search should return no result with Terminated Employee
-    Given I am logged in as a KFS User
+    Given I am logged in as a KFS User for the DV document
     When  I start an empty Disbursement Voucher document
     Then  I search for the payee with Terminated Employee and Reason Code B for Disbursement Voucher document with no result found
 
   @KFSQA-683 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Active employee and alumnus and former student
-    Given I am logged in as a KFS User
+    Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
     And   I add an Active Employee, Former Student, and Alumnus as payee and Reason Code B to the Disbursement Voucher
     #TODO vk76 should be looked up, not hard coded
@@ -80,7 +80,7 @@ Feature: Disbursement Voucher
 
   @KFSQA-685 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Active Staff, Former Student, and Alumnus
-    Given I am logged in as a KFS User
+    Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
     And   I add an Active Staff, Former Student, and Alumnus as payee and Reason Code B to the Disbursement Voucher
     #TODO map3 should be looked up, not hard coded
@@ -144,14 +144,14 @@ Feature: Disbursement Voucher
 
   @KFSQA-709 @DV @hare
   Scenario: KFS User Initiates a Disbursement Voucher document with only a description field
-    Given I am logged in as a KFS User
+    Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document with only the Description field populated
     When  I save the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to SAVED
 
   @KFSQA-700 @DV @tortoise
   Scenario: Allow usage of Revolving Fund (Petty Cash) DV Payment Types.
-    Given I am logged in as a KFS User
+    Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document with Payment to a Petty Cash Vendor
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | G003704        |
@@ -213,7 +213,7 @@ Feature: Disbursement Voucher
 
   @KFSQA-717 @DV @Create @Search @tortoise
   Scenario: Disbursement Voucher document allow usage of Revolving Fund (Petty Cash) Payment Types
-    Given I am logged in as a KFS User
+    Given I am logged in as a KFS User for the DV document
     When  I start an empty Disbursement Voucher document
     And   I add a random payee the Disbursement Voucher
     And   I change the Payee address
@@ -229,7 +229,7 @@ Feature: Disbursement Voucher
 
   @KFSQA-710 @DV @sloth
   Scenario: Verify using current mileage rate based on dates
-    Given I am logged in as a KFS User
+    Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document with Payment to Vendor 5238-0 and Reason Code N
     #TODO how to abstract this?
     When  I enter the Total Mileage of 245 in Travel Tab
