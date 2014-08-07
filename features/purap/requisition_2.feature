@@ -27,7 +27,7 @@ Feature: Purap REQS 2 Building Blocks
     | Percent             | 100      |
     And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     Then  the Requisition document goes to ENROUTE
     #   FO approve
@@ -61,7 +61,7 @@ Feature: Purap REQS 2 Building Blocks
       | Percent             | 100              |
     And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     Then  the Requisition document goes to ENROUTE
 #   FO approve
@@ -95,7 +95,7 @@ Feature: Purap REQS 2 Building Blocks
     And   I enter Payment Information for recurring payment type <recurring_payment_type>
     And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     Then  the Requisition document goes to ENROUTE
 #   FO approve
@@ -137,7 +137,7 @@ Feature: Purap REQS 2 Building Blocks
       | Account Number      | 1000817          |
       | Object Code         | 6570             |
       | Percent             | 100              |
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     When  I submit the Requisition document
     Then  the Requisition document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Requisition document

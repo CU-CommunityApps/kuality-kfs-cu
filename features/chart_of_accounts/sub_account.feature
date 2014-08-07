@@ -27,17 +27,18 @@ Feature: Sub Account
     And     I approve the Sub-Account document
     Then    the Sub-Account document goes to FINAL
 
-  @KFSQA-589 @cornell @SubAcct @Bug @KFSPTS-1753 @hare
+  @KFSQA-589 @cornell @SubAcct @Bug @KFSPTS-1753 @sloth
   Scenario: Create a Sub-Account with Sub-Account Type CS and ad-hoc approval route it to a member of the Contracts & Grants Processor Role (jis45)
-    Given I am logged in as "rlc56"
-    And   I submit a Sub-Account through action list routing with adhoc approver user "jis45"
-    Then  the Sub-Account document goes to ENROUTE
-    Given I am logged in as "jis45"
-    And   the Sub-Account Document is in my Action List
+    Given I am logged in as a KFS User
+    And   I submit a Sub-Account with an adhoc approver
+    And   the Sub-Account document goes to ENROUTE
+    When  I am logged in as the adhoc user
+    Then  The Sub-Account document should be in my action list
     When  I view the Sub-Account document
     And   I blanket approve the Sub-Account document
     And   I view the Sub-Account document
     Then  the Sub-Account document goes to one of the following statuses:
       | PROCESSED |
       | FINAL     |
+
 

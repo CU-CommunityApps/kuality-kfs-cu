@@ -1,4 +1,4 @@
-Feature: Internal Billing
+Feature: Labor Journal Voucher
 
   [KFSQA-662] To properly control Labor Ledger entries, Cornell University modified the LLJV with
               approval node LLJVApproval. Cornell roles for Labor Distribution Manager (cu) will

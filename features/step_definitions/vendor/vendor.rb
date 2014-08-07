@@ -208,6 +208,7 @@ And /^I edit a Vendor with Vendor Number (.*)$/ do |vendor_number|
                    document_id: page.document_id
     @vendor.absorb! :old
     @document_id = @vendor.document_id
+    page.default_payment_method.fit 'P - ACH/CHECK' if page.default_payment_method.value.empty?
   end
 end
 
@@ -442,7 +443,11 @@ And /^I lookup a PO Vendor$/ do
 end
 
 And /^I lookup a PO Vendor with Supplier Diversity$/ do
-  vendor_info = get_kuali_business_object('KFS-VND','VendorDetail','vendorHeader.vendorOwnershipCode=ID&vendorHeader.vendorSupplierDiversities.vendorSupplierDiversityCode=WO&vendorHeader.vendorSupplierDiversities.extension.vendorSupplierDiversityExpirationDate=07/25/2014&active=Y&vendorNumber=*-0')
+  vendors = get_kuali_business_objects('KFS-VND','VendorDetail','vendorHeader.vendorOwnershipCode=ID&vendorHeader.vendorSupplierDiversities.vendorSupplierDiversityCode=WO&vendorHeader.vendorSupplierDiversities.extension.vendorSupplierDiversityExpirationDate=07/25/2014&active=Y&vendorNumber=*-0')
+  vendor_info = vendors.values[0].sample
+  until vendor_info['vendorNumber'][0].end_with? '-0'
+    vendor_info = vendors.values[0].sample
+  end
   vendor_number = vendor_info['vendorNumber'][0]
 
   step "I lookup a Vendor with Vendor Number #{vendor_number}"

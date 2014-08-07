@@ -280,6 +280,7 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
       page.indirect_cost_recovery_active_indicator.fit       @account.indirect_cost_recovery_active_indicator unless @account.indirect_cost_recovery_active_indicator.nil?
 
       page.blanket_approve
+      sleep 5
     end
 
     @accounts = @accounts.nil? ? [@account] : @accounts + [@account]
