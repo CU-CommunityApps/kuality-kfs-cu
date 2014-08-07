@@ -25,7 +25,7 @@ Feature: Labor Distribution
     Then  the Salary Expense Transfer document goes to FINAL
     And   I run the nightly Labor batch process
     And   I am logged in as a Labor Distribution Manager
-    Then  the labor ledger pending entry for employee '1006368' is empty
+    Then  the labor ledger pending entry for employee is empty
 
   @KFSQA-984 @BaseFunction @BT @tortoise
   Scenario: Base Function : I create a Benefit Expense Transfer
@@ -37,9 +37,10 @@ Feature: Labor Distribution
   Scenario: Base Function for labor nightly batch process.
     Given I run the nightly Labor batch process
     And   I am logged in as a Salary Transfer Initiator
-    # this is just an example to validate the labor batch process is OK.  For different ST/BT
-    # this step may revised or make more general
-    Then  the labor ledger pending entry for employee '1013939' is empty
+    # this is just an example to validate the labor batch process is OK.
+    # this step requires/presumes remembered_employee_id is set to the employee id being used for the test;
+    # otherwise, the default parameter employee id is used for verification
+    Then  the labor ledger pending entry for employee is empty
 
   @KFSQA-970 @ST @smoke @coral
   Scenario: Salary Expense Transfer test between account types, between rates, and for labor access security.
@@ -53,6 +54,8 @@ Feature: Labor Distribution
     Then  I should get an error that starts with "Invalid transfer between account types"
     And   I transfer the Salary to an Account with a different Rate but the same Account Type and Organization
       | To Account | 5088700 |
+    #put in save of ST doc
+    #put in LLPE verification step
     And   I submit the Salary Expense Transfer document
     And   the Salary Expense Transfer document goes to ENROUTE
     And   I route the Salary Expense Transfer document to final
@@ -63,7 +66,7 @@ Feature: Labor Distribution
       | User Name | rlo4 |
     And   I run the nightly Labor batch process
     And   I am logged in as a Labor Distribution Manager
-    Then  the labor ledger pending entry for employee '2569631' is empty
+    Then  the labor ledger pending entry for employee is empty
 
    @KFSQA-1012 @ST @smoke @wip
   Scenario: Submit a salary transfer edoc between account types, edit the object code, verify pending entries, and submit successfully.
@@ -81,4 +84,4 @@ Feature: Labor Distribution
     Then  the Salary Expense Transfer document goes to FINAL
     And   I run the nightly Labor batch process
     And   I am logged in as a Labor Distribution Manager
-    Then  the labor ledger pending entry for employee '1013939' is empty
+    Then  the labor ledger pending entry for employee is empty

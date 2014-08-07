@@ -14,10 +14,23 @@ Given /^I select employee (\d+)$/ do|emp|
   end
 end
 
-#TODO MUST FIX - benefits tests broken
 And /^I search and retrieve Ledger Balance entry$/ do
-  @salary_expense_transfer.search_for_employee
-  @salary_expense_transfer.retrieve_first_positive_balance_month
+  #search for ledger balance
+  on(SalaryExpenseTransferPage) do |page|
+    page.import_search
+  end
+  # retrieve first positive balance_month
+  on LedgerBalanceLookupPage do |lblookup|
+    #look back to previous fiscal when there is no labor data in current fiscal year for the test
+    if lblookup.no_results_found?
+      @fiscal_year = lblookup.fiscal_year.value.to_i - 1
+      lblookup.fiscal_year.set @fiscal_year
+      lblookup.search
+    end
+    #TODO Change to select first month with a positive balance.  Currently, first month regardless of balance is being selected.
+    lblookup.check_first_month
+    lblookup.return_selected
+  end
 end
 
 And /^I copy (.*) source account to target account$/ do |document|
@@ -82,6 +95,9 @@ Given  /^I create a Salary Expense Transfer with following:$/ do |table|
 
   step "I am User #@user_principal who is a Salary Transfer Initiator"
   populate_st_for_employee
+
+  #value required for validation on different panel at end of test
+  @salary_expense_transfer.remembered_employee_id = @employee_id
 end
 
 
@@ -94,6 +110,9 @@ Given /^I create a Salary Expense Transfer as a Labor Distribution Manager:$/ do
 
   step "I am logged in as a Labor Distribution Manager"
   populate_st_for_employee
+
+  #value required for validation on different panel at end of test
+  @salary_expense_transfer.remembered_employee_id = @employee_id
 end
 
 def populate_st_for_employee
@@ -161,11 +180,19 @@ And /^I run the GL Nightly Processes$/ do
 
 end
 
-Then /^the labor ledger pending entry for employee '(.*)' is empty$/ do |empl_id|
+Then /^the labor ledger pending entry for employee is empty$/ do
+  employee_id = ""
+  if @salary_expense_transfer == nil || @salary_expense_transfer.remembered_employee_id == nil
+    #get default employee_id data value since test being run did not set remembered value
+    employee_id = get_aft_parameter_value(ParameterConstants::DEFAULT_ST_EMPL_ID)
+  else
+    #get employee_id used earlier in the test
+    employee_id = @salary_expense_transfer.remembered_employee_id
+  end
   visit(MainPage).labor_ledger_pending_entry
   on LaborLedgerPendingEntryLookupPage do |page|
     page.fiscal_year.fit ''
-    page.empl_id.fit empl_id
+    page.empl_id.fit employee_id
     page.search
     page.wait_for_search_results
     page.frm.divs(id: 'view_div')[0].text.should include 'No values match this search.'
@@ -205,100 +232,156 @@ And /^I edit object code and replace with a different labor object code$/ do |ta
 end
 
 
+# Verifying the transfer between salary accounts and benefits accounts, between fiscal period, and balance type.
+# For the salary transfer:
+# 1. From account will credit actuals (AC balance type) for account and object
+#    To account will debit actuals (AC balance type) for the account and object code
+#
+# 2. From account will debit A2 balance type for account and object (fiscal period assigned when posted, blank in
+#    pending entries tab) and credit A2 balance type for fiscal periods selected in test (returned value);
+#
+#    To account will credit A2 balance type for account, object (no FP in PE tab) and debit A2 balance type
+#    for fiscal period selected in test (returned value)
+#
+# 3. The associated benefit accounts will appear and post in the same manner as #1 and #2 described above
+#
 And /^the Labor Ledger Pending entries verify for the accounting lines on the (.*) document$/ do |document|
   doc_object = get(snake_case(document))
   on(page_class_for(document)).expand_all
   on page_class_for(document) do |page|
 
-  #TODO constants used for verification, put in parameters table and lookup
-  actuals_balance_type = "AC"
-  labor_balance_type = "A2"
-  debit_code = "D"
-  credit_code = "C"
-  blank = ""
-
-  # Verifying the transfer between salary accounts and benefits accounts, between fiscal period, and balance type.
-  # For the salary transfer:
-  # 1. From account will credit actuals (AC balance type) for account and object
-  #    To account will debit actuals (AC balance type) for the account and object code.
-  # 2. From account will debit A2 balance type for account and object (fiscal period assigned when posted, blank in
-  #    pending entries tab) and credit A2 balance type for fiscal periods selected in test (returned value);
-  #    To account will credit A2 balance type for account, object (no FP in PE tab) and debit A2 balance type
-  #    for fiscal period selected in test (returned value)
-  # 3. The associated benefit accounts will appear and post in the same manner as #1 and #2 described above
-  # flags for condition #1 described above
-  from_reg_crdt_actual_per_empt = false
-  to_reg_act_dbt_actual_per_empt = false
-  # flags for condition #2 described above
-  from_reg_dbt_labor_per_empt = false
-  from_reg_crdt_labor_per_chosen = false
-  to_reg_crdt_labor_per_empt = false
-  to_reg_dbt_labor_per_chosen = false
-  # flags for condition #3 described above
-  from_ben_crdt_actual_per_empt = false
-  to_ben_act_dbt_actual_per_empt = false
-  from_ben_dbt_labor_per_empt = false
-  from_ben_crdt_labor_per_chosen = false
-  to_ben_crdt_labor_per_empt = false
-  to_ben_dbt_labor_per_chosen = false
-
-
-  # FROM ACCOUNTING LINES
-  for row in 0..(page.accounting_lines_row_count :source)-1
-    from_line = @salary_expense_transfer.pull_specified_accounting_line(:source, row, page)
-    fringe_detail = @salary_expense_transfer.get_fringe_benefit_detail(from_line[:fringe_benefit_inquiry])
-    page.close_children   #only way to get Fringe Benefit Inquiry to close
-
-    # get labor benefit rate category code on account
-    account_info = get_kuali_business_object('KFS-COA','Account',"closed=N&accountNumber=#{from_line[:account_number]}")
-    from_labor_ben_rate_cat_cd = account_info['laborBenefitRateCategoryCode'][0]
-
-    # Labor Object Code Benefits Lookup as webservice call to get labor benefits type code
-    from_labor_benefit_type_info = get_kuali_business_object('KFS-LD','PositionObjectBenefit',"universityFiscalYear=#{@fiscal_year}&chartOfAccountsCode=#{from_line[:chart_code]}&financialObjectCode=#{from_line[:object_code]}")
-    from_labor_benefit_type_code = from_labor_benefit_type_info['financialObjectBenefitsTypeCode'][0]
-
-    # Labor Benefits Calculation Lookup as webservice call to get
-    from_labor_calc_info = get_kuali_business_object('KFS-LD','BenefitsCalculation',"universityFiscalYear=#{@fiscal_year}&chartOfAccountsCode=#{from_line[:chart_code]}&positionBenefitTypeCode=#{from_labor_benefit_type_code}&laborBenefitRateCategoryCode=#{from_labor_ben_rate_cat_cd}")
-
-  end #for-loop
-
-    # TO ACCOUNTING LINES
-    for row in 0..(page.accounting_lines_row_count :target)-1
-      target_chart = (page.update_chart_code :target; row).to_s
-      target_acct = (page.update_account_number :target; row).to_s
-      target_sub_acct = (page.sub_account_number :target; row).to_s
-      target_obj = (page.object_code :target; row).to_s
-      target_posn = page.position_number_value :target; row
-      target_fy = page.payroll_end_date_fiscal_year_value :target; row
-      target_fy_per = page.payroll_end_date_fiscal_period_code_value :target; row
-#      target_hours = page.payroll_total_hours :target; row
-#      target_ben_view = page.fringe_benefit_view_value :target; row
-#      target_amt = page.salary_expense_amount :target; row
-      a = "b"
-    end
-
-
-
-
-    # LLPE RESULTS TABLE
+    #items for labor ledger pending entries table
+    llpe_running_count = 0
     llpe_num_rows = page.llpe_results_table.rows.length-1
-    chart_col = page.llpe_results_table.keyed_column_index(:chart)
     account_number_col = page.llpe_results_table.keyed_column_index(:account_number)
     object_code_col = page.llpe_results_table.keyed_column_index(:object)
     period_col = page.llpe_results_table.keyed_column_index(:period)
     balance_type_col = page.llpe_results_table.keyed_column_index(:balance_type)
     amount_col = page.llpe_results_table.keyed_column_index(:amount)
     dc_col = page.llpe_results_table.keyed_column_index(:debit_credit_code)
-    page.llpe_results_table.rest.each do |row|
-      llpe_chart = row[chart_col].text
-      llpe_account_number = row[account_number_col].text
-      llpe_object_code = row[object_code_col].text
-      llpe_period = row[period_col].text
-      llpe_balance_type = row[balance_type_col].text
-      llpe_amount = row[amount_col].text
-      llpe_debit_credit = row[dc_col].text
-    end
 
+    # FROM ACCOUNTING LINES
+    for row in 0..(page.accounting_lines_row_count :source)-1
+      line = @salary_expense_transfer.pull_specified_accounting_line(:source, row, page)
+      fringe_detail = @salary_expense_transfer.get_fringe_benefit_detail(line[:fringe_benefit_inquiry])
+      page.close_children   #only way to get Fringe Benefit Inquiry to close
+
+      # Account Lookup as webservice call to get labor benefit rate category code on the account
+      account_info = get_kuali_business_object('KFS-COA','Account',"closed=N&accountNumber=#{line[:account_number]}")
+
+      # Labor Object Code Benefits Lookup as webservice call to get labor benefits type code
+      labor_benefit_type_info = get_kuali_business_object('KFS-LD','PositionObjectBenefit',"universityFiscalYear=#{line[:payroll_end_date_fiscal_year]}&chartOfAccountsCode=#{line[:chart_code]}&financialObjectCode=#{line[:object_code]}")
+
+      # Labor Benefits Calculation Lookup as webservice call using labor benefit rate category code and
+      # labor benefits type code to get labor benefit object code, labor account code offset, and position fringe benefit percent
+      labor_calc_info = get_kuali_business_object('KFS-LD','BenefitsCalculation',"universityFiscalYear=#{line[:payroll_end_date_fiscal_year]}&chartOfAccountsCode=#{line[:chart_code]}&positionBenefitTypeCode=#{labor_benefit_type_info['financialObjectBenefitsTypeCode'][0]}&laborBenefitRateCategoryCode=#{account_info['laborBenefitRateCategoryCode'][0]}")
+
+      # Determine what the benefits amount should be based on the percentage just retrieved.
+      benefit_amount = @salary_expense_transfer.calculate_benefit_amount((line[:amount]).to_f, (labor_calc_info['positionFringeBenefitPercent'][0]).to_f)
+
+      #ensure all flags being used are initialized/reset between accounting rows
+      all_llpe_rows_found = false
+      credit_actuals_valid = false
+      debit_a21_blank_valid = false
+      credit_a21_period_valid = false
+      benefit_credit_actuals_valid = false
+      benefit_debit_a21_blank_valid = false
+      benefit_credit_a21_period_vld = false
+
+      page.llpe_results_table.rest.each do |llperow|
+        unless all_llpe_rows_found
+          if @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
+                                                                             line[:account_number], line[:object_code], line[:amount], @salary_expense_transfer.PERIOD_UNASSIGNED, @salary_expense_transfer.ACTUALS_BALANCE_TYPE, @salary_expense_transfer.CREDIT_CODE)
+            credit_actuals_valid = true
+
+          elsif @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
+                                                                                line[:account_number], line[:object_code], line[:amount], @salary_expense_transfer.PERIOD_UNASSIGNED, @salary_expense_transfer.LABOR_BALANCE_TYPE , @salary_expense_transfer.DEBIT_CODE)
+            debit_a21_blank_valid = true
+
+          elsif @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
+                                                                                line[:account_number], line[:object_code], line[:amount], line[:payroll_end_date_fiscal_period_code], @salary_expense_transfer.LABOR_BALANCE_TYPE , @salary_expense_transfer.CREDIT_CODE)
+            credit_a21_period_valid = true
+
+          elsif @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
+                                                                                line[:account_number], labor_calc_info['positionFringeBenefitObjectCode'][0], benefit_amount, @salary_expense_transfer.PERIOD_UNASSIGNED, @salary_expense_transfer.ACTUALS_BALANCE_TYPE, @salary_expense_transfer.CREDIT_CODE)
+            benefit_credit_actuals_valid = true
+
+          elsif @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
+                                                                                line[:account_number], labor_calc_info['positionFringeBenefitObjectCode'][0], benefit_amount, @salary_expense_transfer.PERIOD_UNASSIGNED, @salary_expense_transfer.LABOR_BALANCE_TYPE , @salary_expense_transfer.DEBIT_CODE)
+            benefit_debit_a21_blank_valid = true
+
+          elsif @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
+                                                                                line[:account_number], labor_calc_info['positionFringeBenefitObjectCode'][0], benefit_amount, line[:payroll_end_date_fiscal_period_code], @salary_expense_transfer.LABOR_BALANCE_TYPE , @salary_expense_transfer.CREDIT_CODE)
+            benefit_credit_a21_period_vld = true
+          end
+        end
+      end #loop of llpe table
+      all_llpe_rows_found = credit_actuals_valid && debit_a21_blank_valid && credit_a21_period_valid && benefit_credit_actuals_valid && benefit_debit_a21_blank_valid && benefit_credit_a21_period_vld
+      all_llpe_rows_found.should be true
+      llpe_running_count += 6
+    end #for-loop from accounting lines
+
+    # To ACCOUNTING LINES
+    for row in 0..(page.accounting_lines_row_count :target)-1
+      line = @salary_expense_transfer.pull_specified_accounting_line(:target, row, page)
+      fringe_detail = @salary_expense_transfer.get_fringe_benefit_detail(line[:fringe_benefit_inquiry])
+      page.close_children   #only way to get Fringe Benefit Inquiry to close
+
+      # Account Lookup as webservice call to get labor benefit rate category code on the account
+      account_info = get_kuali_business_object('KFS-COA','Account',"closed=N&accountNumber=#{line[:account_number]}")
+
+      # Labor Object Code Benefits Lookup as webservice call to get labor benefits type code
+      labor_benefit_type_info = get_kuali_business_object('KFS-LD','PositionObjectBenefit',"universityFiscalYear=#{line[:payroll_end_date_fiscal_year]}&chartOfAccountsCode=#{line[:chart_code]}&financialObjectCode=#{line[:object_code]}")
+
+      # Labor Benefits Calculation Lookup as webservice call using labor benefit rate category code and
+      # labor benefits type code to get labor benefit object code, labor account code offset, and position fringe benefit percent
+      labor_calc_info = get_kuali_business_object('KFS-LD','BenefitsCalculation',"universityFiscalYear=#{line[:payroll_end_date_fiscal_year]}&chartOfAccountsCode=#{line[:chart_code]}&positionBenefitTypeCode=#{labor_benefit_type_info['financialObjectBenefitsTypeCode'][0]}&laborBenefitRateCategoryCode=#{account_info['laborBenefitRateCategoryCode'][0]}")
+
+      # Determine what the benefits amount should be based on the percentage just retrieved.
+      benefit_amount = @salary_expense_transfer.calculate_benefit_amount((line[:amount]).to_f, (labor_calc_info['positionFringeBenefitPercent'][0]).to_f)
+
+      #ensure all flags being used are initialized/reset between accounting rows
+      t_all_llpe_rows_found = false
+      t_debit_actuals_blank_valid = false
+      t_credit_a21_blank_valid = false
+      t_debit_a21_period_valid = false
+      t_benefit_debit_actual_valid = false
+      t_benefit_credit_a21_blank_valid = false
+      t_benefit_debit_a21_period_valid = false
+
+      page.llpe_results_table.rest.each do |llperow|
+        unless all_llpe_rows_found
+          if @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
+                                                                             line[:account_number], line[:object_code], line[:amount], @salary_expense_transfer.PERIOD_UNASSIGNED, @salary_expense_transfer.ACTUALS_BALANCE_TYPE, @salary_expense_transfer.DEBIT_CODE)
+            t_debit_actuals_blank_valid = true
+
+          elsif @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
+                                                                                line[:account_number], line[:object_code], line[:amount], @salary_expense_transfer.PERIOD_UNASSIGNED, @salary_expense_transfer.LABOR_BALANCE_TYPE , @salary_expense_transfer.CREDIT_CODE)
+            t_credit_a21_blank_valid = true
+
+          elsif @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
+                                                                                line[:account_number], line[:object_code], line[:amount], line[:payroll_end_date_fiscal_period_code], @salary_expense_transfer.LABOR_BALANCE_TYPE , @salary_expense_transfer.DEBIT_CODE)
+            t_debit_a21_period_valid = true
+
+          elsif @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
+                                                                                line[:account_number], labor_calc_info['positionFringeBenefitObjectCode'][0], benefit_amount, @salary_expense_transfer.PERIOD_UNASSIGNED, @salary_expense_transfer.ACTUALS_BALANCE_TYPE, @salary_expense_transfer.DEBIT_CODE)
+            t_benefit_debit_actual_valid = true
+
+          elsif @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
+                                                                                line[:account_number], labor_calc_info['positionFringeBenefitObjectCode'][0], benefit_amount, @salary_expense_transfer.PERIOD_UNASSIGNED, @salary_expense_transfer.LABOR_BALANCE_TYPE , @salary_expense_transfer.CREDIT_CODE)
+            t_benefit_credit_a21_blank_valid = true
+
+          elsif @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
+                                                                                line[:account_number], labor_calc_info['positionFringeBenefitObjectCode'][0], benefit_amount, line[:payroll_end_date_fiscal_period_code], @salary_expense_transfer.LABOR_BALANCE_TYPE , @salary_expense_transfer.DEBIT_CODE)
+            t_benefit_debit_a21_period_valid = true
+          end
+        end
+      end #loop of llpe table
+      t_all_llpe_rows_found = t_debit_actuals_blank_valid && t_credit_a21_blank_valid && t_debit_a21_period_valid && t_benefit_debit_actual_valid && t_benefit_credit_a21_blank_valid && t_benefit_debit_a21_period_valid
+      all_llpe_rows_found.should be true
+      llpe_running_count += 6
+    end #for-loop to accounting lines
+    all_llpe_rows_found.should == llpe_num_rows
   end #page loop
-  stop_point = 1
+
 end
