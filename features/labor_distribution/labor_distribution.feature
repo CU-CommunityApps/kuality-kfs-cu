@@ -42,7 +42,7 @@ Feature: Labor Distribution
     # otherwise, the default parameter employee id is used for verification
     Then  the labor ledger pending entry for employee is empty
 
-  @KFSQA-970 @ST @smoke @coral
+  @KFSQA-970 @ST @smoke @coral @nightly-jobs
   Scenario: Salary Expense Transfer test between account types, between rates, and for labor access security.
     Given I create a Salary Expense Transfer with following:
       | User Name  | ceh19   |
@@ -68,7 +68,7 @@ Feature: Labor Distribution
     And   I am logged in as a Labor Distribution Manager
     Then  the labor ledger pending entry for employee is empty
 
-   @KFSQA-1012 @ST @smoke @wip
+   @KFSQA-1012 @ST @smoke @nightly-jobs @wip
   Scenario: Submit a salary transfer edoc between account types, edit the object code, verify pending entries, and submit successfully.
     Given I create a Salary Expense Transfer as a Labor Distribution Manager:
       | Employee | 1013939 |
