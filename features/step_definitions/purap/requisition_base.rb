@@ -539,16 +539,16 @@ And /^I add these Accounting Lines to Item \#(\d+) on the (.*) document:$/ do |i
 
   supplied.hashes.each do |supplied_line|
     new_line = {
-      chart_code:                supplied_line[:chart_code] == 'Default' ? get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE) : supplied_line[:chart_code],
-      account_number:            supplied_line[:account_number][0].match(/[0-9]/m) ? supplied_line[:account_number] : get_account_of_type(supplied_line[:account_number]),
-      sub_account_code:          supplied_line[:sub_account_code],
-      object_code:               supplied_line[:object_code].length > 5 ? get_object_type_of_type(supplied_line[:object_code]) : supplied_line[:object_code],
-      sub_object_code:           supplied_line[:sub_object_code],
-      project_code:              supplied_line[:project_code],
-      organization_reference_id: supplied_line[:organization_reference_id],
-      line_description:          supplied_line[:line_description],
-      percent:                   supplied_line[:percent],
-      amount:                    supplied_line[:amount]
+        chart_code:                supplied_line[:chart_code] == 'Default' ? get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE) : supplied_line[:chart_code],
+        account_number:            supplied_line[:account_number][0].match(/[0-9]/m) ? supplied_line[:account_number] : get_account_of_type(supplied_line[:account_number]),
+        sub_account_code:          supplied_line[:sub_account_code],
+        object_code:               supplied_line[:object_code].length > 5 ? get_object_type_of_type(supplied_line[:object_code]) : supplied_line[:object_code],
+        sub_object_code:           supplied_line[:sub_object_code],
+        project_code:              supplied_line[:project_code],
+        organization_reference_id: supplied_line[:organization_reference_id],
+        line_description:          supplied_line[:line_description],
+        percent:                   supplied_line[:percent],
+        amount:                    supplied_line[:amount].nil? ? on(ItemsTab).result_extended_cost(il) : supplied_line[:amount]
     }
     new_line.delete_if { |k, v| v.nil? }
     document_object_for(document).items[il].add_accounting_line new_line

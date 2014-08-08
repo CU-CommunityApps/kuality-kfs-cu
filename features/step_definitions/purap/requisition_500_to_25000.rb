@@ -299,7 +299,7 @@ And /^I fill out the PREQ initiation page and continue$/ do
   @payment_request = create PaymentRequestObject, purchase_order_number: @purchase_order.purchase_order_number,
                                                   invoice_date:          yesterday[:date_w_slashes],
                                                   invoice_number:        rand(100000),
-                                                  vendor_invoice_amount: @requisition.items.first.quantity.to_f * @requisition.items.first.unit_cost.to_i
+                                                  vendor_invoice_amount: @requisition.items.first.quantity.gsub(/,/,'').to_f * @requisition.items.first.unit_cost.to_i * @requisition.items.first.unit_cost.to_i
 end
 
 And /^I change the Remit To Address$/ do

@@ -98,3 +98,56 @@ Given /^I initiate an e\-SHOP order$/ do
   step 'I reload the Requisition document'
   step 'Payment Request Positive Approval Required is required'
 end
+
+
+And /^I search for an e\-SHOP item with a Sensitive Commodity Code$/ do
+  on EShopCatalogPage do |page|
+    page.choose_hosted_supplier                         'PerkinElmer Life and Analytical Sciences'
+    page.hosted_supplier_item_search_box('PerkinElmer Life and Analytical Sciences').fit 'Iodine'
+    page.hosted_supplier_item_search                    'PerkinElmer Life and Analytical Sciences'
+  end
+end
+
+And /^I add over \$(.*) e\-SHOP items to my cart$/ do |amount|
+  on ShopResultsPage do |page|
+    item = 0
+    target_value = page.price_for_item item
+    target_quantity = amount.to_f / target_value
+    puts target_quantity.ceil
+    page.item_quantity(item).fit target_quantity.ceil
+    page.add_item item
+  end
+end
+
+And	 /^I change to Capital Asset object code$/ do
+  on(RequisitionPage).expand_all
+  on(ItemsTab).update_object_code.fit fetch_random_capital_asset_object_code
+end
+
+And /^the Vendor Choice is populated$/ do
+  !on(PurchaseOrderPage).result_vendor_choice.empty?.should
+end
+
+And /^I can not search and retrieve the Payment Request document$/ do
+  visit(MainPage).payment_requests
+  on DocumentSearch do |page|
+    page.document_id.fit @payment_request.document_id
+    page.search
+    step "I should get an error saying \"1 rows were filtered for security purposes.\""
+  end
+
+end
+
+Then /^I verify future action requests contain: Fiscal officer, Accounting Reviewer, Contracts and Grants Processor, Commodity Reviewer, and Separation of Duties$/ do
+  on RequisitionPage do |page|
+    page.expand_all
+    page.show_future_action_requests if page.show_future_action_requests_button.exists?
+    page.future_actions_table.rows(text: /APPROVE/m).any? { |r| r.text.include? 'Accounting Reviewer' }.should
+    page.future_actions_table.rows(text: /APPROVE/m).any? { |r| r.text.include? 'Contracts & Grants Processor' }.should
+    page.future_actions_table.rows(text: /APPROVE/m).any? { |r| r.text.include? 'Commodity Reviewer' }.should
+    page.future_actions_table.rows(text: /APPROVE/m).any? { |r| r.text.include? 'separation of duties' }.should
+    page.pnd_act_req_table.rows(text: /APPROVE/m).any? { |r| r.text.include? 'Fiscal Officer' }.should
+  end
+
+end
+
