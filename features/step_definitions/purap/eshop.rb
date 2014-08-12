@@ -138,22 +138,3 @@ And /^I can not search and retrieve the Payment Request document$/ do
 
 end
 
-
-And /^I verify that the following (Pending|Future) Action approvals are requested:$/ do |action_type, roles|
-  roles = roles.raw.flatten
-  on KFSBasePage do |page|
-    page.expand_all
-    case action_type
-      when 'Pending'
-        roles.each do |ra|
-          page.pnd_act_req_table.rows(text: /APPROVE/m).any? { |r| r.text.include? ra }.should
-        end
-      when 'Future'
-              page.show_future_action_requests if page.show_future_action_requests_button.exists?
-              roles.each do |ra|
-                page.future_actions_table.rows(text: /APPROVE/m).any? { |r| r.text.include? ra }.should
-              end
-    end
-   end
-
-end
