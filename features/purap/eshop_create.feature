@@ -69,7 +69,13 @@ Feature: eSHOP Create
     And   I calculate the Requisition document
     And   I submit the Requisition document
     Then  the Requisition document goes to ENROUTE
-    And   I verify future action requests contain: Fiscal officer, Accounting Reviewer, Contracts & Grants Processor, Commodity Reviewer, and Separation of Duties
+    And   I verify that the following Pending Action approvals are requested:
+      | Fiscal Officer |
+    And   I verify that the following Future Action approvals are requested:
+      | Accounting Reviewer          |
+      | Contracts & Grants Processor |
+      | Commodity Reviewer           |
+      | Separation of Duties         |
     And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
     And   I view the Requisition document on my action list
     And   I change to Capital Asset object code

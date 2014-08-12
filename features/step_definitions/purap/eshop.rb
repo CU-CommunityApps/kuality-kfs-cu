@@ -138,19 +138,6 @@ And /^I can not search and retrieve the Payment Request document$/ do
 
 end
 
-Then /^I verify future action requests contain: (.*)$/  do |routing_annotations|
-  on KFSBasePage do |page|
-    ras = routing_annotations.gsub(', and ','').split(",")
-    page.expand_all
-    page.pnd_act_req_table.rows(text: /APPROVE/m).any? { |r| r.text.include? ras[0] }.should
-    ras.shift
-    page.show_future_action_requests if page.show_future_action_requests_button.exists?
-    ras.each do |ra|
-      page.future_actions_table.rows(text: /APPROVE/m).any? { |r| r.text.include? ra.lstrip }.should
-    end
-  end
-
-end
 
 And /^I verify that the following (Pending|Future) Action approvals are requested:$/ do |action_type, roles|
   roles = roles.raw.flatten
