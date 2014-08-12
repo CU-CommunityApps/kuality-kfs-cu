@@ -531,6 +531,10 @@ And /^I add these Accounting Lines to Item \#(\d+) on the (.*) document:$/ do |i
   # table is a supplied.hashes.keys # => [:chart_code, :account_number, :object, :amount]
   il = il.to_i
   il -= 1
+  key_mappings = Hash.new
+
+  supplied.hashes[0].keys.each { |k| key_mappings[k] = snake_case(k) }
+  supplied.hashes[0].keys.each { |k| supplied.hashes[0][ key_mappings [k] ] = supplied.hashes[0].delete(k) if key_mappings[k] }
 
   on ItemsTab do |tab|
     tab.item_accounting_lines_section(il).should exist

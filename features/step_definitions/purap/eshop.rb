@@ -87,7 +87,7 @@ Given /^I initiate an e\-SHOP order$/ do
   step 'I add a random Requestor Phone number to the Requisition document'
   step 'I add these Accounting Lines to Item #1 on the Requisition document:',
     table(%q{
-            | chart_code | account_number       | object_code | amount |
+            | Chart Code | Account Number       | Object Code | Amount |
             | Default    | Unrestricted Account | Expenditure | 10     |
           })
   step 'I add an attachment to the Requisition document'
@@ -108,7 +108,7 @@ And /^I search for an e\-SHOP item with a Sensitive Commodity Code$/ do
   end
 end
 
-And /^I add over \$(.*) e\-SHOP items to my cart$/ do |amount|
+And /^I add over \$(.*) worth of e\-SHOP items to my cart$/ do |amount|
   on ShopResultsPage do |page|
     item = 0
     target_value = page.price_for_item item
@@ -133,13 +133,13 @@ And /^I can not search and retrieve the Payment Request document$/ do
   on DocumentSearch do |page|
     page.document_id.fit @payment_request.document_id
     page.search
-    step "I should get an error saying \"1 rows were filtered for security purposes.\""
+    step 'I should get an error saying "1 rows were filtered for security purposes."'
   end
 
 end
 
 Then /^I verify future action requests contain: (.*)$/  do |routing_annotations|
-  on RequisitionPage do |page|
+  on KFSBasePage do |page|
     ras = routing_annotations.gsub(', and ','').split(",")
     page.expand_all
     page.pnd_act_req_table.rows(text: /APPROVE/m).any? { |r| r.text.include? ras[0] }.should
@@ -149,5 +149,24 @@ Then /^I verify future action requests contain: (.*)$/  do |routing_annotations|
       page.future_actions_table.rows(text: /APPROVE/m).any? { |r| r.text.include? ra.lstrip }.should
     end
   end
+
+end
+
+And /^I verify that the following (Pending|Future) Action approvals are requested:$/ do |action_type, roles|
+  roles = roles.raw.flatten
+  on KFSBasePage do |page|
+    page.expand_all
+    case action_type
+      when 'Pending'
+        roles.each do |ra|
+          page.pnd_act_req_table.rows(text: /APPROVE/m).any? { |r| r.text.include? ra }.should
+        end
+      when 'Future'
+              page.show_future_action_requests if page.show_future_action_requests_button.exists?
+              roles.each do |ra|
+                page.future_actions_table.rows(text: /APPROVE/m).any? { |r| r.text.include? ra }.should
+              end
+    end
+   end
 
 end
