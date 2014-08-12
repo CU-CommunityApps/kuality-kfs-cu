@@ -69,7 +69,7 @@ Feature: eSHOP Create
     And   I calculate the Requisition document
     And   I submit the Requisition document
     Then  the Requisition document goes to ENROUTE
-    And   I verify future action requests contain: Fiscal officer, Accounting Reviewer, Contracts and Grants Processor, Commodity Reviewer, and Separation of Duties
+    And   I verify future action requests contain: Fiscal officer, Accounting Reviewer, Contracts & Grants Processor, Commodity Reviewer, and Separation of Duties
     And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
     And   I view the Requisition document on my action list
     And   I change to Capital Asset object code
@@ -83,7 +83,7 @@ Feature: eSHOP Create
     And   I approve the Requisition document
     And   the Requisition document goes to ENROUTE
     And   I route the Requisition document to final
-    And   the Requisition document goes to FINAL
+    Then  the Requisition document goes to FINAL
     And   I am logged in as a Purchasing Processor
     And   I submit a Contract Manager Assignment for the Requisition
     And   I am logged in as a PURAP Contract Manager
@@ -92,10 +92,10 @@ Feature: eSHOP Create
     And   the Vendor Choice is populated
     And   I calculate and verify the GLPE tab
     And   I submit the Purchase Order document
-    And   the Purchase Order document goes to ENROUTE
+    Then  the Purchase Order document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log to approve Purchase Order document to Final
     Given I login as a Accounts Payable Processor to create a PREQ
-    When  I fill out the PREQ initiation page and continue
+    And   I fill out the PREQ initiation page and continue
     And   I enter the Qty Invoiced and calculate
     And   I enter a Pay Date
     And   I attach an Invoice Image to the Payment Request document
