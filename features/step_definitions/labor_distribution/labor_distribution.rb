@@ -35,8 +35,7 @@ end
 
 And /^I copy (.*) source account to target account$/ do |document|
   target_page = page_class_for(document)
-  # works but only copies first line not all if there are more than one     on(target_page).copy_source_accounting_line
-  on(target_page).copy_all_source_accounting_lines
+  on(target_page).copy_all_source_accounting_lines    #nkk4 keep accounting lines in sync
 end
 
 And /^I change (.*) target account number to '(.*)'$/ do |document, account_number|
@@ -93,8 +92,8 @@ Given  /^I create a Salary Expense Transfer with following:$/ do |table|
   # do not continue, required parameters not sent
   fail ArgumentError, 'One or more required parameters were not specified.'if @user_principal.nil? || @employee_id.nil?
 
-  step "I am User #@user_principal who is a Salary Transfer Initiator"
-  populate_st_for_employee
+  step 'I am User #@user_principal who is a Salary Transfer Initiator'
+  step 'I populate Salary Expense Transfer document for employee'
 
   #value required for validation on different panel at end of test
   @salary_expense_transfer.remembered_employee_id = @employee_id
@@ -108,14 +107,14 @@ Given /^I create a Salary Expense Transfer as a Labor Distribution Manager:$/ do
   # do not continue, required parameters not sent
   fail ArgumentError, 'One or more required parameters were not specified.'if @employee_id.nil?
 
-  step "I am logged in as a Labor Distribution Manager"
-  populate_st_for_employee
+  step 'I am logged in as a Labor Distribution Manager'
+  step 'I populate Salary Expense Transfer document for employee'
 
   #value required for validation on different panel at end of test
   @salary_expense_transfer.remembered_employee_id = @employee_id
 end
 
-def populate_st_for_employee
+Given /^I populate Salary Expense Transfer document for employee$/ do
   step "I start an empty Salary Expense Transfer document"
   step "I select employee #{@employee_id}"
   step "I search and retrieve Ledger Balance entry"
@@ -223,12 +222,11 @@ And /^a Salary Expense Transfer initiator inside the organization can view the d
   step "I open the document with ID #{@remembered_document_id}"
 end
 
-And /^I edit object code and replace with a different labor object code$/ do |table|
+And /^I update the Salary Expense Transfer document with the following:$/ do |table|
   arguments = table.rows_hash
   labor_object_code = arguments['Labor Object Code']
 
-  target_page = page_class_for("Salary Expense Transfer")
-  on(target_page).update_target_object_code.fit labor_object_code
+  on(SalaryExpenseTransferPage).update_target_object_code.fit labor_object_code
 end
 
 
@@ -246,7 +244,6 @@ end
 # 3. The associated benefit accounts will appear and post in the same manner as #1 and #2 described above
 #
 And /^the Labor Ledger Pending entries verify for the accounting lines on the (.*) document$/ do |document|
-  doc_object = get(snake_case(document))
   on(page_class_for(document)).expand_all
   on page_class_for(document) do |page|
 
@@ -291,27 +288,27 @@ And /^the Labor Ledger Pending entries verify for the accounting lines on the (.
       page.llpe_results_table.rest.each do |llperow|
         unless all_llpe_rows_found
           if @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
-                                                                             line[:account_number], line[:object_code], line[:amount], @salary_expense_transfer.PERIOD_UNASSIGNED, @salary_expense_transfer.ACTUALS_BALANCE_TYPE, @salary_expense_transfer.CREDIT_CODE)
+                                                                             line[:account_number], line[:object_code], line[:amount], @period_unassigned, @actuals_balance_type, @credit_code)
             credit_actuals_valid = true
 
           elsif @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
-                                                                                line[:account_number], line[:object_code], line[:amount], @salary_expense_transfer.PERIOD_UNASSIGNED, @salary_expense_transfer.LABOR_BALANCE_TYPE , @salary_expense_transfer.DEBIT_CODE)
+                                                                                line[:account_number], line[:object_code], line[:amount], @period_unassigned, @labor_balance_typed, @debit_code)
             debit_a21_blank_valid = true
 
           elsif @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
-                                                                                line[:account_number], line[:object_code], line[:amount], line[:payroll_end_date_fiscal_period_code], @salary_expense_transfer.LABOR_BALANCE_TYPE , @salary_expense_transfer.CREDIT_CODE)
+                                                                                line[:account_number], line[:object_code], line[:amount], line[:payroll_end_date_fiscal_period_code], @labor_balance_typed, @credit_code)
             credit_a21_period_valid = true
 
           elsif @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
-                                                                                line[:account_number], labor_calc_info['positionFringeBenefitObjectCode'][0], benefit_amount, @salary_expense_transfer.PERIOD_UNASSIGNED, @salary_expense_transfer.ACTUALS_BALANCE_TYPE, @salary_expense_transfer.CREDIT_CODE)
+                                                                                line[:account_number], labor_calc_info['positionFringeBenefitObjectCode'][0], benefit_amount, @period_unassigned, @actuals_balance_type, @credit_code)
             benefit_credit_actuals_valid = true
 
           elsif @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
-                                                                                line[:account_number], labor_calc_info['positionFringeBenefitObjectCode'][0], benefit_amount, @salary_expense_transfer.PERIOD_UNASSIGNED, @salary_expense_transfer.LABOR_BALANCE_TYPE , @salary_expense_transfer.DEBIT_CODE)
+                                                                                line[:account_number], labor_calc_info['positionFringeBenefitObjectCode'][0], benefit_amount, @period_unassigned, @labor_balance_typed, @debit_code)
             benefit_debit_a21_blank_valid = true
 
           elsif @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
-                                                                                line[:account_number], labor_calc_info['positionFringeBenefitObjectCode'][0], benefit_amount, line[:payroll_end_date_fiscal_period_code], @salary_expense_transfer.LABOR_BALANCE_TYPE , @salary_expense_transfer.CREDIT_CODE)
+                                                                                line[:account_number], labor_calc_info['positionFringeBenefitObjectCode'][0], benefit_amount, line[:payroll_end_date_fiscal_period_code], @labor_balance_typed, @credit_code)
             benefit_credit_a21_period_vld = true
           end
         end
@@ -352,27 +349,27 @@ And /^the Labor Ledger Pending entries verify for the accounting lines on the (.
       page.llpe_results_table.rest.each do |llperow|
         unless all_llpe_rows_found
           if @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
-                                                                             line[:account_number], line[:object_code], line[:amount], @salary_expense_transfer.PERIOD_UNASSIGNED, @salary_expense_transfer.ACTUALS_BALANCE_TYPE, @salary_expense_transfer.DEBIT_CODE)
+                                                                             line[:account_number], line[:object_code], line[:amount], @period_unassigned, @actuals_balance_type, @debit_code)
             t_debit_actuals_blank_valid = true
 
           elsif @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
-                                                                                line[:account_number], line[:object_code], line[:amount], @salary_expense_transfer.PERIOD_UNASSIGNED, @salary_expense_transfer.LABOR_BALANCE_TYPE , @salary_expense_transfer.CREDIT_CODE)
+                                                                                line[:account_number], line[:object_code], line[:amount], @period_unassigned, @labor_balance_typed, @credit_code)
             t_credit_a21_blank_valid = true
 
           elsif @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
-                                                                                line[:account_number], line[:object_code], line[:amount], line[:payroll_end_date_fiscal_period_code], @salary_expense_transfer.LABOR_BALANCE_TYPE , @salary_expense_transfer.DEBIT_CODE)
+                                                                                line[:account_number], line[:object_code], line[:amount], line[:payroll_end_date_fiscal_period_code], @labor_balance_typed , @debit_code)
             t_debit_a21_period_valid = true
 
           elsif @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
-                                                                                line[:account_number], labor_calc_info['positionFringeBenefitObjectCode'][0], benefit_amount, @salary_expense_transfer.PERIOD_UNASSIGNED, @salary_expense_transfer.ACTUALS_BALANCE_TYPE, @salary_expense_transfer.DEBIT_CODE)
+                                                                                line[:account_number], labor_calc_info['positionFringeBenefitObjectCode'][0], benefit_amount, @period_unassigned, @actuals_balance_type, @debit_code)
             t_benefit_debit_actual_valid = true
 
           elsif @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
-                                                                                line[:account_number], labor_calc_info['positionFringeBenefitObjectCode'][0], benefit_amount, @salary_expense_transfer.PERIOD_UNASSIGNED, @salary_expense_transfer.LABOR_BALANCE_TYPE , @salary_expense_transfer.CREDIT_CODE)
+                                                                                line[:account_number], labor_calc_info['positionFringeBenefitObjectCode'][0], benefit_amount, @period_unassigned, @labor_balance_typed, @credit_code)
             t_benefit_credit_a21_blank_valid = true
 
           elsif @salary_expense_transfer.llpe_line_matches_accounting_line_data(llperow[account_number_col].text.strip, llperow[object_code_col].text.strip, llperow[amount_col].text.strip, llperow[period_col].text.strip, llperow[balance_type_col].text.strip, llperow[dc_col].text.strip,
-                                                                                line[:account_number], labor_calc_info['positionFringeBenefitObjectCode'][0], benefit_amount, line[:payroll_end_date_fiscal_period_code], @salary_expense_transfer.LABOR_BALANCE_TYPE , @salary_expense_transfer.DEBIT_CODE)
+                                                                                line[:account_number], labor_calc_info['positionFringeBenefitObjectCode'][0], benefit_amount, line[:payroll_end_date_fiscal_period_code], @labor_balance_typed , @debit_code)
             t_benefit_debit_a21_period_valid = true
           end
         end
@@ -383,5 +380,32 @@ And /^the Labor Ledger Pending entries verify for the accounting lines on the (.
     end #for-loop to accounting lines
     all_llpe_rows_found.should == llpe_num_rows
   end #page loop
+
+
+  Then /^Salary Expense Transfer document LLPE line matches accounting line$/ do |table|
+    arguments = table.rows_hash
+    llpe_account = arguments['LLPE Account']
+    llpe_object = arguments['LLPE Object']
+    llpe_amount = arguments['LLPE Amount']
+    llpe_period = arguments['LLPE Account']
+    llpe_balance_type = arguments['LLPE Balance Type']
+    llpe_debit_credit_code = arguments['LLPE Debit Credit Code']
+    account = arguments['Account']
+    object = arguments['Object']
+    amount = arguments['Amount']
+    period = arguments['Period']
+    balance_type = arguments['Balance Type']
+    debit_credit_code = arguments['Debit Credit Code']
+
+    #return true only when all input parameters match;
+    # period values could be zero length strings; amounts could be floats; rest should be string values
+    if (llpe_account == account) && (llpe_object == object) && (llpe_amount.to_s == amount.to_s) &&
+        (llpe_balance_type == balance_type) && (llpe_debit_credit_code == debit_credit_code) &&
+        ( (llpe_period.empty? && period.empty?) || (!llpe_period.empty? && !period.empty? && llpe_period == period)  )
+      return true
+    else
+      return false
+    end
+  end
 
 end

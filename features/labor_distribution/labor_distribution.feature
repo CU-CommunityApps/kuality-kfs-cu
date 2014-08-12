@@ -74,7 +74,7 @@ Feature: Labor Distribution
       | Employee | 1013939 |
     And   I transfer the Salary between accounts with different Account Types
       | To Account | 7543814 |
-    And   I edit object code and replace with a different labor object code
+    And   I update the Salary Expense Transfer document with the following:
       | Labor Object Code | 5370 |
     And   I save the Salary Expense Transfer document
     And   the Labor Ledger Pending entries verify for the accounting lines on the Salary Expense Transfer document
