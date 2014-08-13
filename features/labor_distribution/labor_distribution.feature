@@ -37,7 +37,7 @@ Feature: Labor Distribution
     # this step may revised or make more general
     Then  the labor ledger pending entry for employee '1013939' is empty
 
-  @KFSQA-970 @ST @smoke @coral
+  @KFSQA-970 @ST @smoke @coral @nightly-jobs
   Scenario: Salary Expense Transfer test between account types, between rates, and for labor access security.
     Given I create a Salary Expense Transfer with following:
       | User Name  | ceh19   |
