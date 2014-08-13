@@ -186,3 +186,7 @@ end
 Given /^I login as a KFS user to create an REQS$/ do
   visit(BackdoorLoginPage).login_as(get_aft_parameter_value(ParameterConstants::DEFAULT_REQS_INITIATOR))
 end
+
+Given /^I am logged in as a Sensitive Data Viewer$/ do
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-PURAP', 'Sensitive Data Viewer'))
+end

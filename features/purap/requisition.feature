@@ -26,8 +26,8 @@ Feature: Requistion
     And  I view the Requisition document on my action list
     And  I set the added account percent to 50
     And  I add these Accounting Lines to Item #1 on the Requisition document:
-      | chart_code | account_number       | object_code | percent |
-      | Default    | 1093603              | 6570        | 50     |
+      | Chart Code | Account Number       | Object Code | Percent |
+      | Default    | 1093603              | 6570        | 50      |
     And  I calculate the Requisition document
     And  I approve the Requisition document
     And  I view the Requisition document from the Requisitions search
@@ -47,8 +47,8 @@ Feature: Requistion
     And  I view the Requisition document on my action list
     And  I set the added account percent to 50
     And  I add these Accounting Lines to Item #1 on the Requisition document:
-      | chart_code | account_number       | object_code | percent |
-      | Default    | 1271001              | 6570        | 50     |
+      | Chart Code | Account Number       | Object Code | Percent |
+      | Default    | 1271001              | 6570        | 50      |
     And  I calculate the Requisition document
     And  I approve the Requisition document
     When I extract the Requisition document to SciQuest
