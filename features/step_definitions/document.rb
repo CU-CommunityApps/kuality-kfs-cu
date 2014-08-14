@@ -7,7 +7,7 @@ And /^I (#{BasePage::available_buttons}) a[n]? (.*) document$/ do |button, docum
   end
 
   set(doc_object, (create object_klass, press: button.gsub(' ', '_')))
-  sleep 5 if (button == 'blanket_approve') || (button == 'approve')
+  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
 end
 
 And /^I copy a random (.*) document with (.*) status/ do |document, doc_status|
