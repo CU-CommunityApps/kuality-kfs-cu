@@ -1,7 +1,3 @@
-And /^I (#{SubAccountPage::available_buttons}) a Sub-Account document$/ do |button|
-  @sub_account = create SubAccountObject, press: button.gsub(' ', '_')
-end
-
 And /^I Create a Sub-Account with Sub-Account Type CS$/ do
   @sub_account = create SubAccountObject, type_code: 'CS', press: :save
 end

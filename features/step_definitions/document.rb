@@ -1,3 +1,15 @@
+And /^I (#{BasePage::available_buttons}) a[n]? (.*) document$/ do |button, document|
+  doc_object = snake_case document
+  object_klass = object_class_for(document)
+
+  if defined? object_klass::DOC_INFO && object_klass::DOC_INFO.transactional?
+    visit(MainPage).send(doc_object)
+  end
+
+  set(doc_object, (create object_klass, press: button.gsub(' ', '_')))
+  sleep 5 if (button == 'blanket_approve') || (button == 'approve')
+end
+
 And /^I copy a random (.*) document with (.*) status/ do |document, doc_status|
   doc_object = snake_case document
   object_klass = object_class_for(document)

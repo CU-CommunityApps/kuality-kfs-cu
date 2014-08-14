@@ -1,7 +1,3 @@
-And /^I (#{OrganizationPage::available_buttons}) an Organization document$/ do |button|
-  @organization = create OrganizationObject, press: button.gsub(' ', '_')
-end
-
 And /^I copy an Organization$/ do
   visit(MainPage).organization
   on OrganizationLookupPage do |page|

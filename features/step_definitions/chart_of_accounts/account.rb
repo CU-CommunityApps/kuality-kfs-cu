@@ -1,9 +1,3 @@
-And /^I (#{AccountPage::available_buttons}) an Account document$/ do |button|
-  button.gsub!(' ', '_')
-  @account = create AccountObject, press: button
-  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
-end
-
 And /^I copy an Account$/ do
   on(AccountLookupPage).copy_random
   on AccountPage do |page|
@@ -135,7 +129,7 @@ When /^I save an Account document with only the ([^"]*) field populated$/ do |fi
       expense_guideline_text:     'expense guideline text',
       income_guideline_txt: 'incomde guideline text',
       purpose_text:         'purpose text',
-      labor_benefit_rate_cat_code:      'CC'#TODO config?
+      labor_benefit_rate_cat_code: 'CC'#TODO config?
   }
 
   # TODO: Make the Account document creation with a single field step more flexible.
