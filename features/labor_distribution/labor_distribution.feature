@@ -68,7 +68,7 @@ Feature: Labor Distribution
     And   I am logged in as a Labor Distribution Manager
     Then  the labor ledger pending entry for employee is empty
 
-   @KFSQA-1012 @ST @smoke @nightly-jobs @coral @wip
+   @KFSQA-1012 @ST @smoke @nightly-jobs @coral
   Scenario: Submit a salary transfer edoc between account types, edit the object code, verify pending entries, and submit successfully.
     Given I create a Salary Expense Transfer as a Labor Distribution Manager:
       | Employee | 1013939 |

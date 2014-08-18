@@ -286,9 +286,9 @@ end
 #      benefit amount, and blank period; and debit A2 balance type for its Labor Benefit Object Code value, its
 #      calculated benefit amount, and fiscal periods selected in test.
 ###########################################################################################
-And /^the Labor Ledger Pending entries verify for the accounting lines on the (.*) document$/ do |document|
-  on(page_class_for(document)).expand_all
-  on page_class_for(document) do |page|
+And /^the Labor Ledger Pending entries verify for the accounting lines on the Salary Expense Transfer document$/ do
+  on(SalaryExpenseTransferPage).expand_all
+  on SalaryExpenseTransferPage do |page|
 
     #data from the LLPE results table to be used for validation comparison [Array][Hash]
     llpe_results_data = @salary_expense_transfer.get_llpe_results_data(page)
