@@ -92,7 +92,7 @@ Given  /^I create a Salary Expense Transfer with following:$/ do |table|
   # do not continue, required parameters not sent
   fail ArgumentError, 'One or more required parameters were not specified.'if @user_principal.nil? || @employee_id.nil?
 
-  step 'I am User #@user_principal who is a Salary Transfer Initiator'
+  step "I am User #{@user_principal} who is a Salary Transfer Initiator"
   step 'I populate Salary Expense Transfer document for employee'
 
   #value required for validation on different panel at end of test
