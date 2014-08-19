@@ -42,7 +42,7 @@ Feature: eSHOP Create
     And   I initiate a Payment Request document
     Then  I format and process the check with PDP
 
-  @KFSQA-1011 @E2E @PURAP @PO @PREQ @REQS @Smoke @Routing @coral
+  @KFSQA-1011 @E2E @PURAP @PO @PREQ @REQS @smoke @Routing @coral
   Scenario: Enter an eshop order for a high dollar amount using a sensitive commodity on a Contract
             and Grants account. Testing from Req to PO to PREQ, that the order routes through all appropriate approvals.
             Includes: fiscal officer, contracts and grants processor, contract manager assignment, and accounting reviewers.
