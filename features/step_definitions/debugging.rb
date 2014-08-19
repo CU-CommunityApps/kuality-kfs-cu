@@ -104,3 +104,23 @@ And /^I open the document with ID (\d+)$/ do |document_id|
     search.open_doc document_id
   end
 end
+
+And /^I open the (.*) document with ID (\d+)$/ do |document, document_id|
+  doc_object = snake_case document
+  object_klass = object_class_for(document)
+  set(doc_object, make(object_klass, document_id: document_id))
+
+  visit(MainPage).doc_search
+  on DocumentSearch do |search|
+    search.document_type.fit ''
+    search.document_id.fit   document_id
+    search.search
+    search.wait_for_search_results
+    search.open_doc document_id
+  end
+end
+
+When /^I inspect the variable named (.*)$/ do |var|
+  located_var = get(var)
+  puts located_var.inspect
+end

@@ -140,7 +140,7 @@ And /^I lookup the (Encumbrance|Disencumbrance|Source|Target|From|To) Accounting
   on GeneralLedgerPendingEntryLookupPage do |page|
     page.balance_type_code.fit         ''
     page.chart_code.fit                doc_object.accounting_lines[alt][0].chart_code # We're assuming this exists, of course.
-    page.fiscal_year.fit               right_now[:year]
+    page.fiscal_year.fit               get_aft_parameter_value(ParameterConstants::CURRENT_FISCAL_YEAR)
     page.fiscal_period.fit             fiscal_period_conversion(right_now[:MON])
     page.account_number.fit            '*'
     page.reference_document_number.fit doc_object.document_id
@@ -157,7 +157,7 @@ And /^I lookup the (Encumbrance|Disencumbrance|Source|Target|From|To) Accounting
   on GeneralLedgerEntryLookupPage do |page|
     page.balance_type_code.fit         ''
     page.chart_code.fit                doc_object.accounting_lines[alt][0].chart_code # We're assuming this exists, of course.
-    page.fiscal_year.fit               right_now[:year]
+    page.fiscal_year.fit               get_aft_parameter_value(ParameterConstants::CURRENT_FISCAL_YEAR)
     page.fiscal_period.fit             fiscal_period_conversion(right_now[:MON])
     page.account_number.fit            '*'
     page.reference_document_number.fit doc_object.document_id

@@ -5,36 +5,35 @@ Feature: Financial Documents
 
   @KFSQA-652 @ALL @FP @coral
   Scenario Outline: Recall enroute Documents
-    Given  I am logged in as "<user>"
-    #TODO login as user for this document type
-    And    I start an empty <eDoc> document
-    And I add a Source Accounting Line to the <eDoc> document with the following:
+    Given I am logged in as a KFS User for the <doc_type_code> document
+    And   I start an empty <eDoc> document
+    And   I add a Source Accounting Line to the <eDoc> document with the following:
       | Chart Code   | IT |
       | Number       | <source_account> |
       | Object Code  | 6690 |
       | Amount       | <source_amount> |
-    And I add a Target Accounting Line to the <eDoc> document with the following:
+    And   I add a Target Accounting Line to the <eDoc> document with the following:
       | Chart Code   | IT |
       | Number       | <target_account> |
       | Object Code  | 6690 |
       | Amount       | <target_amount> |
-    And    I save the <eDoc> document
-    And    I submit the <eDoc> document
-    And    the <eDoc> document goes to ENROUTE
-    When   I recall the financial document
-    Then   the <eDoc> document goes to SAVED
+    And   I save the <eDoc> document
+    And   I submit the <eDoc> document
+    And   the <eDoc> document goes to ENROUTE
+    When  I recall the financial document
+    Then  the <eDoc> document goes to SAVED
   Examples:
-    | eDoc                               | user  | source_account | target_account | source_amount | target_amount |
-    | Auxiliary Voucher                  | scu1  | H853800        |                | 100           |               |
-    | Budget Adjustment                  | sag3  | G003704        | G003704        | 100           | 100           |
-    | Distribution Of Income And Expense | ccs1  | G003704        | G013300        | 100           | 100           |
-    | General Error Correction           | ccs1  | G003704        | G013300        | 100           | 100           |
-    | Internal Billing                   | ccs1  | G003704        | G013300        | 100           | 100           |
-    | Indirect Cost Adjustment           | ccs1  | 1093600        | GACLOSE        | 100           | 100           |
-    | Journal Voucher                    | dh273 | G003704        |                | 100           |               |
-    | Non-Check Disbursement             | rlc56 | G013300        |                | 100           |               |
-    | Pre-Encumbrance                    | ccs1  | G003704        |                | 100           |               |
-    | Transfer Of Funds                  | ccs1  | A763306        | A763900        | 100           | 100           |
+    | eDoc                               | doc_type_code  | source_account | target_account | source_amount | target_amount |
+    | Auxiliary Voucher                  | AV             | H853800        |                | 100           |               |
+    | Budget Adjustment                  | BA             | G003704        | G003704        | 100           | 100           |
+    | Distribution Of Income And Expense | DI             | G003704        | G013300        | 100           | 100           |
+    | General Error Correction           | GEC            | G003704        | G013300        | 100           | 100           |
+    | Internal Billing                   | IB             | G003704        | G013300        | 100           | 100           |
+    | Indirect Cost Adjustment           | ICA            | 1093305        | GACLOSE        | 100           | 100           |
+    | Journal Voucher                    | JV             | G003704        |                | 100           |               |
+    | Non-Check Disbursement             | ND             | G013300        |                | 100           |               |
+    | Pre-Encumbrance                    | PE             | G003704        |                | 100           |               |
+    | Transfer Of Funds                  | TF             | A763306        | A763900        | 100           | 100           |
   #TODO grab account from parameter
 
   @KFSQA-727 @FP @tortoise @needs-clean-up

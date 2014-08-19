@@ -205,10 +205,17 @@ And /^I edit a Vendor with Vendor Number (.*)$/ do |vendor_number|
   on VendorPage do |page|
     page.description.fit random_alphanums(40, 'AFT')
     @vendor = make VendorObject, description: page.description.text.strip,
-                                 document_id: page.document_id
+                   document_id: page.document_id
     @vendor.absorb! :old
     @document_id = @vendor.document_id
+    page.default_payment_method.fit 'P - ACH/CHECK' if page.default_payment_method.value.empty?
   end
+end
+
+And /^I edit a Vendor with Ownership Type (.*)$/ do |ownership_type|
+  vendor_info = get_kuali_business_object('KFS-VND','VendorDetail','vendorHeader.vendorOwnershipCode=' + ownership_type)
+  vendor_number = vendor_info['vendorNumber'][0]
+  step "I edit a Vendor with Vendor Number #{vendor_number}"
 end
 
 And /^the Tax Number and Notes are Not Visible on Vendor page$/ do
@@ -259,7 +266,7 @@ end
 
 When /^I select Vendor document from my Action List$/ do
   visit(MainPage).action_list
-  on(ActionList).last if on(ActionList).last_link.exists?
+  on(ActionList).last if on(ActionList).last_link.exists? && !on(ActionList).result_item(@vendor.document_id).exists?
   on(ActionList).open_item(@vendor.document_id)
 end
 
@@ -361,6 +368,7 @@ And /^I create a DV Vendor$/  do
                    ownership:                  'CORPORATION',
                    w9_received:                'Yes',
                    w9_received_date:           yesterday[:date_w_slashes],
+                   note_text:                  'here is a note',
                    initial_supplier_diversities: [{
                                                     type:                          'HUBZONE',
                                                     certification_expiration_date: tomorrow[:date_w_slashes]
@@ -389,9 +397,10 @@ And /^I can not view the Tax ID and Attachments on Vendor page$/ do
 end
 
 And /^I enter a default payment method (\w+) on Vendor Page$/ do |payment_method|
+  sleep 1
+  on(VendorPage).default_payment_method.fit payment_method
   # FIXME: Should probably use the VendorObject#edit method...
   @vendor.default_payment_method = payment_method
-  on(VendorPage).default_payment_method.fit payment_method
 end
 
 And /^the Address changes persist$/ do
@@ -427,11 +436,33 @@ And /^I open the Vendor from the Vendor document$/ do
 end
 
 And /^I lookup a PO Vendor$/ do
-  step "I lookup a Vendor with Vendor Number #{get_aft_parameter_value(ParameterConstants::DEFAULT_VENDOR_NUMBER)}"
+  vendor_info = get_kuali_business_object('KFS-VND','VendorDetail','vendorHeader.vendorTypeCode=PO')
+  vendor_number = vendor_info['vendorNumber'][0]
+
+  step "I lookup a Vendor with Vendor Number #{vendor_number}"
+end
+
+And /^I lookup a PO Vendor with Supplier Diversity$/ do
+  vendors = get_kuali_business_objects('KFS-VND','VendorDetail','vendorHeader.vendorOwnershipCode=ID&vendorHeader.vendorSupplierDiversities.vendorSupplierDiversityCode=WO&vendorHeader.vendorSupplierDiversities.extension.vendorSupplierDiversityExpirationDate=07/25/2014&active=Y&vendorNumber=*-0')
+  vendor_info = vendors.values[0].sample
+  until vendor_info['vendorNumber'][0].end_with? '-0'
+    vendor_info = vendors.values[0].sample
+  end
+  vendor_number = vendor_info['vendorNumber'][0]
+
+  step "I lookup a Vendor with Vendor Number #{vendor_number}"
 end
 
 And /^I edit a PO Vendor$/ do
   step 'I lookup a PO Vendor'
+  @vendor = make VendorObject
+  on(VendorPage).description.fit @vendor.description
+  @vendor.absorb! :old
+  @document_id = @vendor.document_id
+end
+
+And /^I edit a PO Vendor with Supplier Diversity$/ do
+  step 'I lookup a PO Vendor with Supplier Diversity'
   @vendor = make VendorObject
   on(VendorPage).description.fit @vendor.description
   @vendor.absorb! :old
@@ -509,7 +540,7 @@ end
 Then /^the default Purchase Order Vendor address\(es\) are shown on the (.*) document$/ do |document|
   # We're only interested in comparing the addresses here, so we'll pull them
   # from the page and only look at that data. If this step is expanded, we can
-  # modify VendorObject#absorb! appropriately and switch to using that method
+  # modify VendorObject#absorb appropriately and switch to using that method
   # instead of #update_from_page!
   vendor_on_page = make VendorObject
   vendor_on_page.addresses.update_from_page! :readonly

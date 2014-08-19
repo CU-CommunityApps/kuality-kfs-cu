@@ -90,8 +90,8 @@ And /^I add balanced Accounting Lines to the (Advance Deposit|Budget Adjustment|
                                })
       when 'General Error Correction'
         new_source_line.merge!({
-                               reference_number:      '777001',
-                               reference_origin_code: '01'
+                               reference_number:      rand(100..99999),
+                               reference_origin_code: fetch_random_origination_code
                              })
       when 'Non-Check Disbursement'
         new_source_line.merge!({
@@ -410,7 +410,7 @@ And /^I lookup the (Encumbrance|Disencumbrance|Source|Target|From|To) Accounting
 
   visit(MainPage).available_balances
   on AvailableBalancesLookupPage do |lookup|
-    lookup.fiscal_year.fit                  right_now[:year]
+    lookup.fiscal_year.fit                  get_aft_parameter_value(ParameterConstants::CURRENT_FISCAL_YEAR)
     lookup.chart_code.fit                   doc_object.accounting_lines[alt].first.chart_code # We're assuming this exists, of course.
     lookup.account_number.fit               doc_object.accounting_lines[alt].first.account_number
     lookup.send("consolidation_option_#{snake_case(table.rows_hash['Consolidation Option']).to_s}") unless table.rows_hash['Consolidation Option'].nil?
