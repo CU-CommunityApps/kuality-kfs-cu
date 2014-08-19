@@ -59,15 +59,16 @@ Feature: Budget Adjustment
   Scenario Outline: Upload only Base Budget budget transactions using BA Import Template.
 # GETTING ERROR FOR NOT ALLOWING BASE ADJUSTMENT FOR YEARS 2014 and 2015 (only available)
     #TODO : There is only 1 example; do we really need 'scenario outline'
-    Given   I am logged in as a KFS Manager for the <type code> document
+    Given   I am logged in as a KFS User for the <type code> document
     And     I start a <document> document for from "<From file name>" file import and to "<To file name>" file import
     And     on the <document> I import the From Accounting Lines from a csv file
     And     on the <document> I import the To Accounting Lines from a csv file
     And     I save the <document> document
     Then    The GLPE contains 4 Balance Type CB transactions for the <document> document
-    When    I view the Budget Adjustment document
-    And     I blanket approve the Budget Adjustment document
-    Then    the Budget Adjustment document goes to FINAL
+    And     I view the <document> document
+    And     I submit the <document> document
+    When    I route the <document> document to final
+    Then    the <document> document goes to FINAL
   Examples:
     | document            | type code | From file name              | To file name             |
     | Budget Adjustment   | BA        | BA_test_from.csv            | BA_test_to.csv           |
@@ -81,10 +82,7 @@ Feature: Budget Adjustment
     And     on the <document> I import the To Accounting Lines from a csv file
     And     I capture the To Accounting Lines for the <document>
     And     I submit the <document> document
-    And     I am logged in as a KFS Manager for the <type code> document
-    When    I view the <document> document
-    And     I blanket approve the Budget Adjustment document
-    And     the Budget Adjustment document goes to FINAL
+    And     I route the <document> document to final
     And     Nightly Batch Jobs run
     And     I am logged in as a KFS User for the <type code> document
     And     I view the General Ledger Balance From account with balance type code of CB
