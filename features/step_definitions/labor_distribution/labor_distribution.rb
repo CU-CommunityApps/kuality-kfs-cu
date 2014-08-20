@@ -2,6 +2,10 @@ When /^I start an empty Benefit Expense Transfer document$/ do
   @benefit_expense_transfer = create BenefitExpenseTransferObject
 end
 
+And /^I change target sub account number to '(.*)'$/ do |sub_account_number|
+  on(BenefitExpenseTransferPage).update_target_sub_account_code.fit sub_account_number
+end
+
 Given /^I select employee (\d+)$/ do|emp|
   on SalaryExpenseTransferPage do |page|
     page.employee_id.fit ''
@@ -35,7 +39,7 @@ end
 
 And /^I copy (.*) source account to target account$/ do |document|
   target_page = page_class_for(document)
-  on(target_page).copy_all_source_accounting_lines    #nkk4 keep accounting lines in sync
+  on(target_page).copy_all_source_accounting_lines
 end
 
 And /^I change (.*) target account number to '(.*)'$/ do |document, account_number|
@@ -53,31 +57,26 @@ And /^I transfer the Salary to another Account in my Organization$/ do |table|
   step "I change Salary Expense Transfer target account number to '#@to_account'"
 end
 
-And /^I transfer the Salary between accounts with different Account Types$/ do |table|
-  arguments = table.rows_hash
-  @to_account_different_types = arguments['To Account']
 
-  # do not continue, required parameters not sent
-  fail ArgumentError, 'Required parameter To Account was not specified.' if @to_account_different_types.nil?
+# This step requires that the global hash @test_input_data exist and hold the input data required.
+And /^I transfer the Salary between accounts with different Account Types$/ do
+  # do not continue, required parameter not sent
+  fail ArgumentError, "Required parameter #{@test_data_parameter_name} does not specify required test input data value for to_account_different_types." if @test_input_data[:to_account_different_types].nil? || @test_input_data[:to_account_different_types].empty?
 
-  step "I change Salary Expense Transfer target account number to '#@to_account_different_types'"
-end
-
-And /^I transfer the Salary to an Account with a different Rate but the same Account Type and Organization$/ do |table|
-  # fedrate (FD) vs nonfedrate (NF)
-  arguments = table.rows_hash
-  @to_account_different_rates = arguments['To Account']
-
-  # do not continue, required parameters not sent
-  fail ArgumentError, 'Required parameter To Account was not specified.' if @to_account_different_rates.nil?
-
-  step "I change Salary Expense Transfer target account number to '#@to_account_different_rates'"
+  step "I change Salary Expense Transfer target account number to '#{@test_input_data[:to_account_different_types]}'"
 end
 
 
-And /^I change target sub account number to '(.*)'$/ do |sub_account_number|
-  on(BenefitExpenseTransferPage).update_target_sub_account_code.fit sub_account_number
+# This step requires that the global hash @test_input_data exist and hold the input data required.
+And /^I transfer the Salary to an Account with a different Rate but the same Account Type and Organization$/ do
+  # fedrate (FD) vs nonfedrate (NF) data value expected
+
+  # do not continue, required parameter not sent
+  fail ArgumentError, "Required parameter #{@test_data_parameter_name} does not specify required test input data value for to_account_different_rate." if @test_input_data[:to_account_different_rates].nil? || @test_input_data[:to_account_different_rates].empty?
+
+  step "I change Salary Expense Transfer target account number to '#{@test_input_data[:to_account_different_rates]}'"
 end
+
 
 Given /^I start an empty Salary Expense Transfer document$/ do
   @salary_expense_transfer = create SalaryExpenseTransferObject
@@ -100,12 +99,50 @@ Given  /^I create a Salary Expense Transfer with following:$/ do |table|
 end
 
 
+# This step causes the global hash @test_input_data to come into existence.
+# This is a Hash of the Parameter Values in the Parameter table for the specified Parameter Name.
+Given /^I obtain (.*) data values required for the test from the Parameter table$/ do |parameter_name|
+  @test_input_data = get_aft_parameter_values_as_hash(parameter_name)
+end
+
+
+# This step requires that the global hash @test_input_data exist and hold the input data required.
+Given /^I create a Salary Expense Transfer as a Salary Transfer Initiator$/ do |table|
+  arguments = table.rows_hash
+  @test_data_parameter_name = arguments['Parameter Name']
+
+  # do not continue, required parameter name not passed in
+  fail ArgumentError, 'Parameter Name is required for the test and was not specified.'if @test_data_parameter_name.nil? || @test_data_parameter_name.empty?
+
+  step "I obtain #{@test_data_parameter_name} data values required for the test from the Parameter table"
+
+  #do not continue if input data required for next step in test was not specified in the Parameter table
+  fail ArgumentError, "Parameter #{@test_data_parameter_name} required for this test does not exist in the Parameter table." if @test_input_data.nil? || @test_input_data.empty?
+  fail ArgumentError, "Parameter #{@test_data_parameter_name} does not specify required input test data value for initiator" if @test_input_data[:initiator].nil? || @test_input_data[:initiator].empty?
+  fail ArgumentError, "Parameter #{@test_data_parameter_name} does not specify required input test data value for employee" if @test_input_data[:employee].nil? || @test_input_data[:employee].empty?
+
+  step 'I create a Salary Expense Transfer with following:',
+       table(%Q{
+         | User Name  | #{@test_input_data[:initiator]}   |
+         | Employee   | #{@test_input_data[:employee]} |
+       })
+end
+
+
+# This step requires that the global hash @test_input_data exist and hold the input data required.
 Given /^I create a Salary Expense Transfer as a Labor Distribution Manager:$/ do |table|
   arguments = table.rows_hash
-  @employee_id = arguments['Employee']
+  @test_data_parameter_name = arguments['Parameter Name']
 
-  # do not continue, required parameters not sent
-  fail ArgumentError, 'One or more required parameters were not specified.'if @employee_id.nil?
+  # do not continue, required parameter name not passed in
+  fail ArgumentError, 'Parameter Name is required for the test and was not specified.' if @test_data_parameter_name.nil? || @test_data_parameter_name.empty?
+
+  step "I obtain #{@test_data_parameter_name} data values required for the test from the Parameter table"
+
+  #do not continue if input data required for next step in test was not specified in the Parameter table
+  fail ArgumentError, "Parameter #{@test_data_parameter_name} required for this test does not exist in the Parameter table." if @test_input_data.nil? || @test_input_data.empty?
+  fail ArgumentError, "Parameter #{@test_data_parameter_name} does not specify required input test data value for employee" if @test_input_data[:employee].nil? || @test_input_data[:employee].empty?
+  @employee_id = @test_input_data[:employee]
 
   step 'I am logged in as a Labor Distribution Manager'
   step 'I populate Salary Expense Transfer document for employee'
@@ -113,6 +150,7 @@ Given /^I create a Salary Expense Transfer as a Labor Distribution Manager:$/ do
   #value required for validation on different panel at end of test
   @salary_expense_transfer.remembered_employee_id = @employee_id
 end
+
 
 Given /^I populate Salary Expense Transfer document for employee$/ do
   step "I start an empty Salary Expense Transfer document"
@@ -199,34 +237,34 @@ Then /^the labor ledger pending entry for employee is empty$/ do
 
 end
 
-And /^a Salary Expense Transfer initiator outside the organization cannot view the document$/ do |table|
-  arguments = table.rows_hash
-  @user_outside_organization = arguments['User Name']
 
-  # do not continue, required parameters not sent
-  fail ArgumentError, 'Required parameter User Name was not specified.' if @user_outside_organization.nil?
+# This step requires that the global hash @test_input_data exist and hold the input data required.
+And /^a Salary Expense Transfer initiator outside the organization cannot view the document$/ do
+  # do not continue, required parameters not set
+  fail ArgumentError, 'Required parameter #{@test_data_parameter_name} does not specify required test input data value for user_outside_organization.' if @test_input_data[:user_outside_organization].nil? || @test_input_data[:user_outside_organization].empty?
 
-  step "I am logged in as \"#{@user_outside_organization}\""
+  step "I am logged in as \"#{@test_input_data[:user_outside_organization]}\""
   step "I open the document with ID #{@remembered_document_id}"
   step "I should get an Authorization Exception Report error"
 end
 
-And /^a Salary Expense Transfer initiator inside the organization can view the document$/ do |table|
-  arguments = table.rows_hash
-  @user_inside_organization = arguments['User Name']
 
-  # do not continue, required parameters not send
-  fail ArgumentError, 'Required parameter User Name was not specified.' if @user_inside_organization.nil?
+# This step requires that the global hash @test_input_data exist and hold the input data required.
+And /^a Salary Expense Transfer initiator inside the organization can view the document$/ do
+  # do not continue, required parameter not set
+  fail ArgumentError, 'Required parameter #{@test_data_parameter_name} does not specify required test input data value for user_inside_organization.' if @test_input_data[:user_inside_organization].nil? || @test_input_data[:user_inside_organization].empty?
 
-  step "I am logged in as \"#{@user_inside_organization}\""
+  step "I am logged in as \"#{@test_input_data[:user_inside_organization]}\""
   step "I open the document with ID #{@remembered_document_id}"
 end
 
-And /^I update the Salary Expense Transfer document with the following:$/ do |table|
-  arguments = table.rows_hash
-  labor_object_code = arguments['Labor Object Code']
 
-  on(SalaryExpenseTransferPage).update_target_object_code.fit labor_object_code
+# This step requires that the global hash @test_input_data exist and hold the input data required.
+And /^I update the Salary Expense Transfer document with the following:$/ do
+  # do not continue, required parameter not set
+  fail ArgumentError, 'Required parameter #{@test_data_parameter_name} does not specify required test input data value for labor_object_code.' if @test_input_data[:labor_object_code].nil? || @test_input_data[:labor_object_code].empty?
+
+  on(SalaryExpenseTransferPage).update_target_object_code.fit @test_input_data[:labor_object_code]
 end
 
 ###########################################################################################
