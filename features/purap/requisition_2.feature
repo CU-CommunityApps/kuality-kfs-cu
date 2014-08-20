@@ -15,16 +15,12 @@ Feature: Purap REQS 2 Building Blocks
   @KFSQA-733 @E2E @PURAP @REQS @cornell @tortoise
   Scenario: Create -- non eShop with C&G, Commodity routing
     Given I login as a KFS user to create an REQS
-    And   I create the Requisition document with:
-    | Vendor Number       | 4471-0   |
-    | Item Quantity       | 7.5      |
-    | Item Cost           | 1000     |
-    | Item Commodity Code | 12142203 |
-    | Item Catalog Number | 10101157 |
-    | Item Description    | ANIM     |
-    | Account Number      | 1278003  |
-    | Object Code         | 6570     |
-    | Percent             | 100      |
+    And   I create the Requisition document with following specifications:
+      | Vendor Type        | NonB2B            |
+      | Account Type       | Grant             |
+      | Commodity Code     | Sensitive         |
+      | Object Code        | Operating Expense |
+      | Amount             | LT APO            |
     And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
     And   I calculate the Requisition document

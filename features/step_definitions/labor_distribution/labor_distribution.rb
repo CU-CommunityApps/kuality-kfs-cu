@@ -2,6 +2,10 @@ When /^I start an empty Benefit Expense Transfer document$/ do
   @benefit_expense_transfer = create BenefitExpenseTransferObject
 end
 
+And /^I change target sub account number to '(.*)'$/ do |sub_account_number|
+  on(BenefitExpenseTransferPage).update_target_sub_account_code.fit sub_account_number
+end
+
 Given /^I select employee (\d+)$/ do|emp|
   on SalaryExpenseTransferPage do |page|
     page.employee_id.fit ''
@@ -12,19 +16,21 @@ Given /^I select employee (\d+)$/ do|emp|
     search.search
     search.return_value(emp)
   end
-
 end
 
 And /^I search and retrieve Ledger Balance entry$/ do
-  on(LaborDistributionPage) do |ldlookup|
-    #look back to previous fiscal year at start of new fiscal year because we do not have labor data yet
-    if fiscal_period_conversion(right_now[:MON]).to_i < 2
-      previous_fiscal_year = ldlookup.fiscal_year.value.to_i - 1
-      ldlookup.fiscal_year.set previous_fiscal_year
-    end
-    ldlookup.import_search
+  #search for ledger balance
+  on(SalaryExpenseTransferPage) do |page|
+    page.import_search
   end
+  # retrieve first positive balance_month
   on LedgerBalanceLookupPage do |lblookup|
+    #look back to previous fiscal when there is no labor data in current fiscal year for the test
+    if lblookup.no_results_found?
+      @fiscal_year = lblookup.fiscal_year.value.to_i - 1
+      lblookup.fiscal_year.set @fiscal_year
+      lblookup.search
+    end
     #TODO Change to select first month with a positive balance.  Currently, first month regardless of balance is being selected.
     lblookup.check_first_month
     lblookup.return_selected
@@ -33,7 +39,7 @@ end
 
 And /^I copy (.*) source account to target account$/ do |document|
   target_page = page_class_for(document)
-  on(target_page).copy_source_accounting_line
+  on(target_page).copy_all_source_accounting_lines
 end
 
 And /^I change (.*) target account number to '(.*)'$/ do |document, account_number|
@@ -51,31 +57,26 @@ And /^I transfer the Salary to another Account in my Organization$/ do |table|
   step "I change Salary Expense Transfer target account number to '#@to_account'"
 end
 
-And /^I transfer the Salary between accounts with different Account Types$/ do |table|
-  arguments = table.rows_hash
-  @to_account_different_types = arguments['To Account']
 
-  # do not continue, required parameters not sent
-  fail ArgumentError, 'Required parameter To Account was not specified.' if @to_account_different_types.nil?
+# This step requires that the global hash @test_input_data exist and hold the input data required.
+And /^I transfer the Salary between accounts with different Account Types$/ do
+  # do not continue, required parameter not sent
+  fail ArgumentError, "Required parameter #{@test_data_parameter_name} does not specify required test input data value for to_account_different_types." if @test_input_data[:to_account_different_types].nil? || @test_input_data[:to_account_different_types].empty?
 
-  step "I change Salary Expense Transfer target account number to '#@to_account_different_types'"
-end
-
-And /^I transfer the Salary to an Account with a different Rate but the same Account Type and Organization$/ do |table|
-  # fedrate (FD) vs nonfedrate (NF)
-  arguments = table.rows_hash
-  @to_account_different_rates = arguments['To Account']
-
-  # do not continue, required parameters not sent
-  fail ArgumentError, 'Required parameter To Account was not specified.' if @to_account_different_rates.nil?
-
-  step "I change Salary Expense Transfer target account number to '#@to_account_different_rates'"
+  step "I change Salary Expense Transfer target account number to '#{@test_input_data[:to_account_different_types]}'"
 end
 
 
-And /^I change target sub account number to '(.*)'$/ do |sub_account_number|
-  on(BenefitExpenseTransferPage).update_target_sub_account_code.fit sub_account_number
+# This step requires that the global hash @test_input_data exist and hold the input data required.
+And /^I transfer the Salary to an Account with a different Rate but the same Account Type and Organization$/ do
+  # fedrate (FD) vs nonfedrate (NF) data value expected
+
+  # do not continue, required parameter not sent
+  fail ArgumentError, "Required parameter #{@test_data_parameter_name} does not specify required test input data value for to_account_different_rate." if @test_input_data[:to_account_different_rates].nil? || @test_input_data[:to_account_different_rates].empty?
+
+  step "I change Salary Expense Transfer target account number to '#{@test_input_data[:to_account_different_rates]}'"
 end
+
 
 Given /^I start an empty Salary Expense Transfer document$/ do
   @salary_expense_transfer = create SalaryExpenseTransferObject
@@ -90,11 +91,70 @@ Given  /^I create a Salary Expense Transfer with following:$/ do |table|
   # do not continue, required parameters not sent
   fail ArgumentError, 'One or more required parameters were not specified.'if @user_principal.nil? || @employee_id.nil?
 
-  step "I am User #@user_principal who is a Salary Transfer Initiator"
+  step "I am User #{@user_principal} who is a Salary Transfer Initiator"
+  step 'I populate Salary Expense Transfer document for employee'
 
+  #value required for validation on different panel at end of test
+  @salary_expense_transfer.remembered_employee_id = @employee_id
+end
+
+
+# This step causes the global hash @test_input_data to come into existence.
+# This is a Hash of the Parameter Values in the Parameter table for the specified Parameter Name.
+Given /^I obtain (.*) data values required for the test from the Parameter table$/ do |parameter_name|
+  @test_input_data = get_aft_parameter_values_as_hash(parameter_name)
+end
+
+
+# This step requires that the global hash @test_input_data exist and hold the input data required.
+Given /^I create a Salary Expense Transfer as a Salary Transfer Initiator$/ do |table|
+  arguments = table.rows_hash
+  @test_data_parameter_name = arguments['Parameter Name']
+
+  # do not continue, required parameter name not passed in
+  fail ArgumentError, 'Parameter Name is required for the test and was not specified.'if @test_data_parameter_name.nil? || @test_data_parameter_name.empty?
+
+  step "I obtain #{@test_data_parameter_name} data values required for the test from the Parameter table"
+
+  #do not continue if input data required for next step in test was not specified in the Parameter table
+  fail ArgumentError, "Parameter #{@test_data_parameter_name} required for this test does not exist in the Parameter table." if @test_input_data.nil? || @test_input_data.empty?
+  fail ArgumentError, "Parameter #{@test_data_parameter_name} does not specify required input test data value for initiator" if @test_input_data[:initiator].nil? || @test_input_data[:initiator].empty?
+  fail ArgumentError, "Parameter #{@test_data_parameter_name} does not specify required input test data value for employee" if @test_input_data[:employee].nil? || @test_input_data[:employee].empty?
+
+  step 'I create a Salary Expense Transfer with following:',
+       table(%Q{
+         | User Name  | #{@test_input_data[:initiator]}   |
+         | Employee   | #{@test_input_data[:employee]} |
+       })
+end
+
+
+# This step requires that the global hash @test_input_data exist and hold the input data required.
+Given /^I create a Salary Expense Transfer as a Labor Distribution Manager:$/ do |table|
+  arguments = table.rows_hash
+  @test_data_parameter_name = arguments['Parameter Name']
+
+  # do not continue, required parameter name not passed in
+  fail ArgumentError, 'Parameter Name is required for the test and was not specified.' if @test_data_parameter_name.nil? || @test_data_parameter_name.empty?
+
+  step "I obtain #{@test_data_parameter_name} data values required for the test from the Parameter table"
+
+  #do not continue if input data required for next step in test was not specified in the Parameter table
+  fail ArgumentError, "Parameter #{@test_data_parameter_name} required for this test does not exist in the Parameter table." if @test_input_data.nil? || @test_input_data.empty?
+  fail ArgumentError, "Parameter #{@test_data_parameter_name} does not specify required input test data value for employee" if @test_input_data[:employee].nil? || @test_input_data[:employee].empty?
+  @employee_id = @test_input_data[:employee]
+
+  step 'I am logged in as a Labor Distribution Manager'
+  step 'I populate Salary Expense Transfer document for employee'
+
+  #value required for validation on different panel at end of test
+  @salary_expense_transfer.remembered_employee_id = @employee_id
+end
+
+
+Given /^I populate Salary Expense Transfer document for employee$/ do
   step "I start an empty Salary Expense Transfer document"
-  step "I select employee #@employee_id"
-
+  step "I select employee #{@employee_id}"
   step "I search and retrieve Ledger Balance entry"
   step "I copy Salary Expense Transfer source account to target account"
 end
@@ -157,11 +217,19 @@ And /^I run the GL Nightly Processes$/ do
 
 end
 
-Then /^the labor ledger pending entry for employee '(.*)' is empty$/ do |empl_id|
+Then /^the labor ledger pending entry for employee is empty$/ do
+  employee_id = ""
+  if @salary_expense_transfer == nil || @salary_expense_transfer.remembered_employee_id == nil
+    #get default employee_id data value since test being run did not set remembered value
+    employee_id = get_aft_parameter_value(ParameterConstants::DEFAULT_ST_EMPL_ID)
+  else
+    #get employee_id used earlier in the test
+    employee_id = @salary_expense_transfer.remembered_employee_id
+  end
   visit(MainPage).labor_ledger_pending_entry
   on LaborLedgerPendingEntryLookupPage do |page|
     page.fiscal_year.fit ''
-    page.empl_id.fit empl_id
+    page.empl_id.fit employee_id
     page.search
     page.wait_for_search_results
     page.frm.divs(id: 'view_div')[0].text.should include 'No values match this search.'
@@ -169,25 +237,135 @@ Then /^the labor ledger pending entry for employee '(.*)' is empty$/ do |empl_id
 
 end
 
-And /^a Salary Expense Transfer initiator outside the organization cannot view the document$/ do |table|
-  arguments = table.rows_hash
-  @user_outside_organization = arguments['User Name']
 
-  # do not continue, required parameters not sent
-  fail ArgumentError, 'Required parameter User Name was not specified.' if @user_outside_organization.nil?
+# This step requires that the global hash @test_input_data exist and hold the input data required.
+And /^a Salary Expense Transfer initiator outside the organization cannot view the document$/ do
+  # do not continue, required parameters not set
+  fail ArgumentError, 'Required parameter #{@test_data_parameter_name} does not specify required test input data value for user_outside_organization.' if @test_input_data[:user_outside_organization].nil? || @test_input_data[:user_outside_organization].empty?
 
-  step "I am logged in as \"#{@user_outside_organization}\""
+  step "I am logged in as \"#{@test_input_data[:user_outside_organization]}\""
   step "I open the document with ID #{@remembered_document_id}"
   step "I should get an Authorization Exception Report error"
 end
 
-And /^a Salary Expense Transfer initiator inside the organization can view the document$/ do |table|
-  arguments = table.rows_hash
-  @user_inside_organization = arguments['User Name']
 
-  # do not continue, required parameters not send
-  fail ArgumentError, 'Required parameter User Name was not specified.' if @user_inside_organization.nil?
+# This step requires that the global hash @test_input_data exist and hold the input data required.
+And /^a Salary Expense Transfer initiator inside the organization can view the document$/ do
+  # do not continue, required parameter not set
+  fail ArgumentError, 'Required parameter #{@test_data_parameter_name} does not specify required test input data value for user_inside_organization.' if @test_input_data[:user_inside_organization].nil? || @test_input_data[:user_inside_organization].empty?
 
-  step "I am logged in as \"#{@user_inside_organization}\""
+  step "I am logged in as \"#{@test_input_data[:user_inside_organization]}\""
   step "I open the document with ID #{@remembered_document_id}"
+end
+
+
+# This step requires that the global hash @test_input_data exist and hold the input data required.
+And /^I update the Salary Expense Transfer document with the following:$/ do
+  # do not continue, required parameter not set
+  fail ArgumentError, 'Required parameter #{@test_data_parameter_name} does not specify required test input data value for labor_object_code.' if @test_input_data[:labor_object_code].nil? || @test_input_data[:labor_object_code].empty?
+
+  on(SalaryExpenseTransferPage).update_target_object_code.fit @test_input_data[:labor_object_code]
+end
+
+###########################################################################################
+# Verifying the salary expense transfer between accounts by comparing data (account, object, period, balance type, amount,
+# debit/credit code) associated with the From and To accounts based on the following rules.
+#
+# For the salary transfer:
+# 1. From account will credit actuals (AC balance type) for account and object
+#    To account will debit actuals (AC balance type) for the account and object code
+#
+# 2. From account will debit A2 balance type for account and object (fiscal period assigned when posted, blank in
+#    pending entries tab) and credit A2 balance type for fiscal periods selected in test (returned value);
+#
+#    To account will credit A2 balance type for account, object (no fiscal period in labor ledger pending entries tab)
+#    and debit A2 balance type for fiscal period selected in test (returned value)
+#
+# 3. Do not use the Fringe Benefit ==> View link (Fringe Benefit Inquiry page) for the object code or amount.
+#
+#    Obtain the Labor Benefit Rate Category Code via an Account Lookup.
+#
+#    Obtain the Labor Benefits Type Code via a Maintenance ==> Labor Object Code Benefits Lookup.
+#
+#    Use the Labor Benefit Rate Category Code and Labor Benefits Type Code on the
+#    Maintenance ==> Labor Benefits Calculation Lookup to obtain the Labor Benefit Object Code and
+#    Position Fringe Benefit Percent (both referred to below)
+#
+#    Use From or To amount times Position Fringe Benefit Percent to determine LLPE benefit amount (referred to below).
+#
+#    Use parameter obtained from parameter lookup for namespace="KFS-LD - Labor Distribution",
+#    component="Salary Expense Transfer", parameter name ="BENEFIT_CLEARING_ACCOUNT_NUMBER"
+#    for clearing account (referred to below).
+#
+#
+#    Any time calculated benefit amount is ZERO:
+#      From account will not have any benefit labor ledger pending entries
+#      To account will not have any benefit labor ledger pending entries
+#
+#    Any time the fringe amounts vary either object code or amount:
+#      Clearing account will debit actuals (AC balance type) for From account Labor Benefit Object Code
+#      when calculated benefit amount is non-zero (fiscal period blank)
+#      Clearing account will credit actuals (AC balance type) for To account Labor Benefit Object Code
+#      when calculated benefit amount is non-zero (fiscal period blank)
+#      Clearing account will debit actuals (AC balance type) for To account Labor Benefit Object Code
+#      when calculated benefit amount is zero (fiscal period blank)
+#
+#    Any time calculated benefit amount is NON-ZERO:
+#      From account will credit actuals (AC balance type) for account, its Labor Benefit Object Code value,
+#      its calculated benefit amount, and blank period.
+#      To account will debit actuals (AC balance type) for account, its Labor Benefit Object Code value,
+#      its calculated benefit amount, and blank period.
+#
+#      From account will debit A2 balance type for account, its Labor Benefit Object Code value, its calculated
+#      benefit amount, and blank period; and credit A2 balance type for its Labor Benefit Object Code value, its
+#      calculated benefit amount, and fiscal periods selected in test.
+#
+#      To account will credit A2 balance type for account, its Labor Benefit Object Code value, its calculated
+#      benefit amount, and blank period; and debit A2 balance type for its Labor Benefit Object Code value, its
+#      calculated benefit amount, and fiscal periods selected in test.
+###########################################################################################
+And /^the Labor Ledger Pending entries verify for the accounting lines on the Salary Expense Transfer document$/ do
+  on(SalaryExpenseTransferPage).expand_all
+  on SalaryExpenseTransferPage do |page|
+
+    #data from the LLPE results table to be used for validation comparison [Array][Hash]
+    llpe_results_data = @salary_expense_transfer.get_llpe_results_data(page)
+    llpe_results_data.size.should == page.llpe_results_table.rows.length-1
+
+    # get accounting lines from the page into a local variable, we are going to be adding more attributes pertaining
+    # to each accounting line to its hash later on in this verification process so we do not want to muck with the
+    # actual global accounting line object
+    st_accounting_lines = @salary_expense_transfer.pull_all_accounting_lines(page)
+    st_accounting_lines = @salary_expense_transfer.determine_additional_llpe_attributes(st_accounting_lines, :source)
+    st_accounting_lines = @salary_expense_transfer.determine_additional_llpe_attributes(st_accounting_lines, :target)
+
+    # now generate all LLPE lines that would be expected based on the accounting line labor and benefits attributes
+    expected_llpe_lines = @salary_expense_transfer.generate_expected_llpe_data(st_accounting_lines)
+
+    #now verify array of expected_llpe_lines are in the llpe_results_data array
+    llpe_results_data.length.should ==  expected_llpe_lines.length
+    expected_llpe_lines.each_with_index do |expected_line, expected_index|
+      found = false
+      llpe_results_data.each_with_index do |results_line, result_index|
+
+        if @salary_expense_transfer.llpe_line_matches_accounting_line_data(llpe_results_data[result_index][:account_number],
+                                                                           llpe_results_data[result_index][:object],
+                                                                           llpe_results_data[result_index][:period],
+                                                                           llpe_results_data[result_index][:balance_type],
+                                                                           llpe_results_data[result_index][:amount],
+                                                                           llpe_results_data[result_index][:debit_credit_code],
+                                                                           expected_llpe_lines[expected_index][:account_number],
+                                                                           expected_llpe_lines[expected_index][:object],
+                                                                           expected_llpe_lines[expected_index][:period],
+                                                                           expected_llpe_lines[expected_index][:balance_type],
+                                                                           expected_llpe_lines[expected_index][:amount],
+                                                                           expected_llpe_lines[expected_index][:debit_credit_code])
+          found = true
+          break
+        end
+      end
+      found.should be true
+    end
+  end #page loop
+
 end

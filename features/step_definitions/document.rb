@@ -28,7 +28,7 @@ When /^I (#{BasePage::available_buttons}) the (.*) document$/ do |button, docume
   button.gsub!(' ', '_')
   document_object_for(document).send(button)
   on(YesOrNoPage).yes if button == 'cancel'
-  sleep 10 if (button == 'blanket approve' || button == 'approve' || 'submit')
+  sleep 10 if (button == 'blanket approve' || button == 'approve' || button == 'submit')
 
   @requisition_id = on(RequisitionPage).requisition_id if document == 'Requisition' && button == 'submit'
 end

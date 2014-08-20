@@ -13,14 +13,12 @@ Feature: GLPE validation tests for Purchase Orders
   @KFSQA-873 @PO @PURAP @tortoise
   Scenario: Cancel a Purchase Order and verify the GLPE.
    Given I am logged in as an e-SHOP User
-   And   I create the Requisition document with:
-     | Vendor Number       | 4471-0   |
-     | Item Quantity       | 9.9      |
-     | Item Cost           | 1000     |
-     | Item Commodity Code | 10121800 |
-     | Account Number      | 1093603  |
-     | Object Code         | 6540     |
-     | Percent             | 100      |
+   And   I create the Requisition document with following specifications:
+     | Vendor Type        | NonB2B            |
+     | Account Type       | NonGrant          |
+     | Commodity Code     | Regular           |
+     | Object Code        | Operating Expense |
+     | Amount             | GT APO            |
    And   I submit the Requisition document
    And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
    And   I view the Requisition document on my action list
