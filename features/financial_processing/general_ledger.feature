@@ -5,7 +5,7 @@ Feature: General Ledger
 
   @KFSQA-649 @smoke @nightly-jobs @coral
   Scenario Outline: Accounting Line Description from eDoc updates General Ledger, part 1
-    Given I am logged in as a KFS Manager for the <docType> document
+    Given I am logged in as a KFS Chart Administrator
     And   I clone Account <source_account> with the following changes:
       | Name        | <eDoc> Test Account S |
       | Chart Code  | IT                    |
@@ -19,12 +19,7 @@ Feature: General Ledger
     And   I add balanced Accounting Lines to the <eDoc> document
     And   I save the <eDoc> document
     And   I submit the <eDoc> document
-    Given I am logged in as a KFS Manager for the <docType> document
-    And   I view the <eDoc> document
-    And   I blanket approve the <eDoc> document if it is not already FINAL
-    And   the <eDoc> document goes to one of the following statuses:
-      | PROCESSED |
-      | FINAL     |
+    And   I route the <eDoc> document to final
     Given Nightly Batch Jobs run
     And   I am logged in as a KFS Chart Administrator
     When  I lookup the document ID for the <eDoc> document from the General Ledger
@@ -47,7 +42,7 @@ Feature: General Ledger
 
   @KFSQA-649 @smoke @nightly-jobs @tortoise
   Scenario Outline: Accounting Line Description from eDoc updates General Ledger, part 4. These eDocs' accounts don't clone nicely.
-    Given I am logged in as a KFS Manager for the <docType> document
+    Given I am logged in as a KFS Chart Administrator
     And   I use these Accounts:
       | <source_account> |
       | <target_account> |
@@ -56,12 +51,7 @@ Feature: General Ledger
     And   I add balanced Accounting Lines to the <eDoc> document
     And   I save the <eDoc> document
     And   I submit the <eDoc> document
-    Given I am logged in as a KFS Manager for the <docType> document
-    And   I view the <eDoc> document
-    And   I blanket approve the <eDoc> document if it is not already FINAL
-    And   the <eDoc> document goes to one of the following statuses:
-      | PROCESSED |
-      | FINAL     |
+    And   I route the Indirect Cost Adjustment document to final
     Given Nightly Batch Jobs run
     And   I am logged in as a KFS Chart Administrator
     When  I lookup the document ID for the <eDoc> document from the General Ledger
@@ -87,12 +77,6 @@ Feature: General Ledger
     And   I save the Disbursement Voucher document
     And   I submit the Disbursement Voucher document
     And   I route the Disbursement Voucher document to final
-    And   I am logged in as a KFS Manager for the DV document
-    And   I view the Disbursement Voucher document
-    And   I blanket approve the Disbursement Voucher document if it is not already FINAL
-    And   the Disbursement Voucher document goes to one of the following statuses:
-      | PROCESSED |
-      | FINAL     |
     And   Nightly Batch Jobs run
     And   I am logged in as a KFS Chart Administrator
     When  I lookup the document ID for the Disbursement Voucher document from the General Ledger
@@ -118,9 +102,7 @@ Feature: General Ledger
     And   I add balanced Accounting Lines to the Indirect Cost Adjustment document
     And   I save the Indirect Cost Adjustment document
     And   I submit the Indirect Cost Adjustment document
-    Given I am logged in as a KFS Manager for the ICA document
-    And   I view the Indirect Cost Adjustment document
-    And   I blanket approve the Indirect Cost Adjustment document if it is not already FINAL
+    And   I route the Indirect Cost Adjustment document to final
     And   the Indirect Cost Adjustment document goes to one of the following statuses:
       | PROCESSED |
       | FINAL     |

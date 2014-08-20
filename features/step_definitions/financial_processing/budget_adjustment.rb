@@ -167,6 +167,8 @@ And /^I upload (To|From) Accounting Lines containing Base Budget amounts$/ do |t
 end
 
 Then /^The GLPE contains 4 Balance Type (.*) transactions for the (.*) document$/ do |type_code, document|
+  sleep 5
+
   visit(MainPage).general_ledger_pending_entry
   on GeneralLedgerPendingEntryLookupPage do |page|
     page.balance_type_code.fit type_code.upcase
