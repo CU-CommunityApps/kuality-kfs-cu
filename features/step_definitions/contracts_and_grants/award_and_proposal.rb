@@ -1,4 +1,4 @@
-And /^I create new Proposal$/  do
+And /^I create new Proposal document$/  do
   @proposal = create ProposalObject,
                      initial_organizations: [{
                                              chart_code:              get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE_WITH_NAME),
@@ -14,7 +14,7 @@ And /^I create new Proposal$/  do
 
 end
 
-When /^I create a new Award from Proposal$/ do
+When /^I create a new Award document from the Proposal document$/ do
   @award = create AwardObject,
                   initial_award_accounts: [{
                                               chart_code:               get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE_WITH_NAME),
@@ -23,13 +23,7 @@ When /^I create a new Award from Proposal$/ do
                                               active:                   :set
                                           }]
 
-  on(AwardPage).proposal_search
-  on ProposalLookupPage do |page|
-    page.proposal_number.fit @proposal.proposal_number
-    page.search
-    page.return_value_links.first.click
-  end
-  @award.proposal_number = on(AwardPage).proposal_number
+  @award.pick_proposal @proposal
 end
 
 And /^I change the Grant Number for the Award Document$/ do
@@ -37,30 +31,23 @@ And /^I change the Grant Number for the Award Document$/ do
   @award.grant_number = on(AwardPage).grant_number.value
 end
 
-And /^I verify Grant Number change persists on Award$/ do
-  visit(MainPage).award
-  on AwardLookupPage do |page|
-    page.proposal_number.fit @award.proposal_number
-    page.grant_number.fit @award.grant_number
-    page.search
-    page.view_award_links.first.click
-    page.use_new_tab
-    page.close_parents
-  end
+And /^I verify Grant Number change persists on the Award document$/ do
+  @award.view_via :inquiry
   on(AwardInquiryPage).grant_number.should == @award.grant_number
 end
 
-And /^I verify fields from Proposal populate in Award document$/ do
-
+And /^the Award document is populated by the Proposal document's fields$/ do
   on AwardPage do |page|
     page.agency_number.value.should == @proposal.agency_number
     page.direct_cost_amount.value.to_f.should == @proposal.direct_cost_amount.to_f
     page.indirect_cost_amount.value.to_f.should == @proposal.indirect_cost_amount.to_f
-    page.update_project_director_principal_name.value.should == @proposal.project_directors.first.principal_name
-    page.result_organization_code.should == @proposal.organizations.first.organization_code
-    page.result_organization_chart_code.should == @proposal.organizations.first.chart_code
     page.purpose_code.selected_options.first.text.should == @proposal.purpose_code
   end
+  on OrganizationsTab do |tab|
+    tab.result_organization_code.should == @proposal.organizations.first.organization_code
+    tab.result_organization_chart_code.should == @proposal.organizations.first.chart_code
+  end
+  on(ProjectDirectorsTab).update_project_director_principal_name.value.should == @proposal.project_directors.first.principal_name
 end
 
 And /^I lookup an Award$/ do
@@ -75,15 +62,14 @@ And /^I lookup an Award$/ do
   end
 end
 
-And /^I edit an Award$/ do
+And /^I edit a random Award$/ do
   step 'I lookup an Award'
   @award = make AwardObject
   on(AwardPage).description.fit @award.description
   @award.absorb! :old
-  @document_id = @award.document_id
 end
 
-When /^I edit previous approved Award$/ do
+When /^I edit a previously-approved Award$/ do
 
   visit(MainPage).award
   on AwardLookupPage do |page|
@@ -97,10 +83,9 @@ When /^I edit previous approved Award$/ do
   @award = make AwardObject
   on(AwardPage).description.fit @award.description
   @award.absorb! :old
-  @document_id = @award.document_id
 end
 
-And /^I inactivate account for the Award Document$/ do
+And /^I deactivate the account for the Award Document$/ do
   on(AwardPage).update_account_active_indicator.clear
 end
 
