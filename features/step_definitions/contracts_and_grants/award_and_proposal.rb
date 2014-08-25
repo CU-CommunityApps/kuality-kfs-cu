@@ -55,6 +55,7 @@ And /^I lookup an Award$/ do
   on AwardLookupPage do |page|
     page.active_yes.set
     page.grant_description.fit 'CON - Contract' # to limit the results?
+    page.award_account_number.fit '1*' # to make sure there is award account exist
     page.search
     page.edit_random # This should throw a fail if the item isn't found.
     page.use_new_tab
