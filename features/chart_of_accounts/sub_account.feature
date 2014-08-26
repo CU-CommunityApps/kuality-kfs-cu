@@ -17,9 +17,9 @@ Feature: Sub Account
     Then  The Indirect Cost Rate ID field should not be null
 
   @KFSQA-591 @cornell @smoke @SubAcct @KFSPTS-1740 @hare
-  Scenario: Create a Sub-Account with Sub-Account Type CS and verity routing to CG Processor.
+  Scenario: Create a Sub-Account with the default Sub-Account Type Code and verity routing to CG Processor.
     Given   I am logged in as a KFS User
-    And     I Create a Sub-Account with Sub-Account Type CS
+    And     I Create a Sub-Account with the default Sub-Account Type Code
     And     I submit the Sub-Account document
     And     I am logged in as the FO of the Sub-Account
     And     The Sub-Account document should be in my action list
