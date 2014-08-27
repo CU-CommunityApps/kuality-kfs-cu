@@ -1,7 +1,3 @@
-And /^I (#{ObjectCodePage::available_buttons}) an Object Code document$/ do |button|
-  @object_code = create ObjectCodeObject, press: button.gsub(' ', '_')
-end
-
 Then /^I should see the Object Code document in the object code search results$/ do
   on(MainPage).object_code
   on ObjectCodeLookupPage do |page|

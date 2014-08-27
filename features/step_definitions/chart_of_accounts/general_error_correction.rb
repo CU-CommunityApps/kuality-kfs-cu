@@ -1,9 +1,3 @@
-And /^I (#{GeneralErrorCorrectionPage::available_buttons}) a General Error Correction document$/ do |button|
-  button.gsub!(' ', '_')
-  @general_error_correction = create GeneralErrorCorrectionObject, press: button
-  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
-end
-
 When /^I start a General Error Correction document$/ do
   visit(MainPage).general_error_correction
   @general_error_correction = create GeneralErrorCorrectionObject

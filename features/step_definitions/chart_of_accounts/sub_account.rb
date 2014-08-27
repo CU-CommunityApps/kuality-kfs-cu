@@ -1,9 +1,6 @@
-And /^I (#{SubAccountPage::available_buttons}) a Sub-Account document$/ do |button|
-  @sub_account = create SubAccountObject, press: button.gsub(' ', '_')
-end
-
-And /^I Create a Sub-Account with Sub-Account Type CS$/ do
-  @sub_account = create SubAccountObject, type_code: 'CS', press: :save
+And /^I Create a Sub-Account with the default Sub-Account Type Code$/ do
+  type_code = get_aft_parameter_value(ParameterConstants::DFAULT_SUB_ACCOUNT_TYPE_CODE)
+  @sub_account = create SubAccountObject, type_code: type_code, press: :save
 end
 
 When /^I tab away from the Account Number field$/ do
