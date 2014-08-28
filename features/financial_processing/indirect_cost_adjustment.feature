@@ -10,13 +10,7 @@ Feature: Indirect Cost Adjustment
     And     I enter a Grant Accounting Line and a Receipt Accounting Line
 #    And     The Receipt Chart equals the Receipt Grant’s Chart
     And     I submit the Indirect Cost Adjustment document
-    And     the Indirect Cost Adjustment document goes to ENROUTE
-    And     I am logged in as a KFS Chart Manager
-    And     I view the Indirect Cost Adjustment document
-    And     I blanket approve the Indirect Cost Adjustment document
-    Then    the Indirect Cost Adjustment document goes to one of the following statuses:
-      | PROCESSED |
-      | FINAL     |
+    And     I route the Indirect Cost Adjustment document to final
     Given   Nightly Batch Jobs run
     And     I am logged in as a KFS Chart Manager
     When    I lookup the document ID for the Indirect Cost Adjustment document from the General Ledger
@@ -28,11 +22,8 @@ Feature: Indirect Cost Adjustment
     When  I start an empty Indirect Cost Adjustment document
     And   I upload a Grant line template for the Indirect Cost Adjustment document
     And   I upload a Receipt line template for the Indirect Cost Adjustment document
-    And   I blanket approve the Indirect Cost Adjustment document
-    Then  the Indirect Cost Adjustment document goes to one of the following statuses:
-      | PROCESSED |
-      | FINAL     |
-
+    And   I submit the Indirect Cost Adjustment document
+    And   I route the Indirect Cost Adjustment document to final
     Given Nightly Batch Jobs run
     And   I am logged in as a KFS Technical Administrator
     When  I lookup the document ID for the Indirect Cost Adjustment document from the General Ledger
