@@ -69,3 +69,17 @@ And /^I (#{SubAccountPage::available_buttons}) a Sub-Account with an adhoc appro
 
   @sub_account = create SubAccountObject, options
 end
+
+And /^I create a Sub-Account with Sub-Account Type Code (\w+)$/ do |sub_account_type|
+  # only certain subfundgroupcode are acceptable for CS subaccount 'APFEDL' is one of them
+  account_number =   get_kuali_business_object('KFS-COA','Account',"subFundGroupCode=APFEDL&active=Y&accountExpirationDate=NULL&chartOfAccountsCode=#{get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)}")['accountNumber'].sample
+  options = {
+      account_number:                      account_number,
+      cost_sharing_chart_of_accounts_code: get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
+      cost_share_account_number:           account_number, # just need some account to fill in this required field
+      sub_account_type_code:               sub_account_type,
+      cost_sharing_account_number:         account_number,
+      press:                               'save'
+  }
+  @sub_account = create SubAccountObject, options
+end
