@@ -90,3 +90,28 @@ And /^I update the Financial Object Code Description/ do
   on(ObjectCodePage).financial_object_code_description.set random_alphanums(60, 'AFT')
 end
 
+
+# This method presumes a @contract_grant_reporting_code object has been created and initialized with
+# chart code and CG reporting code data values.
+And /^I search for an Object Code using the Contract Grant Reporting Code$/ do
+  visit(MainPage).object_code
+  on(ObjectCodeLookupPage) do |page|
+    page.chart_code.fit @contract_grant_reporting_code.chart_code
+    page.cg_reporting_code.fit @contract_grant_reporting_code.code
+    page.search
+    page.wait_for_search_results
+  end
+end
+
+
+# This method presumes the @object_code object has been created and is initialized with the
+# CG Reporting Code data value used for a previous lookup search.
+Then /^I should only see the Object Code document with the searched for CG Reporting Code in the object code search results$/ do
+  on(ObjectCodeLookupPage) do |page|
+    #results table should have two rows; the header row and one row of data
+    page.get_table_row_count.should == 2
+
+    #cg reporting code in results table should match value used in edit.
+    page.find_item_in_table(@object_code.cg_reporting_code.upcase).should exist
+  end
+end
