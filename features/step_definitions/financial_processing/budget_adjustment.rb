@@ -4,10 +4,6 @@ When /^I start an empty Budget Adjustment document$/ do
                                                       initial_lines: []
 end
 
-And /^I start a Budget Adjustment document$/ do
-  @budget_adjustment = create BudgetAdjustmentObject, press: nil
-end
-
 And /^I create a Budget Adjustment document for file import$/ do  # ME!
   @budget_adjustment = create BudgetAdjustmentObject, press: nil,
                                                       description: random_alphanums(20, 'AFT Budget Adj '),
