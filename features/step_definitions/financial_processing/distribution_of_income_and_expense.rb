@@ -33,6 +33,7 @@ end
 
 And /^I select accounting line and create Capital Asset$/ do
   on DistributionOfIncomeAndExpensePage do |page|
+    page.generate_accounting_lines_for_capitalization
     page.accounting_lines_for_capitalization_select.set
     page.distribution_method.fit 'Distribute cost by amount'
     page.create_asset

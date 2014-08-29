@@ -105,7 +105,7 @@ And /^I (.*) an Account Global Maintenance document with multiple accounting lin
                            press: button
 end
 
-When /^I (.*) a Account Global Maintenance document with a Major Reporting Category Code of (.*)$/ do |button, value_for_field|
+When /^I (.*) an Account Global Maintenance document with a Major Reporting Category Code of (.*)$/ do |button, value_for_field|
   @account_global = create AccountGlobalObject,
                            supervisor_principal_name:  '',
                            manager_principal_name: '',

@@ -19,12 +19,18 @@ Feature: Sub Account
   @KFSQA-591 @cornell @smoke @SubAcct @KFSPTS-1740 @hare
   Scenario: Create a Sub-Account with the default Sub-Account Type Code and verity routing to CG Processor.
     Given   I am logged in as a KFS User
-    And     I Create a Sub-Account with the default Sub-Account Type Code
+    And     I create a Sub-Account with Sub-Account Type Code CS
     And     I submit the Sub-Account document
     And     I am logged in as the FO of the Sub-Account
     And     The Sub-Account document should be in my action list
     And     I view the Sub-Account document
     And     I approve the Sub-Account document
+    Then    the Sub-Account document goes to ENROUTE
+    And     I verify that the following Pending Action approvals are requested:
+      | Contracts & Grants Processor |
+    Given   I switch to the user with the next Pending Action in the Route Log for the Sub-Account document
+    And     I view the Sub-Account document
+    When    I approve the Sub-Account document
     Then    the Sub-Account document goes to FINAL
 
   @KFSQA-589 @cornell @SubAcct @Bug @KFSPTS-1753 @sloth

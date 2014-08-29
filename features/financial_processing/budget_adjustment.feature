@@ -14,7 +14,7 @@ Feature: Budget Adjustment
   @KFSQA-623 @BA @hare
   Scenario: Budget Adjustment not allowed to cross Account Sub-Fund Group Codes
     Given   I am logged in as a KFS User
-    And     I start a Budget Adjustment document
+    And     I start an empty Budget Adjustment document
     And     I add a From amount of "100.00" for account "1002000" with object code "4480" with a line description of "aft from1"
     And     I add a To amount of "100" for account "1002001" with object code "4480" with a line description of "aft to 1"
     When    I submit the Budget Adjustment document
