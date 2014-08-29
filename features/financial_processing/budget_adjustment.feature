@@ -14,7 +14,7 @@ Feature: Budget Adjustment
   @KFSQA-623 @BA @hare
   Scenario: Budget Adjustment not allowed to cross Account Sub-Fund Group Codes
     Given   I am logged in as a KFS User
-    And     I start a Budget Adjustment document
+    And     I start an empty Budget Adjustment document
     And     I add a From amount of "100.00" for account "1002000" with object code "4480" with a line description of "aft from1"
     And     I add a To amount of "100" for account "1002001" with object code "4480" with a line description of "aft to 1"
     When    I submit the Budget Adjustment document
@@ -30,7 +30,7 @@ Feature: Budget Adjustment
   Scenario: Budget Adjustment routing and approval by From and To FO
     # logged in as the To account FO
     Given I am logged in as a KFS Fiscal Officer for account number G013300
-    And   I submit a balanced Budget Adjustment document
+    And   I submit a balanced Budget Adjustment document with accounting lines
     Then  the Route Log displays a From Fiscal Officer
     And   the Budget Adjustment document goes to ENROUTE
     And   I am logged in as the From Fiscal Officer
@@ -42,7 +42,7 @@ Feature: Budget Adjustment
   Scenario: General ledger balance displays correctly for a Budget Adjustment after nightly batch is run
     # logged in as the To account FO
     Given  I am logged in as a KFS Fiscal Officer for account number G013300
-    And    I submit a balanced Budget Adjustment document
+    And    I submit a balanced Budget Adjustment document with accounting lines
     And    I switch to the user with the next Pending Action in the Route Log for the Budget Adjustment document
     And    I view the Budget Adjustment document
     When   I approve the Budget Adjustment document
@@ -96,7 +96,7 @@ Feature: Budget Adjustment
   @KFSQA-729 @BA @tortoise
   Scenario: "To" Fiscal Officer initiates Budget Adjustment; BA routes to "From" Fiscal Officer
     Given I am logged in as a KFS Fiscal Officer for account number G013300
-    And   I submit a balanced Budget Adjustment document
+    And   I submit a balanced Budget Adjustment document with accounting lines
     Then  the Route Log displays a From Fiscal Officer
     And   the Budget Adjustment document goes to ENROUTE
     When  I am logged in as the From Fiscal Officer
