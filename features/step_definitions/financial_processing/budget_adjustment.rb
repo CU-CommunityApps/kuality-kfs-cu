@@ -4,10 +4,6 @@ When /^I start an empty Budget Adjustment document$/ do
                                                       initial_lines: []
 end
 
-And /^I start a Budget Adjustment document$/ do
-  @budget_adjustment = create BudgetAdjustmentObject, press: nil
-end
-
 And /^I create a Budget Adjustment document for file import$/ do  # ME!
   @budget_adjustment = create BudgetAdjustmentObject, press: nil,
                                                       description: random_alphanums(20, 'AFT Budget Adj '),
@@ -20,12 +16,6 @@ And /^I create a Budget Adjustment document for file import$/ do  # ME!
                                                                         file_name: 'BA_test_to.csv'
                                                                       }],
                                                       immediate_import: false
-end
-
-And /^I (#{BudgetAdjustmentPage::available_buttons}) a Budget Adjustment document$/ do |button|
-  button.gsub!(' ', '_')
-  @budget_adjustment = create BudgetAdjustmentObject, press: button
-  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
 end
 
 And /^I add a (From|To) amount of "(.*)" for account "(.*)" with object code "(.*)" with a line description of "(.*)"$/  do |target, amount, account_number, object_code, line_desc|
@@ -60,7 +50,7 @@ Then /^I verify that Chart Value defaults to IT$/ do
   end
 end
 
-And /^I (#{BudgetAdjustmentPage::available_buttons}) a balanced Budget Adjustment document$/ do |button|
+And /^I (#{BudgetAdjustmentPage::available_buttons}) a balanced Budget Adjustment document with accounting lines$/ do |button|
   button.gsub!(' ', '_')
   @budget_adjustment = create BudgetAdjustmentObject,
                               press: nil, # We should add the accounting lines before submitting, eh?

@@ -1,7 +1,3 @@
-And /^I (#{AccountGlobalPage::available_buttons}) an Account Global Maintenance document$/ do |button|
-  @account_global = create AccountGlobalObject, press: button.gsub(' ', '_')
-end
-
 And /^I (.*) an Account Global Maintenance document with blank Fiscal Officer Principal Name, Account Supervisor Principal Name, Account Manager Name, and CFDA fields$/ do |button|
   visit(MainPage).account
   random_account_number = on(AccountLookupPage).get_random_account_number
@@ -109,7 +105,7 @@ And /^I (.*) an Account Global Maintenance document with multiple accounting lin
                            press: button
 end
 
-When /^I (.*) a Account Global Maintenance document with a Major Reporting Category Code of (.*)$/ do |button, value_for_field|
+When /^I (.*) an Account Global Maintenance document with a Major Reporting Category Code of (.*)$/ do |button, value_for_field|
   @account_global = create AccountGlobalObject,
                            supervisor_principal_name:  '',
                            manager_principal_name: '',
