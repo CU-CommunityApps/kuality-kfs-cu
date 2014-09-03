@@ -558,3 +558,13 @@ And /^I add these Accounting Lines to Item \#(\d+) on the (.*) document:$/ do |i
     document_object_for(document).items[il].add_accounting_line new_line
   end
 end
+
+And /^the Commodity Reviewer is in the routing log for (.*) document$/ do |document|
+  reqs_animal_reviewers = get_principal_name_for_group('3000083')
+  (@commodity_review_users & reqs_animal_reviewers).length.should >= 1
+end
+
+And /^the Commodity Reviewer is not in the routing log for (.*) document$/ do |document|
+  @commodity_review_users.length.should == 0
+end
+
