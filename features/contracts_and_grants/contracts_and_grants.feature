@@ -11,6 +11,10 @@ Feature: Contracts and Grants
     And   I edit the CG Reporting Code Name of the Contract Grant Reporting Code
     And   I submit the Contract Grant Reporting Code document
     And   the Contract Grant Reporting Code document goes to FINAL
+    And   I am logged in as a KFS User
+    And   I search for the Contract Grant Reporting Code just entered
+    Then  I should only see the Contract Grant Reporting Code just entered with its revised name
+    And   I am logged in as a KFS Contracts & Grants Manager
     And   I change the Contract and Grant Reporting Code on a Contract and Grant Object Code to the Contract and Grant Reporting Code just entered
     And   I submit the Object Code document
     And   the Object Code document goes to ENROUTE
