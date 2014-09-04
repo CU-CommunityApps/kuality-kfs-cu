@@ -1,10 +1,10 @@
 Feature: Contracts and Grants
 
-  [KFSQA-901] Background : Create and edit a Contracts and Grants Reporting Code, assign it to an Object Code,
+  [KFSQA-901] Create and edit a Contracts and Grants Reporting Code, assign it to an Object Code,
               and search for the Object Code by using the Contracts and Grants Reporting Code.
               Default data used in this test is specified in KFS Parameter: DEFAULT_CONTRACT_GRANT_LEVEL_CODE.
 
-  @KFSQA-901 @CG @smoke @coral @wip
+  @KFSQA-901 @CG @smoke @coral
   Scenario: Create and edit Contracts and Grants Reporting Code, assign it to an Object Code, then search for the Object Code using the Contracts and Grants Reporting Code.
     Given I am logged in as a KFS Contracts & Grants Manager
     When  I create a Contract Grant Reporting Code document
