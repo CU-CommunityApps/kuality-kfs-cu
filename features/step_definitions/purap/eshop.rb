@@ -29,8 +29,13 @@ And /^I submit my e\-SHOP cart$/ do
   # We're assuming you're already on the e-SHOP cart page here.
   @eshop_cart.submit
 
-  # Surprise! This should kick you out to a Requisition document.
-  on(RequisitionPage).doc_title.strip.should == 'Requisition'
+   on RequisitionPage do |page|
+     # Surprise! This should kick you out to a Requisition document.
+    page.doc_title.strip.should == 'Requisition'
+    if page.delivery_phone_number.value.empty? || page.delivery_phone_number.value == 'null'
+      page.delivery_phone_number.fit random_phone_number
+    end
+  end
   @requisition = make RequisitionObject
   @requisition.absorb! :new
 end
