@@ -546,3 +546,31 @@ Then /^the default Purchase Order Vendor address\(es\) are shown on the (.*) doc
   vendor_on_page.addresses.update_from_page! :readonly
   vendor_on_page.addresses.eql?(document_object_for(document).addresses).true?.should
 end
+
+And /^I edit a Vendor with active Contract$/ do
+  step 'I lookup a Vendor with active Contract'
+  @vendor = make VendorObject
+  on(VendorPage).description.fit @vendor.description
+  @vendor.absorb! :old
+  @document_id = @vendor.document_id
+end
+
+And /^I lookup a Vendor with active Contract$/ do
+  vendor_contract = get_kuali_business_object('KFS-VND','VendorContract','active=Y&vendorDetailAssignedIdentifier=0')
+  vendor_number = vendor_contract['vendorHeaderGeneratedIdentifier'].sample + '-0'
+  step "I lookup a Vendor with Vendor Number #{vendor_number}"
+end
+
+And /^I edit a contract on Vendor Contract tab$/ do
+  on VendorPage do |page|
+    page.expand_all
+    @vendor.contracts.first.edit name: random_alphanums(20, 'AFT'),
+                                 description: random_alphanums(40, 'AFT'),
+                                 campus_code: get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE_WITH_NAME),
+                                 begin_date: right_now[:date_w_slashes],
+                                 end_date: in_a_year[:date_w_slashes],
+                                 manager: get_kuali_business_object('KFS-VND','ContractManager','active=Y')['contractManagerName'].sample,
+                                 po_cost_source: get_kuali_business_object('KFS-VND','PurchaseOrderCostSource','active=Y')['purchaseOrderCostSourceDescription'].sample,
+                                 payment_terms: get_kuali_business_object('KFS-VND','PaymentTermType','active=Y')['vendorPaymentTermsDescription'].sample
+  end
+end
