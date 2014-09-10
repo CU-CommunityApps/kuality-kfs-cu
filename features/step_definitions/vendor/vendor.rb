@@ -566,7 +566,7 @@ And /^I edit a contract on Vendor Contract tab$/ do
     page.expand_all
     @vendor.contracts.first.edit name: random_alphanums(20, 'AFT'),
                                  description: random_alphanums(40, 'AFT'),
-                                 campus_code: get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE_WITH_NAME),
+                                 campus_code: get_aft_parameter_value(ParameterConstants::DEFAULT_CAMPUS_CODE),
                                  begin_date: right_now[:date_w_slashes],
                                  end_date: in_a_year[:date_w_slashes],
                                  manager: get_kuali_business_object('KFS-VND','ContractManager','active=Y')['contractManagerName'].sample,
