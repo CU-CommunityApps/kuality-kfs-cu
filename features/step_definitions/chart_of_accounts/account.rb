@@ -80,7 +80,8 @@ When /^I save an Account document with only the ([^"]*) field populated$/ do |fi
 end
 
 When /^I input a lowercase Major Reporting Category Code value$/  do
-  on(AccountPage).major_reporting_category_code.fit 'faculty'
+  major_reporting_category_code = get_kuali_business_object('KFS-COA','MajorReportingCategory','active=Y')['majorReportingCategoryCode'].sample
+  on(AccountPage).major_reporting_category_code.fit major_reporting_category_code.downcase
 end
 
 And /^I create an Account with an Appropriation Account Number of (.*) and Sub-Fund Program Code of (.*)/ do |appropriation_accountNumber, subfund_program_code|

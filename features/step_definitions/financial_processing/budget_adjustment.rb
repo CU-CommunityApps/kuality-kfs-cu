@@ -66,6 +66,13 @@ And /^I capture the (CB|BB) balance amount on the GLB for:$/ do  |balance_type_c
   end
 end
 
-Then /^The BA Template Current Amount equals the General Ledger Balance for CB$/ do
-  on(GeneralLedgerEntryLookupPage).table(id: 'row').text.should include(@source_account_data[:current_amount])
+Then /^The BA Template (Current|Base) Amount equals the General Ledger Balance for (CB|BB)$/ do |amount_type, balance_type|
+  on GeneralLedgerEntryLookupPage do |page|
+    case balance_type
+      when 'CB'
+        page.table(id: 'row').text.should include(@source_account_data[:current_amount])
+      when 'BB'
+        page.table(id: 'row').text.should include(@source_account_data[:base_amount])
+    end
+  end
 end
