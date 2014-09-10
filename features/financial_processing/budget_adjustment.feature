@@ -57,14 +57,14 @@ Feature: Budget Adjustment
 
   @KFSQA-629 @BA @Bug @tortoise
   Scenario Outline: Upload only Base Budget budget transactions using BA Import Template.
-# GETTING ERROR FOR NOT ALLOWING BASE ADJUSTMENT FOR YEARS 2014 and 2015 (only available)
-    #TODO : There is only 1 example; do we really need 'scenario outline'
+  # GETTING ERROR FOR NOT ALLOWING BASE ADJUSTMENT FOR YEARS 2014 and 2015 (only available)
+      #TODO : There is only 1 example; do we really need 'scenario outline'
     Given   I am logged in as a KFS User for the <type code> document
     And     I start a <document> document for from "<From file name>" file import and to "<To file name>" file import
     And     on the <document> I import the From Accounting Lines from a csv file
     And     on the <document> I import the To Accounting Lines from a csv file
     And     I save the <document> document
-    Then    The GLPE contains 4 Balance Type CB transactions for the <document> document
+    Then    The GLPE contains 4 Balance Type BB transactions for the <document> document
     And     I view the <document> document
     And     I submit the <document> document
     When    I route the <document> document to final
@@ -87,6 +87,8 @@ Feature: Budget Adjustment
     And     I am logged in as a KFS User for the <type code> document
     And     I view the General Ledger Balance From account with balance type code of CB
     Then    The BA Template Current Amount equals the General Ledger Balance for CB
+    And     I view the General Ledger Balance From account with balance type code of BB
+    Then    The BA Template Base Amount equals the General Ledger Balance for BB
   Examples:
     | document          | type code | From file name      | To file name      |
     | Budget Adjustment | BA        | BA_test_from.csv    | BA_test_to.csv    |

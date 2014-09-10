@@ -46,7 +46,7 @@ Feature: eSHOP Create
   Scenario: Enter an eshop order for a high dollar amount using a sensitive commodity on a Contract
             and Grants account. Testing from Req to PO to PREQ, that the order routes through all appropriate approvals.
             Includes: fiscal officer, contracts and grants processor, contract manager assignment, and accounting reviewers.
-    Given I am logged in as an e-SHOP Plus User
+    Given I am logged in as an e-SHOP Plus User without a favorite account
     And   I go to the e-SHOP main page
     And   I view my e-SHOP cart
     And   I clear my e-SHOP cart
