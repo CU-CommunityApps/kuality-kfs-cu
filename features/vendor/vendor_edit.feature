@@ -98,7 +98,7 @@ Feature: Vendor Edit
   @KFSQA-839 @cornell @VendorEdit @Routing @smoke @coral @wip
   Scenario: I am able to edit a vendor's contract information using the new role Vendor Contract Editor
     Given I am logged in as a Vendor Contract Editor(cu)
-    And   I edit a Vendor with active Contract
+    When  I edit a Vendor with an active Contract
     And   I edit a contract on Vendor Contract tab
     And   I submit the Vendor document, confirming any questions, if it is not already FINAL
-    And   the next pending action for the Vendor document is an APPROVE from a KFS-VND Reviewer
+    Then  the next pending action for the Vendor document is an APPROVE from a KFS-VND Reviewer
