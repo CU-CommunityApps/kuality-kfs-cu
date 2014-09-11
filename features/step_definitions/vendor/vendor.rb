@@ -557,9 +557,8 @@ end
 
 And /^I lookup a Vendor with an active Contract$/ do
   vendor_contract = get_kuali_business_object('KFS-VND','VendorContract','active=Y&vendorDetailAssignedIdentifier=0')
-  vendor_detail_id = '-0'
-  vendor_number = vendor_contract['vendorHeaderGeneratedIdentifier'].sample
-  step "I lookup a Vendor with Vendor Number #{vendor_number}#{vendor_detail_id}"
+  vendor_header_id = vendor_contract['vendorHeaderGeneratedIdentifier'].sample
+  step "I lookup a Vendor with Vendor Number #{vendor_header_id}-0"
 end
 
 And /^I edit a contract on Vendor Contract tab$/ do
