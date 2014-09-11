@@ -8,24 +8,12 @@ Feature: Internal Billing
     And     I start an empty Internal Billing document
     And     I add a source Accounting Line to the Internal Billing document with a bad object code
     And     I should get an error that starts with "The Object Sub-Type Code"
-    And     I add a Source Accounting Line to the Internal Billing document with the following:
-      | Chart Code   | IT      |
-      | Number       | G003704 |
-      | Object Code  | 4020    |
-      | Amount       | 200     |
+    And     I add a Source Accounting Line to the Internal Billing document with Amount 200
 #    And     I enter Two Expense Lines
-    And     I add a Target Accounting Line to the Internal Billing document with the following:
-      | Chart Code   | IT      |
-      | Number       | G013300 |
-      | Object Code  | 4020    |
-      | Amount       | 50      |
+    And     I add a Target Accounting Line to the Internal Billing document with Amount 50
     And     I submit the Internal Billing document
     And     I should get an error saying "The document is out of balance."
-    And     I add a Target Accounting Line to the Internal Billing document with the following:
-      | Chart Code   | IT      |
-      | Number       | G013300 |
-      | Object Code  | 4020    |
-      | Amount       | 150     |
+    And     I add a Target Accounting Line to the Internal Billing document with Amount 150
     And     I submit the Internal Billing document
     And     the Internal Billing document goes to ENROUTE
     And     I am logged in as a KFS Fiscal Officer
