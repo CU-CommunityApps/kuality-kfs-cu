@@ -215,7 +215,7 @@ Feature: Disbursement Voucher
   Scenario: Disbursement Voucher document allow usage of Revolving Fund (Petty Cash) Payment Types
     Given I am logged in as a KFS User for the DV document
     When  I start an empty Disbursement Voucher document
-    And   I add a random payee the Disbursement Voucher
+    And   I add a random payee to the Disbursement Voucher
     And   I change the Payee address
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | G003704        |
