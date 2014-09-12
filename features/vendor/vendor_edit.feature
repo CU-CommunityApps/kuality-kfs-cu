@@ -95,7 +95,7 @@ Feature: Vendor Edit
     When  the Address Tab displays Vendor Address Generated Identifiers for each Address
     Then  the Vendor document's Notes Tab displays the added attachment
 
-  @KFSQA-839 @cornell @VendorEdit @Routing @smoke @coral @wip
+  @KFSQA-839 @cornell @VendorEdit @Routing @smoke @coral
   Scenario: I am able to edit a vendor's contract information using the new role Vendor Contract Editor
     Given I am logged in as a Vendor Contract Editor(cu)
     When  I edit a Vendor with an active Contract
