@@ -251,4 +251,3 @@ When /^I start a Purchase Order Vendor document with the following fields:$/ do 
 
   @vendor = create VendorObject, fields
 end
-
