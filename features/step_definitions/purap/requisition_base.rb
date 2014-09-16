@@ -173,8 +173,10 @@ Then /^I format and process the check with PDP$/ do
   # format checks
   step 'I Login as a PDP Format Disbursement Processor'
   step 'I format Disbursement'
+  step 'I select continue on Format Disbursement Summary'
 
   # generate output files batch jobs
+  step 'I am logged in as a KFS Operations'
   step 'I generate the ACH XML File'
   step 'I generate the Check XML File'
   step 'I generate the Cancelled Check XML File'
@@ -184,7 +186,6 @@ Then /^I format and process the check with PDP$/ do
   step 'I populate the ACH Bank Table'
   step 'I clear out PDP Temporary Tables'
 end
-
 
 And /^I format Disbursement$/ do
   visit(MaintenancePage).format_checks_ach
@@ -199,9 +200,27 @@ And /^I format Disbursement$/ do
 end
 
 And /^I select continue on Format Disbursement Summary$/ do
-  on(FormatDisbursementSummaryPage).continue_format
-  # this will take a while
-  sleep 60
+  unless on(KFSBasePage).doc_title.strip.eql?('Format Disbursements')
+    on(FormatDisbursementSummaryPage).continue_format
+    sleep 5
+  end
+  # this will take a while.  Loop to make sure the format process is complete.
+  # If it is not complete, the it will display error message.  Once it is complete, then the 'pay date' field will be displayed
+  x = 0
+  while true && x < 20
+    begin
+      visit(MaintenancePage).format_checks_ach
+      on FormatDisbursementPage do |page|
+        if page.payment_date.exists?
+          break
+        end
+      end
+    rescue
+      sleep 30
+      x += 1
+    end
+  end
+
 end
 
 And /^a Format Summary Lookup displays$/ do
