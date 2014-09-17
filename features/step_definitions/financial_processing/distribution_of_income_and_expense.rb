@@ -32,8 +32,8 @@ And /^I add a (From|To) amount of "(.*)" for account "(.*)" with object code "(.
 end
 
 And /^I select accounting line and (create|modify) Capital Asset$/ do |action|
-  on(DistributionOfIncomeAndExpensePage).generate_accounting_lines_for_capitalization
   on CapitalAssetsTab do |tab|
+    tab.generate_accounting_lines_for_capitalization
     tab.accounting_lines_for_capitalization_select.set
     tab.distribution_method.fit 'Distribute cost by amount'
     case action
@@ -86,6 +86,7 @@ And /^I add a tag and location for Capital Asset$/ do
     tab.building.fit '7000'
     tab.room.fit 'XXXXXXXX'
   end
+  @distribution_of_income_and_expense.update_line_objects_from_page!
 end
 
 And /^I build a Capital Asset from the General Ledger$/ do
@@ -194,7 +195,6 @@ And /^I select Capital Asset detail information$/ do
     @asset_object_code = page.asset_object_code
     @asset_amount = page.asset_amount
     @asset_chart = page.asset_chart
-    puts @asset_number,@asset_account_number,@asset_object_code,@asset_amount
     @lookup_asset = 'Yes'
   end
 
