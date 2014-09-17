@@ -1,7 +1,3 @@
-When /^I start an empty Auxiliary Voucher document$/ do
-  @auxiliary_voucher = create AuxiliaryVoucherObject, initial_lines: []
-end
-
 When /^I create an AV document with that Object Code$/ do
   @auxiliary_voucher = create AuxiliaryVoucherObject, initial_lines: []
   on AuxiliaryVoucherPage do |page|

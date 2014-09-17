@@ -14,7 +14,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
 
   @KFSQA-791 @PO @PREQ @REQS @coral
   Scenario: PURAP manual >$500, <$25000 external vendor no wire
-    Given I login as a PURAP eSHop user
+    Given I am logged in as an e-SHOP User
     And   I create the Requisition document with:
      | Vendor Number       | 4471-0   |
      | Item Quantity       | 9.9      |
@@ -23,7 +23,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
      | Account Number      | 1093603  |
      | Object Code         | 6540     |
      | Percent             | 100      |
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     And   the Requisition document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
@@ -32,8 +32,8 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   the Requisition document goes to FINAL
     And   I am logged in as a Purchasing Processor
     #<ml284>
-    And   I submit a Contract Manager Assignment of '10' for the Requisition
-    And   I login as a PURAP eSHop user
+    And   I submit a Contract Manager Assignment for the Requisition
+    And   I am logged in as an e-SHOP User
     #der9
     And   I view the Requisition document from the Requisitions search
     And   I am logged in as a PURAP Contract Manager
@@ -51,19 +51,19 @@ Feature: PURAP manual entry greater than 500 but less than 25000
 
   @KFSQA-743 @E2E @PO @PURAP @cornell @coral
   Scenario: PURAP E2E PO - Unapproved (PURAP E2E-003b) - vendor not selected, <$100K
-    Given I login as a PURAP eSHop user
+    Given I am logged in as an e-SHOP User
     And   I create the Requisition document with:
       | Item Quantity       | 18       |
       | Item Cost           | 1000     |
       | Item Commodity Code | 12142203 |
       | Item Catalog Number | 10101157 |
       | Item Description    | ANIM     |
-      | Account Number      | R589854  |
+      | Account Number      | 1093603  |
       | Object Code         | 6540     |
       | Percent             | 100      |
-    And   I add an Attachment to the Requisition document
+    And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     And   the Requisition document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
@@ -76,7 +76,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   I approve the Requisition document
     And   the Requisition document goes to FINAL
     And   I am logged in as a Purchasing Processor
-    And   I submit a Contract Manager Assignment of '10' for the Requisition
+    And   I submit a Contract Manager Assignment for the Requisition
     And   I am logged in as a PURAP Contract Manager
     And   I retrieve the Requisition document
     And   the View Related Documents Tab PO Status displays
@@ -89,10 +89,9 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     Then  in Pending Action Requests an FYI is sent to FO and Initiator
     And   the Purchase Order Doc Status is Open
 
-
   @KFSQA-763 @E2E @MultiDay @PO @PREQ @REQS @Routing @auto-approve-preq-job @cornell @coral
   Scenario: PURAP E2E-004a PREQ - Manual Entry, >$500 Auto Approve
-    Given I login as a PURAP eSHop user
+    Given I am logged in as an e-SHOP User
     When  I create the Requisition document with:
       | Item Quantity       | 4.9      |
       | Item Cost           | 1000     |
@@ -102,9 +101,9 @@ Feature: PURAP manual entry greater than 500 but less than 25000
       | Account Number      | 1093603  |
       | Object Code         | 6540     |
       | Percent             | 100      |
-    And   I add an Attachment to the Requisition document
+    And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     And   the Requisition document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
@@ -112,7 +111,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   I approve the Requisition document
     And   the Requisition document goes to FINAL
     And   I am logged in as a Purchasing Processor
-    And   I submit a Contract Manager Assignment of '10' for the Requisition
+    And   I submit a Contract Manager Assignment for the Requisition
     And   I am logged in as a PURAP Contract Manager
     And   I retrieve the Requisition document
     And   the View Related Documents Tab PO Status displays
@@ -124,7 +123,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     Then  the Purchase Order document goes to FINAL
     And   in Pending Action Requests an FYI is sent to FO and Initiator
     And   the Purchase Order Doc Status is Open
-    Given I am logged in as "db18"
+    Given I am logged in as the Initiator of the Requisition document
     And   I visit the "e-SHOP" page
     And   I view the Purchase Order document via e-SHOP
     Then  the Document Status displayed 'Completed'
@@ -135,8 +134,8 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   I change the Remit To Address
     And   I enter the Qty Invoiced and calculate
     And   I enter a Pay Date
-    And   I attach an Invoice Image
-    And   I calculate PREQ
+    And   I attach an Invoice Image to the Payment Request document
+    And   I calculate the Payment Request document
     And   I submit the Payment Request document
     Then  the Payment Request document goes to ENROUTE
     Given I am logged in as a KFS Operations
@@ -147,7 +146,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
 
   @KFSQA-765 @E2E @Encumbrance @ForeignVendor @MultiDay @PO @REQS @PREQ @PendingEntries @cornell @coral
   Scenario: PURAP E2E-004c PREQ - Manual Entry, >$500, <$5000, External Foreign Vendor, No Wire
-    Given I login as a PURAP eSHop user
+    Given I am logged in as an e-SHOP User
     When  I create the Requisition document with:
       | Item Quantity       | 4.9      |
       | Item Cost           | 1000     |
@@ -158,9 +157,9 @@ Feature: PURAP manual entry greater than 500 but less than 25000
       | Object Code         | 6540     |
       | Percent             | 100      |
     And   I select the Payment Request Positive Approval Required
-    And   I add an Attachment to the Requisition document
+    And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     Then  the Requisition document goes to ENROUTE
     Given I switch to the user with the next Pending Action in the Route Log for the Requisition document
@@ -173,7 +172,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   I approve the Requisition document
     Then  the Requisition document goes to FINAL
     Given I am logged in as a Purchasing Processor
-    When  I submit a Contract Manager Assignment of '10' for the Requisition
+    When  I submit a Contract Manager Assignment for the Requisition
     Given I am logged in as a PURAP Contract Manager
     When  I retrieve the Requisition document
     Then  the View Related Documents Tab PO Status displays
@@ -185,8 +184,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     Then  the Purchase Order document goes to FINAL
     And   in Pending Action Requests an FYI is sent to FO and Initiator
     And   the Purchase Order Doc Status is Open
-    # TODO : This is a little tricky. using eshop user/eshop super user role will not work.  Also, this need some permission set up on SQ side
-    Given I am logged in as "db18"
+    Given I am logged in as the Initiator of the Requisition document
     When  I visit the "e-SHOP" page
     And   I view the Purchase Order document via e-SHOP
     Then  the Document Status displayed 'Completed'
@@ -197,8 +195,8 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   I change the Remit To Address
     And   I enter the Qty Invoiced and calculate
     And   I enter a Pay Date
-    And   I attach an Invoice Image
-    And   I calculate PREQ
+    And   I attach an Invoice Image to the Payment Request document
+    And   I calculate the Payment Request document
     And   I submit the Payment Request document
     Then  the Payment Request document goes to ENROUTE
     Given I switch to the user with the next Pending Action in the Route Log for the Payment Request document
@@ -209,7 +207,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   I view the Payment Request document on my action list
     When  I update the Tax Tab
     # need to calculate tax related data
-    And   I calculate PREQ
+    And   I calculate the Payment Request document
     And   I approve the Payment Request document
     Then  the Payment Request document goes to FINAL
     And   the Payment Request Doc Status is Department-Approved
@@ -217,7 +215,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
 
   @KFSQA-764 @Approving @E2E @Encumbrance @MultiDay @PO @REQS @PREQ @PendingEntries @cornell @coral
   Scenario: PURAP E2E-004b PREQ - Manual Entry, >$500, <$5000, External Vendor, No Wire
-    Given I login as a PURAP eSHop user
+    Given I am logged in as an e-SHOP User
     When  I create the Requisition document with:
       | Item Quantity       | 2.75     |
       | Item Cost           | 1000     |
@@ -227,9 +225,9 @@ Feature: PURAP manual entry greater than 500 but less than 25000
       | Object Code         | 6540     |
       | Percent             | 100      |
     And   I select the Payment Request Positive Approval Required
-    And   I add an Attachment to the Requisition document
+    And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     Then  the Requisition document goes to ENROUTE
     Given I switch to the user with the next Pending Action in the Route Log for the Requisition document
@@ -237,7 +235,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     When  I approve the Requisition document
     Then  the Requisition document goes to FINAL
     Given I am logged in as a Purchasing Processor
-    When  I submit a Contract Manager Assignment of '10' for the Requisition
+    When  I submit a Contract Manager Assignment for the Requisition
     Given I am logged in as a PURAP Contract Manager
     When  I retrieve the Requisition document
     Then  the View Related Documents Tab PO Status displays
@@ -249,7 +247,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     Then  the Purchase Order document goes to FINAL
     And   in Pending Action Requests an FYI is sent to FO and Initiator
     And   the Purchase Order Doc Status is Open
-    Given I am logged in as "db18"
+    Given I am logged in as the Initiator of the Requisition document
     When  I visit the "e-SHOP" page
     And   I view the Purchase Order document via e-SHOP
     Then  the Document Status displayed 'Completed'
@@ -260,8 +258,8 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   I change the Remit To Address
     And   I enter the Qty Invoiced and calculate
     And   I enter a Pay Date
-    And   I attach an Invoice Image
-    And   I calculate PREQ
+    And   I attach an Invoice Image to the Payment Request document
+    And   I calculate the Payment Request document
     And   I submit the Payment Request document
     Then  the Payment Request document goes to ENROUTE
     Given I switch to the user with the next Pending Action in the Route Log for the Payment Request document
@@ -273,7 +271,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
 
   @KFSQA-766 @Approving @E2E @Encumbrance @MultiDay @PO @PREQ @PendingEntries @REQS @cornell @coral
   Scenario: PURAP E2E-004d PREQ - Manual Entry, >$500, <$5000, Internal Vendor
-    Given I login as a KFS user to create an REQS
+    Given I am logged in as an e-SHOP User
     When  I create the Requisition document with:
       | Item Quantity       | 3        |
       | Item Cost           | 1000     |
@@ -284,9 +282,9 @@ Feature: PURAP manual entry greater than 500 but less than 25000
       | Object Code         | 6540     |
       | Percent             | 100      |
     And   I select the Payment Request Positive Approval Required
-    And   I add an Attachment to the Requisition document
+    And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     Then  the Requisition document goes to ENROUTE
     Given I switch to the user with the next Pending Action in the Route Log for the Requisition document
@@ -299,7 +297,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     When  I approve the Requisition document
     Then  the Requisition document goes to FINAL
     Given I am logged in as a Purchasing Processor
-    When  I submit a Contract Manager Assignment of '10' for the Requisition
+    When  I submit a Contract Manager Assignment for the Requisition
     Given I am logged in as a PURAP Contract Manager
     When  I retrieve the Requisition document
     Then  the View Related Documents Tab PO Status displays
@@ -312,7 +310,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     Then  the Purchase Order document goes to FINAL
     And   in Pending Action Requests an FYI is sent to FO and Initiator
     And   the Purchase Order Doc Status is Open
-    Given I am logged in as "db18"
+    Given I am logged in as the Initiator of the Requisition document
     When  I visit the "e-SHOP" page
     And   I view the Purchase Order document via e-SHOP
     Then  the Document Status displayed 'Completed'
@@ -323,8 +321,8 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   I change the Remit To Address
     And   I enter the Qty Invoiced and calculate
     And   I enter a Pay Date
-    And   I attach an Invoice Image
-    And   I calculate PREQ
+    And   I attach an Invoice Image to the Payment Request document
+    And   I calculate the Payment Request document
     And   I submit the Payment Request document
     Then  the Payment Request document goes to ENROUTE
     Given I switch to the user with the next Pending Action in the Route Log for the Payment Request document

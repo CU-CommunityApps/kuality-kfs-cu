@@ -14,11 +14,11 @@ Feature: Budget Adjustment
   @KFSQA-623 @BA @hare
   Scenario: Budget Adjustment not allowed to cross Account Sub-Fund Group Codes
     Given   I am logged in as a KFS User
-    And     I start a Budget Adjustment document
-    And     I add a From amount of "100.00" for account "1258322" with object code "4480" with a line description of "aft from1"
-    And     I add a To amount of "100" for account "1258323" with object code "4480" with a line description of "aft to 1"
+    And     I start an empty Budget Adjustment document
+    And     I add a From amount of "100.00" for account "1002000" with object code "4480" with a line description of "aft from1"
+    And     I add a To amount of "100" for account "1002001" with object code "4480" with a line description of "aft to 1"
     When    I submit the Budget Adjustment document
-    Then    I should get an error saying "The Budget Adjustment document is not balanced within the account."
+    Then    I should get an error saying "To use account 1002000, all accounting lines must match on Sub-Fund Group Code."
 
   @KFSQA-628 @BA @E2E @hare
   Scenario: IT is the default value for Budget Adjustment Chart Values
@@ -28,23 +28,26 @@ Feature: Budget Adjustment
 
   @KFSQA-628 @BA @E2E @cornell @hare
   Scenario: Budget Adjustment routing and approval by From and To FO
-    Given I am logged in as a KFS User for the BA document
-    And   I submit a balanced Budget Adjustment document
+    # logged in as the To account FO
+    Given I am logged in as a KFS Fiscal Officer for account number G013300
+    And   I submit a balanced Budget Adjustment document with accounting lines
+    Then  the Route Log displays a From Fiscal Officer
     And   the Budget Adjustment document goes to ENROUTE
-    And   I am logged in as "djj1"
+    And   I am logged in as the From Fiscal Officer
     And   I view the Budget Adjustment document
     When  I approve the Budget Adjustment document
     Then  the Budget Adjustment document goes to FINAL
 
   @KFSQA-628 @BA @E2E @cornell @nightly-jobs @tortoise @broken!
   Scenario: General ledger balance displays correctly for a Budget Adjustment after nightly batch is run
-    Given   I am logged in as a KFS User for the BA document
-    And    I submit a balanced Budget Adjustment document
-    And    I am logged in as "djj1"
+    # logged in as the To account FO
+    Given  I am logged in as a KFS Fiscal Officer for account number G013300
+    And    I submit a balanced Budget Adjustment document with accounting lines
+    And    I switch to the user with the next Pending Action in the Route Log for the Budget Adjustment document
     And    I view the Budget Adjustment document
     When   I approve the Budget Adjustment document
     And    Nightly Batch Jobs run
-    Given  I am logged in as "djj1"
+    Given  I am logged in as the From Fiscal Officer
     When   I view the From Account on the General Ledger Balance with balance type code of CB
     Then   The From Account Monthly Balance should match the From amount
     And    The line description for the From Account should be displayed
@@ -54,19 +57,18 @@ Feature: Budget Adjustment
 
   @KFSQA-629 @BA @Bug @tortoise
   Scenario Outline: Upload only Base Budget budget transactions using BA Import Template.
-# GETTING ERROR FOR NOT ALLOWING BASE ADJUSTMENT FOR YEARS 2014 and 2015 (only available)
+  # GETTING ERROR FOR NOT ALLOWING BASE ADJUSTMENT FOR YEARS 2014 and 2015 (only available)
+      #TODO : There is only 1 example; do we really need 'scenario outline'
     Given   I am logged in as a KFS User for the <type code> document
     And     I start a <document> document for from "<From file name>" file import and to "<To file name>" file import
     And     on the <document> I import the From Accounting Lines from a csv file
     And     on the <document> I import the To Accounting Lines from a csv file
+    And     I save the <document> document
+    Then    The GLPE contains 4 Balance Type BB transactions for the <document> document
+    And     I view the <document> document
     And     I submit the <document> document
-    And     I am logged in as a KFS Fiscal Officer
-    # Not sure if FO is the correct user required to blanket approve a BA but 'dh273' is
-#    And     I am logged in as "dh273"
-    Then    The GLPE contains 4 Balance Type CB transactions for the <document> document
-    When    I view the Budget Adjustment document
-    And     I blanket approve the Budget Adjustment document
-    Then    the Budget Adjustment document goes to FINAL
+    When    I route the <document> document to final
+    Then    the <document> document goes to FINAL
   Examples:
     | document            | type code | From file name              | To file name             |
     | Budget Adjustment   | BA        | BA_test_from.csv            | BA_test_to.csv           |
@@ -74,22 +76,20 @@ Feature: Budget Adjustment
   @KFSQA-670 @BA @cornell @slug @nightly-jobs
   Scenario Outline: CB and BB Balances from BA Import Template updates General Ledger
     Given   I am logged in as a KFS User for the <type code> document
-    #djj1
     And     I start a <document> document for from "<From file name>" file import and to "<To file name>" file import
     And     on the <document> I import the From Accounting Lines from a csv file
     And     I capture the From Accounting Lines for the <document>
     And     on the <document> I import the To Accounting Lines from a csv file
     And     I capture the To Accounting Lines for the <document>
     And     I submit the <document> document
-    And     I am logged in as "dh273"
-    When    I view the <document> document
-    And     I blanket approve the Budget Adjustment document
-    And     the Budget Adjustment document goes to FINAL
+    And     I route the <document> document to final
     And     Nightly Batch Jobs run
     And     I am logged in as a KFS User for the <type code> document
     And     I view the General Ledger Balance From account with balance type code of CB
     Then    The BA Template Current Amount equals the General Ledger Balance for CB
-    Examples:
+    And     I view the General Ledger Balance From account with balance type code of BB
+    Then    The BA Template Base Amount equals the General Ledger Balance for BB
+  Examples:
     | document          | type code | From file name      | To file name      |
     | Budget Adjustment | BA        | BA_test_from.csv    | BA_test_to.csv    |
     #This for when BA doesn't allow
@@ -97,13 +97,8 @@ Feature: Budget Adjustment
 
   @KFSQA-729 @BA @tortoise
   Scenario: "To" Fiscal Officer initiates Budget Adjustment; BA routes to "From" Fiscal Officer
-    Given I am logged in as a KFS User
-    And   I use these Accounts:
-      | G003704 |
-      | G003704 |
-    When  I start an empty Budget Adjustment document
-    And   I add balanced Accounting Lines to the Budget Adjustment document
-    And   I submit the Budget Adjustment document
+    Given I am logged in as a KFS Fiscal Officer for account number G013300
+    And   I submit a balanced Budget Adjustment document with accounting lines
     Then  the Route Log displays a From Fiscal Officer
     And   the Budget Adjustment document goes to ENROUTE
     When  I am logged in as the From Fiscal Officer

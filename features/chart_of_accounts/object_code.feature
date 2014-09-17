@@ -31,7 +31,7 @@ Feature: Object Code
     And     I enter a valid Reports to Object Code
     And     I submit the Object Code document
     When    I Lookup the Object Code 1110
-    Then    The Lookup should display the Reports to Object Code
+    Then    The Object Code Lookup should display the Reports to Object Code
 
   @KFSQA-596 @cornell @COA @ObjCode @KFSPTS-1753 @hare
   Scenario: Edit an Object Code and update the Financial Object Code Description

@@ -1,8 +1,4 @@
-When /^I start an empty Labor Journal Voucher document$/ do
-  @labor_journal_voucher = create LaborJournalVoucherObject
-end
-
-And /^I (#{LaborJournalVoucherPage::available_buttons}) a Labor Journal Voucher document$/ do |button|
+And /^I (#{LaborJournalVoucherPage::available_buttons}) a Labor Journal Voucher document with accounting lines$/ do |button|
   @labor_journal_voucher = create LaborJournalVoucherObject,
                               press: button.gsub(' ', '_'),
                               initial_lines: [
