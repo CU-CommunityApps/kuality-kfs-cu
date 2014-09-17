@@ -1,6 +1,5 @@
 When /^I start an empty Distribution Of Income And Expense document$/ do
-  @distribution_of_income_and_expense = create DistributionOfIncomeAndExpenseObject, initial_lines: []
-  @distribution_of_income_and_expense.assets.shift # TODO : CA is not added yet. so remove it ??
+  @distribution_of_income_and_expense = create DistributionOfIncomeAndExpenseObject, initial_assets: []
 end
 
 And /^I change the DI from Account to one not owned by the current user$/ do
@@ -33,6 +32,7 @@ And /^I add a (From|To) amount of "(.*)" for account "(.*)" with object code "(.
 end
 
 And /^I select accounting line and (create|modify) Capital Asset$/ do |action|
+  on(DistributionOfIncomeAndExpensePage).generate_accounting_lines_for_capitalization
   on CapitalAssetsTab do |tab|
     tab.accounting_lines_for_capitalization_select.set
     tab.distribution_method.fit 'Distribute cost by amount'
@@ -43,31 +43,27 @@ And /^I select accounting line and (create|modify) Capital Asset$/ do |action|
         tab.modify_asset
     end
   end
-  on DistributionOfIncomeAndExpensePage do |page|
-    page.use_new_tab
-    page.close_parents
-  end
 end
 
-And /^I distribute new Capital Asset amount$/ do
+And /^I distribute a new Capital Asset amount$/ do
   on CapitalAssetsTab do |tab|
     @asset_account_number = tab.asset_account_number
-    @distribution_of_income_and_expense.assets.add   capital_asset_qty:           '1',
-                                                     capital_asset_type:          '019',
-                                                     capital_asset_manufacturer:  'CA manufacturer',
-                                                     capital_asset_description:   random_alphanums(40, 'AFT'),
-                                                     capital_asset_line_amount:   tab.remain_asset_amount
+    @distribution_of_income_and_expense.assets.add   qty:           '1',
+                                                     type:          '019',
+                                                     manufacturer:  'CA manufacturer',
+                                                     description:   random_alphanums(40, 'AFT'),
+                                                     line_amount:   tab.remain_asset_amount
     #page.capital_asset_line_amount.fit page.remain_asset_amount
-    tab.capital_asset_number.fit @asset_number unless @asset_number.nil?
+    tab.number.fit @asset_number unless @asset_number.nil?
     tab.redistribute_amount
   end
 end
 
-And /^I distribute modify Capital Asset amount$/ do
+And /^I distribute the modify Capital Asset amount$/ do
   on CapitalAssetsTab do |tab|
     @asset_account_number = tab.asset_account_number
-    tab.capital_asset_line_amount.fit tab.remain_asset_amount
-    tab.capital_asset_number.fit @asset_number
+    tab.line_amount.fit tab.remain_asset_amount
+    tab.number.fit @asset_number
     tab.redistribute_modify_amount
   end
 end
@@ -82,17 +78,13 @@ And /^I add a tag and location for Capital Asset$/ do
     page.search
     page.return_value(vendor_num)
   end
-  on(CapitalAssetsTab).insert_tag
 
-  on DistributionOfIncomeAndExpensePage do |page|
-    page.use_new_tab
-    page.close_parents
-  end
   on CapitalAssetsTab do |tab|
+    tab.insert_tag
     tab.tag_number.fit random_alphanums(8, 'T')
-    tab.capital_asset_campus.fit 'IT - Ithaca'
-    tab.capital_asset_building.fit '7000'
-    tab.capital_asset_room.fit 'XXXXXXXX'
+    tab.campus.fit 'IT - Ithaca'
+    tab.building.fit '7000'
+    tab.room.fit 'XXXXXXXX'
   end
 end
 
@@ -161,13 +153,13 @@ Given  /^I create a Distribution of Income and Expense document with the followi
     when 'create'
       steps %Q{
               And     I select accounting line and create Capital Asset
-              And     I distribute new Capital Asset amount
+              And     I distribute a new Capital Asset amount
               And     I add a tag and location for Capital Asset
   }
     when 'modify'
       steps %Q{
               And   I select accounting line and modify Capital Asset
-              And     I distribute modify Capital Asset amount
+              And     I distribute the modify Capital Asset amount
   }
   end
 
@@ -210,7 +202,7 @@ end
 
 And /^I modify a Capital Asset from the General Ledger and apply payment$/ do
   steps %Q{
-    Given I am logged in as "jcs28"
+    Given I Login as an Asset Processor
     And   I lookup a Capital Asset from GL transaction to process
     And   I select and apply payment for General Ledger Capital Asset
     And   I submit the Asset Manual Payment document
