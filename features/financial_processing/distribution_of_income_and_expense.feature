@@ -6,7 +6,7 @@ Feature: Distribution of Income and Expense
 
   [KFSQA-1007] I credit an asset from the source account it was originally posted to. I lookup that asset. I transfer the cost to a target account with an expenditure object code.
 
-  @KFAQA-648 @Approving @DI @Edit @smoke @sloth @needs-clean-up @broken! @pending
+  @KFAQA-648 @Approving @DI @Edit @smoke @sloth @needs-clean-up @pending
   Scenario: Reject Approver Account changes unless they are the Fiscal Officer
     Given   I am logged in as a KFS User
     And     I start an empty Distribution Of Income And Expense document
@@ -39,7 +39,7 @@ Feature: Distribution of Income and Expense
     And     I run the nightly Capital Asset jobs
     And     I build a Capital Asset from the General Ledger
 
-  @KFSQA-1007 @DI @E2E @slug @wip
+  @KFSQA-1007 @DI @E2E @slug
   Scenario: I credit an asset from the source account it was originally posted to. I lookup that asset. I transfer the cost to a target account with an expenditure object code.
     Given   I Login as an Asset Processor
     And     I lookup a Capital Asset with the following:
