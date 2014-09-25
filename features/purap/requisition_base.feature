@@ -134,6 +134,7 @@ Feature: REQS, PO, PREQ,PDP
     When I initiate a Payment Request document
     And  I run the nightly Capital Asset jobs
     And  I build a Capital Asset from AP transaction
+    Then I format and process the check with PDP
   Examples:
   | CA System Type     |
   | Individual Assets  |
@@ -173,6 +174,7 @@ Feature: REQS, PO, PREQ,PDP
     When I initiate a Payment Request document
     And  I run the nightly Capital Asset jobs
     And  I modify existing Capital Asset from AP transaction and apply payment
+    Then I format and process the check with PDP
   Examples:
     | CA System Type     |
     | Individual Assets  |
