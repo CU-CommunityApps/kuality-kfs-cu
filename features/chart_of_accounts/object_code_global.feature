@@ -6,7 +6,7 @@ Feature: Object Code Global
               error message.
 
   @KFSQA-639 @CG @ObjectCode @test-highlights-bug @hare
-  Scenario: Create an Object Code Global with an invalid CR Reporting Code and get an error message
+  Scenario: Create an Object Code Global with an invalid CG Reporting Code and get an error message
     Given I am logged in as a KFS Chart Manager
     And   I save an Object Code Global document
     And   I enter an invalid CG Reporting Code of ZZZZ

@@ -17,27 +17,34 @@ Feature: Sub Account
     Then  The Indirect Cost Rate ID field should not be null
 
   @KFSQA-591 @cornell @smoke @SubAcct @KFSPTS-1740 @hare
-  Scenario: Create a Sub-Account with Sub-Account Type CS and verity routing to CG Processor.
+  Scenario: Create a Sub-Account with the default Sub-Account Type Code and verity routing to CG Processor.
     Given   I am logged in as a KFS User
-    And     I Create a Sub-Account with Sub-Account Type CS
+    And     I create a Sub-Account with Sub-Account Type Code CS
     And     I submit the Sub-Account document
     And     I am logged in as the FO of the Sub-Account
     And     The Sub-Account document should be in my action list
     And     I view the Sub-Account document
     And     I approve the Sub-Account document
+    Then    the Sub-Account document goes to ENROUTE
+    And     I verify that the following Pending Action approvals are requested:
+      | Contracts & Grants Processor |
+    Given   I switch to the user with the next Pending Action in the Route Log for the Sub-Account document
+    And     I view the Sub-Account document
+    When    I approve the Sub-Account document
     Then    the Sub-Account document goes to FINAL
 
-  @KFSQA-589 @cornell @SubAcct @Bug @KFSPTS-1753 @hare
+  @KFSQA-589 @cornell @SubAcct @Bug @KFSPTS-1753 @sloth
   Scenario: Create a Sub-Account with Sub-Account Type CS and ad-hoc approval route it to a member of the Contracts & Grants Processor Role (jis45)
-    Given I am logged in as "rlc56"
-    And   I submit a Sub-Account through action list routing with adhoc approver user "jis45"
-    Then  the Sub-Account document goes to ENROUTE
-    Given I am logged in as "jis45"
-    And   the Sub-Account Document is in my Action List
+    Given I am logged in as a KFS User
+    And   I submit a Sub-Account with an adhoc approver
+    And   the Sub-Account document goes to ENROUTE
+    When  I am logged in as the adhoc user
+    Then  The Sub-Account document should be in my action list
     When  I view the Sub-Account document
     And   I blanket approve the Sub-Account document
     And   I view the Sub-Account document
     Then  the Sub-Account document goes to one of the following statuses:
       | PROCESSED |
       | FINAL     |
+
 

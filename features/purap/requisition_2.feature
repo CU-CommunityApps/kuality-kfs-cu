@@ -15,19 +15,15 @@ Feature: Purap REQS 2 Building Blocks
   @KFSQA-733 @E2E @PURAP @REQS @cornell @tortoise
   Scenario: Create -- non eShop with C&G, Commodity routing
     Given I login as a KFS user to create an REQS
-    And   I create the Requisition document with:
-    | Vendor Number       | 4471-0   |
-    | Item Quantity       | 7.5      |
-    | Item Cost           | 1000     |
-    | Item Commodity Code | 12142203 |
-    | Item Catalog Number | 10101157 |
-    | Item Description    | ANIM     |
-    | Account Number      | 1278003  |
-    | Object Code         | 6570     |
-    | Percent             | 100      |
+    And   I create the Requisition document with following specifications:
+      | Vendor Type        | NonB2B            |
+      | Account Type       | Grant             |
+      | Commodity Code     | Sensitive         |
+      | Object Code        | Operating Expense |
+      | Amount             | LT APO            |
     And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     Then  the Requisition document goes to ENROUTE
     #   FO approve
@@ -61,7 +57,7 @@ Feature: Purap REQS 2 Building Blocks
       | Percent             | 100              |
     And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     Then  the Requisition document goes to ENROUTE
 #   FO approve
@@ -77,10 +73,10 @@ Feature: Purap REQS 2 Building Blocks
   Examples:
       | account_number    | object_code | item_quantity |
       | 1278003           | 6570        | 4.9           |
-      | R589854           | 6540        | 7.5           |
+      | 1093603           | 6540        | 7.5           |
 
-  @KFSQA-737 @KFSQA-738 @E2E @PURAP @REQS @cornell @slug
-  Scenario Outline: Create -- non eShop - recurring payment, C&G account, not Commodity
+  @KFSQA-737 @E2E @PURAP @REQS @cornell @slug
+  Scenario: Create -- non eShop (PURAP E2E-002e) - C&G account, not Commodity
     Given I login as a KFS user to create an REQS
     And   I create the Requisition document with:
       | Vendor Number       | 4471-0           |
@@ -92,10 +88,9 @@ Feature: Purap REQS 2 Building Blocks
       | Account Number      | 1278003          |
       | Object Code         | 6570             |
       | Percent             | 100              |
-    And   I enter Payment Information for recurring payment type <recurring_payment_type>
     And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     Then  the Requisition document goes to ENROUTE
 #   FO approve
@@ -108,11 +103,37 @@ Feature: Purap REQS 2 Building Blocks
     And   I view the Requisition document on my action list
     And   I approve the Requisition document
     Then  the Requisition document goes to FINAL
-  #This is intentionally left blank to test empty recurring_payment_type
-  Examples:
-  | recurring_payment_type              |
-  |                                     |
-  | VARIABLE SCHEDULE, VARIABLE AMOUNT  |
+
+  @KFSQA-738 @E2E @PURAP @REQS @RecurringOrder @cornell @slug
+  Scenario: Create -- non eShop (PURAP E2E-002f) - with Recurring Payment, not C&G, not Commodity
+    Given I login as a KFS user to create an REQS
+    And   I create the Requisition document with:
+      | Vendor Number       | 4471-0           |
+      | Item Quantity       | 7.5              |
+      | Item Cost           | 1000             |
+      | Item Commodity Code | 10161500         |
+      | Item Catalog Number | 10121800         |
+      | Item Description    | Dog Food         |
+      | Account Number      | 1278003          |
+      | Object Code         | 6570             |
+      | Percent             | 100              |
+    And   I change the item type to No Qty on Item Tab
+    And   I enter Payment Information for recurring payment type VARIABLE SCHEDULE, VARIABLE AMOUNT
+    And   I add an attachment to the Requisition document
+    And   I enter Delivery Instructions and Notes to Vendor
+    And   I calculate the Requisition document
+    And   I submit the Requisition document
+    Then  the Requisition document goes to ENROUTE
+#   FO approve
+    And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
+    And   I view the Requisition document on my action list
+    And   I approve the Requisition document
+    Then  the Requisition document goes to ENROUTE
+# C&G approve
+    And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
+    And   I view the Requisition document on my action list
+    And   I approve the Requisition document
+    Then  the Requisition document goes to FINAL
 
   @KFSQA-863 @PURAP @REQS @Routing @slug
   Scenario: Create requisition with two accounting lines and verify routing goes to Org reviewer after the FO
@@ -137,7 +158,7 @@ Feature: Purap REQS 2 Building Blocks
       | Account Number      | 1000817          |
       | Object Code         | 6570             |
       | Percent             | 100              |
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     When  I submit the Requisition document
     Then  the Requisition document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Requisition document

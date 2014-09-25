@@ -7,7 +7,9 @@ Feature: KFS Fiscal Officer Account Creation
   [KFSQA-606] As a KFS Chart User when creating an Account I should be able
               to enter data into Sub Fund Program field regardless of case
               because custom fields should behave similarly to base fields.
-  
+  [KFSQA-556] In order to Create an Account as a KFS Chart User, I want to be notified when I leave fields blank.
+              The Account Guidelines and Purpose tabs contains some required data that must be verified before submission.
+
   @smoke @sloth
   Scenario: Create an Account
     Given I am logged in as a KFS Fiscal Officer
@@ -28,3 +30,14 @@ Feature: KFS Fiscal Officer Account Creation
     Given I am logged in as a KFS Chart Administrator
     When  I save an Account with a lower case Sub Fund Program
     Then  the Account document goes to SAVED
+
+  @KFSQA-556 @Account @Create @KFSMI-7599 @hare
+  Scenario: KFS User does not input any fields into Account Guidelines and Purpose Tabs
+    Given I am logged in as a KFS Fiscal Officer
+    When  I create an Account and leave blank for the fields of Guidelines and Purpose tab
+    When  I save the Account document
+    Then  I should get these error messages:
+      | Expense Guideline is a required field.        |
+      | Income Guideline is a required field.         |
+      | Account Purpose is a required field.          |
+    And   the Account document goes to SAVED

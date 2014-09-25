@@ -6,7 +6,7 @@ Feature: Requistion
 
   @KFSQA-860 @PREQ @Routing @tortoise
   Scenario: Requisition under dollar threshold Requiring Award Review
-    Given I login as a KFS user to create an REQS
+    Given I am logged in as a KFS User for the REQS document
     And   I create the Requisition document with an Award Account and items that total less than the dollar threshold Requiring Award Review
     And   I submit the Requisition document
     When  I route the Requisition document to final
@@ -26,9 +26,9 @@ Feature: Requistion
     And  I view the Requisition document on my action list
     And  I set the added account percent to 50
     And  I add these Accounting Lines to Item #1 on the Requisition document:
-      | chart_code | account_number       | object_code | percent |
-      | Default    | 1093603              | 6570        | 50     |
-    And  I calculate my Requisition document
+      | Chart Code | Account Number       | Object Code | Percent |
+      | Default    | 1093603              | 6570        | 50      |
+    And  I calculate the Requisition document
     And  I approve the Requisition document
     And  I view the Requisition document from the Requisitions search
     Then the next pending action for the Requisition document is an IN ACTION LIST from a  KFS-SYS Accounting Reviewer
@@ -47,9 +47,9 @@ Feature: Requistion
     And  I view the Requisition document on my action list
     And  I set the added account percent to 50
     And  I add these Accounting Lines to Item #1 on the Requisition document:
-      | chart_code | account_number       | object_code | percent |
-      | Default    | 1271001              | 6570        | 50     |
-    And  I calculate my Requisition document
+      | Chart Code | Account Number       | Object Code | Percent |
+      | Default    | 1271001              | 6570        | 50      |
+    And  I calculate the Requisition document
     And  I approve the Requisition document
     When I extract the Requisition document to SciQuest
     And  I submit a Purchase Order Amendment document

@@ -20,7 +20,7 @@ Feature: Purap Preq Building Blocks
       | Percent             | 100      |
     And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     And   the Requisition document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
@@ -37,7 +37,7 @@ Feature: Purap Preq Building Blocks
     And   I approve the Requisition document
     And   the Requisition document goes to FINAL
     And   I am logged in as a Purchasing Processor
-    And   I submit a Contract Manager Assignment of '10' for the Requisition
+    And   I submit a Contract Manager Assignment for the Requisition
     And   I am logged in as a PURAP Contract Manager
     And   I retrieve the Requisition document
     And   the View Related Documents Tab PO Status displays
@@ -79,7 +79,7 @@ Feature: Purap Preq Building Blocks
     And   I select the Payment Request Positive Approval Required
     And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     And   the Requisition document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
@@ -96,7 +96,7 @@ Feature: Purap Preq Building Blocks
     And   I approve the Requisition document
     And   the Requisition document goes to FINAL
     And   I am logged in as a Purchasing Processor
-    And   I submit a Contract Manager Assignment of '10' for the Requisition
+    And   I submit a Contract Manager Assignment for the Requisition
     And   I am logged in as a PURAP Contract Manager
     And   I retrieve the Requisition document
     And   the View Related Documents Tab PO Status displays
@@ -118,7 +118,7 @@ Feature: Purap Preq Building Blocks
     And   I enter the Qty Invoiced and calculate
     And   I enter a Pay Date
     And   I attach an Invoice Image to the Payment Request document
-    And   I calculate PREQ
+    And   I calculate the Payment Request document
     And   I submit the Payment Request document
     And   the Payment Request document goes to ENROUTE
     # FO
@@ -148,7 +148,7 @@ Feature: Purap Preq Building Blocks
     And   I select the Payment Request Positive Approval Required
     And   I add an attachment to the Requisition document
     And   I enter Delivery Instructions and Notes to Vendor
-    And   I calculate my Requisition document
+    And   I calculate the Requisition document
     And   I submit the Requisition document
     And   the Requisition document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Requisition document
@@ -165,7 +165,7 @@ Feature: Purap Preq Building Blocks
     And   I approve the Requisition document
     And   the Requisition document goes to FINAL
     And   I am logged in as a Purchasing Processor
-    And   I submit a Contract Manager Assignment of '10' for the Requisition
+    And   I submit a Contract Manager Assignment for the Requisition
     And   I am logged in as a PURAP Contract Manager
     And   I retrieve the Requisition document
     And   the View Related Documents Tab PO Status displays
@@ -193,7 +193,7 @@ Feature: Purap Preq Building Blocks
     And   I enter the Qty Invoiced and calculate
     And   I enter a Pay Date
     And   I attach an Invoice Image to the Payment Request document
-    And   I calculate PREQ
+    And   I calculate the Payment Request document
     And   I submit the Payment Request document
     And   the Payment Request document goes to ENROUTE
     And   I switch to the user with the next Pending Action in the Route Log for the Payment Request document

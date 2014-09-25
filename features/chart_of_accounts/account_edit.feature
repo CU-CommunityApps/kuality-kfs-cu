@@ -20,31 +20,30 @@ Feature: Account Edit
   @KFSQA-593 @Bug @AcctCreate @KITI-2931 @hare
   Scenario: Edit an Account with an invalid Sub-Fund Program Code, part 1
     Given I am logged in as a KFS Chart Manager
-    And   I edit an Account with a Sub-Fund Group Code of PLCAPT
-    When  I enter a Sub-Fund Program Code of XXXX
-    Then  an error in the Account Maintenance tab should say "Sub-Fund Program Code XXXX is not associated with Sub-Fund Group Code PLCAPT."
+    And   I edit an Account with a random Sub-Fund Group Code
+    When  I enter an invalid Sub-Fund Program Code
+    Then  I should get an invalid Sub-Fund Program Code error
 
   @KFSQA-593 @Bug @AcctCreate @KITI-2931 @hare
   Scenario: Edit an Account with an invalid Sub-Fund Program Code, part 2
     Given I am logged in as a KFS Chart Manager
-    And   I edit an Account with a Sub-Fund Group Code of PLCAPT
-    When  I enter XXXXXXX as an invalid Major Reporting Category Code
-    Then  an error in the Account Maintenance tab should say "Major Reporting Category Code (XXXXXXX) does not exist."
+    And   I edit an Account with a random Sub-Fund Group Code
+    When  I enter an invalid Major Reporting Category Code
+    Then  I should get an invalid Major Reporting Category Code error
 
   @KFSQA-593 @Bug @AcctCreate @KITI-2931 @hare
   Scenario: Edit an Account with an invalid Sub-Fund Program Code, part 3
     Given I am logged in as a KFS Chart Manager
-    And   I edit an Account with a Sub-Fund Group Code of PLCAPT
-    When  I enter XXXXXXX as an invalid Appropriation Account Number
-    Then  an error in the Account Maintenance tab should say "Appropriation Account Number XXXXXXX is not associated with Sub-Fund Group Code PLCAPT."
+    And   I edit an Account with a random Sub-Fund Group Code
+    When  I enter an invalid Appropriation Account Number
+    Then  I should get an invalid Appropriation Account Number error
 
   @KFSQA-593 @Bug @AcctCreate @KITI-2931 @hare
   Scenario: Edit an Account with an invalid Sub-Fund Program Code, part 4
     Given I am logged in as a KFS Chart Manager
-    And   I edit an Account with a Sub-Fund Group Code of PLCAPT
-    When  I enter XX as an invalid Labor Benefit Rate Category Code
-    Then  an error in the Account Maintenance tab should say "Invalid Labor Benefit Rate Code"
-    Then  an error in the Account Maintenance tab should say "The specified Labor Benefit Rate Category Code XX does not exist."
+    And   I edit an Account with a random Sub-Fund Group Code
+    When  I enter an invalid Labor Benefit Rate Code
+    Then  I should get invalid Labor Benefit Rate Code errors
 
   @KFSQA-610 @KFSQA-574 @Bug @AcctMaint @hare
   Scenario: Edit an Account as KFS Chart Admin
@@ -69,9 +68,7 @@ Feature: Account Edit
   Scenario: Create an Account that matches Sub-Fund Group Code and Sub-Fund Program Code with an Appropriation Account Number
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account
-    And   I enter Sub Fund Group Code of INFHFO
-    And   I enter Sub Fund Program Code of CENTER
-    And   I enter Appropriation Account Number of LTIP
+    And   I enter Sub Fund Program Code and Appropriation Account Number that are associated with a random Sub Fund Group Code
     When  I blanket approve the Account document
     Then  the Account document goes to one of the following statuses:
       | PROCESSED |
@@ -81,21 +78,17 @@ Feature: Account Edit
   Scenario: Create an Account that does not match Sub-Fund Group Code and Sub-Fund Program Code with an Appropriation Account Number
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account
-    And   I enter Sub Fund Group Code of INFHFO
-    And   I enter Sub Fund Program Code of CENTER
-    And   I enter Appropriation Account Number of C771503
+    And   I enter Sub Fund Program Code that is associated with a random Sub Fund Group Code
+    And   I enter Appropriation Account Number that is not associated with the Sub Fund Group Code
     When  I submit the Account document
-    Then  an error in the Account Maintenance tab should say "Appropriation Account Number C771503 is not associated with Sub-Fund Group Code INFHFO."
+    Then  I should get an invalid Appropriation Account Number error
 
   @KFSQA-586 @Bug @AcctClose @KFSMI-5961 @sloth
   Scenario: Try to continue an Account to itself
     Given I am logged in as a KFS Chart Manager
     And   I access Account Lookup
     And   I search for all accounts
-    And   I clone a random Account with the following changes:
-      | Name        | Test Account             |
-      | Chart Code  | IT                       |
-      | Description | [KFSQA-586] Test Account |
+    And   I clone a random Account with name, chart code, and description changes
     And   I close the Account
     And   I enter a Continuation Account Number that equals the Account Number
     When  I blanket approve the Account document

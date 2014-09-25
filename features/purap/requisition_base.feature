@@ -53,7 +53,9 @@ Feature: REQS, PO, PREQ,PDP
       | Routing Check      | Base Org  |
   #    |Default PM         | P          |
     # default PM can ve implemented after alternate PM is moved to upgrade
+    Then  the Requisition document routes to the correct individuals based on the org review levels
     When  I extract the Requisition document to SciQuest
+    Then  the Purchase Order document routes to the correct individuals based on the org review levels
     And   I initiate a Payment Request document
   Examples:
     | amount  | level |
@@ -68,19 +70,19 @@ Feature: REQS, PO, PREQ,PDP
       | Add Vendor On REQS | No          |
       | Positive Approval  | Unchecked   |
       | Account Type       | NonGrant    |
-      | Commodity Code     | <commodity> |
+      | Commodity Code     | Sensitive   |
       | Amount             | <amount>    |
       | Routing Check      | Commodity   |
 #    |Default PM         | P           |
   # default PM can be implemented after alternate PM is moved to upgrade
+    Then  the Commodity Reviewer is in the routing log for Requisition document
     When  I extract the Requisition document to SciQuest
+    Then  the Commodity Reviewer is not in the routing log for Purchase Order document
     And   I initiate a Payment Request document
   Examples:
-    | amount | commodity |
-    | GT APO | Sensitive |
-    | LT APO | Sensitive |
-    | GT APO | Regular   |
-    | LT APO | Regular   |
+    | amount |
+    | GT APO |
+    | LT APO |
 
   @KFSQA-858 @BaseFunction @POA @PDP @coral
   Scenario: PUR-4 POA Changes to routing and permissions
@@ -132,6 +134,7 @@ Feature: REQS, PO, PREQ,PDP
     When I initiate a Payment Request document
     And  I run the nightly Capital Asset jobs
     And  I build a Capital Asset from AP transaction
+    Then I format and process the check with PDP
   Examples:
   | CA System Type     |
   | Individual Assets  |
@@ -171,6 +174,7 @@ Feature: REQS, PO, PREQ,PDP
     When I initiate a Payment Request document
     And  I run the nightly Capital Asset jobs
     And  I modify existing Capital Asset from AP transaction and apply payment
+    Then I format and process the check with PDP
   Examples:
     | CA System Type     |
     | Individual Assets  |
