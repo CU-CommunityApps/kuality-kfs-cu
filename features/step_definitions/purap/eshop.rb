@@ -38,6 +38,8 @@ Given  /^I create an e-SHOP Requisition document with a (.*) item type$/ do |ite
   step 'I view my e-SHOP cart'
   step 'I add a note to my e-SHOP cart'
   step 'I submit my e-SHOP cart'
+  step 'I add a random address to the Delivery tab on the Requisition document'
+  step 'I add a random Requestor Phone number to the Requisition document'
   step 'I capture the Requisition document id number'
 end
 
@@ -50,6 +52,8 @@ Given  /^I create an e-SHOP Requisition document with a (.*) item type that is a
   step 'I view my e-SHOP cart'
   step 'I add a note to my e-SHOP cart'
   step 'I submit my e-SHOP cart'
+  step 'I add a random address to the Delivery tab on the Requisition document'
+  step 'I add a random Requestor Phone number to the Requisition document'
 end
 
 When /^I route the e-SHOP Requisition document through SciQuest until the Payment Request document is ENROUTE$/ do
@@ -61,13 +65,12 @@ When /^I route the e-SHOP Requisition document through SciQuest until the Paymen
   step 'I select the Payment Request Positive Approval Required'
   step 'I add a random delivery address to the Requisition document if there is not one present'
   step 'I add a random phone number to the Requestor Phone on the Requisition document'
-  step 'I calculate my Requisition document'
+  step 'I calculate the Requisition document'
   step 'I submit the Requisition document'
   step 'I switch to the user with the next Pending Action in the Route Log to approve Requisition document to Final'
   step 'the Requisition document goes to FINAL'
   step 'I extract the Requisition document to SciQuest'
-  step 'I submit a Payment Request document'
+  step 'I submit a Payment Request document to ENROUTE'
 end
-
 
 
