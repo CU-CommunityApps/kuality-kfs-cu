@@ -67,6 +67,7 @@ When /^I route the e-SHOP Requisition document through SciQuest until the Paymen
   step 'I add a random phone number to the Requestor Phone on the Requisition document'
   step 'I calculate the Requisition document'
   step 'I submit the Requisition document'
+  step 'the Requisition document goes to ENROUTE'
   step 'I switch to the user with the next Pending Action in the Route Log to approve Requisition document to Final'
   step 'the Requisition document goes to FINAL'
   step 'I extract the Requisition document to SciQuest'
