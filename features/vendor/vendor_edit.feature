@@ -13,6 +13,8 @@ Feature: Vendor Edit
               Moreover, Cornell added (as display on addresses) the KFS internal
               data element named Vendor Address Generated Identifier.
 
+  [KFSQA-839] I am able to edit a vendor's contract information using the new role Vendor Contract Editor
+
   @KFSQA-755 @cornell @slug @E2E @VendorEdit
   Scenario: I want to edit a vendor with ownership type INDIVIDUAL
     Given   I am logged in as a Vendor Initiator
@@ -92,3 +94,11 @@ Feature: Vendor Edit
     And   I open the Vendor from the Vendor document
     When  the Address Tab displays Vendor Address Generated Identifiers for each Address
     Then  the Vendor document's Notes Tab displays the added attachment
+
+  @KFSQA-839 @cornell @VendorEdit @Routing @smoke @coral
+  Scenario: I am able to edit a vendor's contract information using the new role Vendor Contract Editor
+    Given I am logged in as a Vendor Contract Editor(cu)
+    When  I edit a Vendor with an active Contract
+    And   I edit a contract on Vendor Contract tab
+    And   I submit the Vendor document, confirming any questions, if it is not already FINAL
+    Then  the next pending action for the Vendor document is an APPROVE from a KFS-VND Reviewer

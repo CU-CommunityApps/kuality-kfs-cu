@@ -72,7 +72,7 @@ Feature: FP Auditing
     And     I save the Non-Check Disbursement document
     Then    The Notes and Attachment Tab displays "Accounting Line changed from"
 
-  @KFSQA-631 @DI @IB @TF @cornell @tortoise
+  @KFSQA-631 @DI @IB @TF @cornell @tortoise @broken
   Scenario Outline: Display approver eDoc Accounting Line changes in Notes and Attachment Tab for All with basic from and to accounting lines
     Given   I am logged in as a KFS User
     And     I start an empty <document> document
@@ -89,7 +89,8 @@ Feature: FP Auditing
     And     I am logged in as a <From or To> Account Fiscal Officer
     And     I view the <document> document
     And     on the <document> document I modify the <From or To> Object Code line item <line item> to be <modify object code>
-    And     I save the <document> document
+    # KFSQA-1068 : there is a bug to create audit note when 'approve' in application. 'audit note' will be reworked.  This step will fail for now.
+    And     I approve the <document> document
     Then    The Notes and Attachment Tab displays "Accounting Line changed from"
   Examples:
 |  document                           |from account number|from object code| from amount| to account number | to object code| to amount | From or To | line item| modify object code  |
@@ -103,7 +104,7 @@ Feature: FP Auditing
     #TODO create params for secondary object code for each edoc type
 
 
-  @KFSQA-747 @DV @ICA @cornell @tortoise
+  @KFSQA-747 @DV @ICA @cornell @tortoise @broken
   Scenario Outline: Display approver eDoc Accounting Line changes in Notes and Attachment Tab
     Given  I am logged in as a KFS User for the <type code> document
 #for all these eDocs
@@ -122,7 +123,8 @@ Feature: FP Auditing
     And   I am logged in as a Source Account Fiscal Officer
     And   I view the <document> document
     And   I change the Account Organization Reference for Accounting Line 1 to QA747 on the <document>
-    When  I save the <document> document
+    # KFSQA-1068 : there is a bug to create audit note when 'approve' in application. 'audit note' will be reworked.  This step will fail for now.
+    When  I approve the <document> document
     Then  The Notes and Attachment Tab displays "Accounting Line changed from"
   Examples:
     | document                           | type code | source_account | target_account  | source_amount | target_amount |

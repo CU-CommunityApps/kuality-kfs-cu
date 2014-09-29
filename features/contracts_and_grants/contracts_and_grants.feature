@@ -1,11 +1,10 @@
 Feature: Contracts and Grants
 
   [KFSQA-901] Create and edit a Contracts and Grants Reporting Code, assign it to an Object Code,
-  and search for the Object Code by using the Contracts and Grants Reporting Code.
-  Default data used in this test is specified in KFS Parameter: DEFAULT_CONTRACT_GRANT_LEVEL_CODE.
+              and search for the Object Code by using the Contracts and Grants Reporting Code.
+              Default data used in this test is specified in KFS Parameter: DEFAULT_CONTRACT_GRANT_LEVEL_CODE.
 
   [KFSQA-916] Background : Indirect Cost Recovery Rate can use wildcards as debit and credit and indirect costs post with new rates.
-
 
 
   @KFSQA-901 @CG @smoke @coral
