@@ -33,6 +33,9 @@ end
 Given  /^I create an e-SHOP Requisition document with a (.*) item type$/ do |item_type|
   step 'I am logged in as an e-SHOP User'
   step 'I go to the e-SHOP main page'
+  step 'I view my e-SHOP cart'
+  step 'I clear my e-SHOP cart'
+  step 'I go to the e-SHOP main page'
   step "I search for an e-SHOP item with a #{item_type} Commodity Code"
   step 'I add e-SHOP items to my cart until the cart total reaches the Business to Business Total Amount For Automatic Purchase Order limit'
   step 'I view my e-SHOP cart'
@@ -45,6 +48,9 @@ end
 
 Given  /^I create an e-SHOP Requisition document with a (.*) item type that is at least (.*) in value$/ do |item_type, min_cart_value|
   step 'I am logged in as an e-SHOP User'
+  step 'I go to the e-SHOP main page'
+  step 'I view my e-SHOP cart'
+  step 'I clear my e-SHOP cart'
   step 'I go to the e-SHOP main page'
   step "I search for an e-SHOP item with a #{item_type} Commodity Code"
   step "I add e-SHOP items to my cart with a value of at least #{min_cart_value}"
