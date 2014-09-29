@@ -31,4 +31,4 @@ parallel_master: <%= clean_default %> --tags ~@utility <%= output_split_json %>
 parallel_master_no_nightly: <%= clean_no_nightly %> <%= output_split_json %>
 parallel_headless: HEADLESS=true <%= clean_no_nightly %> <%= output_split_json %>
 headless_json_nightly: HEADLESS=true <%= clean_nightly %> <%= json_output %>.split00.json # Same as headless_json, but only runs nightly-jobs
-clear_batch: <%= clean_default %> --tags @nightly-jobs --tags @utility    # Only run utility jobs related to the nightly batch
+clear_batch: <%= default %> --tags @nightly-jobs --tags @utility    # Only run utility jobs related to the nightly batch
