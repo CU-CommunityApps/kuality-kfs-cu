@@ -5,9 +5,9 @@
   clean_default = "#{default} #{clean_tags}"
   clean_no_nightly = "#{clean_default} --tags ~@nightly-jobs"
   clean_nightly = "#{clean_default} --tags @nightly-jobs"
-  json_output = '--format json -o ../kuality-kfs-cu-output.json --format junit --out ../junit'
+  junit_output = '--format junit --out ../junit'
   split_num = format( '%#02d', (ENV['TEST_ENV_NUMBER'] == '' ? 1 : ENV['TEST_ENV_NUMBER']).to_i )
-  output_split_json = "#{json_output}.split#{split_num}.json"
+  output_split_junit = "#{junit_output}_split#{split_num}"
 %>
 
 default: <%= default %>                                                   # Run all jobs
@@ -21,14 +21,14 @@ nightly_jobs: <%= clean_nightly %>                                        # Only
 master: <%= clean_default %>                                              # Run all Scenarios that will run during the nightly report run
 master_no_nightly: <%= clean_no_nightly %>                                # Same as master, except jobs that do not Run Nightly Jobs will be excluded
 headless: HEADLESS=true <%= clean_default %>                              # Same as master, but using a headless browser
-headless_json: HEADLESS=true <%= clean_default %> <%= json_output %>      # Same as headless, but output a JSON results file in the parent directory
+headless_json: HEADLESS=true <%= clean_default %> <%= junit_output %>     # Same as headless, but output a jUnit results file in the parent directory
 
 # The following profiles are similiar to their non-'parallel_' versions,
 # but are expected to be run using parallel_cucumber and will generate json files.
 # Naturally, this means there's only one headless version here.
 
-parallel_master: <%= clean_default %> --tags ~@utility <%= output_split_json %>
-parallel_master_no_nightly: <%= clean_no_nightly %> <%= output_split_json %>
-parallel_headless: HEADLESS=true <%= clean_no_nightly %> <%= output_split_json %>
-headless_json_nightly: HEADLESS=true <%= clean_nightly %> <%= json_output %>.split00.json # Same as headless_json, but only runs nightly-jobs
+parallel_master: <%= clean_default %> --tags ~@utility <%= output_split_junit %>
+parallel_master_no_nightly: <%= clean_no_nightly %> <%= output_split_junit %>
+parallel_headless: HEADLESS=true <%= clean_no_nightly %> <%= output_split_junit %>
+headless_junit_nightly: HEADLESS=true <%= clean_nightly %> <%= junit_output %>_split00 # Same as headless_json, but only runs nightly-jobs
 clear_batch: <%= default %> --tags @nightly-jobs --tags @utility    # Only run utility jobs related to the nightly batch
