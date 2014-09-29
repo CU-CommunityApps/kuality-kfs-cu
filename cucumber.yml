@@ -21,7 +21,7 @@ nightly_jobs: <%= clean_nightly %>                                        # Only
 master: <%= clean_default %>                                              # Run all Scenarios that will run during the nightly report run
 master_no_nightly: <%= clean_no_nightly %>                                # Same as master, except jobs that do not Run Nightly Jobs will be excluded
 headless: HEADLESS=true <%= clean_default %>                              # Same as master, but using a headless browser
-headless_json: HEADLESS=true <%= clean_default %> <%= junit_output %>     # Same as headless, but output a jUnit results file in the parent directory
+headless_junit: HEADLESS=true <%= clean_default %> <%= junit_output %>    # Same as headless, but output a jUnit results file in the parent directory
 
 # The following profiles are similiar to their non-'parallel_' versions,
 # but are expected to be run using parallel_cucumber and will generate json files.
