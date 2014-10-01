@@ -26,6 +26,8 @@ Feature: REQS, PO, PREQ,PDP
 
   [KFSQA-999]  First, create a initial Capital Asset with Base Function attributes. Second, create a modification to this asset. Change REQS System Type to Multiple System with a System State of Modify Existing System. Retrieve the previously created asset for modification. Take the asset from Requisition to APO to PREQ to CAB and to Payment.
 
+  [KFSQA-967]  System should not allow POA to be created that contains accounts with 0% distribution
+
   @KFSQA-853 @BaseFunction @REQS @PO @PREQ @PDP @Routing @coral
   Scenario: PUR-5 Sensitive Commodity Data Flag enh
     Given I initiate a Requisition document with the following:
@@ -180,3 +182,21 @@ Feature: REQS, PO, PREQ,PDP
     | Individual Assets  |
     | One System         |
     | Multiple Systems   |
+
+  @KFSQA-967 @PO @POA @REQS @coral @wip
+  Scenario: System should not allow POA to be created that contains accounts with 0% distribution
+    Given I initiate a Requisition document with the following:
+      | Vendor Type        | NonB2B    |
+      | Add Vendor On REQS | Yes       |
+      | Positive Approval  | Unchecked |
+      | Account Type       | NonGrant  |
+      | Commodity Code     | Regular   |
+      | Amount             | LT APO    |
+    When  I extract the Requisition document to SciQuest
+    And   I create a Purchase Order Amendment document
+    And   I add an Accounting Line to Item #1 on the Purchase Order Amendment document with 0 percent
+    And   I calculate the Purchase Order Amendment document
+    When  I submit the Purchase Order Amendment document
+    Then  I should get these error messages:
+      | Item 1 has an invalid accounting percentage. Accounting lines cannot be 0%.   |
+      | Item 1 has an impermissible 0% accounting line.                               |
