@@ -43,13 +43,13 @@ Feature: Contracts and Grants
     And   I am logged in as a KFS User
     And   I remember the logged in user
     And   I edit an active CG account modifying the Indirect Cost Rate to the From Indirect Cost Rate
-    And   I remember account number to be used as From Account
+    And   I remember account to be used as From Account
     And   I submit the Account document
     And   the Account document goes to ENROUTE
     And   I route the Account document to final
     And   I am logged in as the remembered user
     And   I edit an active CG account modifying the Indirect Cost Rate to the To Indirect Cost Rate
-    And   I remember account number to be used as To Account
+    And   I remember account to be used as To Account
     And   I submit the Account document
     And   the Account document goes to ENROUTE
     And   I route the Account document to final
@@ -58,9 +58,8 @@ Feature: Contracts and Grants
     And   I add the remembered From account for a Services Object code for amount 100
     And   I add the remembered To account for a Services Object code for amount 100
     And   I submit the Distribution Of Income And Expense document
+    And   I remember the Distribution Of Income And Expense document number
     And   the Distribution Of Income And Expense document goes to ENROUTE
     And   I route the Distribution Of Income And Expense document to final
     And   Nightly Batch Jobs run
-#    Then  ICR rates are posted correctly for current month
-
-
+    Then  ICR rates are posted correctly for current month

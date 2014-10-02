@@ -169,13 +169,12 @@ end
 
 
 # Active CG account needs to be non-expired account AND needs to have non-expired continuation account
-# Fastest way to get this data is to have the method look for an account with a NULL account expiration date and
-# a NULL continuation account.
+# Fastest way to obtain this type of account is to have the method look for an account with a NULL account expiration
+# date and a NULL continuation account.
 And /^I find an unexpired CG account that has an unexpired continuation account$/ do
   default_chart = get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
   accounts_hash = get_kuali_business_objects('KFS-COA','Account',"chartOfAccountsCode=#{default_chart}&subFundGroup.fundGroupCode=CG&closed=N")
   accounts = accounts_hash['org.kuali.kfs.coa.businessobject.Account']
-  @account = nil
 
   unless accounts.nil? || accounts.empty?
     valid_account_not_found = true
@@ -186,7 +185,35 @@ And /^I find an unexpired CG account that has an unexpired continuation account$
       continuation_account = accounts[index]['continuationAccountNumber'][0]
       if expiration_date.eql?('null') && continuation_account.eql?('null')
         @account = make AccountObject
-        @account.chart_code = default_chart
+        @account.chart_code = accounts[index]['accountPhysicalCampusCode'][0]
+        @account.number = accounts[index]['accountNumber'][0]
+        valid_account_not_found = false
+      end
+      index += 1
+    end #while-loop
+  end #if-statement
+end
+
+
+# Active CG account needs to be non-expired account AND needs to have non-expired continuation account
+# Fastest way to get this data is to have the method look for an account with a NULL account expiration date and
+# a NULL continuation account.  Input parameter is the actual account number and is NOT the account object.
+And /^I find an unexpired CG account that has an unexpired continuation account not matching account number (.*)$/ do |account_not_to_match|
+  default_chart = get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
+  accounts_hash = get_kuali_business_objects('KFS-COA','Account',"chartOfAccountsCode=#{default_chart}&subFundGroup.fundGroupCode=CG&closed=N")
+  accounts = accounts_hash['org.kuali.kfs.coa.businessobject.Account']
+
+  unless accounts.nil? || accounts.empty?
+    valid_account_not_found = true
+    index = 0
+
+    while valid_account_not_found & (index < accounts.size)
+      expiration_date = accounts[index]['accountExpirationDate'][0]
+      continuation_account = accounts[index]['continuationAccountNumber'][0]
+      account_number = accounts[index]['accountNumber'][0]
+      if expiration_date.eql?('null') && continuation_account.eql?('null') && !(account_number.eql?(account_not_to_match))
+        @account = make AccountObject
+        @account.chart_code = accounts[index]['accountPhysicalCampusCode'][0]
         @account.number = accounts[index]['accountNumber'][0]
         valid_account_not_found = false
       end
@@ -213,11 +240,11 @@ And /^I change the Indirect Cost Rate on account (.*) belonging to chart (.*) to
 end
 
 
-And /^I remember account number to be used as From Account$/ do
+And /^I remember account to be used as From Account$/ do
   @remembered_from_account = @account
 end
 
 
-And /^I remember account number to be used as To Account$/ do
+And /^I remember account to be used as To Account$/ do
   @remembered_to_account = @account
 end
