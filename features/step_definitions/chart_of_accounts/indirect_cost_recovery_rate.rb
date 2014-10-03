@@ -72,15 +72,17 @@ end
 
 
 Then /^ICR rates are posted correctly for current month$/ do
-  from_di_row_found = false
   from_icr_row_found = false
-  to_di_row_found = false
   to_icr_row_found = false
-  today = right_now[:date_w_slashes]
+  today_with_slashes = right_now[:date_w_slashes]
+
+  #create date with format of yyyymmdd
+  split_today_with_slashes_array = today_with_slashes.to_s.split( /\/ */, 3)
+  today_as_yyyymmdd = split_today_with_slashes_array[2] + split_today_with_slashes_array[0] + split_today_with_slashes_array[1]
 
   visit(MainPage).general_ledger_entry
   on GeneralLedgerEntryLookupPage do |page|
-    #validate From Account has two GL entries
+    #validate From Account has ICR GL entry
     page.find_gl_entries_by_account @remembered_from_account
 
     #get the column identifiers once to be used by both from and to validation
@@ -95,51 +97,35 @@ Then /^ICR rates are posted correctly for current month$/ do
     page.results_table.rest.each do |glerow|
 
       if glerow[object_code_col].text.strip == '1000'
-        if glerow[document_type_col].text.strip == 'DI'
-          if glerow[origin_code_col].text.strip == '01' &&
-             glerow[document_number_col].text.strip == @remembered_document_id &&
-             glerow[amount_col].text.strip == '100.00' &&
-             glerow[dc_col].text.strip == 'D' &&
-             glerow[transaction_date_col].text.strip <= today
-            from_di_row_found = true
-          end
-        elsif glerow[document_type_col].text.strip == 'ICR'
+        if glerow[document_type_col].text.strip == 'ICR'
           if glerow[origin_code_col].text.strip == 'MF' &&
              glerow[amount_col].text.strip == '0.00' &&
              glerow[dc_col].text.strip == 'C' &&
-             glerow[transaction_date_col].text.strip <= today
+             glerow[document_number_col].text.strip <= today_as_yyyymmdd &&
+             glerow[transaction_date_col].text.strip <= today_with_slashes
             from_icr_row_found = true
-          end
+          end #validation step
         end #check-each document type
       end #check-each generated offset row
     end #for-each glerow
-    from_di_row_found.should be true
     from_icr_row_found.should be true
 
-    #validate To Account has two GL entries
+    #validate To Account has ICR GL entry
     page.find_gl_entries_by_account @remembered_to_account
     page.results_table.rest.each do |glerow|
 
       if glerow[object_code_col].text.strip == '1000'
-        if glerow[document_type_col].text.strip == 'DI'
-          if glerow[origin_code_col].text.strip == '01' &&
-              glerow[document_number_col].text.strip == @remembered_document_id &&
-              glerow[amount_col].text.strip == '100.00' &&
-              glerow[dc_col].text.strip == 'C' &&
-              glerow[transaction_date_col].text.strip <= today
-            to_di_row_found = true
-          end
-        elsif glerow[document_type_col].text.strip =='ICR'
+        if glerow[document_type_col].text.strip =='ICR'
           if glerow[origin_code_col].text.strip == 'MF' &&
               glerow[amount_col].text.strip == '10.00' &&
               glerow[dc_col].text.strip == 'C' &&
-              glerow[transaction_date_col].text.strip <= today
+              glerow[document_number_col].text.strip <= today_as_yyyymmdd &&
+              glerow[transaction_date_col].text.strip <= today_with_slashes
             to_icr_row_found = true
-          end
+          end #validation step
         end #check-each document type
       end #check-each generated offset row
     end #for-each glerow
-    to_di_row_found.should be true
     to_icr_row_found.should be true
   end
 end

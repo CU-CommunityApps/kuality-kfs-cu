@@ -185,8 +185,7 @@ And /^I find an unexpired CG account that has an unexpired continuation account$
       continuation_account = accounts[index]['continuationAccountNumber'][0]
       if expiration_date.eql?('null') && continuation_account.eql?('null')
         @account = make AccountObject
-        @account.chart_code = accounts[index]['accountPhysicalCampusCode'][0]
-        @account.number = accounts[index]['accountNumber'][0]
+        @account.absorb_webservice_item! accounts[index]
         valid_account_not_found = false
       end
       index += 1
@@ -213,8 +212,7 @@ And /^I find an unexpired CG account that has an unexpired continuation account 
       account_number = accounts[index]['accountNumber'][0]
       if expiration_date.eql?('null') && continuation_account.eql?('null') && !(account_number.eql?(account_not_to_match))
         @account = make AccountObject
-        @account.chart_code = accounts[index]['accountPhysicalCampusCode'][0]
-        @account.number = accounts[index]['accountNumber'][0]
+        @account.absorb_webservice_item! accounts[index]
         valid_account_not_found = false
       end
       index += 1
