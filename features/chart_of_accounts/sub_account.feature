@@ -9,6 +9,9 @@ Feature: Sub Account
   [KFSQA-591] As a KFS CG Processor Role I want to Approve Sub-Account Documents with
               Sub-Account Type “CS” because this follows Cornell standard operating policies.
 
+  [KFSQA-905] Route Sub-Account with type CS to CG responsibility
+  
+
   @KFSQA-590 @SubAcct @Bug @KFSMI-7964 @hare
   Scenario: Verify "null" does not display in the ICR ID field when I create a Sub-Account
     Given I am logged in as a KFS Chart Manager
@@ -48,3 +51,14 @@ Feature: Sub Account
       | FINAL     |
 
 
+  @KFSQA-905 @COA, @SubAcct @CG @smoke @wip
+  Scenario: Route Sub-Account with type CS to CG responsibility
+    Given I login as a KFS User and not a CG Processor
+    And I create a Sub-Account Document using a CG account
+    And  I submit the Sub-Account document
+    And  the Sub-Account document goes to FINAL
+    When I edit the Sub-Account to type code cost share
+    And enter a cost sharing account number
+    And edit the current indirect cost recovery account
+    And I submit the Sub-Account Document
+    Then Document routes to Award node
