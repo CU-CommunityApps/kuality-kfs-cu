@@ -16,3 +16,4 @@ And /^I search for an e\-SHOP item with a (Non\-Sensitive|Sensitive) Commodity C
       pending "Item Type: #{item_type} is not handled for e-Shop item search"
   end
 end
+
