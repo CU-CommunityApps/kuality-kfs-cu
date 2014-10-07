@@ -198,5 +198,5 @@ Feature: REQS, PO, PREQ,PDP
     And   I calculate the Purchase Order Amendment document
     When  I submit the Purchase Order Amendment document
     Then  I should get these error messages:
-      | Item 1 has an invalid accounting percentage. Accounting lines cannot be 0%.   |
-      | Item 1 has an impermissible 0% accounting line.                               |
+      | Item 1 has an invalid accounting percentage. Accounting lines cannot be 0%. |
+      | Item 1 has an impermissible 0% accounting line.                             |
