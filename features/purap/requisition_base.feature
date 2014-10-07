@@ -183,7 +183,7 @@ Feature: REQS, PO, PREQ,PDP
     | One System         |
     | Multiple Systems   |
 
-  @KFSQA-967 @PO @POA @REQS @coral @wip
+  @KFSQA-967 @PO @POA @REQS @coral
   Scenario: System should not allow POA to be created that contains accounts with 0% distribution
     Given I initiate a Requisition document with the following:
       | Vendor Type        | NonB2B    |
