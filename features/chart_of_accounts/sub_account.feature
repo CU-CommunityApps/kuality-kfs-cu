@@ -10,7 +10,7 @@ Feature: Sub Account
               Sub-Account Type “CS” because this follows Cornell standard operating policies.
 
   [KFSQA-905] Route Sub-Account with type CS to CG responsibility
-  
+
 
   @KFSQA-590 @SubAcct @Bug @KFSMI-7964 @hare
   Scenario: Verify "null" does not display in the ICR ID field when I create a Sub-Account
@@ -52,13 +52,18 @@ Feature: Sub Account
 
 
   @KFSQA-905 @COA, @SubAcct @CG @smoke @wip
-  Scenario: Route Sub-Account with type CS to CG responsibility
-    Given I login as a KFS User and not a CG Processor
-    And I create a Sub-Account Document using a CG account
-    And  I submit the Sub-Account document
-    And  the Sub-Account document goes to FINAL
-    When I edit the Sub-Account to type code cost share
-    And enter a cost sharing account number
-    And edit the current indirect cost recovery account
-    And I submit the Sub-Account Document
-    Then Document routes to Award node
+  Scenario: Route Sub-Account with type CS to Contracts & Grants responsibility
+    Given I am logged in as a KFS User who is not a Contracts & Grants Processor
+    And   I remember the logged in user
+    And   I create a Sub-Account using a CG account with a CG Account Responsibility ID in range 1 to 8
+    And   I remember the Sub-Account created
+    And   I submit the Sub-Account document
+    And   the Sub-Account document goes to ENROUTE
+    And   I route the Sub-Account document to final
+    And   I am logged in as the remembered user
+    And   I edit the remembered Sub-Account
+    And   on the Sub-Account document I modify the Sub-Account Type Code to CS
+    And   on the Sub-Account document I modify the CG Cost Sharing Account Number to a cost sharing account
+    And   on the Sub-Account document I modify the current Indirect Cost Recovery Account to a contract college general appropriated Account
+    And   I submit the Sub-Account document
+    Then  the Sub-Account document routes to the Award node
