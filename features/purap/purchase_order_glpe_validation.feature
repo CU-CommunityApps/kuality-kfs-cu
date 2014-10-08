@@ -29,8 +29,7 @@ Feature: GLPE validation tests for Purchase Orders
    And   I submit a Contract Manager Assignment for the Requisition
    And   I am logged in as a PURAP Contract Manager
    And   I cancel the Purchase Order on the Requisition
-   When  I view the Requisition document
-   Then  On the Purchase Order the GLPE displays "There are currently no General Ledger Pending Entries associated with this Transaction Processing document."
+   Then  on the Purchase Order the GLPE displays "There are currently no General Ledger Pending Entries associated with this Transaction Processing document."
 
   @KFSQA-880 @PO @coral @nightly-jobs
   Scenario: Encumbrances incorrect for a PO and PO Void done on the same day 2
@@ -63,6 +62,5 @@ Feature: GLPE validation tests for Purchase Orders
     And   I submit a Contract Manager Assignment for the Requisition
     And   I am logged in as a PURAP Contract Manager
     And   I cancel the Purchase Order on the Requisition
-    When  I view the Requisition document
-    Then  On the Purchase Order the GLPE displays "There are currently no General Ledger Pending Entries associated with this Transaction Processing document."
+    Then  on the Purchase Order the GLPE displays "There are currently no General Ledger Pending Entries associated with this Transaction Processing document."
     And   the Purchase Order document status is 'CANCELED'
