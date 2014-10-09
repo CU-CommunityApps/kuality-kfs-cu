@@ -171,7 +171,7 @@ end
 # Active CG account needs to be non-expired account AND needs to have non-expired continuation account
 # Fastest way to obtain this type of account is to have the method look for an account with a NULL account expiration
 # date and a NULL continuation account.
-And /^I find an unexpired CG account that has an unexpired continuation account$/ do
+And /^I find an unexpired CG Account that has an unexpired continuation account$/ do
   default_chart = get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
   accounts_hash = get_kuali_business_objects('KFS-COA','Account',"chartOfAccountsCode=#{default_chart}&subFundGroup.fundGroupCode=CG&closed=N")
   accounts = accounts_hash['org.kuali.kfs.coa.businessobject.Account']
@@ -191,14 +191,18 @@ And /^I find an unexpired CG account that has an unexpired continuation account$
       index += 1
     end #while-loop
   end #if-statement
+
+
 end
+
 
 
 # Active CG account needs to be non-expired account AND needs to have non-expired continuation account
 # Fastest way to get this data is to have the method look for an account with a NULL account expiration date and
-# a NULL continuation account.  Input parameter is the actual account number and is NOT the account object.
-And /^I find an unexpired CG account that has an unexpired continuation account not matching account number (.*)$/ do |account_not_to_match|
-  default_chart = get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
+# a NULL continuation account.
+And /^I find an unexpired CG Account not matching the remembered From Account that has an unexpired continuation account$/ do
+  default_chart = @remembered_from_account.chart_code
+  account_not_to_match @remembered_from_account.number
   accounts_hash = get_kuali_business_objects('KFS-COA','Account',"chartOfAccountsCode=#{default_chart}&subFundGroup.fundGroupCode=CG&closed=N")
   accounts = accounts_hash['org.kuali.kfs.coa.businessobject.Account']
 
@@ -221,11 +225,18 @@ And /^I find an unexpired CG account that has an unexpired continuation account 
 end
 
 
-And /^I change the Indirect Cost Rate on account (.*) belonging to chart (.*) to (.*)$/ do |account, chart, indirect_cost_rate|
+And /^I edit the Indirect Cost Rate on the Account to the remembered (From|To) Indirect Cost Rate$/ do |target|
+  case target
+    when 'From'
+      indirect_cost_rate = @remembered_from_indirect_cost_rate
+    when 'To'
+      indirect_cost_rate = @remembered_to_indirect_cost_rate
+  end
+
   visit(MainPage).account
   on AccountLookupPage do |page|
-    page.chart_code.fit     chart
-    page.account_number.fit account
+    page.chart_code.fit     @account.chart_code
+    page.account_number.fit @account.number
     page.search
     page.wait_for_search_results
     page.edit_random
@@ -233,16 +244,16 @@ And /^I change the Indirect Cost Rate on account (.*) belonging to chart (.*) to
   on AccountPage do |page|
     page.description.set random_alphanums(40, 'AFT')
     page.account_indirect_cost_recovery_type_code.fit '01'
-    page.indirect_cost_rate.fit indirect_cost_rate
+    page.indirect_cost_rate.fit indirect_cost_rate.rate_id
   end
 end
 
 
-And /^I remember account to be used as From Account$/ do
-  @remembered_from_account = @account
-end
-
-
-And /^I remember account to be used as To Account$/ do
-  @remembered_to_account = @account
+And /^I remember the Account as the (From|To) Account$/ do |target|
+  case target
+    when 'From'
+      @remembered_from_account = @account
+    when 'To'
+      @remembered_to_account = @account
+  end
 end

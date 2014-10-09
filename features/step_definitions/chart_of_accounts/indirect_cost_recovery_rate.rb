@@ -1,60 +1,40 @@
-And /^I create a wild carded Indirect Cost Recovery Rate of (.*) percent using random institutional allowance object codes$/ do |percent|
+And /^I create a wildcarded Indirect Cost Recovery Rate of (.*) percent using random institutional allowance object codes$/ do |percent|
   @indirect_cost_recovery_rate = create IndirectCostRecoveryRateObject
-  @indirect_cost_recovery_rate.create_wildcard_icr_for_random_institutional_object_codes percent
+  @indirect_cost_recovery_rate.create_wildcarded_icr_rate_for_random_institutional_object_codes percent
 end
 
 
-# This method presumes that the following global data elements have been created and are populated:
-# @from_indirect_cost_rate_debit_object_code, @from_indirect_cost_rate_credit_object_code
-And /^I create a wild carded Indirect Cost Recovery Rate of (.*) percent using From Indirect Cost Rate institutional allowance object codes$/ do |percent|
+And /^I create a wildcarded Indirect Cost Recovery Rate of (.*) percent using From Indirect Cost Rate institutional allowance object codes$/ do |percent|
+  credit_object_code = ''
+  debit_object_code = ''
   @indirect_cost_recovery_rate = create IndirectCostRecoveryRateObject
-  @indirect_cost_recovery_rate.create_wildcard_icr_for_specified_institutional_object_codes percent, @from_indirect_cost_rate_debit_object_code, @from_indirect_cost_rate_credit_object_code
+
+  details_collection = @remembered_from_indirect_cost_rate.indirect_cost_recovery_rate_details
+
+  @remembered_from_indirect_cost_rate.indirect_cost_recovery_rate_details.each do |icr_detail|
+    case icr_detail
+      when 'Credit'
+        credit_object_code = icr_detail.object_code
+      when 'Debit'
+        debit_object_code = icr_detail.object_code
+    end
+  end
+
+  @indirect_cost_recovery_rate.create_wildcarded_icr_rate_for_specified_institutional_object_codes percent, debit_object_code, credit_object_code
 end
 
 
-# This method creates the following global data elements:
-# @from_indirect_cost_rate, @from_indirect_cost_rate_debit_object_code, @from_indirect_cost_rate_credit_object_code
-And /^I remember the Indirect Cost Recovery Rate as a From Indirect Cost Rate$/ do
-  @from_indirect_cost_rate = @indirect_cost_recovery_rate.rate_id
-  @from_indirect_cost_rate_debit_object_code = @indirect_cost_recovery_rate.debit_object_code
-  @from_indirect_cost_rate_credit_object_code = @indirect_cost_recovery_rate.credit_object_code
-end
-
-
-# This method creates the following global data elements:
-# @to_indirect_cost_rate, @to_indirect_cost_rate_debit_object_code, @to_indirect_cost_rate_credit_object_code
-And /^I remember the Indirect Cost Recovery Rate as a To Indirect Cost Rate$/ do
-  @to_indirect_cost_rate = @indirect_cost_recovery_rate.rate_id
-  @to_indirect_cost_rate_debit_object_code = @indirect_cost_recovery_rate.debit_object_code
-  @to_indirect_cost_rate_credit_object_code = @indirect_cost_recovery_rate.credit_object_code
-end
-
-
-And /^I edit an active CG account modifying the Indirect Cost Rate to the (From|To) Indirect Cost Rate$/ do |target|
+And /^I remember the Indirect Cost Recovery Rate as the (From|To) Indirect Cost Recovery Rate$/ do |target|
   case target
     when 'From'
-      #ICR to use for the edit of the account being retrieved, needs to be the From value
-      indirect_cost_rate = @from_indirect_cost_rate
-      #account number we do NOT want, in this case the To account so subsequent comparisons do not allow same account to be chosen
-      remembered_account = @remembered_to_account
+      @remembered_from_indirect_cost_recovery_rate = @indirect_cost_recovery_rate
     when 'To'
-      #ICR to use for the edit of the account being retrieved, needs to be the To value
-      indirect_cost_rate = @to_indirect_cost_rate
-      #account number we do NOT want, in this case the From account so subsequent comparisons do not allow same account to be chosen
-      remembered_account = @remembered_from_account
+      @remembered_to_indirect_cost_rate = @indirect_cost_recovery_rate
   end
-
-  #Need to ensure CG account being retrieved does not match existing CG account if it has been populated.
-  if remembered_account.nil?
-    step 'I find an unexpired CG account that has an unexpired continuation account'
-  else
-    step "I find an unexpired CG account that has an unexpired continuation account not matching account number #{remembered_account.number}"
-  end
-  step "I change the Indirect Cost Rate on account #{@account.number} belonging to chart #{@account.chart_code} to #{indirect_cost_rate}"
 end
 
 
-And /^I add the remembered (From|To) account for a Services Object code for amount (.*)$/ do |target, amount|
+And /^I add the remembered (From|To) account for a Services Object Code for amount (.*)$/ do |target, amount|
   case target
     when 'From'
       account_number = @remembered_from_account.number
@@ -71,7 +51,7 @@ And /^I add the remembered (From|To) account for a Services Object code for amou
 end
 
 
-Then /^ICR rates are posted correctly for current month$/ do
+Then /^the Indirect Cost Recovery Rates are posted correctly for current month$/ do
   from_icr_row_found = false
   to_icr_row_found = false
   today_with_slashes = right_now[:date_w_slashes]
@@ -86,16 +66,16 @@ Then /^ICR rates are posted correctly for current month$/ do
     page.find_gl_entries_by_account @remembered_from_account
 
     #get the column identifiers once to be used by both from and to validation
-    object_code_col = page.results_table.keyed_column_index(:object_code)
-    document_type_col = page.results_table.keyed_column_index(:document_type)
-    origin_code_col = page.results_table.keyed_column_index(:origin_code)
-    document_number_col = page.results_table.keyed_column_index(:document_number)
-    amount_col = page.results_table.keyed_column_index(:transaction_ledger_entry_amount)
-    dc_col = page.results_table.keyed_column_index(:debit_credit_code)
-    transaction_date_col = page.results_table.keyed_column_index(:transaction_date)
+    results_table = page.results_table
+    object_code_col = results_table.keyed_column_index(:object_code)
+    document_type_col = results_table.keyed_column_index(:document_type)
+    origin_code_col = results_table.keyed_column_index(:origin_code)
+    document_number_col = results_table.keyed_column_index(:document_number)
+    amount_col = results_table.keyed_column_index(:transaction_ledger_entry_amount)
+    dc_col = results_table.keyed_column_index(:debit_credit_code)
+    transaction_date_col = results_table.keyed_column_index(:transaction_date)
 
     page.results_table.rest.each do |glerow|
-
       if glerow[object_code_col].text.strip == '1000'
         if glerow[document_type_col].text.strip == 'ICR'
           if glerow[origin_code_col].text.strip == 'MF' &&
@@ -113,7 +93,6 @@ Then /^ICR rates are posted correctly for current month$/ do
     #validate To Account has ICR GL entry
     page.find_gl_entries_by_account @remembered_to_account
     page.results_table.rest.each do |glerow|
-
       if glerow[object_code_col].text.strip == '1000'
         if glerow[document_type_col].text.strip =='ICR'
           if glerow[origin_code_col].text.strip == 'MF' &&
