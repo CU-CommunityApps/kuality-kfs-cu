@@ -70,7 +70,7 @@ When /^I save an Account document with only the ([^"]*) field populated$/ do |fi
       budget_record_level_code:   'C - Consolidation',#TODO config?
       sufficient_funds_code:      'C - Consolidation',#TODO config?
       expense_guideline_text:     'expense guideline text',
-      income_guideline_txt: 'incomde guideline text',
+      income_guideline_text: 'incomde guideline text',
       purpose_text:         'purpose text',
       labor_benefit_rate_cat_code: 'CC'#TODO config?
   }
@@ -82,21 +82,6 @@ When /^I save an Account document with only the ([^"]*) field populated$/ do |fi
   end
 
   @account = create AccountObject, default_fields.merge({press: :save})
-  step 'I add the account to the stack'
-end
-
-And /^I edit an Account$/ do
-  visit(MainPage).account
-  on AccountLookupPage do |page|
-    page.search
-    page.edit_random
-  end
-  on AccountPage do |page|
-    @account = make AccountObject
-    page.description.set random_alphanums(40, 'AFT')
-    @account.document_id = page.document_id
-    @account.description = page.description
-  end
   step 'I add the account to the stack'
 end
 
