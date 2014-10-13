@@ -202,7 +202,7 @@ end
 # a NULL continuation account.
 And /^I find an unexpired CG Account not matching the remembered From Account that has an unexpired continuation account$/ do
   default_chart = @remembered_from_account.chart_code
-  account_not_to_match @remembered_from_account.number
+  account_not_to_match = @remembered_from_account.number
   accounts_hash = get_kuali_business_objects('KFS-COA','Account',"chartOfAccountsCode=#{default_chart}&subFundGroup.fundGroupCode=CG&closed=N")
   accounts = accounts_hash['org.kuali.kfs.coa.businessobject.Account']
 
@@ -228,23 +228,14 @@ end
 And /^I edit the Indirect Cost Rate on the Account to the remembered (From|To) Indirect Cost Rate$/ do |target|
   case target
     when 'From'
-      indirect_cost_rate = @remembered_from_indirect_cost_rate
+      indirect_cost_rate = @remembered_from_indirect_cost_recovery_rate.rate_id
     when 'To'
-      indirect_cost_rate = @remembered_to_indirect_cost_rate
+      indirect_cost_rate = @remembered_to_indirect_cost_recovery_rate.rate_id
   end
 
-  visit(MainPage).account
-  on AccountLookupPage do |page|
-    page.chart_code.fit     @account.chart_code
-    page.account_number.fit @account.number
-    page.search
-    page.wait_for_search_results
-    page.edit_random
-  end
   on AccountPage do |page|
-    page.description.set random_alphanums(40, 'AFT')
     page.account_indirect_cost_recovery_type_code.fit '01'
-    page.indirect_cost_rate.fit indirect_cost_rate.rate_id
+    page.indirect_cost_rate.fit indirect_cost_rate
   end
 end
 
@@ -255,5 +246,7 @@ And /^I remember the Account as the (From|To) Account$/ do |target|
       @remembered_from_account = @account
     when 'To'
       @remembered_to_account = @account
+    else
+      pending "I don't know how to remember a \" #{target} \" Account."
   end
 end

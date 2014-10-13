@@ -43,6 +43,7 @@ Feature: Contracts and Grants
     And   I am logged in as a KFS User
     And   I remember the logged in user
     And   I find an unexpired CG Account that has an unexpired continuation account
+    And   I edit the Account
     And   I edit the Indirect Cost Rate on the Account to the remembered From Indirect Cost Rate
     And   I remember the Account as the From Account
     And   I submit the Account document
@@ -50,6 +51,7 @@ Feature: Contracts and Grants
     And   I route the Account document to final
     And   I am logged in as the remembered user
     And   I find an unexpired CG Account not matching the remembered From Account that has an unexpired continuation account
+    And   I edit the Account
     And   I edit the Indirect Cost Rate on the Account to the remembered To Indirect Cost Rate
     And   I remember the Account as the To Account
     And   I submit the Account document
@@ -64,4 +66,4 @@ Feature: Contracts and Grants
     And   the Distribution Of Income And Expense document goes to ENROUTE
     And   I route the Distribution Of Income And Expense document to final
     And   Nightly Batch Jobs run
-    Then  the Indirect Cost Recovery Rates are posted correctly for current month
+    Then  the Indirect Cost Recovery Rates are posted correctly for the current month
