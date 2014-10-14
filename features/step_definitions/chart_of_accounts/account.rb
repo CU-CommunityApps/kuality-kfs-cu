@@ -188,7 +188,7 @@ And /^I use these Accounts:$/ do |table|
       @account = make AccountObject
       @account.number = page.results_table[1][page.column_index(:account_number)].text
       @account.chart_code = page.results_table[1][page.column_index(:chart_code)].text
-      @accounts = @accounts.nil? ? [@account] : @accounts + [@account]
+      step 'I add the account to the stack'
     end
   end
 
