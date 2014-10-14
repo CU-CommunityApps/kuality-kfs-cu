@@ -23,7 +23,7 @@ Feature: KFS Fiscal Officer Account Creation
   Scenario: KFS User Initiates an Account document with only a description field
     Given I am logged in as a KFS User
     When  I save an Account document with only the Description field populated
-    Then  the Account document goes to SAVED
+    Then  the document status is SAVED
     
   @KFSQA-606 @Bug @AcctEdit @KFSPTS-119 @hare
   Scenario: Account Edit Sub Fund Program case sensitive test on Submit
