@@ -29,7 +29,7 @@ Feature: Contracts and Grants
     Then  I should only see the Object Code document with the searched for CG Reporting Code in the object code search results
 
 
-  @KFSQA-916 @CG @smoke @nightly-jobs @wip
+  @KFSQA-916 @CG @smoke @nightly-jobs @coral
   Scenario: Indirect Cost Recovery Rate can use wildcards as debit and credit and indirect costs post with new rates
     Given I am logged in as a KFS Contracts & Grants Manager
     And   I create a wildcarded Indirect Cost Recovery Rate of 0 percent using random institutional allowance object codes
