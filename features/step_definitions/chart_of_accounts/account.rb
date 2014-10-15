@@ -417,8 +417,11 @@ And /^I edit the Indirect Cost Rate on the Account to the remembered (From|To) I
   end
 
   on AccountPage do |page|
-    page.account_indirect_cost_recovery_type_code.fit '01'
-    page.indirect_cost_rate.fit indirect_cost_rate
+    #update the account object with changes and then use that object to edit the page
+    @account.account_icr_type_code = '01'
+    @account.indirect_cost_rate = indirect_cost_rate
+    page.account_icr_type_code.fit @account.account_icr_type_code
+    page.indirect_cost_rate.fit @account.indirect_cost_rate
   end
 end
 

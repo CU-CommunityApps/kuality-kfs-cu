@@ -53,14 +53,8 @@ Then /^the Indirect Cost Recovery Rates are posted correctly for the current mon
   from_icr_row_found = false
   to_icr_row_found = false
 
-  #date in this format is used to validate the transaction date value
-  today_with_slashes = right_now[:date_w_slashes]
-
-  #date in format yyymmdd is entered by the batch processes as the document number
-  #want same value as the transaction date just in a different format so we are creating
-  #the date value with format of yyyymmdd from same date with forward slashes format
-  split_today_with_slashes_array = today_with_slashes.to_s.split( /\/ */, 3)
-  today_as_yyyymmdd = split_today_with_slashes_array[2] + split_today_with_slashes_array[0] + split_today_with_slashes_array[1]
+  #Need to compare dates as numeric values, basis to use for the date validations
+  today_as_numeric = (Date::strptime(right_now[:date_w_slashes], "%m/%d/%Y")).to_time.to_i
 
   visit(MainPage).general_ledger_entry
   on GeneralLedgerEntryLookupPage do |page|
@@ -83,8 +77,8 @@ Then /^the Indirect Cost Recovery Rates are posted correctly for the current mon
           if glerow[origin_code_col].text.strip == 'MF' &&
              glerow[amount_col].text.strip == '0.00' &&
              glerow[dc_col].text.strip == 'C' &&
-             glerow[document_number_col].text.strip <= today_as_yyyymmdd &&
-             glerow[transaction_date_col].text.strip <= today_with_slashes
+             (Date::strptime((glerow[document_number_col].text.strip), "%Y%m%d")).to_time.to_i <= today_as_numeric &&
+             (Date::strptime((glerow[transaction_date_col].text.strip), "%m/%d/%Y")).to_time.to_i <= today_as_numeric
             from_icr_row_found = true
             break
           end #validation step
@@ -103,8 +97,8 @@ Then /^the Indirect Cost Recovery Rates are posted correctly for the current mon
           if glerow[origin_code_col].text.strip == 'MF' &&
               glerow[amount_col].text.strip == '10.00' &&
               glerow[dc_col].text.strip == 'C' &&
-              glerow[document_number_col].text.strip <= today_as_yyyymmdd &&
-              glerow[transaction_date_col].text.strip <= today_with_slashes
+              (Date::strptime((glerow[document_number_col].text.strip), "%Y%m%d")).to_time.to_i <= today_as_numeric &&
+              (Date::strptime((glerow[transaction_date_col].text.strip), "%m/%d/%Y")).to_time.to_i <= today_as_numeric
             to_icr_row_found = true
             break
           end #validation step
