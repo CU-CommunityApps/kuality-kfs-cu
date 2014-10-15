@@ -349,3 +349,90 @@ Then /^the values submitted for the Account document persist$/ do
   icra_collection_on_page = @account.icr_accounts.updates_pulled_from_page :old
   icra_collection_on_page.each_with_index { |icra, i| icra.should == @account.icr_accounts[i].to_update }
 end
+
+
+# Active CG account needs to be non-expired account AND needs to have non-expired continuation account
+# Fastest way to obtain this type of account is to have the method look for an account with a NULL account expiration
+# date and a NULL continuation account.
+And /^I find an unexpired CG Account that has an unexpired continuation account$/ do
+  default_chart = get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
+  accounts_hash = get_kuali_business_objects('KFS-COA','Account',"chartOfAccountsCode=#{default_chart}&subFundGroup.fundGroupCode=CG&closed=N")
+  accounts = accounts_hash['org.kuali.kfs.coa.businessobject.Account']
+
+  unless accounts.nil? || accounts.empty?
+    valid_account_not_found = true
+    index = 0
+
+    while valid_account_not_found & (index < accounts.size)
+      expiration_date = accounts[index]['accountExpirationDate'][0]
+      continuation_account = accounts[index]['continuationAccountNumber'][0]
+      if expiration_date.eql?('null') && continuation_account.eql?('null')
+        @account = make AccountObject
+        @account.absorb_webservice_item! accounts[index]
+        valid_account_not_found = false
+      end
+      index += 1
+    end #while-loop
+  end #if-statement
+
+
+end
+
+
+
+# Active CG account needs to be non-expired account AND needs to have non-expired continuation account
+# Fastest way to get this data is to have the method look for an account with a NULL account expiration date and
+# a NULL continuation account.
+And /^I find an unexpired CG Account not matching the remembered From Account that has an unexpired continuation account$/ do
+  default_chart = @remembered_from_account.chart_code
+  account_not_to_match = @remembered_from_account.number
+  accounts_hash = get_kuali_business_objects('KFS-COA','Account',"chartOfAccountsCode=#{default_chart}&subFundGroup.fundGroupCode=CG&closed=N")
+  accounts = accounts_hash['org.kuali.kfs.coa.businessobject.Account']
+
+  unless accounts.nil? || accounts.empty?
+    valid_account_not_found = true
+    index = 0
+
+    while valid_account_not_found & (index < accounts.size)
+      expiration_date = accounts[index]['accountExpirationDate'][0]
+      continuation_account = accounts[index]['continuationAccountNumber'][0]
+      account_number = accounts[index]['accountNumber'][0]
+      if expiration_date.eql?('null') && continuation_account.eql?('null') && !(account_number.eql?(account_not_to_match))
+        @account = make AccountObject
+        @account.absorb_webservice_item! accounts[index]
+        valid_account_not_found = false
+      end
+      index += 1
+    end #while-loop
+  end #if-statement
+end
+
+
+And /^I edit the Indirect Cost Rate on the Account to the remembered (From|To) Indirect Cost Rate$/ do |target|
+  case target
+    when 'From'
+      indirect_cost_rate = @remembered_from_indirect_cost_recovery_rate.rate_id
+    when 'To'
+      indirect_cost_rate = @remembered_to_indirect_cost_recovery_rate.rate_id
+  end
+
+  on AccountPage do |page|
+    #update the account object with changes and then use that object to edit the page
+    @account.account_icr_type_code = '01'
+    @account.indirect_cost_rate = indirect_cost_rate
+    page.account_icr_type_code.fit @account.account_icr_type_code
+    page.indirect_cost_rate.fit @account.indirect_cost_rate
+  end
+end
+
+
+And /^I remember the Account as the (From|To) Account$/ do |target|
+  case target
+    when 'From'
+      @remembered_from_account = @account
+    when 'To'
+      @remembered_to_account = @account
+    else
+      pending "I don't know how to remember a \" #{target} \" Account."
+  end
+end
