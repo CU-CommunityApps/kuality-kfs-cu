@@ -51,12 +51,12 @@ Feature: Sub Account
       | FINAL     |
 
 
-  @KFSQA-905 @COA, @SubAcct @CG @smoke @wip
+  @KFSQA-905 @COA, @SubAcct @CG @smoke @slug @wip
   Scenario: Route Sub-Account with type CS to Contracts & Grants responsibility
     Given I am logged in as a KFS User who is not a Contracts & Grants Processor
     And   I remember the logged in user
     And   I create a Sub-Account using a CG account with a CG Account Responsibility ID in range 1 to 8
-    And   I remember the Sub-Account created
+    And   I remember the Sub-Account
     And   I submit the Sub-Account document
     And   the Sub-Account document goes to ENROUTE
     And   I route the Sub-Account document to final
