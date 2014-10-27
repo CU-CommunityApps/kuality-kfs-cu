@@ -314,7 +314,7 @@ And /^I update the Account's Contracts and Grants tab with the following changes
 end
 
 And /^I copy the old Account's Indirect Cost Recovery tab to the new Account$/ do
-  update = @accounts[-2].icr_accounts.to_update
+  update = @accounts[-2].icr_accounts.to_hash
   @account.edit update
   @accounts[-1] = @account # Update that stack!
 end
@@ -339,7 +339,8 @@ Then /^the values submitted for the Account document persist$/ do
         value_in_memory = @account.instance_variable_get("@#{cfda_field}")
 
         if values_on_page[cfda_field].is_a? String
-          values_on_page[cfda_field].eql_ignoring_whitespace?(value_in_memory).should be true
+          # We'll compare case-insensitively because KFS will correct most values accordingly post-submission.
+          values_on_page[cfda_field].upcase.eql_ignoring_whitespace?(value_in_memory.upcase).should be true
         else
           values_on_page[cfda_field].should == value_in_memory
         end
@@ -347,7 +348,7 @@ Then /^the values submitted for the Account document persist$/ do
     end
   end
   icra_collection_on_page = @account.icr_accounts.updates_pulled_from_page :old
-  icra_collection_on_page.each_with_index { |icra, i| icra.should == @account.icr_accounts[i].to_update }
+  icra_collection_on_page.each_with_index { |icra, i| icra.should == @account.icr_accounts[i].to_hash }
 end
 
 
