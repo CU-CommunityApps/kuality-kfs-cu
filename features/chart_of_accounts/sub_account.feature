@@ -56,14 +56,18 @@ Feature: Sub Account
     Given I am logged in as a KFS User who is not a Contracts & Grants Processor
     And   I remember the logged in user
     And   I create a Sub-Account using a CG account with a CG Account Responsibility ID in range 1 to 8
-    And   I remember the Sub-Account
     And   I submit the Sub-Account document
     And   the Sub-Account document goes to ENROUTE
     And   I route the Sub-Account document to final
     And   I am logged in as the remembered user
-    And   I edit the remembered Sub-Account
-    And   on the Sub-Account document I modify the Sub-Account Type Code to CS
-    And   on the Sub-Account document I modify the CG Cost Sharing Account Number to a cost sharing account
-    And   on the Sub-Account document I modify the current Indirect Cost Recovery Account to a contract college general appropriated Account
+    #the next step is needed to populate the Indirect Cost Recovery Accounts array which does not have data until after submit
+    And   I display the Sub-Account document
+    And   I lookup the Sub-Account I want to edit
+    And   I edit the Sub-Account with the following changes:
+      | Description                    | Random               |
+      | Sub Account Type Code          | CS                   |
+      | CG Cost Sharing Account Number | Cost Sharing Account |
+    And   I edit the current Indirect Cost Recovery Account on the Sub-Account with the following changes:
+      | Current Indirect Cost Recovery Account | Contract College General Appropriated Account |
     And   I submit the Sub-Account document
     Then  the Sub-Account document routes to the Award node

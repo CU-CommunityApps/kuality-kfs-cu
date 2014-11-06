@@ -1,56 +1,109 @@
 And /^I create a Sub-Account using a CG account with a CG Account Responsibility ID in range (.*) to (.*)$/ do |lower_limit, upper_limit|
-  account_number_hash = get_kuali_business_objects('KFS-COA','Account',"chartOfAccountsCode=#{get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)}&subFundGroup.fundGroupCode=CG&closed=N&active=Y&accountExpirationDate=NULL&}")
-  accounts = account_number_hash['org.kuali.kfs.coa.businessobject.Account']
+  accounts = []
+  counter = lower_limit.to_i
 
-  unless accounts.nil? || accounts.empty?
-    valid_account_not_found = true
-    index = 0
-    while valid_account_not_found & (index < accounts.size)
-      cg_responsibility_id = accounts[index]['contractsAndGrantsAccountResponsibilityId'][0]
-      account_number = accounts[index]['accountNumber'][0]
-      if lower_limit <= cg_responsibility_id && cg_responsibility_id <= upper_limit
-        options = {
-            chart_code:               get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
-            account_number:           account_number,
-            name:                     'Test route sub-acct type CS to CG Respon',
-            sub_account_type_code:    'EX',
-            press:                    'save'
+  #get all of the accounts that are in the range we are looking for
+  while counter <= upper_limit.to_i do
+    account_number_hash = get_kuali_business_objects('KFS-COA','Account',"chartOfAccountsCode=#{get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)}&subFundGroup.fundGroupCode=CG&closed=N&active=Y&accountExpirationDate=NULL&contractsAndGrantsAccountResponsibilityId=#{counter}&}")
+    accounts.concat(account_number_hash['org.kuali.kfs.coa.businessobject.Account'])
+    counter += 1
+  end
+
+  options = {
+      chart_code:               get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
+      account_number:           (accounts.sample)['accountNumber'][0],
+      name:                     'Test route sub-acct type CS to CG Respon',
+      sub_account_type_code:    'EX',
+      press:                    'save'
+  }
+  @sub_account = create SubAccountObject, options
+end
+
+
+And /^I edit the Sub-Account with the following changes:$/ do |edits|
+  edits = edits.rows_hash.snake_case_key
+  new_key_value_pairs = Hash.new
+
+  #format the edits correctly for the hash key-value pairs
+  edits.each do |key, current_value|
+    #add the correct values for the specified keys
+    case current_value
+      when 'Random'
+        case key
+          when :description
+            existing_key_value_pair = { description:  random_alphanums(37, 'AFT') }
+          else
+            #No change, do nothing and use what was passed to us
+        end
+      when 'CS'
+        existing_key_value_pair = { sub_account_type_code:  'CS' }
+      when 'Cost Sharing Account'
+        new_key_value_pairs = {
+          cost_sharing_chart_of_accounts_code:  get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
+          cost_sharing_account_number:          get_account_of_type('Cost Sharing Account')
         }
-        @sub_account = create SubAccountObject, options
-        valid_account_not_found = false
-      end
-      index += 1
-    end #while-loop
-  end #unless-statement
-end
+      else
+        #No change, do nothing and use what was passed to us
+    end
 
+    if not(existing_key_value_pair.nil?)
+      edits.merge!(existing_key_value_pair)
+    end
 
-And /^on the Sub-Account document I modify the Sub-Account Type Code to (.*)$/ do |sub_account_type_code_value|
-  (on SubAccountPage).sub_account_type_code.select sub_account_type_code_value
-end
+    #remove the key-value pairs that do not pertain
+    case current_value
+      when 'Cost Sharing Account'
+        edits.delete(key)
+    end
+  end #for-each
 
-
-And /^on the Sub-Account document I modify the CG Cost Sharing Account Number to a cost sharing account$/ do
-  cost_share_account_number_hash = get_kuali_business_objects('KFS-COA','Account',"chartOfAccountsCode=#{get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)}&accountTypeCode=CC&subFundGroup.fundGroupCode=CG&accountName=*cost share*&}")
-  cost_share_acct_num = ((cost_share_account_number_hash['org.kuali.kfs.coa.businessobject.Account']).sample)['accountNumber'][0]
+  # could not merge new values into existing hash while iterating, have to do it outside of loop
+  edits.merge!(new_key_value_pairs)
 
   on SubAccountPage do |page|
-    page.cost_sharing_chart_of_accounts_code.select_value   get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
-    page.cost_sharing_account_number.fit                    cost_share_acct_num
+    @sub_account.edit(edits)
   end
 end
 
 
-And /^on the Sub-Account document I modify the current Indirect Cost Recovery Account to a contract college general appropriated Account$/ do
-  general_appropriated_accounts_hash = get_kuali_business_objects('KFS-COA','Account',"chartOfAccountsCode=#{get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)}&accountTypeCode=CC&subFundGroup.fundGroupCode=GN&subFundGroupCode=GNAPPR&}")
+And /^I edit the current Indirect Cost Recovery Account on the Sub-Account with the following changes:$/ do |edits|
+  icr_accounts = Array.new
 
-  on SubAccountPage do |page|
-    on IndirectCostRecoveryAccountsTab do |tab|
-      #If there are no Indirect Cost Recovery Accounts in the array, bypass the edit; otherwise, edit the first element in the arrray
-      unless tab.current_icr_accounts_count == 0
-        tab.update_chart_of_accounts_code.select_value     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
-        tab.update_account_number.fit                      ((general_appropriated_accounts_hash['org.kuali.kfs.coa.businessobject.Account']).sample)['accountNumber'][0]
+  if  @sub_account.icr_accounts.length >= 1
+    edits = edits.rows_hash.snake_case_key
+
+    edits.each do |key, current_value|
+      #add the correct values for the specified keys
+      new_key_value_pairs = Hash.new
+      case current_value
+        when 'Contract College General Appropriated Account'
+          new_key_value_pairs = {
+              chart_of_accounts_code: get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
+              account_number:         get_account_of_type('General Appropriated Account'),
+              line_number:            0   #current value is considered to be the first value
+          }
+          icr_accounts.push(new_key_value_pairs)
+        else
+          #No change, do nothing and use what was passed to us
+      end
+      #remove the key-value pairs that do not pertain
+      case current_value
+        when 'Contract College General Appropriated Account'
+          edits.delete(key)
       end
     end
+
+    icr_account_edits = Hash.new
+    icr_account_edits = {
+        icr_accounts:   icr_accounts
+    }
+
+    # could not merge new values into existing hash while iterating, have to do it outside of loop
+    edits.merge!(icr_account_edits)
+
+    on SubAccountPage do |page|
+      @sub_account.edit(edits)
+    end
+  #implied else of doing nothing, no icr accounts present on the sub-account
   end
 end
