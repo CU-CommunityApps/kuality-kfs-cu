@@ -115,4 +115,3 @@ Then /^the Payee Name should match$/ do
   payee_name = "Page, Marcia A." # should get this from web services
   on(PaymentInformationTab).payee_name.should == payee_name
 end
-
