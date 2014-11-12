@@ -92,15 +92,15 @@ class SupplierDiversityLineObjectCollection < LineObjectCollection
       case target
         when :old
           pulled_supplier_diversity = {
-              type:                          vp.old_supplier_diversity_type(i),
-              certification_expiration_date: vp.old_supplier_diversity_certification_expiration_date(i),
-              active:                        yesno2setclear(vp.old_supplier_diversity_active(i))
+              type:                          vp.supplier_diversity_type_old(i),
+              certification_expiration_date: vp.supplier_diversity_certification_expiration_date_old(i),
+              active:                        yesno2setclear(vp.supplier_diversity_active_old(i))
           }
         when :new
           pulled_supplier_diversity = {
-              type:                          vp.update_supplier_diversity_type(i).text.strip,
-              certification_expiration_date: vp.update_supplier_diversity_certification_expiration_date(i).value.strip,
-              active:                        yesno2setclear(vp.update_supplier_diversity_active(i).value.strip)
+              type:                          vp.supplier_diversity_type_new(i),
+              certification_expiration_date: vp.supplier_diversity_certification_expiration_date_new(i),
+              active:                        yesno2setclear(vp.supplier_diversity_active_new(i))
           }
       end
     end
