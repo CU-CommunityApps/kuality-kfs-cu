@@ -47,7 +47,7 @@ Feature: GLPE validation tests for Purchase Orders
     And   I void The Purchase Order
     And   The GLPE from the Purchase Order are reversed by the void
 
-  @KFSQA-919 @PO @PURAP @tortoise @wip
+  @KFSQA-919 @PO @PURAP @tortoise
   Scenario: Contract Managers can cancel purchase order documents.
     Given I am logged in as an e-SHOP User
     And   I create the Requisition document with following specifications:
