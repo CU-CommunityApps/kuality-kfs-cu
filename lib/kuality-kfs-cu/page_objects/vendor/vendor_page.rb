@@ -133,7 +133,7 @@ class VendorPage
 
   # update supplier diversity
   action(:supplier_diversity_type_update) { |i=0, b|
-    b.supplier_diversity_tab.span(id: "document.newMaintainableObject.vendorHeader.vendorSupplierDiversities[#{i}].vendorSupplierDiversityCode.div")
+    b.supplier_diversity_tab.select(id: "document.newMaintainableObject.vendorHeader.vendorSupplierDiversities[#{i}].vendorSupplierDiversityCode")
   }
   action(:supplier_diversity_certification_expiration_date_update) { |i=0, b|
     b.supplier_diversity_tab.text_field(id: "document.newMaintainableObject.vendorHeader.vendorSupplierDiversities[#{i}].extension.vendorSupplierDiversityExpirationDate")
