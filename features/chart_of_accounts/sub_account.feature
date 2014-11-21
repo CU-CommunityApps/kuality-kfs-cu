@@ -51,7 +51,7 @@ Feature: Sub Account
       | FINAL     |
 
 
-  @KFSQA-905 @COA, @SubAcct @CG @smoke @slug @wip
+  @KFSQA-905 @COA, @SubAcct @CG @smoke @coral @wip
   Scenario: Route Sub-Account with type CS to Contracts & Grants responsibility
     Given I am logged in as a KFS User who is not a Contracts & Grants Processor
     And   I remember the logged in user
@@ -64,10 +64,10 @@ Feature: Sub Account
     And   I display the Sub-Account document
     And   I lookup the Sub-Account I want to edit
     And   I edit the Sub-Account with the following changes:
-      | Description                    | Random               |
-      | Sub Account Type Code          | CS                   |
-      | CG Cost Sharing Account Number | Cost Sharing Account |
+      | Description                 | Random               |
+      | Sub Account Type Code       | CS                   |
+      | Cost Sharing Account Number | Cost Sharing Account |
     And   I edit the current Indirect Cost Recovery Account on the Sub-Account with the following changes:
-      | Current Indirect Cost Recovery Account | Contract College General Appropriated Account |
+      | Account Number | Contract College General Appropriated Account |
     And   I submit the Sub-Account document
     Then  the Sub-Account document routes to the Award node
