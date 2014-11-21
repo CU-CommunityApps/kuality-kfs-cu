@@ -64,11 +64,11 @@ class VendorPage
   value(:excess_liability_umb_expiration_date_new) { |i=0, b| b.excess_liability_umb_expiration_date_update(i).exists? ? b.excess_liability_umb_expiration_date_update(i).value : b.excess_liability_umb_expiration_date_readonly(i) }
   value(:health_offset_lic_expiration_date_new) { |i=0, b| b.health_offset_lic_expiration_date_update(i).exists? ? b.health_offset_lic_expiration_date_update(i).value : b.health_offset_lic_expiration_date_readonly(i) }
   value(:insurance_note_new) { |i=0, b| b.insurance_note_update(i).exists? ? b.insurance_note_update(i).value : b.insurance_note_readonly(i) }
-  value(:insurance_requirements_complete_new) { |i=0, b| b.insurance_requirements_complete_update(i).exists? ? b.insurance_requirements_complete_update(i).selected_options.first.value : b.insurance_requirements_complete_readonly(i) }
-  value(:cornell_additional_ins_ind_new) { |i=0, b| b.cornell_additional_ins_ind_update(i).exists? ? b.cornell_additional_ins_ind_update(i).selected_options.first.value : b.cornell_additional_ins_ind_readonly(i) }
-  value(:health_offsite_catering_lic_req_new) { |i=0, b| b.health_offsite_catering_lic_req_update(i).exists? ? b.health_offsite_catering_lic_req_update(i).selected_options.first.value : b.health_offsite_catering_lic_req_readonly(i) }
+  value(:insurance_requirements_complete_new) { |i=0, b| b.insurance_requirements_complete_update(i).exists? ? b.insurance_requirements_complete_update(i).selected_options.first.text : b.insurance_requirements_complete_readonly(i) }
+  value(:cornell_additional_ins_ind_new) { |i=0, b| b.cornell_additional_ins_ind_update(i).exists? ? b.cornell_additional_ins_ind_update(i).selected_options.first.text : b.cornell_additional_ins_ind_readonly(i) }
+  value(:health_offsite_catering_lic_req_new) { |i=0, b| b.health_offsite_catering_lic_req_update(i).exists? ? b.health_offsite_catering_lic_req_update(i).selected_options.first.text : b.health_offsite_catering_lic_req_readonly(i) }
   value(:insurance_requirement_indicator_new) { |i=0, b| b.insurance_requirement_indicator_update(i).exists? ? b.insurance_requirement_indicator_update(i).value : b.insurance_requirement_indicator_readonly(i) }
-  value(:default_payment_method_new) { |i=0, b| b.default_payment_method_update(i).exists? ? b.default_payment_method_update(i).selected_options.first.value : b.default_payment_method_readonly(i) }
+  value(:default_payment_method_new) { |i=0, b| b.default_payment_method_update(i).exists? ? b.default_payment_method_update(i).selected_options.first.text : b.default_payment_method_readonly(i) }
 
   # old insurance
   element(:w9_received_date_old) { |b| b.frm.span(id: 'document.oldMaintainableObject.vendorHeader.extension.vendorW9ReceivedDate.div').text.strip }
@@ -102,7 +102,7 @@ class VendorPage
   element(:method_of_po_transmission_update) { |i=0, b| b.addresses_tab.select(id: "document.newMaintainableObject.vendorAddresses[#{i}].extension.purchaseOrderTransmissionMethodCode") }
   value(:method_of_po_transmission_old) { |i=0, b| b.addresses_tab.span(id: "document.oldMaintainableObject.vendorAddresses[#{i}].extension.purchaseOrderTransmissionMethodCode.div").text.strip }
   value(:method_of_po_transmission_readonly) { |i=0, b| b.addresses_tab.span(id: "document.newMaintainableObject.vendorAddresses[#{i}].extension.purchaseOrderTransmissionMethodCode.div").text.strip }
-  value(:method_of_po_transmission_new) { |i=0, b| b.method_of_po_transmission_update(i).exists? ? b.method_of_po_transmission_update(i).selected_options.first.value : b.method_of_po_transmission_readonly(i) }
+  value(:method_of_po_transmission_new) { |i=0, b| b.method_of_po_transmission_update(i).exists? ? b.method_of_po_transmission_update(i).selected_options.first.text : b.method_of_po_transmission_readonly(i) }
 
   value(:vendor_address_generated_identifier) do |i=0, b|
     b.addresses_tab.span(id: "vendorAddresses[#{i}].extension.vendorAddressGeneratedIdentifier.div")
@@ -150,7 +150,7 @@ class VendorPage
   value(:supplier_diversity_active_readonly) { |i=0, b| b.supplier_diversity_tab.span(id: "document.newMaintainableObject.vendorHeader.vendorSupplierDiversities[#{i}].active.div").text.strip }
 
   # new supplier diversity
-  value(:supplier_diversity_type_new) { |i=0, b| b.supplier_diversity_type_update(i).exists? ? b.supplier_diversity_type_update(i).selected_options.first.value : b.supplier_diversity_type_readonly(i) }
+  value(:supplier_diversity_type_new) { |i=0, b| b.supplier_diversity_type_update(i).exists? ? b.supplier_diversity_type_update(i).selected_options.first.text : b.supplier_diversity_type_readonly(i) }
   value(:supplier_diversity_certification_expiration_date_new) { |i=0, b| b.supplier_diversity_certification_expiration_date_update(i).exists? ? b.supplier_diversity_certification_expiration_date_update(i).value : b.supplier_diversity_certification_expiration_date_readonly(i) }
   value(:supplier_diversity_active_new) { |i=0, b| b.supplier_diversity_active_update(i).exists? ? b.supplier_diversity_active_update(i).value : b.supplier_diversity_active_readonly(i) }
 
