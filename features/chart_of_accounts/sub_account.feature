@@ -9,6 +9,9 @@ Feature: Sub Account
   [KFSQA-591] As a KFS CG Processor Role I want to Approve Sub-Account Documents with
               Sub-Account Type “CS” because this follows Cornell standard operating policies.
 
+  [KFSQA-905] Route Sub-Account with type CS to CG responsibility
+
+
   @KFSQA-590 @SubAcct @Bug @KFSMI-7964 @hare
   Scenario: Verify "null" does not display in the ICR ID field when I create a Sub-Account
     Given I am logged in as a KFS Chart Manager
@@ -48,3 +51,23 @@ Feature: Sub Account
       | FINAL     |
 
 
+  @KFSQA-905 @COA, @SubAcct @CG @smoke @coral @wip
+  Scenario: Route Sub-Account with type CS to Contracts & Grants responsibility
+    Given I am logged in as a KFS User who is not a Contracts & Grants Processor
+    And   I remember the logged in user
+    And   I create a Sub-Account using a CG account with a CG Account Responsibility ID in range 1 to 8
+    And   I submit the Sub-Account document
+    And   the Sub-Account document goes to ENROUTE
+    And   I route the Sub-Account document to final
+    And   I am logged in as the remembered user
+    #the next step is needed to populate the Indirect Cost Recovery Accounts array which does not have data until after submit
+    And   I display the Sub-Account document
+    And   I lookup the Sub-Account I want to edit
+    And   I edit the Sub-Account with the following changes:
+      | Description                 | Random               |
+      | Sub Account Type Code       | CS                   |
+      | Cost Sharing Account Number | Cost Sharing Account |
+    And   I edit the current Indirect Cost Recovery Account on the Sub-Account with the following changes:
+      | Account Number | Contract College General Appropriated Account |
+    And   I submit the Sub-Account document
+    Then  the Sub-Account document routes to the Award node
