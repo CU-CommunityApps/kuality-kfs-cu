@@ -1,8 +1,7 @@
 Feature: FP Auditing
 
   [KFSQA-631] Cornell University requires an audit trail of changes made by an approver to an eDoc Accounting Line.
-  These changes will be stored recorded in the eDoc Notes and Attachment Tab.
-
+              These changes will be stored recorded in the eDoc Notes and Attachment Tab.
   [KFSQA-747] Display approver eDoc Accounting Line changes in Notes and Attachment Tab for DV and ICA.
 
 
@@ -14,7 +13,7 @@ Feature: FP Auditing
     And     I submit the Budget Adjustment document
     And     the Budget Adjustment document goes to ENROUTE
     And     I am logged in as a Source Account Fiscal Officer
-    And     I view my Budget Adjustment document
+    And     I view the Budget Adjustment document
     And     on the Budget Adjustment document I modify the From Object Code line item 0 to be 4486
     And     I save the Budget Adjustment document
     Then    The Notes and Attachment Tab displays "Accounting Line changed from"
@@ -77,13 +76,13 @@ Feature: FP Auditing
     Given   I am logged in as a KFS User
     And     I start an empty <document> document
     And     I add a From accounting line to the <document> document with:
-            | from account number |<from account number>|
-            |from object code     |<from object code>   |
-            |from amount          |<from amount>        |
+            | from account number  | <from account number> |
+            | from object code     | <from object code>    |
+            | from amount          | <from amount>         |
     And     I add a To accounting line to the <document> document with:
-            |to account number|<to account number>|
-            |to object code   |<to object code>   |
-            |to amount        |<to amount>        |
+            | to account number | <to account number> |
+            | to object code    | <to object code>    |
+            | to amount         | <to amount>         |
     And     I submit the <document> document
     And     the <document> document goes to ENROUTE
     And     I am logged in as a <From or To> Account Fiscal Officer
@@ -93,10 +92,10 @@ Feature: FP Auditing
     And     I approve the <document> document
     Then    The Notes and Attachment Tab displays "Accounting Line changed from"
   Examples:
-|  document                           |from account number|from object code| from amount| to account number | to object code| to amount | From or To | line item| modify object code  |
-|  Distribution Of Income And Expense | G003704           | 4480           | 255.55     | G013300           | 4480          | 255.55    | From       |  0       | 4486                |
-|  Internal Billing                   | G003704           | 4023           | 950000.67  | G013300           | 4023          | 950000.67 | To         |  0       | 4024                |
-|  Transfer Of Funds                  | A763306           | 8070           | 250        | A763900           | 7070          | 250       | To         |  0       | 8070                |
+    | document                           | from account number | from object code | from amount | to account number | to object code | to amount | From or To | line item | modify object code |
+    | Distribution Of Income And Expense | G003704             | 4480             | 255.55      | G013300           | 4480           | 255.55    | From       |  0        | 4486               |
+    | Internal Billing                   | G003704             | 4023             | 950000.67   | G013300           | 4023           | 950000.67 | To         |  0        | 4024               |
+    | Transfer Of Funds                  | A763306             | 8070             | 250         | A763900           | 7070           | 250       | To         |  0        | 8070               |
     #TODO create params for source and target account
     #TODO use param service to find object code for each edoc type (not a new param)
     #TODO that param returns a list of denies which we can use to lookup like this: Object Type Code = "!AS!EE"
@@ -111,13 +110,13 @@ Feature: FP Auditing
     And   I start an empty <document> document
     And   I select a vendor payee to the <document> document
     And   I add a Source Accounting Line to the <document> document with the following:
-      | Chart Code   | IT               |
-      | Number       | <source_account> |
-      | Amount       | <source_amount>  |
+      | Chart Code | IT               |
+      | Number     | <source_account> |
+      | Amount     | <source_amount>  |
     And   I add a Target Accounting Line to the <document> document with the following:
-      | Chart Code   | IT               |
-      | Number       | <target_account> |
-      | Amount       | <target_amount>  |
+      | Chart Code | IT               |
+      | Number     | <target_account> |
+      | Amount     | <target_amount>  |
     And   I submit the <document> document
     And    the <document> document goes to ENROUTE
     And   I am logged in as a Source Account Fiscal Officer
@@ -127,7 +126,7 @@ Feature: FP Auditing
     When  I approve the <document> document
     Then  The Notes and Attachment Tab displays "Accounting Line changed from"
   Examples:
-    | document                           | type code | source_account | target_account  | source_amount | target_amount |
-    | Disbursement Voucher               | DV        | G003704        |                 | 100           |               |
-    | Indirect Cost Adjustment           | ICA       | G003704        | GACLOSE         | 100           | 100           |
+    | document                 | type code | source_account | target_account  | source_amount | target_amount |
+    | Disbursement Voucher     | DV        | G003704        |                 | 100           |               |
+    | Indirect Cost Adjustment | ICA       | G003704        | GACLOSE         | 100           | 100           |
     #TODO create params for source and target account and object code for each edoc type and grab FO from service

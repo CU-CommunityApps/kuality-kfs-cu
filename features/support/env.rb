@@ -4,13 +4,10 @@ require 'cucumber'
 require 'headless'
 
 @config = YAML.load_file("#{File.dirname(__FILE__)}/config.yml")[:basic]
+@config[:browser] = ENV['BROWSER'].to_sym if ENV['BROWSER']
 
-$base_url = @config[:kfs_url]
-$base_rice_url = @config[:rice_url]
-if ENV['URL']
-  $base_url = ENV['URL']
-end
-
+$base_url = ENV['KFS_URL'] ? ENV['KFS_URL'] : @config[:kfs_url]
+$base_rice_url = ENV['RICE_URL'] ? ENV['RICE_URL'] : @config[:rice_url]
 $file_folder = "#{File.dirname(__FILE__)}/../../lib/resources/"
 
 require "#{File.dirname(__FILE__)}/../../lib/kuality-kfs-cu"
@@ -21,14 +18,24 @@ World StringFactory
 World DateFactory
 World GlobalConfig
 
+# Explicitly enable both rspec formats. If the tests start failing someday,
+# the new RSpec version has probably completely removed the deprecated
+# .should syntax and you need to revise.
+require 'rspec/core'
+require 'rspec/core/configuration'
+
+RSpec.configure do |config|
+  config.mock_with :rspec do |c|
+    c.syntax = [:should, :expect]
+  end
+end
+
+# End explicit RSpec enablement
+
 if ENV['HEADLESS']
   headless = Headless.new(:reuse           => false,
                           :destroy_at_exit => false)
   headless.start
-end
-
-if ENV['BROWSER']
-#  @config[:browser] = ENV['BROWSER'].to_sym
 end
 
 kuality = KualityKFS.new @config[:browser]
@@ -74,6 +81,4 @@ After do |scenario|
 
 end
 
-unless ENV['DEBUG']
-  at_exit { kuality.browser.close }
-end
+at_exit { kuality.browser.close } unless ENV['DEBUG']
