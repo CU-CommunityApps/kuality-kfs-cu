@@ -58,7 +58,7 @@ Feature: Disbursement Voucher
     When  I submit the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to ENROUTE
 
-  @KFSQA-682 @smoke @hare
+  @KFSQA-682 @smoke @hare @solid
   Scenario: KFS User Initiates a Disbursement Voucher document and Payee search should return no result with Terminated Employee
     Given I am logged in as a KFS User for the DV document
     When  I start an empty Disbursement Voucher document
