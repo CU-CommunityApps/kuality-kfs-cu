@@ -7,7 +7,7 @@ Feature: Award and Proposal
   [KFSQA-977] On award enter duplicate project directors
 
 
-  @KFSQA-977, @KFSPTS-1917,  @KFSUPGRADE-591 @KFSPT-990 @Proposed @smoke
+  @KFSQA-977, @KFSPTS-1917, @KFSUPGRADE-591 @KFSPTS-990 @Proposed @smoke @slug
   Scenario: Edit to grant number on award should be reflected on proposal table
     Given   I am logged in as a KFS Contracts & Grants Processor
     When    I create new Proposal document
@@ -38,7 +38,7 @@ Feature: Award and Proposal
     Then    the Award document goes to FINAL
     And     I verify Grant Number change persists on the Award document
 
-  @KFSQA-977, @KFSUPGRADE-594 @KFSPT-990 @Proposed @smoke
+  @KFSQA-977, @KFSUPGRADE-594 @KFSPTS-990 @Proposed @smoke
   Scenario Outline: On award enter duplicate accounts
                     On award enter duplicate organizations
                     On award enter duplicate project directors
