@@ -21,7 +21,7 @@ Feature: Award and Proposal
     And     I change the Grant Number for the Award Document
     And     I submit the Award document
     Then    the Award document goes to FINAL
-    And     I verify Grant Number change for the Award Document persists on the Proposal Document
+    And     I verify the Grant Number change for the Award Document persists on the Proposal Document
 
   @KFSQA-977, @KFSMI-5494 @Proposed @smoke
   Scenario: Edit an award with an inactive account

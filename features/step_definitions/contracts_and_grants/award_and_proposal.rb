@@ -38,7 +38,7 @@ Then /^I should get (account|organization|project director) exists error$/  do |
 end
 
 
-And /^I verify Grant Number change for the Award Document persists on the Proposal Document$/ do
+And /^I verify the Grant Number change for the Award Document persists on the Proposal Document$/ do
   visit(MainPage).proposal
   on ProposalLookupPage do |page|
     #searching by Proposal# and Grant# and validating that only one Proposal is returned does validate grant number is on proposal
