@@ -45,7 +45,7 @@ Feature: Disbursement Voucher
 
   [KFSQA-705] Payee should not be able to approve (as Fiscal Officer) a payment to themselves.
 
-  @KFSQA-681 @smoke @sloth
+  @KFSQA-681 @smoke @sloth @solid
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
@@ -78,7 +78,7 @@ Feature: Disbursement Voucher
     When  I submit the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to ENROUTE
 
-  @KFSQA-685 @smoke @sloth
+  @KFSQA-685 @smoke @sloth @solid
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Active Staff, Former Student, and Alumnus
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
@@ -113,7 +113,7 @@ Feature: Disbursement Voucher
     When  I view the Disbursement Voucher document
     Then  I copy a Disbursement Voucher document with Tax Address to persist
 
-  @KFSQA-684 @smoke @sloth
+  @KFSQA-684 @smoke @sloth @solid
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payee's EmplID is the same as Initiator's Entity/Principal ID
 # '1009867' is lk26's principanId/entityId, and arm2's employee_id.
     Given I am logged in as "LK26"
