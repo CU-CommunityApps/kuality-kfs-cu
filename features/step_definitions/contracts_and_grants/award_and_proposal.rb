@@ -38,3 +38,14 @@ Then /^I should get (account|organization|project director) exists error$/  do |
 end
 
 
+And /^I verify the Grant Number change for the Award Document persists on the Proposal Document$/ do
+  visit(MainPage).proposal
+  on ProposalLookupPage do |page|
+    #searching by Proposal# and Grant# and validating that only one Proposal is returned does validate grant number is on proposal
+    page.find_proposal_by_proposal_and_grant @proposal.proposal_number, @award.grant_number
+
+    #should only be two rows in table; header row of column names, single data row that we just searched for
+    page.results_table.rows.length.should == 2
+  end
+end
+
