@@ -5,7 +5,7 @@ Feature: Account Lookup
   [KFSQA-557] As a KFS user I want to see acct look up screen because it has custom cornell fields.
   [KFSQA-575] As a KFS Chart Administrator I want to lookup an Account without getting a stack trace error.
 
-  @smoke @hare
+  @smoke @hare @solid
   Scenario: Account lookup page should appear
     Given I am logged in as a KFS User
     When  I access Account Lookup
