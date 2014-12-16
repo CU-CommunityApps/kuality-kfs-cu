@@ -7,7 +7,7 @@ Feature: KFS Fiscal Officer Account Copy
               Cornell-specific attributes in a copied document. We are testing the proper 
               routing of the Cornell specific attributes in a copied document. 
 
-  @smoke @hare
+  @smoke @hare @solid
   Scenario: Copy an Account
     Given I am logged in as a KFS Fiscal Officer
     And   I access Account Lookup
