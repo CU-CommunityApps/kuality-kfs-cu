@@ -51,7 +51,7 @@ Feature: Sub Account
       | FINAL     |
 
 
-  @KFSQA-905 @COA, @SubAcct @CG @smoke @coral @wip
+  @KFSQA-905 @COA, @SubAcct @CG @smoke @coral
   Scenario: Route Sub-Account with type CS to Contracts & Grants responsibility
     Given I am logged in as a KFS User who is not a Contracts & Grants Processor
     And   I remember the logged in user
