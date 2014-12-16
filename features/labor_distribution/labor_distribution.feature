@@ -21,10 +21,6 @@ Feature: Labor Distribution
                employee, to_account_different_types, labor_object_code
 
 
-  [KFSQA-1012] Background: This tests privileged functionality for cross divisional transfers and
-               ability to edit object codes on a salary transfer edoc.
-
-
   @KFSQA-983 @BaseFunction @ST @slug
   Scenario: Base Function : I create a Salary Expense Transfer
     Given I create a Salary Expense Transfer with following:
@@ -79,7 +75,7 @@ Feature: Labor Distribution
     Given I create a Salary Expense Transfer as a Labor Distribution Manager:
       | Parameter Name | TEST_ST_PRIVILEGED_CROSS_DIVISIONAL_OBJECT_EDIT |
     And   I transfer the Salary between accounts with different Account Types
-    And   I update the Salary Expense Transfer document with the following:
+    And   I update the Labor Object Code on the Salary Expense Transfer Document
     And   I save the Salary Expense Transfer document
     And   the Labor Ledger Pending entries verify for the accounting lines on the Salary Expense Transfer document
     And   I submit the Salary Expense Transfer document
