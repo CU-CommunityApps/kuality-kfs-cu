@@ -10,7 +10,7 @@ Feature: KFS Fiscal Officer Account Creation
   [KFSQA-556] In order to Create an Account as a KFS Chart User, I want to be notified when I leave fields blank.
               The Account Guidelines and Purpose tabs contains some required data that must be verified before submission.
 
-  @smoke @sloth
+  @smoke @sloth @solid
   Scenario: Create an Account
     Given I am logged in as a KFS Fiscal Officer
     When  I blanket approve an Account document
@@ -19,20 +19,20 @@ Feature: KFS Fiscal Officer Account Creation
       | PROCESSED |
       | FINAL     |
 
-  @KFSQA-554 @cornell @KFSMI-6160 @hare
+  @KFSQA-554 @cornell @KFSMI-6160 @hare @solid
   Scenario: KFS User Initiates an Account document with only a description field
     Given I am logged in as a KFS User
     When  I save an Account document with only the Description field populated
     Then  the document status is SAVED
     
-  @KFSQA-606 @Bug @AcctEdit @KFSPTS-119 @hare
+  @KFSQA-606 @Bug @AcctEdit @KFSPTS-119 @hare @solid
   Scenario: Account Edit Sub Fund Program case sensitive test on Save
     Given I am logged in as a KFS Chart Administrator
     When  I save an Account with a lower case Sub Fund Program
     Then  the Account document goes to SAVED
     And   the Account document's Sub Fund Program code is uppercased
 
-  @KFSQA-556 @Account @Create @KFSMI-7599 @hare
+  @KFSQA-556 @Account @Create @KFSMI-7599 @hare @solid
   Scenario: KFS User does not input any fields into Account Guidelines and Purpose Tabs
     Given I am logged in as a KFS Fiscal Officer
     When  I create an Account and leave blank for the fields of Guidelines and Purpose tab
