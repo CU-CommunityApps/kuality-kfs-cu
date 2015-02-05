@@ -6,7 +6,7 @@ Feature: Account Delegate Global
                         Account Delegate Global using Organizational Codes because this
                         will save me time
 
-  @KFSQA-568 @AcctDelegate @KFSMI-7977 @hare
+  @KFSQA-568 @AcctDelegate @KFSMI-7977 @hare @solid
   Scenario: Edit and Cancel an Account Delegate Model
     Given   I am logged in as a KFS Chart Administrator
     And     I edit an Account Delegate Model

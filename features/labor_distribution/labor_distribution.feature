@@ -21,7 +21,7 @@ Feature: Labor Distribution
                employee, to_account_different_types, labor_object_code
 
 
-  @KFSQA-983 @BaseFunction @ST @slug
+  @KFSQA-983 @BaseFunction @ST @slug @solid
   Scenario: Base Function : I create a Salary Expense Transfer
     Given I create a Salary Expense Transfer as a Salary Transfer Initiator
       | Parameter Name | TEST_ST_CREATE |
@@ -38,7 +38,7 @@ Feature: Labor Distribution
       |From Account  | A464100   |
       |To Account    | A453101   |
 
-  @KFSQA-985 @BaseFunction @tortoise
+  @KFSQA-985 @BaseFunction @tortoise @solid
   Scenario: Base Function for labor nightly batch process.
     Given I run the nightly Labor batch process
     And   I am logged in as a Salary Transfer Initiator
@@ -47,7 +47,7 @@ Feature: Labor Distribution
     # otherwise, the default parameter employee id is used for verification
     Then  the labor ledger pending entry for employee is empty
 
-  @KFSQA-970 @ST @smoke @coral @nightly-jobs
+  @KFSQA-970 @ST @smoke @coral @nightly-jobs @solid
   Scenario: Salary Expense Transfer test between account types, between rates, and for labor access security.
     Given I create a Salary Expense Transfer as a Salary Transfer Initiator
       | Parameter Name | TEST_ST_ACCOUNT_TYPES_RATES_ACCESS_SECURITY |
@@ -68,7 +68,7 @@ Feature: Labor Distribution
     And   I am logged in as a Labor Distribution Manager
     Then  the labor ledger pending entry for employee is empty
 
-   @KFSQA-1012 @ST @smoke @nightly-jobs @coral
+   @KFSQA-1012 @ST @smoke @nightly-jobs @coral @solid
   Scenario: Submit a salary transfer edoc between account types, edit the object code, verify pending entries, and submit successfully.
     Given I create a Salary Expense Transfer as a Labor Distribution Manager:
       | Parameter Name | TEST_ST_PRIVILEGED_CROSS_DIVISIONAL_OBJECT_EDIT |
