@@ -23,11 +23,9 @@ Feature: Labor Distribution
 
   @KFSQA-983 @BaseFunction @ST @slug
   Scenario: Base Function : I create a Salary Expense Transfer
-    Given I create a Salary Expense Transfer with following:
-      | User Name  | dw68    |
-      | Employee   | 1006368 |
+    Given I create a Salary Expense Transfer as a Salary Transfer Initiator
+      | Parameter Name | TEST_ST_CREATE |
     And I transfer the Salary to another Account in my Organization
-      | To Account | A453101 |
     And   I submit the Salary Expense Transfer document
     Then  the Salary Expense Transfer document goes to FINAL
     And   I run the nightly Labor batch process
