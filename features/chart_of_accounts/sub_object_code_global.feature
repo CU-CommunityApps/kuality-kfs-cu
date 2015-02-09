@@ -7,6 +7,6 @@ Feature: Sub Object Code Global
   @KSFQA-617 @cornell @AcctLookup @KITI-2953 @sloth
   Scenario: Create a Sub-Object Code Global using an organization hierarchy
     Given I am logged in as a KFS Chart Manager
-    And   I save a Sub-Object Code Global document
+    And   I start an empty Sub-Object Code Global document
     When  I add multiple account lines using an Organization Code
-    Then  retrieved accounts equal all Active Accounts for these Organization Codes
+    Then  retrieved accounts equal all Active Accounts for the Organization Code
