@@ -146,7 +146,7 @@ And /^I create an Account with an Appropriation Account Number of (.*) and Sub-F
 end
 
 
-And /^I enter Appropriation Account Number that is not associated with the Sub Fund Group Code$/  do
+And /^I enter an Appropriation Account Number that is not associated with the Sub Fund Group Code$/  do
   # the account# is not used as its own appropriation account#
   on AccountPage do |page|
     page.appropriation_account_number.fit page.account_number_old
