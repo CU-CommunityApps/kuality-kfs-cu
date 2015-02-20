@@ -17,35 +17,35 @@ Feature: Account Edit
   [KFSQA-569] As a KFS Chart Manager I want to change the account expiration date
               because I still want any enroute documents to be approved.
 
-  @KFSQA-593 @Bug @AcctCreate @KITI-2931 @hare
+  @KFSQA-593 @Bug @AcctCreate @KITI-2931 @hare @solid
   Scenario: Edit an Account with an invalid Sub-Fund Program Code, part 1
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account with a random Sub-Fund Group Code
     When  I enter an invalid Sub-Fund Program Code
     Then  I should get an invalid Sub-Fund Program Code error
 
-  @KFSQA-593 @Bug @AcctCreate @KITI-2931 @hare
+  @KFSQA-593 @Bug @AcctCreate @KITI-2931 @hare @solid
   Scenario: Edit an Account with an invalid Sub-Fund Program Code, part 2
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account with a random Sub-Fund Group Code
     When  I enter an invalid Major Reporting Category Code
     Then  I should get an invalid Major Reporting Category Code error
 
-  @KFSQA-593 @Bug @AcctCreate @KITI-2931 @hare
+  @KFSQA-593 @Bug @AcctCreate @KITI-2931 @hare @solid
   Scenario: Edit an Account with an invalid Sub-Fund Program Code, part 3
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account with a random Sub-Fund Group Code
     When  I enter an invalid Appropriation Account Number
     Then  I should get an invalid Appropriation Account Number error
 
-  @KFSQA-593 @Bug @AcctCreate @KITI-2931 @hare
+  @KFSQA-593 @Bug @AcctCreate @KITI-2931 @hare @solid
   Scenario: Edit an Account with an invalid Sub-Fund Program Code, part 4
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account with a random Sub-Fund Group Code
     When  I enter an invalid Labor Benefit Rate Code
     Then  I should get invalid Labor Benefit Rate Code errors
 
-  @KFSQA-610 @KFSQA-574 @Bug @AcctMaint @hare
+  @KFSQA-610 @KFSQA-574 @Bug @AcctMaint @hare @solid
   Scenario: Edit an Account as KFS Chart Admin
     Given I am logged in as a KFS Chart Administrator
     And   I edit an Account
@@ -54,7 +54,7 @@ Feature: Account Edit
       | PROCESSED |
       | FINAL     |
 
-  @KFSQA-632 @cornell @AcctCreate @KITI-2869 @hare
+  @KFSQA-632 @cornell @AcctCreate @KITI-2869 @hare @solid
   Scenario: KFS Chart Manager edits an Account with Major Reporting Category Code
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account
@@ -64,7 +64,7 @@ Feature: Account Edit
       | PROCESSED |
       | FINAL     |
 
-  @KFSQA-619 @AcctCreate @sloth
+  @KFSQA-619 @AcctCreate @sloth @solid
   Scenario: Create an Account that matches Sub-Fund Group Code and Sub-Fund Program Code with an Appropriation Account Number
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account
@@ -74,7 +74,7 @@ Feature: Account Edit
       | PROCESSED |
       | FINAL     |
 
-  @KFSQA-619 @AcctCreate @hare
+  @KFSQA-619 @AcctCreate @hare @solid
   Scenario: Create an Account that does not match Sub-Fund Group Code and Sub-Fund Program Code with an Appropriation Account Number
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account
@@ -83,7 +83,7 @@ Feature: Account Edit
     When  I submit the Account document
     Then  I should get an invalid Appropriation Account Number error
 
-  @KFSQA-586 @Bug @AcctClose @KFSMI-5961 @sloth
+  @KFSQA-586 @Bug @AcctClose @KFSMI-5961 @sloth @solid
   Scenario: Try to continue an Account to itself
     Given I am logged in as a KFS Chart Manager
     And   I access Account Lookup
