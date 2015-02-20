@@ -79,7 +79,7 @@ Feature: Account Edit
     Given I am logged in as a KFS Chart Manager
     And   I edit an Account
     And   I enter Sub Fund Program Code that is associated with a random Sub Fund Group Code
-    And   I enter Appropriation Account Number that is not associated with the Sub Fund Group Code
+    And   I enter an Appropriation Account Number that is not associated with the Sub Fund Group Code
     When  I submit the Account document
     Then  I should get an invalid Appropriation Account Number error
 
