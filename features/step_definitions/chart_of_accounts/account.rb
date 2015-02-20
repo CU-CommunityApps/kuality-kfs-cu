@@ -16,35 +16,33 @@ end
 
 When /^I enter a Sub-Fund Program Code of (.*)$/ do |sub_fund_program_code|
   on AccountPage do |page|
-    @account = make AccountObject
-    page.description.set random_alphanums(40, 'AFT')
     page.subfund_program_code.set sub_fund_program_code
     page.save
+    @account.subfund_program_code = sub_fund_program_code
   end
   step 'I add the account to the stack'
 end
-
 
 
 When /^I enter (.*) as an invalid Major Reporting Category Code$/  do |major_reporting_category_code|
   on AccountPage do |page|
-    @account = make AccountObject
-    page.description.set random_alphanums(40, 'AFT')
     page.major_reporting_category_code.fit major_reporting_category_code
     page.save
+    @account.major_reporting_category_code = major_reporting_category_code
   end
   step 'I add the account to the stack'
 end
 
+
 When /^I enter (.*) as an invalid Appropriation Account Number$/  do |appropriation_account_number|
   on AccountPage do |page|
-    @account = make AccountObject
-    page.description.set random_alphanums(40, 'AFT')
     page.appropriation_account_number.fit appropriation_account_number
     page.save
+    @account.appropriation_account_number = appropriation_account_number
   end
   step 'I add the account to the stack'
 end
+
 
 When /^I save an Account document with only the ([^"]*) field populated$/ do |field|
   # TODO: Swap this out for Account#defaults
@@ -85,9 +83,56 @@ When /^I save an Account document with only the ([^"]*) field populated$/ do |fi
   step 'I add the account to the stack'
 end
 
+When /^I enter an invalid (.*)$/  do |field_name|
+  case field_name
+    when 'Sub-Fund Program Code'
+      step "I enter a Sub-Fund Program Code of #{random_alphanums(4, 'XX').upcase}"
+    when 'Major Reporting Category Code'
+      step "I enter #{random_alphanums(6, 'XX').upcase} as an invalid Major Reporting Category Code"
+    when 'Appropriation Account Number'
+      step "I enter #{random_alphanums(6, 'XX').upcase} as an invalid Appropriation Account Number"
+    when 'Labor Benefit Rate Code'
+      step "I enter #{random_alphanums(1, 'X').upcase} as an invalid Labor Benefit Rate Category Code"
+  end
+end
+
+
+Then /^I should get (invalid|an invalid) (.*) errors?$/ do |invalid_ind, error_field|
+  on AccountPage do |page|
+    case error_field
+      when 'Sub-Fund Program Code'
+        page.errors.should include "Sub-Fund Program Code #{page.subfund_program_code.value} is not associated with Sub-Fund Group Code #{page.sub_fund_group_code.value}."
+      when 'Major Reporting Category Code'
+        page.errors.should include "Major Reporting Category Code (#{page.major_reporting_category_code.value}) does not exist."
+      when 'Appropriation Account Number'
+        page.errors.should include "Appropriation Account Number #{page.appropriation_account_number.value} is not associated with Sub-Fund Group Code #{page.sub_fund_group_code.value}."
+      when 'Labor Benefit Rate Code'
+        page.errors.should include 'Invalid Labor Benefit Rate Code'
+        page.errors.should include "The specified Labor Benefit Rate Category Code #{page.labor_benefit_rate_category_code.value} does not exist."
+    end
+  end
+end
+
+
+And /^I enter (Sub Fund Program Code|Sub Fund Program Code and Appropriation Account Number) that (is|are) associated with a random Sub Fund Group Code$/ do |codes, is_are|
+  account = get_kuali_business_object('KFS-COA','Account','subFundGroupCode=*&extension.programCode=*&closed=N&extension.appropriationAccountNumber=*&active=Y&accountExpirationDate=NULL')
+  on AccountPage do |page|
+    page.sub_fund_group_code.set account['subFundGroup.codeAndDescription'].sample.split('-')[0].strip
+    page.subfund_program_code.set account['extension.programCode'].sample
+    @account.sub_fund_group_code = page.sub_fund_group_code_new
+    @account.subfund_program_code = page.subfund_program_code_new
+    unless codes == 'Sub Fund Program Code'
+      page.appropriation_account_number.set account['extension.appropriationAccountNumber'].sample
+      @account.appropriation_account_number = page.appropriation_account_number_new
+    end
+  end
+end
+
+
 When /^I input a lowercase Major Reporting Category Code value$/  do
   major_reporting_category_code = get_kuali_business_object('KFS-COA','MajorReportingCategory','active=Y')['majorReportingCategoryCode'].sample
   on(AccountPage).major_reporting_category_code.fit major_reporting_category_code.downcase
+  @account.major_reporting_category_code = major_reporting_category_code.downcase
 end
 
 And /^I create an Account with an Appropriation Account Number of (.*) and Sub-Fund Program Code of (.*)/ do |appropriation_accountNumber, subfund_program_code|
@@ -100,8 +145,22 @@ And /^I create an Account with an Appropriation Account Number of (.*) and Sub-F
   step 'I add the account to the stack'
 end
 
-And /^I enter Appropriation Account Number of (.*)/  do |appropriation_account_number|
-  on(AccountPage).appropriation_account_number.set appropriation_account_number
+
+And /^I enter an Appropriation Account Number that is not associated with the Sub Fund Group Code$/  do
+  # the account# is not used as its own appropriation account#
+  on AccountPage do |page|
+    page.appropriation_account_number.fit page.account_number_old
+    @account.appropriation_account_number = page.appropriation_account_number_new
+  end
+end
+
+
+When /^I enter (.*) as an invalid Labor Benefit Rate Category Code$/  do |labor_benefit_rate_category_code|
+  on AccountPage do |page|
+    page.labor_benefit_rate_category_code.fit labor_benefit_rate_category_code
+    page.save
+    @account.labor_benefit_rate_category_code = labor_benefit_rate_category_code
+  end
 end
 
 And /^I clone Account (.*) with the following changes:$/ do |account_number, table|
@@ -113,7 +172,7 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
 
     visit(MainPage).account
     on AccountLookupPage do |page|
-      page.chart_code.fit     'IT' #TODO config
+      page.chart_code.fit     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
       page.account_number.fit account_number
       page.search
       page.wait_for_search_results
@@ -122,11 +181,11 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
     on AccountPage do |page|
       @document_id = page.document_id
       @account = make AccountObject, description: updates['Description'],
-                      name:        updates['Name'],
-                      chart_code:  updates['Chart Code'],
-                      number:      random_alphanums(7),
-                      document_id: page.document_id,
-                      press: nil
+                                     name:        updates['Name'],
+                                     chart_code:  updates['Chart Code'],
+                                     number:      random_alphanums(7),
+                                     document_id: page.document_id,
+                                     press: nil
       page.description.fit @account.description
       page.name.fit        @account.name
       page.chart_code.fit  @account.chart_code
@@ -136,7 +195,7 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
              updates['Indirect Cost Recovery Account Line Percent'] && updates['Indirect Cost Recovery Active Indicator']
         @account.icr_accounts.add chart_of_accounts_code: updates['Indirect Cost Recovery Chart Of Accounts Code'],
                                   account_number:         updates['Indirect Cost Recovery Account Number'],
-                                  line_percent:   updates['Indirect Cost Recovery Account Line Percent'],
+                                  line_percent:           updates['Indirect Cost Recovery Account Line Percent'],
                                   active_indicator:       updates['Indirect Cost Recovery Active Indicator']
       end
 
