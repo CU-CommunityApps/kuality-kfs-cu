@@ -13,14 +13,14 @@ Feature: Sub Account
   [KFSQA-905] Route Sub-Account with type CS to CG responsibility
 
 
-  @KFSQA-590 @SubAcct @Bug @KFSMI-7964 @hare
+  @KFSQA-590 @SubAcct @Bug @KFSMI-7964 @hare @solid
   Scenario: Verify "null" does not display in the ICR ID field when I create a Sub-Account
     Given I am logged in as a KFS Chart Manager
     And   I save a Sub-Account document
     When  I tab away from the Account Number field
     Then  The Indirect Cost Rate ID field should not be null
 
-  @KFSQA-591 @cornell @smoke @SubAcct @KFSPTS-1740 @hare
+  @KFSQA-591 @cornell @smoke @SubAcct @KFSPTS-1740 @hare @solid
   Scenario: Create a Sub-Account with the default Sub-Account Type Code and verity routing to CG Processor.
     Given   I am logged in as a KFS User
     And     I create a Sub-Account with a Cost Share Sub-Account Type Code
@@ -37,7 +37,7 @@ Feature: Sub Account
     When    I approve the Sub-Account document
     Then    the Sub-Account document goes to FINAL
 
-  @KFSQA-589 @cornell @SubAcct @Bug @KFSPTS-1753 @sloth
+  @KFSQA-589 @cornell @SubAcct @Bug @KFSPTS-1753 @sloth @solid
   Scenario: Create a Sub-Account with Sub-Account Type CS and ad-hoc approval route it to a member of the Contracts & Grants Processor Role (jis45)
     Given I am logged in as a KFS User
     And   I submit a Cost Share Sub-Account with an adhoc approver
@@ -51,7 +51,7 @@ Feature: Sub Account
       | PROCESSED |
       | FINAL     |
 
-  @KFSQA-905 @COA, @SubAcct @CG @smoke @coral
+  @KFSQA-905 @COA, @SubAcct @CG @smoke @coral @solid
   Scenario: Route Sub-Account with type CS to Contracts & Grants responsibility
     Given I am logged in as a KFS User who is not a Contracts & Grants Processor
     And   I remember the logged in user
