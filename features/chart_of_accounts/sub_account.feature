@@ -23,7 +23,7 @@ Feature: Sub Account
   @KFSQA-591 @cornell @smoke @SubAcct @KFSPTS-1740 @hare
   Scenario: Create a Sub-Account with the default Sub-Account Type Code and verity routing to CG Processor.
     Given   I am logged in as a KFS User
-    And     I create a Sub-Account with a cost share Sub-Account Type Code
+    And     I create a Sub-Account with a Cost Share Sub-Account Type Code
     And     I submit the Sub-Account document
     And     I am logged in as the FO of the Sub-Account
     And     The Sub-Account document should be in my action list
@@ -40,7 +40,7 @@ Feature: Sub Account
   @KFSQA-589 @cornell @SubAcct @Bug @KFSPTS-1753 @sloth
   Scenario: Create a Sub-Account with Sub-Account Type CS and ad-hoc approval route it to a member of the Contracts & Grants Processor Role (jis45)
     Given I am logged in as a KFS User
-    And   I submit a cost share Sub-Account with an adhoc approver
+    And   I submit a Cost Share Sub-Account with an adhoc approver
     And   the Sub-Account document goes to ENROUTE
     When  I am logged in as the adhoc user
     Then  The Sub-Account document should be in my action list
@@ -63,7 +63,7 @@ Feature: Sub Account
     #the next step is needed to populate the Indirect Cost Recovery Accounts array which does not have data until after submit
     And   I display the Sub-Account document
     And   I lookup the Sub-Account I want to edit
-    And   I edit the Sub-Account changing its type code to cost share
+    And   I edit the Sub-Account changing its type code to Cost Share
     And   I edit the current Indirect Cost Recovery Account on the Sub-Account to a Contract College General Appropriated Account
     And   I submit the Sub-Account document
     Then  the Sub-Account document routes to the Award node

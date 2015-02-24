@@ -20,7 +20,7 @@ And /^I create a Sub-Account using a CG account with a CG Account Responsibility
 end
 
 
-And /^I edit the Sub-Account changing its type code to cost share$/ do
+And /^I edit the Sub-Account changing its type code to Cost Share$/ do
   #add values for the specified keys being edited
   options = {
       description:                          'Edit Sub-Acct from expense to cost share',
@@ -33,7 +33,7 @@ And /^I edit the Sub-Account changing its type code to cost share$/ do
 end
 
 
-And /^I (#{SubAccountPage::available_buttons}) a cost share Sub-Account with an adhoc approver$/ do |button|
+And /^I (#{SubAccountPage::available_buttons}) a Cost Share Sub-Account with an adhoc approver$/ do |button|
   #The requirement for @KFSQA-589 is C&G processor as adhoc user
   @adhoc_user = get_random_principal_name_for_role('KFS-SYS', 'Contracts & Grants Processor')
   @user_id = @adhoc_user # for actionlist check
@@ -69,7 +69,7 @@ And /^I (#{SubAccountPage::available_buttons}) a cost share Sub-Account with an 
 end
 
 
-And /^I create a Sub-Account with a cost share Sub-Account Type Code$/ do
+And /^I create a Sub-Account with a Cost Share Sub-Account Type Code$/ do
   #parameter look-ups are costly, get default chart code once and use it multiple times in this method
   chart_code = get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
   account_number = get_kuali_business_object('KFS-COA','Account',"subFundGroupCode=#{get_aft_parameter_value(ParameterConstants::DEFAULT_COST_SHARE_SUB_FUND_GROUP_CODE)}&active=Y&accountExpirationDate=NULL&chartOfAccountsCode=#{chart_code}")['accountNumber'].sample
