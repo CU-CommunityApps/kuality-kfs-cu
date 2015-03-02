@@ -1,13 +1,18 @@
 Feature: Pre-Encumbrance
 
   [KFSQA-654] Open Encumbrances Lookup not displaying pending entries generated from the PE eDoc.
+
   [KFSQA-739] Background: Cornell University needs to process pre-encumbrances with expense object
               codes and verify the Accounting Line persists to the GL
+
   [KFSQA-740] Enter a Disencumbrance on a PE. Test routing and approvals. Nightly batch jobs run.
               Check entry of eDoc equals GLPE. Test Entry of eDoc equals GL Postings
+
   [KFSQA-664] Cornell has modified KFS to allow for revenue object codes on the PE form. Allow revenue on Pre-Encumbrance.
+
   [KFSQA-753] Cornell University needs to process pre-encumbrances with expense
               object codes and verify proper offsets are used.
+
   [KFSQA-988] Submit a pre-encumbrance edoc to encumber and disencumber on the same document using an existing
               encumbrance to disencumber and create new encumbrance using fixed monthly schedule.
               Verify you must save edoc before submission to generate reversal dates, review scheduled reversal
@@ -90,8 +95,8 @@ Feature: Pre-Encumbrance
   @KFSQA-664 @FP @PE @nightly-jobs @cornell @slug
   Scenario: Process a Pre-Encumbrance using a revenue object code.
     Given   I am logged in as a KFS System Manager
-    When    I update the OBJECT_TYPES Parameter for the Pre-Encumbrance component in the KFS-FP namespace with the following values:
-      | Parameter Value | EX;IC |
+    When    I update an application Parameter to allow revenue object codes on a Pre-Encumbrance document
+    And     I submit the Parameter document
     And     I finalize the Parameter document
 
     Given   I am logged in as a KFS User
@@ -111,8 +116,8 @@ Feature: Pre-Encumbrance
     When    Nightly Batch Jobs run
     And     I am logged in as a KFS System Manager
     Then    the Encumbrance Accounting Line appears in the Pre-Encumbrance document's GL entry
-    And     I update the OBJECT_TYPES Parameter for the Pre-Encumbrance component in the KFS-FP namespace with the following values:
-      | Parameter Value | EX |
+    And     I restore the application parameter to its original value
+    And     I submit the Parameter document
     And     I finalize the Parameter document
 
   @KFSQA-753 @FP @PE @nightly-jobs @cornell @tortoise
