@@ -191,14 +191,16 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
       page.chart_code.fit  @account.chart_code
       page.number.fit      @account.number
       page.supervisor_principal_name.fit @account.supervisor_principal_name
-      unless updates['Indirect Cost Recovery Chart Of Accounts Code'] && updates['Indirect Cost Recovery Account Number'] &&
-             updates['Indirect Cost Recovery Account Line Percent'] && updates['Indirect Cost Recovery Active Indicator']
+      #only attempt data entry for ICR tab when all the required ICR data is provided
+      if updates['Indirect Cost Recovery Chart Of Accounts Code'] && updates['Indirect Cost Recovery Account Number'] &&
+         updates['Indirect Cost Recovery Account Line Percent'] && updates['Indirect Cost Recovery Active Indicator']
         @account.icr_accounts.add chart_of_accounts_code: updates['Indirect Cost Recovery Chart Of Accounts Code'],
                                   account_number:         updates['Indirect Cost Recovery Account Number'],
-                                  line_percent:           updates['Indirect Cost Recovery Account Line Percent'],
+                                  account_line_percent:   updates['Indirect Cost Recovery Account Line Percent'],
                                   active_indicator:       updates['Indirect Cost Recovery Active Indicator']
       end
 
+      page.errors.should == []  #fail the test and do not continue if errors exist on page after performing data changes
       page.blanket_approve
       sleep 5
     end
