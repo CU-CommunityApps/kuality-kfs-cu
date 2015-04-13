@@ -21,25 +21,17 @@ Feature: Pre-Encumbrance
   @KFSQA-654 @FP @PE @GL-QUERY @sloth
   Scenario: Open Encumbrances Lookup will display pending entries from PE eDoc
     Given I am logged in as a KFS Chart Manager
-    And   I clone a random Account with the following changes:
-      | Name        | Test Account             |
-      | Chart Code  | IT                       |
-      | Description | [KFSQA-654] Test Account |
+    And   I clone a random Account with name, chart code, and description changes
     And   I am logged in as a KFS Chart Administrator
     And   I blanket approve a Pre-Encumbrance Document that encumbers the random Account
     And   the Pre-Encumbrance document goes to FINAL
-    When  I do an Open Encumbrances lookup for the Pre-Encumbrance document with Balance Type PE and Include All Pending Entries
-    Then  the Lookup should return results
+    Then  the Open Encumbrances lookup for the Pre-Encumbrance document with Balance Type PE should Include All Pending Entries
 
   @KFSQA-739 @FP @PE @sloth
   Scenario: E2E - PE Created, Approved and Accounting Line persists and updates GL
     Given   I am logged in as a KFS User for the PE document
     And     I start an empty Pre-Encumbrance document
-    And     I add a Source Accounting Line to the Pre-Encumbrance document with the following:
-      | Chart Code   | IT      |
-      | Number       | U243700 |
-      | Object Code  | 4023    |
-      | Amount       | 100     |
+    And     I add a source Accounting Line with a random account and a random object code and a default amount to the Pre-Encumbrance document
     And     I save the Pre-Encumbrance document
     And     the Pre-Encumbrance document accounting lines equal the General Ledger Pending entries
     And     I submit the Pre-Encumbrance document
@@ -56,11 +48,7 @@ Feature: Pre-Encumbrance
   Scenario: Disencumbrance E2E
     Given   I am logged in as a KFS User for the PE document
     And     I start an empty Pre-Encumbrance document
-    And     I add a Source Accounting Line to the Pre-Encumbrance document with the following:
-      | Chart Code   | IT      |
-      | Number       | G003704 |
-      | Object Code  | 6100    |
-      | Amount       | 1000    |
+    And     I add a source Accounting Line with a random account and a random object code and a default amount to the Pre-Encumbrance document
     And     I save the Pre-Encumbrance document
     And     I remember the Pre-Encumbrance document number
     And     the Pre-Encumbrance document accounting lines equal the General Ledger Pending entries
@@ -75,11 +63,7 @@ Feature: Pre-Encumbrance
     And     the Pre-Encumbrance document accounting lines equal the General Ledger entries
     And     I am logged in as a KFS User for the PE document
     And     I start an empty Pre-Encumbrance document
-    And     I add a Target Accounting Line to the Pre-Encumbrance document with the following:
-      | Chart Code   | IT      |
-      | Number       | G003704 |
-      | Object Code  | 6100    |
-      | Amount       | 200     |
+    And     I add a target Accounting Line to the Pre-Encumbrance document that matches the source Accounting Line except for amount
     And     I save the Pre-Encumbrance document
     And     the Pre-Encumbrance document accounting lines equal the General Ledger Pending entries
     And     I submit the Pre-Encumbrance document
@@ -90,7 +74,7 @@ Feature: Pre-Encumbrance
       | PROCESSED |
       | FINAL     |
     When    I am logged in as a KFS Chart Manager
-    Then    The outstanding encumbrance for account G003704 and object code 6100 is 800
+    Then    the outstanding encumbrance for the account and object code used is the difference between the amounts
 
   @KFSQA-664 @FP @PE @nightly-jobs @cornell @slug
   Scenario: Process a Pre-Encumbrance using a revenue object code.
@@ -123,7 +107,7 @@ Feature: Pre-Encumbrance
   @KFSQA-753 @FP @PE @nightly-jobs @cornell @tortoise
   Scenario: Generate Proper Offsets Using a PE to generate an Encumbrance
     Given I am logged in as a KFS User
-    And   I submit a Pre-Encumbrance document that encumbers Account G003704
+    And   I submit a Pre-Encumbrance document that encumbers a random Account
     And   the Object Codes for the Pre-Encumbrance document appear in the document's GLPE entry
     And   I am logged in as a KFS Chart Manager
     And   I view the Pre-Encumbrance document
@@ -139,11 +123,7 @@ Feature: Pre-Encumbrance
     #create the pre-encumbrance that will be disencumbered by this test
     Given I am logged in as a KFS User for the PE document
     When  I start an empty Pre-Encumbrance document
-    And   I add a Source Accounting Line to the Pre-Encumbrance document with the following:
-      | Chart Code   | IT      |
-      | Number       | 1002000 |
-      | Object Code  | 6100    |
-      | Amount       | 100.00  |
+    And    I add a source Accounting Line with a random account and a random object code and a default amount to the Pre-Encumbrance document
     And   I remember the Pre-Encumbrance document number
     And   I save the Pre-Encumbrance document
     And   the Pre-Encumbrance document accounting lines equal the General Ledger Pending entries
@@ -157,21 +137,8 @@ Feature: Pre-Encumbrance
     #create the pre-encumbrance that will test the encumber and disencumber
     When  I am logged in as a KFS User for the PE document
     And   I start an empty Pre-Encumbrance document
-    And   I add a Source Accounting Line to the Pre-Encumbrance document with the following:
-      | Chart Code                | IT         |
-      | Number                    | 1002000    |
-      | Object Code               | 6100       |
-      | Amount                    | 200.00     |
-      | Auto Disencumber Type     | monthly    |
-      | Partial Transaction Count | 2          |
-      | Partial Amount            | 100.00     |
-      # | Start Date | right_now[:date_w_slashes]  value set closer to processing since date cannot occur before today |
-    And   I add a Target Accounting Line to the Pre-Encumbrance document with the following:
-      | Chart Code       | IT      |
-      | Number           | 1002000 |
-      | Object Code      | 6100    |
-      | Amount           | 100.00  |
-      # |reference_number  | was saved to variable from first source accounting line add |
+    And   I add a source Accounting Line to a Pre-Encumbrance document that automatically disencumbers an account with an existing encumbrance by a partial amount using a fixed monthly schedule
+    And I add a target Accounting Line to a Pre-Encumbrance document to disencumber an existing encumbrance
     And   I retain the Pre-Encumbrance document number from this transaction
     And   I submit the Pre-Encumbrance document
     Then  I should get an error that starts with "This Document needs to be saved before Submit"
@@ -181,8 +148,5 @@ Feature: Pre-Encumbrance
     And   the Pre-Encumbrance document goes to one of the following statuses:
       | ENROUTE |
       | SAVED   |
-    Then Open Encumbrance Lookup Results for the Account just used with Balance Type PE for All Pending Entries and Include Zeroed Out Encumbrances will display the disencumbered amount in both open and closed amounts with outstanding amount zero:
-      | Number                 | 1002000 |
-      | Disencumbered Amount   | 100.00  |
-      | Outstanding Amount     |   0.00  |
-      | Encumbered Amount      | 200.00  |
+    Then Open Encumbrance Lookup Results for the Account just used with Balance Type PE for All Pending Entries and Include Zeroed Out Encumbrances will display the disencumbered amount in both open and closed amounts with outstanding amount zero
+
