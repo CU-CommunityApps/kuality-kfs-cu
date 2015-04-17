@@ -1,14 +1,14 @@
 When /^I (#{PreEncumbrancePage::available_buttons}) a Pre\-Encumbrance Document that encumbers the random Account$/ do |button|
   # Note: You must have created a random account object in a previous step to use this step.
   # Note: This step WILL CREATE the random object code object and will use the parameter default source amount.
-  step "I find a random Pre-Encumbrance Object Code Object"
+  step "I find a random Pre-Encumbrance Object Code"
   @encumbrance_amount = get_aft_parameter_value(ParameterConstants::DEFAULT_PREENCUMBRANCE_SOURCE_ACCOUNTING_LINE_AMOUNT)
   @pre_encumbrance = create PreEncumbranceObject, press: button.gsub(' ', '_'),
                             initial_lines: [{
                                                 type:              :source,
                                                 account_number:    @account.number,
                                                 chart_code:        @account.chart_code,
-                                                object:            @object_code_object.object_code,
+                                                object:            @object_code.object_code,
                                                 amount:            @encumbrance_amount,
                                                 line_description:  'Using previously created random account'
                                             }]
@@ -17,15 +17,15 @@ end
 
 When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance document that encumbers a random Account$/ do |button|
   #Note: This step WILL CREATE the random account object and random object code object, and will use the parameter pre-encumbrance source amount.
-  step "I find a random Pre-Encumbrance Account Object"
-  step "I find a random Pre-Encumbrance Object Code Object"
+  step "I find a random Pre-Encumbrance Account"
+  step "I find a random Pre-Encumbrance Object Code"
   @encumbrance_amount = get_aft_parameter_value(ParameterConstants::DEFAULT_PREENCUMBRANCE_SOURCE_ACCOUNTING_LINE_AMOUNT)
   @pre_encumbrance = create PreEncumbranceObject, press: :save,
                             initial_lines: [{
                                                 type:              :source,
                                                 account_number:    @account.number,
                                                 chart_code:        @account.chart_code,
-                                                object:            @object_code_object.object_code,
+                                                object:            @object_code.object_code,
                                                 amount:            @encumbrance_amount,
                                                 line_description:  'Created random account and object code'
                                             }]
@@ -44,7 +44,7 @@ Then /^the outstanding encumbrance for the account and object code used is the d
   on OpenEncumbranceLookupPage do |page|
     page.account_number.set     @account.number
     page.chart_code.set         @account.chart_code
-    page.object_code.set        @object_code_object.object_code
+    page.object_code.set        @object_code.object_code
     page.including_pending_ledger_entry_approved.set
     page.doc_number.set         @remembered_document_id
     page.balance_type_code.set 'PE'
@@ -62,7 +62,7 @@ end
 And /^I add a target Accounting Line to the Pre-Encumbrance document that matches the source Accounting Line except for amount$/ do
   # Note: You must have captured the source account object and object code object in a previous step to use this step.
   @disencumbrance_amount = get_aft_parameter_value(ParameterConstants::DEFAULT_PREENCUMBRANCE_TARGET_ACCOUNTING_LINE_AMOUNT)
-  step "I add a target Accounting Line for chart code #{@account.chart_code} and account number #{@account.number} and object code #{@object_code_object.object_code} and amount #{@disencumbrance_amount} to the Pre-Encumbrance document"
+  step "I add a target Accounting Line for chart code #{@account.chart_code} and account number #{@account.number} and object code #{@object_code.object_code} and amount #{@disencumbrance_amount} to the Pre-Encumbrance document"
 end
 
 
@@ -84,7 +84,7 @@ And /^I add a source Accounting Line to a Pre-Encumbrance document that automati
        table = table(%Q{
               | Chart Code                | #{@account.chart_code}                         |
               | Number                    | #{@account.number}                             |
-              | Object Code               | #{@object_code_object.object_code}             |
+              | Object Code               | #{@object_code.object_code}             |
               | Amount                    | #{@encumbrance_amount}                         |
               | Auto Disencumber Type     | #{@test_input_data[:auto_disencumbrance_type]} |
               | Partial Transaction Count | #{@test_input_data[:count]}                    |
@@ -99,7 +99,7 @@ And /^I add a target Accounting Line to a Pre-Encumbrance document to disencumbe
        table = table(%Q{
               | Chart Code       | #{@account.chart_code}             |
               | Number           | #{@account.number}                 |
-              | Object Code      | #{@object_code_object.object_code} |
+              | Object Code      | #{@object_code.object_code} |
               | Amount           | #{@disencumbrance_amount}          |
               | Reference Number | #{@remembered_document_id}         |
            })
@@ -128,7 +128,7 @@ And /^I add a (source|target) Accounting Line for chart code (.*) and account nu
 end
 
 
-And /^I add a (source|target) Accounting Line with a random account and a random object code and a default amount to the (.*) document$/ do |line_type, document|
+And /^I add a (source|target) Accounting Line with a random account, a random object code and a default amount to the (.*) document$/ do |line_type, document|
   amount = nil
   case
     when line_type.eql?('source')
@@ -142,7 +142,7 @@ And /^I add a (source|target) Accounting Line with a random account and a random
       @disencumbrance_amount.nil?.should_not == true
       amount = @disencumbrance_amount
   end
-  step "I find a random Pre-Encumbrance Account Object"
-  step "I find a random Pre-Encumbrance Object Code Object"
-  step "I add a #{line_type} Accounting Line for chart code #{@account.chart_code} and account number #{@account.number} and object code #{@object_code_object.object_code} and amount #{amount} to the #{document} document"
+  step "I find a random Pre-Encumbrance Account"
+  step "I find a random Pre-Encumbrance Object Code"
+  step "I add a #{line_type} Accounting Line for chart code #{@account.chart_code} and account number #{@account.number} and object code #{@object_code.object_code} and amount #{amount} to the #{document} document"
 end

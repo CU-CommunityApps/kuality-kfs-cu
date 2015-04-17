@@ -25,13 +25,13 @@ Feature: Pre-Encumbrance
     And   I am logged in as a KFS Chart Administrator
     And   I blanket approve a Pre-Encumbrance Document that encumbers the random Account
     And   the Pre-Encumbrance document goes to FINAL
-    Then  the Open Encumbrances lookup for the Pre-Encumbrance document with Balance Type PE should Include All Pending Entries
+    Then  the Open Encumbrances lookup for the Pre-Encumbrance document with Balance Type PE Includes All Pending Entries
 
   @KFSQA-739 @FP @PE @sloth
   Scenario: E2E - PE Created, Approved and Accounting Line persists and updates GL
     Given   I am logged in as a KFS User for the PE document
     And     I start an empty Pre-Encumbrance document
-    And     I add a source Accounting Line with a random account and a random object code and a default amount to the Pre-Encumbrance document
+    And     I add a source Accounting Line with a random account,a random object code and a default amount to the Pre-Encumbrance document
     And     I save the Pre-Encumbrance document
     And     the Pre-Encumbrance document accounting lines equal the General Ledger Pending entries
     And     I submit the Pre-Encumbrance document
@@ -48,7 +48,7 @@ Feature: Pre-Encumbrance
   Scenario: Disencumbrance E2E
     Given   I am logged in as a KFS User for the PE document
     And     I start an empty Pre-Encumbrance document
-    And     I add a source Accounting Line with a random account and a random object code and a default amount to the Pre-Encumbrance document
+    And     I add a source Accounting Line with a random account, a random object code and a default amount to the Pre-Encumbrance document
     And     I save the Pre-Encumbrance document
     And     I remember the Pre-Encumbrance document number
     And     the Pre-Encumbrance document accounting lines equal the General Ledger Pending entries
@@ -123,7 +123,7 @@ Feature: Pre-Encumbrance
     #create the pre-encumbrance that will be disencumbered by this test
     Given I am logged in as a KFS User for the PE document
     When  I start an empty Pre-Encumbrance document
-    And    I add a source Accounting Line with a random account and a random object code and a default amount to the Pre-Encumbrance document
+    And   I add a source Accounting Line with a random account, a random object code and a default amount to the Pre-Encumbrance document
     And   I remember the Pre-Encumbrance document number
     And   I save the Pre-Encumbrance document
     And   the Pre-Encumbrance document accounting lines equal the General Ledger Pending entries
@@ -138,7 +138,7 @@ Feature: Pre-Encumbrance
     When  I am logged in as a KFS User for the PE document
     And   I start an empty Pre-Encumbrance document
     And   I add a source Accounting Line to a Pre-Encumbrance document that automatically disencumbers an account with an existing encumbrance by a partial amount using a fixed monthly schedule
-    And I add a target Accounting Line to a Pre-Encumbrance document to disencumber an existing encumbrance
+    And   I add a target Accounting Line to a Pre-Encumbrance document to disencumber an existing encumbrance
     And   I retain the Pre-Encumbrance document number from this transaction
     And   I submit the Pre-Encumbrance document
     Then  I should get an error that starts with "This Document needs to be saved before Submit"
@@ -148,5 +148,5 @@ Feature: Pre-Encumbrance
     And   the Pre-Encumbrance document goes to one of the following statuses:
       | ENROUTE |
       | SAVED   |
-    Then Open Encumbrance Lookup Results for the Account just used with Balance Type PE for All Pending Entries and Include Zeroed Out Encumbrances will display the disencumbered amount in both open and closed amounts with outstanding amount zero
+    Then  Open Encumbrance Lookup Results for the Account just used with Balance Type PE for All Pending Entries and Include Zeroed Out Encumbrances will display the disencumbered amount in both open and closed amounts with outstanding amount zero
 
