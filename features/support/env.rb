@@ -65,14 +65,12 @@ end
 
 After do |scenario|
 
-  if scenario.exception.is_a?(Timeout::Error) || scenario.failed?
-    puts "All instance values for data objects used in this failed test."
-    #All data objects are based on class KFSDataObject, use it to output instance values used for the failed test
-    ObjectSpace.each_object(KFSDataObject).to_a.empty? ? (puts "KFSDataObject was not instantiated") : (puts ObjectSpace.each_object(KFSDataObject).to_a)
-    puts " "  #for spacing in output
-  end
-
   if scenario.failed?
+    puts 'All instance values for data objects used in this failed test.'
+    #All data objects are based on class KFSDataObject, use it to output instance values utilized in the failed test
+    ObjectSpace.each_object(KFSDataObject).to_a.empty? ? (puts 'KFSDataObject was not instantiated') : (puts ObjectSpace.each_object(KFSDataObject).to_a)
+    puts ' '  #for readability in output
+
     @browser.screenshot.save 'screenshot.png'
     embed 'screenshot.png', 'image/png'
   end
