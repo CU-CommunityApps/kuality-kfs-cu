@@ -1,9 +1,9 @@
 source 'http://rubygems.org'
 
-gem 'rspec', '3.1.0'
-gem 'cucumber', '1.3.17'
+gem 'rspec', '3.2.0'
+gem 'cucumber', '2.0.0'
 gem 'test-factory', '0.5.3'
-gem 'watir-webdriver', '0.6.10'
+gem 'watir-webdriver', '0.7.0'
 gem 'headless', '1.0.2'
 gem 'kuality-kfs'#, :git => 'https://CU-CommunityApps@github.com/CU-CommunityApps/kuality-kfs.git'
 gem 'parallel_tests'
