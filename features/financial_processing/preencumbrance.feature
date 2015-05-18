@@ -18,7 +18,7 @@ Feature: Pre-Encumbrance
               Verify you must save edoc before submission to generate reversal dates, review scheduled reversal
               dates on pending entries tab before submitting, and perform lookup on open encumbrance screen to verify accuracy.
 
-  @KFSQA-654 @FP @PE @GL-QUERY @sloth
+  @KFSQA-654 @FP @PE @GL-QUERY @sloth @solid
   Scenario: Open Encumbrances Lookup will display pending entries from PE eDoc
     Given I am logged in as a KFS Chart Manager
     And   I clone a random Account with name, chart code, and description changes
@@ -27,7 +27,7 @@ Feature: Pre-Encumbrance
     And   the Pre-Encumbrance document goes to FINAL
     Then  the Open Encumbrances lookup for the Pre-Encumbrance document with Balance Type PE Includes All Pending Entries
 
-  @KFSQA-739 @FP @PE @sloth
+  @KFSQA-739 @FP @PE @sloth @solid
   Scenario: E2E - PE Created, Approved and Accounting Line persists and updates GL
     Given   I am logged in as a KFS User for the PE document
     And     I start an empty Pre-Encumbrance document
@@ -44,7 +44,7 @@ Feature: Pre-Encumbrance
     When    I am logged in as a KFS Chart Manager
     Then    the Pre-Encumbrance document accounting lines equal the General Ledger entries
 
-  @KFSQA-740 @FP @PE @sloth
+  @KFSQA-740 @FP @PE @sloth @solid
   Scenario: Disencumbrance E2E
     Given   I am logged in as a KFS User for the PE document
     And     I start an empty Pre-Encumbrance document
@@ -76,7 +76,7 @@ Feature: Pre-Encumbrance
     When    I am logged in as a KFS Chart Manager
     Then    the outstanding encumbrance for the account and object code used is the difference between the amounts
 
-  @KFSQA-664 @FP @PE @nightly-jobs @cornell @slug
+  @KFSQA-664 @FP @PE @nightly-jobs @cornell @slug @solid
   Scenario: Process a Pre-Encumbrance using a revenue object code.
     Given   I am logged in as a KFS System Manager
     When    I update an application Parameter to allow revenue object codes on a Pre-Encumbrance document
@@ -104,7 +104,7 @@ Feature: Pre-Encumbrance
     And     I submit the Parameter document
     And     I finalize the Parameter document
 
-  @KFSQA-753 @FP @PE @nightly-jobs @cornell @tortoise
+  @KFSQA-753 @FP @PE @nightly-jobs @cornell @tortoise @solid
   Scenario: Generate Proper Offsets Using a PE to generate an Encumbrance
     Given I am logged in as a KFS User
     And   I submit a Pre-Encumbrance document that encumbers a random Account
@@ -118,7 +118,7 @@ Feature: Pre-Encumbrance
     When  I am logged in as a KFS User
     Then  the Pre-Encumbrance document GL Entry Lookup matches the document's GL entry
 
-  @KFSQA-988 @FP @PreEncumbrance @smoke @slug
+  @KFSQA-988 @FP @PreEncumbrance @smoke @slug @solid
   Scenario: Submit a pre-encumbrance to disencumber and pre-encumber on the same document.
     #create the pre-encumbrance that will be disencumbered by this test
     Given I am logged in as a KFS User for the PE document
