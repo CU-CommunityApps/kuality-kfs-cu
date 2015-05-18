@@ -183,7 +183,7 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
       @account = make AccountObject, description: updates['Description'],
                                      name:        updates['Name'],
                                      chart_code:  updates['Chart Code'],
-                                     number:      random_alphanums(7),
+                                     number:      (random_alphanums(7)).upcase!, #need to ensure data in object matches page since page auto uppercases this value
                                      document_id: page.document_id,
                                      press: nil
       page.description.fit @account.description

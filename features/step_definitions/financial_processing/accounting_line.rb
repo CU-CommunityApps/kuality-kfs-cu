@@ -227,15 +227,12 @@ And /^I add a (Source|Target|From|To) Accounting Line to the (.*) document with 
                                          reference_origin_code: '01'
                                      })
             when 'Pre-Encumbrance'
-              new_source_line.merge!({
-                                         object: '6100'
-                                     })
               if accounting_line_info.has_key?'Auto Disencumber Type'
                 new_source_line.merge!({
                                          auto_dis_encumber_type:    accounting_line_info['Auto Disencumber Type'],
                                          partial_transaction_count: accounting_line_info['Partial Transaction Count'],
                                          partial_amount:            accounting_line_info['Partial Amount'],
-                                         start_date:                right_now[:date_w_slashes]
+                                         start_date:                accounting_line_info['Start Date']
                                       })
               end
             when 'Internal Billing', 'Service Billing'
@@ -279,12 +276,9 @@ And /^I add a (Source|Target|From|To) Accounting Line to the (.*) document with 
                                          reference_origin_code: '01'
                                      })
             when 'Pre-Encumbrance'
-              new_target_line.merge!({
-                                         object: '6100'
-                                     })
-              unless @remembered_document_id.nil?
+              if accounting_line_info.has_key?'Reference Number'
                 new_target_line.merge!({
-                                         reference_number:      @remembered_document_id,
+                                          reference_number:    accounting_line_info['Reference Number']
                                        })
               end
             when 'Internal Billing', 'Service Billing'
