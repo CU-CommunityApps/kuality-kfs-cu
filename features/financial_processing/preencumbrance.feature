@@ -31,7 +31,7 @@ Feature: Pre-Encumbrance
   Scenario: E2E - PE Created, Approved and Accounting Line persists and updates GL
     Given   I am logged in as a KFS User for the PE document
     And     I start an empty Pre-Encumbrance document
-    And     I add a source Accounting Line with a random account,a random object code and a default amount to the Pre-Encumbrance document
+    And     I add a source Accounting Line with a random account, a random object code and a default amount to the Pre-Encumbrance document
     And     I save the Pre-Encumbrance document
     And     the Pre-Encumbrance document accounting lines equal the General Ledger Pending entries
     And     I submit the Pre-Encumbrance document

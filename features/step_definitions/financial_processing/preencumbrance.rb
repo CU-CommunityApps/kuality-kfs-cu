@@ -29,6 +29,7 @@ When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance document t
                                                 amount:            @encumbrance_amount,
                                                 line_description:  'Created random account and object code'
                                             }]
+  sleep 10
   on(PreEncumbrancePage).send(button.gsub(' ', '_'))
   step 'I add the encumbrance to the stack'
   sleep 10
