@@ -28,7 +28,8 @@ Feature: Global Account
   Scenario: Create an Account Global using an organization hierarchy
     Given I am logged in as a KFS Chart Manager
     When  I submit an Account Global Maintenance document with multiple accounting lines
-    Then  the Account Global document goes to FINAL
+    And I route the Account Global document to final
+    Then the document status is FINAL
 
   @KFSQA-618 @cornell @AcctCreate @KITI-2869 @sloth @solid
   Scenario: KFS Chart Manager create an Account Global Maintenance document with a invalid Major Reporting Category Code
