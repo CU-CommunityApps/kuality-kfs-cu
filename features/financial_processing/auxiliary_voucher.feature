@@ -7,7 +7,7 @@ Feature: Auxiliary Voucher
   @KFSQA-646 @hare @solid
   Scenario: Input an Accounting Line on a AD that will be denied because of parameter KFS-FP Auxiliary Voucher OBJECT_SUB_TYPES
     Given   I am logged in as a KFS Technical Administrator
-    And     I find a value for a parameter named OBJECT_SUB_TYPES for the Auxiliary Voucher document
+    And     I find a value for a parameter named OBJECT_SUB_TYPES for the Auxiliary Voucher document in the KFS-FP namespace
     And     I lookup an Object Code with that Object Sub Type
     And     I am logged in as a KFS User
     When    I create an AV document with that Object Code

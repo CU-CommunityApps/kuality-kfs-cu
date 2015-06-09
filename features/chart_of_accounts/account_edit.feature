@@ -86,8 +86,6 @@ Feature: Account Edit
   @KFSQA-586 @Bug @AcctClose @KFSMI-5961 @sloth @solid
   Scenario: Try to continue an Account to itself
     Given I am logged in as a KFS Chart Manager
-    And   I access Account Lookup
-    And   I search for all accounts
     And   I clone a random Account with name, chart code, and description changes
     And   I close the Account
     And   I enter a Continuation Account Number that equals the Account Number
