@@ -1,14 +1,3 @@
-And /^I (.*) an Account Global Maintenance document with blank Fiscal Officer Principal Name, Account Supervisor Principal Name, Account Manager Name, and CFDA fields$/ do |button|
-  visit(MainPage).account
-  random_account_number = on(AccountLookupPage).get_random_account_number
-  @account_global = create AccountGlobalObject, fo_principal_name: '',
-                                                supervisor_principal_name: '',
-                                                manager_principal_name: '',
-                                                cfda_number: '',
-                                                income_stream_account_number: random_account_number,
-                                                press: button.gsub(' ', '_')
-end
-
 And /^I (.*) an Account Global Maintenance document with these fields blank:$/ do |button, fields|
   fields = fields.raw.flatten
   mappings = {
@@ -58,12 +47,9 @@ And /^I (.*) an Account Global Maintenance document with these fields blank:$/ d
     :labor_benefit_rate_category_code       => ''
   }
 
-  visit(MainPage).account
-  random_account_number = on(AccountLookupPage).get_random_account_number
-
   options = {
-    income_stream_account_number: random_account_number,
-    press: button.gsub(' ', '_')
+    income_stream_account_number:  get_random_account_number,
+    press:                         button.gsub(' ', '_')
   }.merge!(blank_fields.keep_if{ |bf| mappings.keep_if{ |m| fields.include?(m) }.values.include?(bf) })
 
   @account_global = create AccountGlobalObject, options

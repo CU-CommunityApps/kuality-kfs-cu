@@ -165,7 +165,8 @@ end
 
 And /^I clone Account (.*) with the following changes:$/ do |account_number, table|
   unless account_number.empty?
-    account_number = account_number == 'nil' ? nil : account_number
+    # Use webservice call to get random account number as it is faster than doing account lookup search for all accounts
+    account_number = account_number == 'nil' ? get_random_account_number : account_number
     updates = table.rows_hash
     updates.delete_if { |k,v| v.empty? }
     updates['Indirect Cost Recovery Active Indicator'] = updates['Indirect Cost Recovery Active Indicator'].to_sym unless updates['Indirect Cost Recovery Active Indicator'].nil?
@@ -186,10 +187,10 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
                                      number:      (random_alphanums(7)).upcase!, #need to ensure data in object matches page since page auto uppercases this value
                                      document_id: page.document_id,
                                      press: nil
-      page.description.fit @account.description
-      page.name.fit        @account.name
-      page.chart_code.fit  @account.chart_code
-      page.number.fit      @account.number
+      page.description.fit               @account.description
+      page.name.fit                      @account.name
+      page.chart_code.fit                @account.chart_code
+      page.number.fit                    @account.number
       page.supervisor_principal_name.fit @account.supervisor_principal_name
       #only attempt data entry for ICR tab when all the required ICR data is provided
       if updates['Indirect Cost Recovery Chart Of Accounts Code'] && updates['Indirect Cost Recovery Account Number'] &&
