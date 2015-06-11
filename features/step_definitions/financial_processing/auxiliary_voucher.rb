@@ -15,7 +15,7 @@ And /^I add credit and debit accounting lines with two different sub funds$/ do
   source_account = get_random_account
   target_account = get_random_account
   # Keep looking for a target account that has a sub fund different from the source account
-  while (KFSDataObject.split_code_description_at_first_hyphen(target_account['subFundGroup.codeAndDescription'][0])).eql?(split_code_description_at_first_hyphen(source_account['subFundGroup.codeAndDescription'][0]))
+  while (KFSDataObject.split_code_description_at_first_hyphen(target_account['subFundGroup.codeAndDescription'][0])).eql?(KFSDataObject.split_code_description_at_first_hyphen(source_account['subFundGroup.codeAndDescription'][0]))
     target_account = get_random_account
   end
 
