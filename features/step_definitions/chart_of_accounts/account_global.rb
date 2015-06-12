@@ -48,11 +48,16 @@ And /^I (.*) an Account Global Maintenance document with these fields blank:$/ d
   }
 
   options = {
-    income_stream_account_number:  get_random_account_number,
-    press:                         button.gsub(' ', '_')
+      income_stream_account_number:  get_random_account_number
   }.merge!(blank_fields.keep_if{ |bf| mappings.keep_if{ |m| fields.include?(m) }.values.include?(bf) })
 
   @account_global = create AccountGlobalObject, options
+
+  # Moved button press for type of action being requested from the list of attributes so that it is no longer being
+  # performed when the object is created.  Added call for step that explicitly performs the button press on the document.
+  # This change was made because the step performs appropriately timed waits based on the type of action being requested
+  # and in most cases prevents timeout or waitr errors from occurring when KFS or Cynergy is long running.
+  step "I #{button} the Account Global document"
 end
 
 And /^I perform a Major Reporting Category Code Lookup$/ do
@@ -87,8 +92,13 @@ And /^I (.*) an Account Global Maintenance document with multiple accounting lin
                            income_stream_account_number:       '',
                            sufficient_funds_code:              '',
                            add_multiple_accounting_lines:      'yes',
-                           search_account_number:              '10007*',
-                           press:                              button
+                           search_account_number:              '10007*'
+
+  # Moved button press for type of action being requested from the list of attributes so that it is no longer being
+  # performed when the object is created.  Added call for step that explicitly performs the button press on the document.
+  # This change was made because the step performs appropriately timed waits based on the type of action being requested
+  # and in most cases prevents timeout or waitr errors from occurring when KFS or Cynergy is long running.
+  step "I #{button} the Account Global document"
 end
 
 When /^I (.*) an Account Global Maintenance document with a Major Reporting Category Code of (.*)$/ do |button, value_for_field|
@@ -107,8 +117,13 @@ When /^I (.*) an Account Global Maintenance document with a Major Reporting Cate
                            income_stream_financial_cost_code:  '',
                            income_stream_account_number:       '',
                            sufficient_funds_code:              '',
-                           major_reporting_category_code:      "#{value_for_field}",
-                           press: button
+                           major_reporting_category_code:      "#{value_for_field}"
+
+  # Moved button press for type of action being requested from the list of attributes so that it is no longer being
+  # performed when the object is created.  Added call for step that explicitly performs the button press on the document.
+  # This change was made because the step performs appropriately timed waits based on the type of action being requested
+  # and in most cases prevents timeout or waitr errors from occurring when KFS or Cynergy is long running.
+  step "I #{button} the Account Global document"
 end
 
 When /^I enter a valid Major Reporting Category Code of (.*)$/ do |value_of_field|
