@@ -31,7 +31,7 @@ And /^I add credit and debit accounting lines with two different sub funds$/ do
 
   while true
     object_code_object = get_random_object_code_object
-    break unless (object_sub_type_exclusions.include?(object_code_object['financialObjectSubTypeCode'][0]) & object_level_exclusions.include?(object_code_object['financialObjectLevelCode'][0]))
+    break unless (object_sub_type_exclusions.include?(object_code_object['financialObjectSubTypeCode'][0]) or object_level_exclusions.include?(object_code_object['financialObjectLevelCode'][0]))
   end
 
   on AuxiliaryVoucherPage do |page|
