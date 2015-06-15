@@ -5,7 +5,7 @@ Feature: Auxiliary Voucher
               across Sub-Fund Group Codes because of Cornell SOP.
 
   @KFSQA-646 @hare @solid
-  Scenario: Input an Accounting Line on a AD that will be denied because of parameter KFS-FP Auxiliary Voucher OBJECT_SUB_TYPES
+  Scenario: Input an Accounting Line on a AV that will be denied because of parameter KFS-FP Auxiliary Voucher OBJECT_SUB_TYPES
     Given   I am logged in as a KFS Technical Administrator
     And     I find a value for a parameter named OBJECT_SUB_TYPES for the Auxiliary Voucher document in the KFS-FP namespace
     And     I lookup an Object Code with that Object Sub Type
@@ -20,4 +20,4 @@ Feature: Auxiliary Voucher
     And     I add credit and debit accounting lines with two different sub funds
     When    I submit the Auxiliary Voucher document
     Then    the document should have no errors
-    And     the auxiliary Voucher document goes to ENROUTE
+    And     the Auxiliary Voucher document goes to ENROUTE
