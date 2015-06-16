@@ -22,13 +22,15 @@ Feature: Global Account
   Scenario: Create Account Global Maintenance document with Major Reporting Category Code
     Given I am logged in as a KFS Chart Manager
     When  I submit an Account Global Maintenance document with a Major Reporting Category Code of FACULTY
-    Then  the Account Global document goes to FINAL
+    And I route the Account Global document to final
+    Then the document status is FINAL
 
   @KFSQA-577 @cornell @AcctGlobal @AcctCreate @KFSPTS-628 @sloth @solid
   Scenario: Create an Account Global using an organization hierarchy
     Given I am logged in as a KFS Chart Manager
     When  I submit an Account Global Maintenance document with multiple accounting lines
-    Then  the Account Global document goes to FINAL
+    And I route the Account Global document to final
+    Then the document status is FINAL
 
   @KFSQA-618 @cornell @AcctCreate @KITI-2869 @sloth @solid
   Scenario: KFS Chart Manager create an Account Global Maintenance document with a invalid Major Reporting Category Code
@@ -37,7 +39,8 @@ Feature: Global Account
     Then  account global should show an error that says "The specified Major Reporting Category Code does not exist."
     When  I enter a valid Major Reporting Category Code of FACULTY
     And   I submit the Account Global document
-    Then  the Account Global document goes to FINAL
+    And I route the Account Global document to final
+    Then the document status is FINAL
 
   @KFSQA-571 @Bug @AcctGlobal @KFSMI-8612 @sloth @solid
   Scenario: Create Account Global eDoc with blank fields
@@ -47,4 +50,5 @@ Feature: Global Account
       | Account Supervisor Principal Name |
       | Account Manager Principal Name    |
       | CFDA Number                       |
-    Then  the Account Global document goes to FINAL
+    And I route the Account Global document to final
+    Then the document status is FINAL
