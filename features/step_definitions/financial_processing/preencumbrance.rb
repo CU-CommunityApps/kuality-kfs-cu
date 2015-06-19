@@ -3,7 +3,7 @@ When /^I (#{PreEncumbrancePage::available_buttons}) a Pre\-Encumbrance Document 
   # Note: This step WILL CREATE the random object code object and will use the parameter default source amount.
   step "I find a random Pre-Encumbrance Object Code"
   @encumbrance_amount = get_aft_parameter_value(ParameterConstants::DEFAULT_PREENCUMBRANCE_SOURCE_ACCOUNTING_LINE_AMOUNT)
-  @pre_encumbrance = create PreEncumbranceObject, press: button.gsub(' ', '_'),
+  @pre_encumbrance = create PreEncumbranceObject,
                             initial_lines: [{
                                                 type:              :source,
                                                 account_number:    @account.number,
@@ -12,6 +12,8 @@ When /^I (#{PreEncumbrancePage::available_buttons}) a Pre\-Encumbrance Document 
                                                 amount:            @encumbrance_amount,
                                                 line_description:  'Using previously created random account'
                                             }]
+  step "I save the Pre-Encumbrance document"   # pre-encumbrance document must be saved before it can be submitted
+  step "I #{button} the Pre-Encumbrance document"
   step 'I add the encumbrance to the stack'
 end
 
@@ -20,7 +22,7 @@ When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance document t
   step "I find a random Pre-Encumbrance Account"
   step "I find a random Pre-Encumbrance Object Code"
   @encumbrance_amount = get_aft_parameter_value(ParameterConstants::DEFAULT_PREENCUMBRANCE_SOURCE_ACCOUNTING_LINE_AMOUNT)
-  @pre_encumbrance = create PreEncumbranceObject, press: :save,
+  @pre_encumbrance = create PreEncumbranceObject,
                             initial_lines: [{
                                                 type:              :source,
                                                 account_number:    @account.number,
@@ -29,10 +31,9 @@ When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance document t
                                                 amount:            @encumbrance_amount,
                                                 line_description:  'Created random account and object code'
                                             }]
-  sleep 10
-  on(PreEncumbrancePage).send(button.gsub(' ', '_'))
+  step "I save the Pre-Encumbrance document"   # pre-encumbrance document must be saved before it can be submitted
+  step "I #{button} the Pre-Encumbrance document"
   step 'I add the encumbrance to the stack'
-  sleep 10
 end
 
 
@@ -50,6 +51,7 @@ Then /^the outstanding encumbrance for the account and object code used is the d
     page.doc_number.set         @remembered_document_id
     page.balance_type_code.set 'PE'
     page.search
+    page.wait_for_search_results
 
     # before comparing deal with the possibility of money with no cents and compare the same data type of integer
     computed_outstanding_amount = ((@encumbrance_amount.to_f - @disencumbrance_amount.to_f) * 100).to_i
