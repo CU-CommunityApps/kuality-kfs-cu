@@ -202,10 +202,9 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
       end
 
       page.errors.should == []  #fail the test and do not continue if errors exist on page after performing data changes
-      page.blanket_approve
-      sleep 5
     end
 
+    step "I blanket approve the Account document"
     step 'I add the account to the stack'
   end
 end
