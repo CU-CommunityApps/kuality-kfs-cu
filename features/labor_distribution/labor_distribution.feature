@@ -21,7 +21,7 @@ Feature: Labor Distribution
                employee, to_account_different_types, labor_object_code
 
 
-  @KFSQA-983 @BaseFunction @ST @slug @solid
+  @KFSQA-983 @BaseFunction @ST @slug @nightly-jobs @solid
   Scenario: Base Function : I create a Salary Expense Transfer
     Given I create a Salary Expense Transfer as a Salary Transfer Initiator
       | Parameter Name | TEST_ST_CREATE |
@@ -38,7 +38,9 @@ Feature: Labor Distribution
       |From Account  | A464100   |
       |To Account    | A453101   |
 
-  @KFSQA-985 @BaseFunction @tortoise @solid
+  # Removed this scenario as a @solid AFT because the same functionality is verified in scenario KDO-557
+  # "Run the labor and general ledger critical path batch jobs".
+  @KFSQA-985 @BaseFunction @tortoise @nightly-jobs
   Scenario: Base Function for labor nightly batch process.
     Given I run the nightly Labor batch process
     And   I am logged in as a Salary Transfer Initiator
