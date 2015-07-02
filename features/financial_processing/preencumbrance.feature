@@ -96,13 +96,13 @@ Feature: Pre-Encumbrance
     And     I lookup all entries for the current month in the General Ledger Balance lookup entry
     Then    the General Ledger Balance lookup displays the document ID for the Pre-Encumbrance document
     And     the Encumbrance Accounting Line on the General Ledger Balance lookup for the Pre-Encumbrance document equals the displayed amounts
-
-    When    Nightly Batch Jobs run
+    #Remaining validation will be performed after the nightly batch jobs are executed for this feature file
     And     I am logged in as a KFS System Manager
-    Then    the Encumbrance Accounting Line appears in the Pre-Encumbrance document's GL entry
     And     I restore the application parameter to its original value
     And     I submit the Parameter document
     And     I finalize the Parameter document
+    Then    references to test KFSQA-664 instance data is saved for validation after batch job execution
+
 
   @KFSQA-753 @FP @PE @nightly-jobs @cornell @tortoise @solid
   Scenario: Generate Proper Offsets Using a PE to generate an Encumbrance
@@ -114,9 +114,8 @@ Feature: Pre-Encumbrance
     And   I blanket approve the Pre-Encumbrance document
     And   the Pre-Encumbrance document goes to FINAL
     And   the Pre-Encumbrance document has matching GL and GLPE offsets
-    And   Nightly Batch Jobs run
-    When  I am logged in as a KFS User
-    Then  the Pre-Encumbrance document GL Entry Lookup matches the document's GL entry
+    #Remaining validation will be performed after the nightly batch jobs are executed for this feature file
+
 
   @KFSQA-988 @FP @PreEncumbrance @smoke @slug @solid
   Scenario: Submit a pre-encumbrance to disencumber and pre-encumber on the same document.
@@ -150,3 +149,21 @@ Feature: Pre-Encumbrance
       | SAVED   |
     Then  Open Encumbrance Lookup Results for the Account just used with Balance Type PE for All Pending Entries and Include Zeroed Out Encumbrances will display the disencumbered amount in both open and closed amounts with outstanding amount zero
 
+  @nightly-jobs @solid
+  Scenario: Run Nightly batch jobs required for Pre-Encumbrance Tests Verification
+    Given   Nightly Batch Jobs run
+    Then    There are no incomplete Batch Job executions
+
+  @KFSQA-664 @validation-after-batch @solid
+  Scenario: Validation for Process a Pre-Encumbrance using a revenue object code
+    Given   There are no incomplete Batch Job executions
+    And     I can retrieve references to test KFSQA-664 instance data saved for validation after batch job execution
+    And     I am logged in as a KFS System Manager
+    Then    the Encumbrance Accounting Line appears in the Pre-Encumbrance document's GL entry
+
+  @KFSQA-753 @validation-after-batch @solid
+  Scenario: Validation for Generate Proper Offsets Using a PE to generate an Encumbrance
+    Given There are no incomplete Batch Job executions
+    And   I can retrieve references to test KFSQA-753 instance data saved for validation after batch job execution
+    When  I am logged in as a KFS User
+    Then  the Pre-Encumbrance document GL Entry Lookup matches the document's GL entry
