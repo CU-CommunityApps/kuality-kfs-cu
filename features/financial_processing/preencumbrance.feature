@@ -97,12 +97,11 @@ Feature: Pre-Encumbrance
     Then    the General Ledger Balance lookup displays the document ID for the Pre-Encumbrance document
     And     the Encumbrance Accounting Line on the General Ledger Balance lookup for the Pre-Encumbrance document equals the displayed amounts
     #Remaining validation will be performed after the nightly batch jobs are executed for this feature file
+    Then    references to test KFSQA-664 instance data are saved for validation after batch job execution
     And     I am logged in as a KFS System Manager
     And     I restore the application parameter to its original value
     And     I submit the Parameter document
     And     I finalize the Parameter document
-    Then    references to test KFSQA-664 instance data is saved for validation after batch job execution
-
 
   @KFSQA-753 @FP @PE @nightly-jobs @cornell @tortoise @solid
   Scenario: Generate Proper Offsets Using a PE to generate an Encumbrance
@@ -115,7 +114,7 @@ Feature: Pre-Encumbrance
     And   the Pre-Encumbrance document goes to FINAL
     And   the Pre-Encumbrance document has matching GL and GLPE offsets
     #Remaining validation will be performed after the nightly batch jobs are executed for this feature file
-
+    Then    references to test KFSQA-753 instance data are saved for validation after batch job execution
 
   @KFSQA-988 @FP @PreEncumbrance @smoke @slug @solid
   Scenario: Submit a pre-encumbrance to disencumber and pre-encumber on the same document.

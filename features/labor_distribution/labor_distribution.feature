@@ -25,12 +25,11 @@ Feature: Labor Distribution
   Scenario: Base Function : I create a Salary Expense Transfer
     Given I create a Salary Expense Transfer as a Salary Transfer Initiator
       | Parameter Name | TEST_ST_CREATE |
-    And I transfer the Salary to another Account in my Organization
+    And   I transfer the Salary to another Account in my Organization
     And   I submit the Salary Expense Transfer document
-    Then  the Salary Expense Transfer document goes to FINAL
-    And   I run the nightly Labor batch process
-    And   I am logged in as a Labor Distribution Manager
-    Then  the labor ledger pending entry for employee is empty
+    And   the Salary Expense Transfer document goes to FINAL
+    #Remaining validation will be performed after the nightly batch jobs are executed for this feature file
+    Then  references to test KFSQA-983 instance data are saved for validation after batch job execution
 
   @KFSQA-984 @BaseFunction @BT @tortoise
   Scenario: Base Function : I create a Benefit Expense Transfer
@@ -66,9 +65,8 @@ Feature: Labor Distribution
     Then  the Salary Expense Transfer document goes to FINAL
     And   a Salary Expense Transfer initiator outside the organization cannot view the document
     And   a Salary Expense Transfer initiator inside the organization can view the document
-    And   I run the nightly Labor batch process
-    And   I am logged in as a Labor Distribution Manager
-    Then  the labor ledger pending entry for employee is empty
+    #Remaining validation will be performed after the nightly batch jobs are executed for this feature file
+    Then  references to test KFSQA-970 instance data are saved for validation after batch job execution
 
    @KFSQA-1012 @ST @smoke @nightly-jobs @coral @solid
   Scenario: Submit a salary transfer edoc between account types, edit the object code, verify pending entries, and submit successfully.
@@ -82,6 +80,31 @@ Feature: Labor Distribution
     And   the Salary Expense Transfer document goes to ENROUTE
     And   I blanket approve the Salary Expense Transfer document
     Then  the Salary Expense Transfer document goes to FINAL
-    And   I run the nightly Labor batch process
+    #Remaining validation will be performed after the nightly batch jobs are executed for this feature file
+     Then  references to test KFSQA-1012 instance data are saved for validation after batch job execution
+
+  @nightly-jobs @solid
+  Scenario: Run Nightly batch jobs required for Labor Distribution Tests Verification
+    Given   I run the nightly Labor batch process
+    Then    There are no incomplete Batch Job executions
+
+  @KFSQA-983 @validation-after-batch @solid
+  Scenario: Validation For Base Function : I create a Salary Expense Transfer
+    Given There are no incomplete Batch Job executions
+    And   I can retrieve references to test KFSQA-983 instance data saved for validation after batch job execution
+    And   I am logged in as a Labor Distribution Manager
+    Then  the labor ledger pending entry for employee is empty
+
+  @KFSQA-970 @validation-after-batch @solid
+  Scenario: Validation for Salary Expense Transfer test between account types, between rates, and for labor access security
+    Given There are no incomplete Batch Job executions
+    And   I can retrieve references to test KFSQA-970 instance data saved for validation after batch job execution
+    And   I am logged in as a Labor Distribution Manager
+    Then  the labor ledger pending entry for employee is empty
+
+  @KFSQA-1012 @validation-after-batch @solid
+  Scenario: Validation for Submit a salary transfer edoc between account types, edit the object code, verify pending entries, and submit successfully
+    Given There are no incomplete Batch Job executions
+    And   I can retrieve references to test KFSQA-1012 instance data saved for validation after batch job execution
     And   I am logged in as a Labor Distribution Manager
     Then  the labor ledger pending entry for employee is empty
