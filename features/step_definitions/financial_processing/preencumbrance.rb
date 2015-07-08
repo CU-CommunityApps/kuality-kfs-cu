@@ -32,7 +32,7 @@ When /^I (#{PreEncumbrancePage::available_buttons}) a Pre-Encumbrance document t
                                                 line_description:  'Created random account and object code'
                                             }]
   step "I save the Pre-Encumbrance document"   # pre-encumbrance document must be saved before it can be submitted
-  step "I #{button} the Pre-Encumbrance document"
+  step "I #{button} the Pre-Encumbrance document" unless button.eql?('save')   # do not save a second time when step was requested to save
   step 'I add the encumbrance to the stack'
 end
 

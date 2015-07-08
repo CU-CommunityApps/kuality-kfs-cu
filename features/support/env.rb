@@ -41,6 +41,12 @@ end
 kuality = KualityKFS.new @config[:browser]
 $users = Users.instance
 
+# Global data hash used to store scenario instance data values by AFT JIRA number.  This enables batch jobs execution
+# to be required a minimum number of times per scenario and no longer needing it per AFT in a scenario.
+# For example: If a scenario has five AFTs where three require batch job execution prior to data validation, the batch
+# jobs would ony need to be run once for that scenario instead of three times.
+$aft_validation_data = Hash.new
+
 Before do
 
   @browser = kuality.browser

@@ -20,10 +20,8 @@ Feature: General Ledger
     And   I save the <eDoc> document
     And   I submit the <eDoc> document
     And   I route the <eDoc> document to final
-    Given Nightly Batch Jobs run
-    And   I am logged in as a KFS Chart Administrator
-    When  I lookup the document ID for the <eDoc> document from the General Ledger
-    Then  the Accounting Line Description for the <eDoc> document equals the General Ledger Accounting Line Description
+    #Remaining validation will be performed after the nightly batch jobs are executed for this feature file
+    Then  references to test KFSQA-649 instance data for <docType> are saved for validation after batch job execution
   Examples:
     | eDoc                               | docType | source_account | target_account |
     | Advance Deposit                    | AD      | 2003600        |                |
@@ -113,3 +111,25 @@ Feature: General Ledger
     And   I am logged in as a KFS Chart Administrator
     When  I lookup the document ID for the Indirect Cost Adjustment document from the General Ledger
     Then  the Accounting Line Description for the Indirect Cost Adjustment document equals the General Ledger Accounting Line Description
+
+  @nightly-jobs @solid
+  Scenario: Run Nightly batch jobs required for General Ledger Tests Verification
+    Given   Nightly Batch Jobs run
+    Then    There are no incomplete Batch Job executions
+
+  @KFSQA-649 @validation-after-batch @solid
+  Scenario Outline: Validation for Accounting Line Description from eDoc updates General Ledger, part 1
+    Given All Nightly Batch Jobs have completed successfully
+    And   I can retrieve references to test KFSQA-649 instance data for <docType> saved for validation after batch job execution
+    And   I am logged in as a KFS Chart Administrator
+    When  I lookup the document ID for the <eDoc> document from the General Ledger
+    Then  the Accounting Line Description for the <eDoc> document equals the General Ledger Accounting Line Description
+  Examples:
+  | eDoc                               | docType |
+  | Advance Deposit                    | AD      |
+  | Auxiliary Voucher                  | AV      |
+  | Credit Card Receipt                | CCR     |
+  | Distribution Of Income And Expense | DI      |
+  | General Error Correction           | GEC     |
+  | Internal Billing                   | IB      |
+  | Transfer Of Funds                  | TF      |
