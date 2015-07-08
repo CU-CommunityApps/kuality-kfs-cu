@@ -90,21 +90,21 @@ Feature: Labor Distribution
 
   @KFSQA-983 @validation-after-batch @solid
   Scenario: Validation For Base Function : I create a Salary Expense Transfer
-    Given There are no incomplete Batch Job executions
+    Given All Nightly Batch Jobs have completed successfully
     And   I can retrieve references to test KFSQA-983 instance data saved for validation after batch job execution
     And   I am logged in as a Labor Distribution Manager
     Then  the labor ledger pending entry for employee is empty
 
   @KFSQA-970 @validation-after-batch @solid
   Scenario: Validation for Salary Expense Transfer test between account types, between rates, and for labor access security
-    Given There are no incomplete Batch Job executions
+    Given All Nightly Batch Jobs have completed successfully
     And   I can retrieve references to test KFSQA-970 instance data saved for validation after batch job execution
     And   I am logged in as a Labor Distribution Manager
     Then  the labor ledger pending entry for employee is empty
 
   @KFSQA-1012 @validation-after-batch @solid
   Scenario: Validation for Submit a salary transfer edoc between account types, edit the object code, verify pending entries, and submit successfully
-    Given There are no incomplete Batch Job executions
+    Given All Nightly Batch Jobs have completed successfully
     And   I can retrieve references to test KFSQA-1012 instance data saved for validation after batch job execution
     And   I am logged in as a Labor Distribution Manager
     Then  the labor ledger pending entry for employee is empty

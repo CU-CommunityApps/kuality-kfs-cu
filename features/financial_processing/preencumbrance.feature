@@ -155,14 +155,14 @@ Feature: Pre-Encumbrance
 
   @KFSQA-664 @validation-after-batch @solid
   Scenario: Validation for Process a Pre-Encumbrance using a revenue object code
-    Given   There are no incomplete Batch Job executions
+    Given   All Nightly Batch Jobs have completed successfully
     And     I can retrieve references to test KFSQA-664 instance data saved for validation after batch job execution
     And     I am logged in as a KFS System Manager
     Then    the Encumbrance Accounting Line appears in the Pre-Encumbrance document's GL entry
 
   @KFSQA-753 @validation-after-batch @solid
   Scenario: Validation for Generate Proper Offsets Using a PE to generate an Encumbrance
-    Given There are no incomplete Batch Job executions
+    Given All Nightly Batch Jobs have completed successfully
     And   I can retrieve references to test KFSQA-753 instance data saved for validation after batch job execution
     When  I am logged in as a KFS User
     Then  the Pre-Encumbrance document GL Entry Lookup matches the document's GL entry

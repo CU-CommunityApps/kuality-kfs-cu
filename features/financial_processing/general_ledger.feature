@@ -119,7 +119,7 @@ Feature: General Ledger
 
   @KFSQA-649 @validation-after-batch @solid
   Scenario Outline: Validation for Accounting Line Description from eDoc updates General Ledger, part 1
-    Given There are no incomplete Batch Job executions
+    Given All Nightly Batch Jobs have completed successfully
     And   I can retrieve references to test KFSQA-649 instance data for <docType> saved for validation after batch job execution
     And   I am logged in as a KFS Chart Administrator
     When  I lookup the document ID for the <eDoc> document from the General Ledger
