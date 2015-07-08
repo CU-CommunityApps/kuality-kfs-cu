@@ -128,8 +128,8 @@ And /^I can retrieve references to test (.*) instance data for (.*) saved for va
       @employee_id              = aft_data_hash[:employee_id]
       @salary_expense_transfer  = aft_data_hash[:salary_expense_transfer]
       $aft_validation_data.delete(aft_name)
-    when 'KFSQA-649' #General Ledger source outline test
-      doc_type.nil? ? raise ArgumentError, "Required Doc Type for AFT name #{aft_name} is nil in step that retrieves the instance data for validation post batch job execution." : nil
+    when 'KFSQA-649' #General Ledger scenario outline test
+      raise ArgumentError, "Required Doc Type for AFT name #{aft_name} is nil in step that retrieves the instance data for validation post batch job execution." if doc_type.nil?
       composite_key = "#{aft_name}-#{doc_type}"
       aft_data_hash = $aft_validation_data[composite_key]
       @document_id = aft_data_hash[:document_id]
