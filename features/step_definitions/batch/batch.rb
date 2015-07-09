@@ -87,6 +87,8 @@ And /^I can retrieve references to test (.*) instance data for (.*) saved for va
   # ensure global Hash of Hashes contains something
   raise StandardError, 'Global hash of AFT data for validation is nil.' if $aft_validation_data.nil?
   raise StandardError, 'Global hash of AFT data for validation is empty.' if $aft_validation_data.empty?
+  raise ArgumentError.new("Key for AFT Name #{aft_name} Doc Type #{doc_type} was not found in Global hash of AFT data for validation. Scenario that should have saved that data must have failed.") unless $aft_validation_data.key?(aft_name) || $aft_validation_data.key?("#{aft_name}-#{doc_type}")
+
   # populate all of the instance data for the specified AFT with the archived data needed for validation
   case aft_name
     when 'KFSQA-664' #Pre_Encumbrance
