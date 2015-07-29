@@ -47,6 +47,9 @@ $users = Users.instance
 # jobs would ony need to be run once for that scenario instead of three times.
 $aft_validation_data = Hash.new
 
+# Global data hash used to cache KFS AFT system parameters
+$AFT_PARAMETER_CONSTANTS = Hash.new
+
 Before do
 
   @browser = kuality.browser

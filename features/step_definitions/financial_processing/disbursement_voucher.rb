@@ -27,8 +27,8 @@ And /^I search for the payee with Terminated Employee and Reason Code (\w+) for 
 end
 
 When /^I start an empty Disbursement Voucher document with Payment to a Petty Cash Vendor$/ do
-  #TODO : vendor number '41473-0' should be retrieved from service
-  @disbursement_voucher = create DisbursementVoucherObject, payee_id: get_aft_parameter_value('DV_PETTY_CASH_VENDOR'), payment_reason_code: 'K - Univ PettyCash Custodian Replenishment'
+  #TODO : vendor number '41473-0' should be retrieved from service that dynamically obtains a petty cash vendor and not use a hard coded parameter value
+  @disbursement_voucher = create DisbursementVoucherObject, payee_id: get_aft_parameter_value(ParameterConstants::DV_PETTY_CASH_VENDOR), payment_reason_code: 'K - Univ PettyCash Custodian Replenishment'
 end
 
 And /^I add a random vendor payee to the Disbursement Voucher$/ do
