@@ -9,7 +9,7 @@ Feature: Object Code Global
   Scenario: Create an Object Code Global with an invalid CG Reporting Code and get an error message
     Given I am logged in as a KFS Chart Manager
     And   I save an Object Code Global document
-    And   I enter an invalid CG Reporting Code of ZZZZ
+    And   I enter the invalid CG Reporting Code of ZZZZ
     When  I submit the Object Code Global document
     Then  I should get an error saying "CG Reporting Code ZZZZ for Chart Code IT does not exist."
 

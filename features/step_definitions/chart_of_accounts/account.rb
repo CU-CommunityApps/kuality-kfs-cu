@@ -79,7 +79,8 @@ When /^I save an Account document with only the ([^"]*) field populated$/ do |fi
       default_fields.each {|k, _| default_fields[k] = '' unless k.to_s.eql?('description') }
   end
 
-  @account = create AccountObject, default_fields.merge({press: :save})
+  @account = create AccountObject, default_fields
+  step 'I save the Account document'
   step 'I add the account to the stack'
 end
 
@@ -185,8 +186,8 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
                                      name:        updates['Name'],
                                      chart_code:  updates['Chart Code'],
                                      number:      (random_alphanums(7)).upcase!, #need to ensure data in object matches page since page auto uppercases this value
-                                     document_id: page.document_id,
-                                     press: nil
+                                     document_id: page.document_id
+
       page.description.fit               @account.description
       page.name.fit                      @account.name
       page.chart_code.fit                @account.chart_code

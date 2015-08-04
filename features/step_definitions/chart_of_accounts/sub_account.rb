@@ -61,11 +61,11 @@ And /^I (#{SubAccountPage::available_buttons}) a Cost Share Sub-Account with an 
       cost_sharing_chart_of_accounts_code: get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE_WITH_NAME),
       sub_account_type_code:               sub_account_type_code,
       cost_sharing_account_number:         account_number,
-      adhoc_approver_userid:               @adhoc_user,
-      press:                               button.gsub(' ', '_')
+      adhoc_approver_userid:               @adhoc_user
   }
 
   @sub_account = create SubAccountObject, options
+  step "I #{button} the Sub Account document"
 end
 
 

@@ -1,7 +1,6 @@
 And /^I (#{BudgetAdjustmentPage::available_buttons}) a balanced Budget Adjustment document with accounting lines$/ do |button|
   button.gsub!(' ', '_')
   @budget_adjustment = create BudgetAdjustmentObject,
-                              press: nil, # We should add the accounting lines before submitting, eh?
                               initial_lines: [
                                   {
                                       type:             :source,

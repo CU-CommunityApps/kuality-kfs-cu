@@ -43,7 +43,7 @@ Feature: PURAP manual entry greater than 500 but less than 25000
     And   I Complete Selecting Vendor 27015-0
     And   I enter a Vendor Choice of 'Lowest Price'
     And   I calculate and verify the GLPE tab
-    And   I submit the document
+    And   I submit the Requisition document
     Then  in Pending Action Requests an FYI is sent to FO and Initiator
     And   the Purchase Order document status is 'FINAL'
     #using services getting 'error occurred sending cxml' instead of 'Open'
