@@ -1,6 +1,5 @@
 And /^I (#{LaborJournalVoucherPage::available_buttons}) a Labor Journal Voucher document with accounting lines$/ do |button|
   @labor_journal_voucher = create LaborJournalVoucherObject,
-                              press: button.gsub(' ', '_'),
                               initial_lines: [
                                   {
                                       type:             :source,
@@ -17,4 +16,5 @@ And /^I (#{LaborJournalVoucherPage::available_buttons}) a Labor Journal Voucher 
                                       line_description: nil
                                   }
                               ]
+  step "I #{button} the Labor Journal Voucher document"
 end
