@@ -1,18 +1,28 @@
 And /^I create a Sub-Account using a CG account with a CG Account Responsibility ID in range (.*) to (.*)$/ do |lower_limit, upper_limit|
-  accounts = []
+  account_numbers = []
   counter = lower_limit.to_i
   chart_code = get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE) #parameter value is being used in a loop, get it once
 
-  #get all of the accounts that are in the range we are looking for
+  # get all of the accounts that are in the range we are looking for
   while counter <= upper_limit.to_i do
-    account_number_hash = get_kuali_business_objects('KFS-COA','Account',"chartOfAccountsCode=#{chart_code}&subFundGroup.fundGroupCode=CG&closed=N&active=Y&accountExpirationDate=NULL&contractsAndGrantsAccountResponsibilityId=#{counter}")
-    accounts.concat(account_number_hash['org.kuali.kfs.coa.businessobject.Account'])
+    accounts_hash = get_kuali_business_objects('KFS-COA','Account',"chartOfAccountsCode=#{chart_code}&subFundGroup.fundGroupCode=CG&closed=N&active=Y&accountExpirationDate=NULL&contractsAndGrantsAccountResponsibilityId=#{counter}")
+    # The webservice returns the data in two different formats depending upon whether there is one Account found or
+    # multiple Accounts found. We need to deal with both cases
+    if accounts_hash.has_key?('org.kuali.kfs.coa.businessobject.Account')
+    # multiple accounts found
+      accounts_array = accounts_hash['org.kuali.kfs.coa.businessobject.Account']
+      accounts_array.each{ |value|
+        account_numbers.concat(value['accountNumber'])
+      }
+    else #single Account found
+        account_numbers.concat(accounts_hash['accountNumber'])
+    end
     counter += 1
   end
 
   options = {
       chart_code:               chart_code,
-      account_number:           (accounts.sample)['accountNumber'][0],
+      account_number:           account_numbers.sample,
       name:                     'Test route sub-acct type CS to CG Respon',
       sub_account_type_code:    get_aft_parameter_value(ParameterConstants::DEFAULT_EXPENSE_SUB_ACCOUNT_TYPE_CODE),
   }
@@ -83,7 +93,7 @@ And /^I create a Sub-Account with a Cost Share Sub-Account Type Code$/ do
 end
 
 
-And /^I edit the current Indirect Cost Recovery Account on the Sub-Account to a Contract College General Appropriated Account$/ do
+And /^I edit the current Indirect Cost Recovery Account on the Sub-Account to a Contracts & Grants Account$/ do
   # do not continue, if there is not one and only one icr_account
   fail ArgumentError, 'No Indirect Cost Recovery Account on the Sub-Account, cannot edit. ' if @sub_account.icr_accounts.length == 0
   fail ArgumentError, 'More that one Indirect Cost Recovery Account on the Sub-Account, do not know which one to edit.' if @sub_account.icr_accounts.length > 1
@@ -91,7 +101,7 @@ And /^I edit the current Indirect Cost Recovery Account on the Sub-Account to a 
 
   #add values for the specified keys being edited for this single ICR account
   options = {
-      account_number:         get_account_of_type('General Appropriated Account'),
+      account_number:         get_account_of_type('Contracts & Grants Account'),
       chart_of_accounts_code: get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
       line_number:            0   #current value is considered to be the first value
   }
