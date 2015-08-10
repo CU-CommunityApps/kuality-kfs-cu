@@ -64,6 +64,6 @@ Feature: Sub Account
     And   I display the Sub-Account document
     And   I lookup the Sub-Account I want to edit
     And   I edit the Sub-Account changing its type code to Cost Share
-    And   I edit the current Indirect Cost Recovery Account on the Sub-Account to a Contract College General Appropriated Account
+    And   I edit the current Indirect Cost Recovery Account on the Sub-Account to a Contracts & Grants Account
     And   I submit the Sub-Account document
     Then  the Sub-Account document routes to the Award node
