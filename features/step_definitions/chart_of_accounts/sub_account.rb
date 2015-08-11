@@ -91,12 +91,11 @@ end
 
 
 And /^I edit the current Indirect Cost Recovery Account on the Sub-Account to a Contracts & Grants Account$/ do
-  # do not continue, if there is not one and only one icr_account
+  # do not continue, fail the test if there there is no icr_account to edit
   fail ArgumentError, 'No Indirect Cost Recovery Account on the Sub-Account, cannot edit. ' if @sub_account.icr_accounts.length == 0
-  fail ArgumentError, 'More that one Indirect Cost Recovery Account on the Sub-Account, do not know which one to edit.' if @sub_account.icr_accounts.length > 1
-  # implied,  @sub_account.icr_accounts.length == 1
 
-  #add values for the specified keys being edited for this single ICR account
+  # always edit the first ICR account which is line #0
+  # add values for the specified keys being edited for this single ICR account
   options = {
       account_number:         get_account_of_type('Contracts & Grants Account'),
       chart_of_accounts_code: get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
