@@ -1,25 +1,9 @@
-And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
-  visit(MainPage).account
-  on AccountLookupPage do |page|
-    page.subfund_program_code.set 'BOARD' #TODO config
-    page.search
-    page.edit_random
-  end
-  on AccountPage do |page|
-    @account = make AccountObject
-    page.description.set random_alphanums(40, 'AFT')
-    page.subfund_program_code.set 'board' #TODO config
-    page.save
-  end
-  step 'I add the account to the stack'
-end
-
 When /^I enter a Sub-Fund Program Code of (.*)$/ do |sub_fund_program_code|
   on AccountPage do |page|
     page.subfund_program_code.set sub_fund_program_code
-    page.save
     @account.subfund_program_code = sub_fund_program_code
   end
+  step 'I save the Account document'
   step 'I add the account to the stack'
 end
 
@@ -37,9 +21,9 @@ end
 When /^I enter (.*) as an invalid Appropriation Account Number$/  do |appropriation_account_number|
   on AccountPage do |page|
     page.appropriation_account_number.fit appropriation_account_number
-    page.save
     @account.appropriation_account_number = appropriation_account_number
   end
+  step 'I save the Account document'
   step 'I add the account to the stack'
 end
 
@@ -159,9 +143,9 @@ end
 When /^I enter (.*) as an invalid Labor Benefit Rate Category Code$/  do |labor_benefit_rate_category_code|
   on AccountPage do |page|
     page.labor_benefit_rate_category_code.fit labor_benefit_rate_category_code
-    page.save
     @account.labor_benefit_rate_category_code = labor_benefit_rate_category_code
   end
+  step 'I save the Account document'
 end
 
 And /^I clone Account (.*) with the following changes:$/ do |account_number, table|
@@ -217,6 +201,7 @@ And /^I find an expired Account$/ do
     page.chart_code.fit     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
     page.account_number.fit '147*'
     page.search
+    page.wait_for_search_results
     page.sort_results_by('Account Expiration Date')
     page.sort_results_by('Account Expiration Date') # Need to do this twice to get the expired ones in front
 
@@ -245,6 +230,7 @@ And /^I use these Accounts:$/ do |table|
       page.chart_code.fit     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
       page.account_number.fit account_number
       page.search
+      page.wait_for_search_results
 
       # We're only really interested in these parts
       @account = make AccountObject
@@ -263,6 +249,7 @@ When /^I start to copy a Contracts and Grants Account$/ do
     alp.chart_code.fit     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
     alp.account_number.fit cg_account_number
     alp.search
+    alp.wait_for_search_results
 
     alp.item_row(cg_account_number).exist?.should
     alp.copy_random
