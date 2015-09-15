@@ -18,8 +18,8 @@ Feature: Object Code Global
     And   the Object Code Global document goes to ENROUTE
     And   I route the Object Code Global document to final
     And   the Object Code Global document goes to FINAL
-    When  I Lookup the Object Code just entered
-    Then  the Reports to Object Code just entered should be displayed
+    When  I lookup the Object Code just entered with Object Code Global document
+    Then  the Reports to Object Code just entered on the Object Code Global document should be displayed
 
 
   @KFSQA-580 @Bug @ObjCode @KFSPTS-915 @sloth @solid
@@ -32,8 +32,8 @@ Feature: Object Code Global
     And   the Object Code Global document goes to ENROUTE
     And   I route the Object Code Global document to final
     And   the Object Code Global document goes to FINAL
-    When  I Lookup the Object Code just entered
-    Then  the Reports to Object Code just entered should be displayed
+    When  I lookup the Object Code just entered with Object Code Global document
+    Then  the Reports to Object Code just entered on the Object Code Global document should be displayed
 
 
   @KFSQA-639 @CG @ObjectCode @solid
