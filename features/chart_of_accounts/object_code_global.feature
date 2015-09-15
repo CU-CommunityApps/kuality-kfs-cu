@@ -25,7 +25,7 @@ Feature: Object Code Global
   @KFSQA-580 @Bug @ObjCode @KFSPTS-915 @sloth @solid
   Scenario: Verify editing an existing Object Code retains and updates Reports to Object Code
     Given I am logged in as a KFS Contracts & Grants Manager
-    And   using the Object Code Global document, I edit an existing Object Code
+    And   I start an Object Code Global document using an existing Object Code
     And   on the Object Code Global document, I update the Reports to Object Code
     When  I submit the Object Code Global document
     Then  the document should have no errors
