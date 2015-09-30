@@ -17,6 +17,7 @@ module GlobalConfig
       form.netid = @@global_config[:cuweblogin_user]
       form.password = @@global_config[:cuweblogin_password]
     end.submit
+    page.form('bigpost').submit
   end
 
 end
