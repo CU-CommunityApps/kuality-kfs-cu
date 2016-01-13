@@ -10,7 +10,13 @@ Feature: Sub Account
   [KFSQA-591] As a KFS CG Processor Role I want to Approve Sub-Account Documents with
               Sub-Account Type “CS” because this follows Cornell standard operating policies.
 
-  [KFSQA-905] Route Sub-Account with type CS to CG responsibility
+  [KFSQA-905] Create/Edit a Sub-Account should generate an error when attempting to incorporate a closed ICR account, part 1.
+
+              Create/Edit a Sub-Account using an open but expired ICR account should submit/approve but should error
+              during approval when ICR account modification is attempted to a closed account, part 2.
+
+              Create/Edit a Sub-Account using an open and non-expired ICR account should submit/approve but should error
+              during approval when ICR account modification is attempted to a closed account, part 3.
 
 
   @KFSQA-590 @SubAcct @Bug @KFSMI-7964 @hare @solid
@@ -51,8 +57,8 @@ Feature: Sub Account
       | PROCESSED |
       | FINAL     |
 
-  @KFSQA-905 @COA, @SubAcct @CG @smoke @coral @solid
-  Scenario: Route Sub-Account with type CS to Contracts & Grants responsibility
+  @KFSQA-905 @KFSQA-1165 @COA, @SubAcct @CG @smoke @coral @solid
+  Scenario: Create/Edit a Sub-Account should generate an error when attempting to incorporate a closed ICR account, part 1
     Given I am logged in as a KFS User who is not a Contracts & Grants Processor
     And   I remember the logged in user
     And   I create a Sub-Account using a CG account with a CG Account Responsibility ID in range 1 to 8
@@ -60,10 +66,42 @@ Feature: Sub Account
     And   the Sub-Account document goes to ENROUTE
     And   I route the Sub-Account document to final
     And   I am logged in as the remembered user
-    #the next step is needed to populate the Indirect Cost Recovery Accounts array which does not have data until after submit
+      #the next step is needed to populate the Indirect Cost Recovery Accounts array which does not have data until after submit
     And   I display the Sub-Account document
     And   I lookup the Sub-Account I want to edit
     And   I edit the Sub-Account changing its type code to Cost Share
-    And   I edit the current Indirect Cost Recovery Account on the Sub-Account to a Contracts & Grants Account
+    And   I edit the current Indirect Cost Recovery Account on the Sub-Account to a closed Contracts & Grants Account
     And   I submit the Sub-Account document
-    Then  the Sub-Account document routes to the Award node
+    Then  the Sub-Account should show an error stating the Indirect Cost Recovery Account is closed
+
+  @KFSQA-905 @KFSQA-1165 @COA, @SubAcct @CG @smoke @coral @solid
+  Scenario Outline: Create/Edit a Sub-Account using an open but expired / open non-expired ICR account should
+                    submit/approve but should error during approval when ICR account modification is attempted
+                    to a closed account, part 2 and part 3.
+    Given I am logged in as a KFS User who is not a Contracts & Grants Processor
+    And   I remember the logged in user
+    And   I create a Sub-Account using a CG account with a CG Account Responsibility ID in range 1 to 8
+    And   I submit the Sub-Account document
+    And   the Sub-Account document goes to ENROUTE
+    And   I route the Sub-Account document to final
+    And   I am logged in as the remembered user
+      #the next step is needed to populate the Indirect Cost Recovery Accounts array which does not have data until after submit
+    And   I display the Sub-Account document
+    And   I lookup the Sub-Account I want to edit
+    And   I edit the Sub-Account changing its type code to Cost Share
+    And   I edit the current Indirect Cost Recovery Account on the Sub-Account to an <ICR_account_type> Contracts & Grants Account
+    And   I submit the Sub-Account document
+    And   I display the Sub-Account document
+    And   I switch to the user with the next Pending Action in the Route Log for the Sub-Account document
+    And   I display the Sub-Account document
+    And   I edit the current Indirect Cost Recovery Account on the Sub-Account to a closed Contracts & Grants Account
+    And   I approve the Sub-Account document
+    Then  the Sub-Account should show an error stating the Indirect Cost Recovery Account is closed
+    And   I edit the current Indirect Cost Recovery Account on the Sub-Account to an <ICR_account_type> Contracts & Grants Account
+    And   I approve the Sub-Account document
+    And   I display the Sub-Account document
+    Then  APPROVED should be in the Sub-Account document Actions Taken
+  Examples:
+  | ICR_account_type |
+  | open expired     |
+  | open non-expired |

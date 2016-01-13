@@ -90,14 +90,36 @@ And /^I create a Sub-Account with a Cost Share Sub-Account Type Code$/ do
 end
 
 
-And /^I edit the current Indirect Cost Recovery Account on the Sub-Account to a Contracts & Grants Account$/ do
+And /^I edit the current Indirect Cost Recovery Account on the Sub-Account to (a|an) (closed|open)(?: (.*))? Contracts & Grants Account$/ do |a_an_ind, open_closed_ind, expired_non_expired_ind|
   # do not continue, fail the test if there there is no icr_account to edit
   fail ArgumentError, 'No Indirect Cost Recovery Account on the Sub-Account, cannot edit. ' if @sub_account.icr_accounts.length == 0
+
+  random_account_number = ''
+  case open_closed_ind
+    when 'open'
+      case expired_non_expired_ind
+        when 'expired'
+          random_account_number = get_account_of_type('Open Expired Contracts & Grants Account')
+        when 'non-expired'
+          random_account_number = get_account_of_type('Open Non-Expired Contracts & Grants Account')
+        else
+          fail ArgumentError, 'Expired or Non-Expired Contracts and Grants Account not specified, do not know which type of data to retrieve.'
+      end
+    when 'closed'
+      random_account_number = get_account_of_type('Closed Contracts & Grants Account')
+
+      #we need to remember the account number used in order to dynamically construct the error message that will be generated.
+      @closed_account_number_used_for_icr_account_number = random_account_number
+    else
+      fail ArgumentError, 'Open or Closed Contracts and Grants Account not specified, do not know which type of data to retrieve.'
+  end
+
+  fail ArgumentError, "Cannot edit ICR Account, WebService call did not return requested '#{open_closed_ind} #{expired_non_expired_ind} Contacts & Grants Acccount' required for this test." if random_account_number.nil? || random_account_number.empty?
 
   # always edit the first ICR account which is line #0
   # add values for the specified keys being edited for this single ICR account
   options = {
-      account_number:         get_account_of_type('Contracts & Grants Account'),
+      account_number:         random_account_number,
       chart_of_accounts_code: get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
       line_number:            0   #current value is considered to be the first value
   }
