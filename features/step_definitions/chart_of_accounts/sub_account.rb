@@ -114,6 +114,8 @@ And /^I edit the current Indirect Cost Recovery Account on the Sub-Account to (a
       fail ArgumentError, 'Open or Closed Contracts and Grants Account not specified, do not know which type of data to retrieve.'
   end
 
+  fail ArgumentError, "Cannot edit ICR Account, WebService call did not return requested '#{open_closed_ind} #{expired_non_expired_ind} Contacts & Grants Acccount' required for this test." if random_account_number.nil? || random_account_number.empty?
+
   # always edit the first ICR account which is line #0
   # add values for the specified keys being edited for this single ICR account
   options = {

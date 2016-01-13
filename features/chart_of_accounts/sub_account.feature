@@ -57,7 +57,7 @@ Feature: Sub Account
       | PROCESSED |
       | FINAL     |
 
-  @KFSQA-905 @COA, @SubAcct @CG @smoke @coral @solid
+  @KFSQA-905 @KFSQA-1165 @COA, @SubAcct @CG @smoke @coral @solid
   Scenario: Create/Edit a Sub-Account should generate an error when attempting to incorporate a closed ICR account, part 1
     Given I am logged in as a KFS User who is not a Contracts & Grants Processor
     And   I remember the logged in user
@@ -74,7 +74,7 @@ Feature: Sub Account
     And   I submit the Sub-Account document
     Then  the Sub-Account should show an error stating the Indirect Cost Recovery Account is closed
 
-  @KFSQA-905 @COA, @SubAcct @CG @smoke @coral @solid
+  @KFSQA-905 @KFSQA-1165 @COA, @SubAcct @CG @smoke @coral @solid
   Scenario Outline: Create/Edit a Sub-Account using an open but expired / open non-expired ICR account should
                     submit/approve but should error during approval when ICR account modification is attempted
                     to a closed account, part 2 and part 3.
