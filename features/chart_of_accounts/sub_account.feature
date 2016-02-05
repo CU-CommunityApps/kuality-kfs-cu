@@ -70,7 +70,7 @@ Feature: Sub Account
     And   I display the Sub-Account document
     And   I lookup the Sub-Account I want to edit
     And   I edit the Sub-Account changing its type code to Cost Share
-    And   I edit the current Indirect Cost Recovery Account on the Sub-Account to a closed Contracts & Grants Account
+    And   I edit the first active Indirect Cost Recovery Account on the Sub-Account to a closed Contracts & Grants Account
     And   I submit the Sub-Account document
     Then  the Sub-Account should show an error stating the Indirect Cost Recovery Account is closed
 
@@ -89,15 +89,15 @@ Feature: Sub Account
     And   I display the Sub-Account document
     And   I lookup the Sub-Account I want to edit
     And   I edit the Sub-Account changing its type code to Cost Share
-    And   I edit the current Indirect Cost Recovery Account on the Sub-Account to an <ICR_account_type> Contracts & Grants Account
+    And   I edit the first active Indirect Cost Recovery Account on the Sub-Account to an <ICR_account_type> Contracts & Grants Account
     And   I submit the Sub-Account document
     And   I display the Sub-Account document
     And   I switch to the user with the next Pending Action in the Route Log for the Sub-Account document
     And   I display the Sub-Account document
-    And   I edit the current Indirect Cost Recovery Account on the Sub-Account to a closed Contracts & Grants Account
+    And   I edit the first active Indirect Cost Recovery Account on the Sub-Account to a closed Contracts & Grants Account
     And   I approve the Sub-Account document
     Then  the Sub-Account should show an error stating the Indirect Cost Recovery Account is closed
-    And   I edit the current Indirect Cost Recovery Account on the Sub-Account to an <ICR_account_type> Contracts & Grants Account
+    And   I edit the first active Indirect Cost Recovery Account on the Sub-Account to an <ICR_account_type> Contracts & Grants Account
     And   I approve the Sub-Account document
     And   I display the Sub-Account document
     Then  APPROVED should be in the Sub-Account document Actions Taken

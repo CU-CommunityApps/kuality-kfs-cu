@@ -1,21 +1,6 @@
 And /^I create a Sub-Account using a CG account with a CG Account Responsibility ID in range (.*) to (.*)$/ do |lower_limit, upper_limit|
-  responsibility_criteria = (lower_limit..upper_limit).to_a.join('|') #get all numeric values in range separated by pipe  (1..3)=1|2|3
-  accounts_hash = get_kuali_business_objects('KFS-COA','Account',"chartOfAccountsCode=#{get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)}&subFundGroup.fundGroupCode=CG&closed=N&active=Y&accountExpirationDate=NULL&contractsAndGrantsAccountResponsibilityId=#{responsibility_criteria}")
-
-  # The webservice returns the data in two different formats depending upon whether there is one Account found
-  # or there are multiple Accounts found. We need to deal with both cases and we need to deal with condition of
-  # no data at all returned.
-  account_numbers = []
-  if accounts_hash.empty?  #no data found
-    raise RuntimeError, "No CG Accounts with CG Account Responsibility ID in range #{lower_limit} to #{upper_limit} found."
-  elsif accounts_hash.has_key?('org.kuali.kfs.coa.businessobject.Account')  # multiple accounts found
-    accounts_array = accounts_hash['org.kuali.kfs.coa.businessobject.Account']
-    accounts_array.each{ |value|
-      account_numbers.concat(value['accountNumber'])
-    }
-  else #single Account found
-      account_numbers.concat(accounts_hash['accountNumber'])
-  end
+  #method call should return an array
+  account_numbers = find_cg_accounts_in_cg_responsibility_range(lower_limit, upper_limit)
 
   options = {
       chart_code:               get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
@@ -90,39 +75,29 @@ And /^I create a Sub-Account with a Cost Share Sub-Account Type Code$/ do
 end
 
 
-And /^I edit the current Indirect Cost Recovery Account on the Sub-Account to (a|an) (closed|open)(?: (.*))? Contracts & Grants Account$/ do |a_an_ind, open_closed_ind, expired_non_expired_ind|
+And /^I edit the first active Indirect Cost Recovery Account on the Sub-Account to (a|an) (closed|open)(?: (.*))? Contracts & Grants Account$/ do |a_an_ind, open_closed_ind, expired_non_expired_ind|
   # do not continue, fail the test if there there is no icr_account to edit
   fail ArgumentError, 'No Indirect Cost Recovery Account on the Sub-Account, cannot edit. ' if @sub_account.icr_accounts.length == 0
 
-  random_account_number = ''
-  case open_closed_ind
-    when 'open'
-      case expired_non_expired_ind
-        when 'expired'
-          random_account_number = get_account_of_type('Open Expired Contracts & Grants Account')
-        when 'non-expired'
-          random_account_number = get_account_of_type('Open Non-Expired Contracts & Grants Account')
-        else
-          fail ArgumentError, 'Expired or Non-Expired Contracts and Grants Account not specified, do not know which type of data to retrieve.'
-      end
-    when 'closed'
-      random_account_number = get_account_of_type('Closed Contracts & Grants Account')
+  random_account_number = find_random_cg_account_number_having(open_closed_ind, expired_non_expired_ind)
 
-      #we need to remember the account number used in order to dynamically construct the error message that will be generated.
-      @closed_account_number_used_for_icr_account_number = random_account_number
-    else
-      fail ArgumentError, 'Open or Closed Contracts and Grants Account not specified, do not know which type of data to retrieve.'
+  fail ArgumentError, "Cannot edit ICR Account on Sub-Account, WebService call did not return requested '#{open_closed_ind} #{expired_non_expired_ind} Contacts & Grants Acccount' required for this test." if random_account_number.nil? || random_account_number.empty?
+
+  # Need to find first active ICR account as an inactive one could be anywhere in collection
+  i = 0
+  index_to_use = -1
+  while i < @sub_account.icr_accounts.length and index_to_use == -1
+    if @sub_account.icr_accounts[i].active_indicator == :set
+      index_to_use = i
+    end
+    i+=1
   end
 
-  fail ArgumentError, "Cannot edit ICR Account, WebService call did not return requested '#{open_closed_ind} #{expired_non_expired_ind} Contacts & Grants Acccount' required for this test." if random_account_number.nil? || random_account_number.empty?
-
-  # always edit the first ICR account which is line #0
   # add values for the specified keys being edited for this single ICR account
   options = {
       account_number:         random_account_number,
-      chart_of_accounts_code: get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
-      line_number:            0   #current value is considered to be the first value
+      chart_of_accounts_code: get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
   }
-
-  @sub_account.edit icr_accounts: [options]
+  
+  @sub_account.icr_accounts[index_to_use].edit options
 end
