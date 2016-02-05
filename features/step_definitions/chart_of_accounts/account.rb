@@ -486,3 +486,91 @@ And /^I remember the Account as the (From|To) Account$/ do |target|
       pending "I don't know how to remember a \" #{target} \" Account."
   end
 end
+
+And /^I create an Account using a CG account with a CG Account Responsibility ID in range (.*) to (.*)$/ do |lower_limit, upper_limit|
+  #method call should return an array
+  account_numbers = find_cg_accounts_in_cg_responsibility_range(lower_limit, upper_limit)
+
+  options = {
+      chart_code:               get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
+      account_number:           account_numbers.sample,
+      name:                     'Test create Account with CG account',
+  }
+  @account = create AccountObject, options
+  @account.icr_accounts.updates_pulled_from_page :new
+
+end
+
+And /^I edit an Account having a CG account with a CG Account Responsibility ID in range (.*) to (.*)$/ do |lower_limit, upper_limit|
+  #method call should return an array
+  account_numbers = find_cg_accounts_in_cg_responsibility_range(lower_limit, upper_limit)
+
+  visit(MainPage).account
+  on AccountLookupPage do |page|
+    page.chart_code.fit      get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
+    page.account_number.fit  account_numbers.sample
+    page.search
+    page.wait_for_search_results
+    page.edit_random
+  end
+  on AccountPage do |page|
+    @account = make AccountObject
+    page.description.set @account.description
+    @account.absorb! :new
+  end
+end
+
+And /^I edit the first active Indirect Cost Recovery Account on the Account to (a|an) (closed|open)(?: (.*))? Contracts & Grants Account$/ do |a_an_ind, open_closed_ind, expired_non_expired_ind|
+  # do not continue, fail the test if there there is no icr_account to edit
+  fail ArgumentError, 'No Indirect Cost Recovery Account on the Account, cannot edit. ' if @account.icr_accounts.length == 0
+
+  random_account_number = find_random_cg_account_number_having(open_closed_ind, expired_non_expired_ind)
+
+  fail ArgumentError, "Cannot edit ICR Account on the Account, WebService call did not return requested '#{open_closed_ind} #{expired_non_expired_ind} Contacts & Grants Acccount' required for this test." if random_account_number.nil? || random_account_number.empty?
+
+  # Need to find first active ICR account as an inactive one could be anywhere in collection
+  i = 0
+  index_to_use = -1
+  while i < @account.icr_accounts.length and index_to_use == -1
+    if @account.icr_accounts[i].active_indicator == :set
+      index_to_use = i
+    end
+    i+=1
+  end
+
+  fail ArgumentError, "No active ICR Account on the Account for editting" if index_to_use == -1
+
+  # add values for the specified keys being edited for this single ICR account
+  options = {
+      account_number:         random_account_number,
+      chart_of_accounts_code: get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
+  }
+
+  @account.icr_accounts[index_to_use].edit options
+end
+
+
+And /^I add (a|an) (closed|open)(?: (.*))?  Contacts & Grants Account as the 100 percent Indirect Cost Recovery Account to the Account$/ do |a_an_ind, open_closed_ind, expired_non_expired_ind|
+  random_account_number = find_random_cg_account_number_having(open_closed_ind, expired_non_expired_ind)
+
+  fail ArgumentError, "Cannot add ICR Account to the Account, WebService call did not return requested '#{open_closed_ind} #{expired_non_expired_ind} Contacts & Grants Acccount' required for this test." if random_account_number.nil? || random_account_number.empty?
+
+  @account.icr_accounts.add chart_of_accounts_code: get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
+                            account_number:         random_account_number,
+                            account_line_percent:   '100',
+                            active_indicator:       :set
+end
+
+When /^I add a closed Contacts & Grants Account as the 100 percent Indirect Cost Recovery Account to the Account$/ do
+  #attempt to add a closed C&G account should create an error message on the page that needs to be verified by the caller
+
+  #method being called requires two parameters but no data is needed when first parameter is 'closed'
+  random_account_number = find_random_cg_account_number_having('closed', '')
+
+  fail ArgumentError, "Cannot add ICR Account for Account, WebService call did not return requested 'closed Contacts & Grants Acccount' required for this test." if random_account_number.nil? || random_account_number.empty?
+
+  @account.icr_accounts.add chart_of_accounts_code: get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
+                            account_number:         random_account_number,
+                            account_line_percent:   '100',
+                            active_indicator:       :set
+end
