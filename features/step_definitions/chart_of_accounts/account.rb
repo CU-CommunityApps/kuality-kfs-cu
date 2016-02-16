@@ -529,9 +529,8 @@ And /^I submit the Account document addressing Continutaion Account errors$/ do
   #getting errors from page is expensive, obtain reference once that can be reused
   page_errors = $current_page.errors
   #search errors array for Continuation Account in any of the error messages
-  continutation_acct_error_exists = false
-  continutation_acct_error_exists = page_errors.any? { |s| s.include?('Continuation Account') }
-  if continutation_acct_error_exists
+  continuation_acct_error_exists = page_errors.any? { |s| s.include?('Continuation Account') }
+  if continuation_acct_error_exists
     on AccountPage do |page|
       #update the account object with changes and then use that object to edit the page
       @account.continuation_chart_code = get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
