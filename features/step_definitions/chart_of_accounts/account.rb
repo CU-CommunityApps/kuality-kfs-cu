@@ -520,6 +520,32 @@ And /^I edit an Account having a CG account with a CG Account Responsibility ID 
   end
 end
 
+And /^I submit the Account document addressing Continutaion Account errors$/ do
+  # Editting an existing account could cause business rule error that continuation account is closed or expired
+  # upon submit. When those business rule errors occur, edit the continuation account on the account to the default
+  # continutation account parameter value.
+  step 'I submit the Account document'
+
+  #getting errors from page is expensive, obtain reference once that can be reused
+  page_errors = $current_page.errors
+  #search errors array for Continuation Account in any of the error messages
+  continutation_acct_error_exists = false
+  continutation_acct_error_exists = page_errors.any? { |s| s.include?('Continuation Account') }
+  if continutation_acct_error_exists
+    on AccountPage do |page|
+      #update the account object with changes and then use that object to edit the page
+      @account.continuation_chart_code = get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
+      @account.continuation_account_number = get_aft_parameter_value(ParameterConstants::DEFAULT_CONTINUATION_ACCOUNT_NUMBER)
+      page.continuation_chart_code.fit @account.continuation_chart_code
+      page.continuation_account_number.fit @account.continuation_account_number
+    end
+    #attempt submit again, it should work this time, if it doesn't, there is some other business rule issue
+    step 'I submit the Account document'
+    step 'the document should have no errors'
+  end
+end
+
+
 And /^I edit the first active Indirect Cost Recovery Account on the Account to (a|an) (closed|open)(?: (.*))? Contracts & Grants Account$/ do |a_an_ind, open_closed_ind, expired_non_expired_ind|
   # do not continue, fail the test if there there is no icr_account to edit
   fail ArgumentError, 'No Indirect Cost Recovery Account on the Account, cannot edit. ' if @account.icr_accounts.length == 0
