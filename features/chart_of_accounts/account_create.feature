@@ -80,7 +80,8 @@ Feature: Account Creation
     And   I remember the logged in user
     And   I edit an Account having a CG account with a CG Account Responsibility ID in range 1 to 8
     And   I edit the first active Indirect Cost Recovery Account on the Account to an <ICR_account_type> Contracts & Grants Account
-    And   I submit the Account document
+    And   I submit the Account document addressing Continutaion Account errors
+    Then  the document should have no errors
     And   I display the Account document
     And   I switch to the user with the next Pending Action in the Route Log for the Account document
     And   I display the Account document
@@ -89,6 +90,7 @@ Feature: Account Creation
     Then  the Account should show an error stating the Indirect Cost Recovery Account is closed
     And   I edit the first active Indirect Cost Recovery Account on the Account to an <ICR_account_type> Contracts & Grants Account
     And   I approve the Account document
+    Then  the document should have no errors
     And   I display the Account document
     Then  APPROVED should be in the Account document Actions Taken
     Examples:
