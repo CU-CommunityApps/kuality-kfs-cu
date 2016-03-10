@@ -117,6 +117,21 @@ And /^I add an Accounting Line to the Requisition Item just created$/ do
 end
 
 
+And /^I add a restricted Vendor to the Requisition$/ do
+  on RequisitionPage do |req_page|
+    req_page.clear_vendor
+    req_page.suggested_vendor_search
+    on VendorLookupPage do |vendor_lookup|
+      vendor_lookup.vendor_number.set get_restricted_vendor_number
+      vendor_lookup.search
+      vendor_lookup.wait_for_search_results
+      vendor_lookup.return_random
+    end
+  end
+  #absorb for requisition vendor data needs to be created if this data is required by future AFT steps, currently not required
+end
+
+
 Then /^a Commodity Reviewer does (.*) a Pending or Future Action approval request for the (sensitive|non\-sensitive) Commodity Code$/ do |existence_check, commodity_code_type|
   # verify that Pending Action Requests OR Future Action Requests (do|do not) show routing to Commodity Reviewer
   role_exists_in_pending = false
@@ -154,5 +169,12 @@ Then /^a Commodity Reviewer does (.*) a Pending or Future Action approval reques
     when 'not have'
       role_exists_in_pending.should == false
       role_exists_in_future.should == false
+  end
+end
+
+
+Then /^the Requisition Document Status is (.*)$/ do |status_desired|
+  on RequisitionPage do |req_page|
+    (req_page.requisition_status).should == status_desired
   end
 end
