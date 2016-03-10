@@ -1,5 +1,28 @@
 Feature: Requisition routing testing
 
+  [KFSQA-1174] Verify a Requisition containing a sensitive or non-sensitive commodity code routes appropriately for review
+
+  @KFSQA-1174 @REQS @Routing @solid @coral
+  Scenario Outline: Verify a Requisition containing a sensitive or non-sensitive commodity code routes appropriately for review
+    Given I am logged in as a KFS User for the REQS document
+    And I create a Requisition with required Delivery and Additional Institutional information populated
+    And I add an Item with a unit cost of 1 to the Requisition with a <commodity_code_type> Commodity Code
+    And I add an Accounting Line to or update the favorite account specified for the Requisition Item just created
+    And I calculate the Requisition document
+    And I submit the Requisition document
+    And the Requisition document goes to ENROUTE
+    And I switch to the user with the next Pending Action in the Route Log for the Requisition document
+    And I display the Requisition document
+    Then a Commodity Reviewer does <existence_check> a Pending or Future Action approval request for the <commodity_code_type> Commodity Code
+    Examples:
+      | commodity_code_type | existence_check |
+      | sensitive           | have            |
+      | non-sensitive       | not have        |
+
+
+#############################################################################################
+# Was originally in file. Has not yet been fixed.
+#
 #  [KFSQA-865] KITI-763	KFSUPGRADE-409 PUR-2 Shop Catalogs Routing Changes - split node routing per csu	Purchasing	SciQuest PO Routing	PURAP 001 E2E
 #  This fix is necessary to allow the e-shop orders under 500 or 1500 depending on role to be sent without FO approval on the PO, and later to require approval on PREQ
 #
