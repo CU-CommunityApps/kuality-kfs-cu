@@ -1,6 +1,25 @@
-And /^I create a Requisition with required Delivery and Additional Institutional information populated$/ do
+And /^I create a Requisition with required Chart-Organization, Delivery and Additional Institutional information populated$/ do
   visit(MainPage).requisition
   on RequisitionPage do |req_page|
+    # Check Chart/Org associated with the user; if either one does not exist, use corresponding parameter default value and perform lookup
+    # Ensure both values are stripped or empty strings
+    chart,org = req_page.chart_org_readonly.split('/')
+    chart = chart.nil? ? '' : chart.strip
+    org = org.nil? ? '' : org.strip
+    if org.empty? || chart.empty?
+      # Substitute default parameters for empty values then perform lookup
+      req_page.chart_org_search
+      on OrganizationLookupPage do |org_lookup|
+        chart = get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE) if chart.empty?
+        org = get_aft_parameter_value(ParameterConstants::DEFAULT_ORGANIZATION_CODE) if org.empty?
+        org_lookup.chart_code.set chart
+        org_lookup.organization_code.set org
+        org_lookup.search
+        org_lookup.wait_for_search_results
+        org_lookup.return_random
+      end
+    end
+
     # Check read-only address line one value; if it does not exist, look-up a building
     if req_page.delivery_address_1_readonly.empty?
       # try a set number of times to find a building with a zip code present
@@ -43,7 +62,15 @@ And /^I add an Item with a unit cost of (.*) to the Requisition with a (sensitiv
       comm_page.sensitive_data.select_value(@item.determine_commodity_code_of_type(commodity_code_type))
       comm_page.search
       comm_page.wait_for_search_results
-      comm_page.return_random
+      begin
+        comm_page.return_random
+      # first time cache building causes this, wait a bit longer and try again
+      rescue Watir::Exception::UnknownObjectException
+        puts "Watir::Exception::UnknownObjectException rescued for Commmodity Code search. Waiting a bit longer for search results before attempting return_random a second time."
+        sleep(15)
+        comm_page.return_random
+      end
+
     end
     #Leave Item Type at page default value; otherwise use the object's default values
     item_tab.quantity.set        @item.quantity
@@ -92,15 +119,16 @@ And /^I add an Accounting Line to the Requisition Item just created$/ do
       acct_lookup.wait_for_search_results
       acct_lookup.return_random
     end
-    # Attempt a set number of times to obtain a random object code with the AFT parameter specified Object Level
-    # value that does not cause a business rule error for the Object Sub-Type code assigned to the random Object Code
-    # using the default Chart and Percent values.
+    # Attempt a set number of times to obtain a random object code with the AFT parameter specified Object Level and
+    # Object Sub-Type values that should not cause a business rule error for the Object Sub-Type code assigned to the
+    # random Object Code using the default Chart and Percent values.
     max_num_searches = 10
     number_object_search_attempts = 0
     begin
       item_tab.object_code_new_search(new_item_index)
       on ObjectCodeLookupPage do |obj_lookup|
         obj_lookup.level_code.set (get_aft_parameter_values_as_hash(ParameterConstants::DEFAULTS_FOR_ITEMS))[:object_level_lookup]
+        obj_lookup.object_sub_type_code.set (get_aft_parameter_values_as_hash(ParameterConstants::DEFAULTS_FOR_ITEMS))[:object_sub_type_lookup]
         obj_lookup.search
         obj_lookup.wait_for_search_results
         obj_lookup.return_random
@@ -112,7 +140,7 @@ And /^I add an Accounting Line to the Requisition Item just created$/ do
     end while !(page_errors == []) && number_object_search_attempts < max_num_searches #while-object code business rule failure
     # Get page data in backing object prior to failure check so it is known why should failure occur
     @requisition.items.update_from_page! :new
-    fail ArgumentError, "Attempted #{max_num_searches} times to find Object Code with an Object Level of #{((get_aft_parameter_values_as_hash(ParameterConstants::DEFAULTS_FOR_ITEMS))[:object_level_lookup])} but each Object Code selected generated a business rule error when attempting to add the Account." if number_object_search_attempts == max_num_searches
+    fail ArgumentError, "Attempted #{max_num_searches} times to find Object Code with an Object Level of #{((get_aft_parameter_values_as_hash(ParameterConstants::DEFAULTS_FOR_ITEMS))[:object_level_lookup])} and an Object SubType of #{((get_aft_parameter_values_as_hash(ParameterConstants::DEFAULTS_FOR_ITEMS))[:object_sub_type_lookup])} but each Object Code selected generated a business rule error when attempting to add the Account." if number_object_search_attempts == max_num_searches
   end
 end
 
