@@ -41,6 +41,10 @@ And /^I create a Requisition with required Chart-Organization, Delivery and Addi
     req_page.room_search
     on(RoomLookupPage).search_and_return_random
 
+    # ensure required email addresses have data values
+    req_page.delivery_email.set random_email_address if req_page.delivery_email_new.empty? || req_page.delivery_email_new == 'null'
+    req_page.requestor_email.set random_email_address if req_page.requestor_email_new.empty? || req_page.requestor_email_new == 'null'
+
     # ensure required phone numbers have data values
     req_page.delivery_phone_number.set random_phone_number if req_page.delivery_phone_number_new.empty? || req_page.delivery_phone_number_new == 'null'
     req_page.requestor_phone.set random_phone_number if req_page.requestor_phone_new.empty? || req_page.requestor_phone_new == 'null'
@@ -67,7 +71,7 @@ And /^I add an Item with a unit cost of (.*) to the Requisition with a (sensitiv
       # first time cache building causes this, wait a bit longer and try again
       rescue Watir::Exception::UnknownObjectException
         puts "Watir::Exception::UnknownObjectException rescued for Commmodity Code search. Waiting a bit longer for search results before attempting return_random a second time."
-        sleep(15)
+        sleep(30)
         comm_page.return_random
       end
 
@@ -150,7 +154,8 @@ And /^I add a restricted Vendor to the Requisition$/ do
     req_page.clear_vendor
     req_page.suggested_vendor_search
     on VendorLookupPage do |vendor_lookup|
-      vendor_lookup.vendor_number.set get_restricted_vendor_number
+      restricted_vendor_number = get_restricted_vendor_number
+      vendor_lookup.vendor_number.set restricted_vendor_number
       vendor_lookup.search
       vendor_lookup.wait_for_search_results
       vendor_lookup.return_random
