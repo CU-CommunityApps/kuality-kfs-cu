@@ -151,7 +151,7 @@ end
 And /^I clone Account (.*) with the following changes:$/ do |account_number, table|
   unless account_number.empty?
     # Use webservice call to get random account number as it is faster than doing account lookup search for all accounts
-    account_number = account_number == 'nil' ? get_random_account_number : account_number
+    account_number = (account_number == 'nil') ? get_random_account_number : account_number
     updates = table.rows_hash
     updates.delete_if { |k,v| v.empty? }
     updates['Indirect Cost Recovery Active Indicator'] = updates['Indirect Cost Recovery Active Indicator'].to_sym unless updates['Indirect Cost Recovery Active Indicator'].nil?
@@ -166,10 +166,11 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
     end
     on AccountPage do |page|
       @document_id = page.document_id
+      new_account_number = (random_alphanums(7)).upcase! #need to ensure data in object matches page since page auto uppercases this value
       @account = make AccountObject, description: updates['Description'],
                                      name:        updates['Name'],
                                      chart_code:  updates['Chart Code'],
-                                     number:      (random_alphanums(7)).upcase!, #need to ensure data in object matches page since page auto uppercases this value
+                                     number:      new_account_number,
                                      document_id: page.document_id
 
       page.description.fit               @account.description
@@ -189,7 +190,9 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
       page.errors.should == []  #fail the test and do not continue if errors exist on page after performing data changes
     end
 
-    step "I blanket approve the Account document"
+    step 'I submit the Account document'
+    step 'the document should have no errors'
+    step 'I route the Account document to final'
     step 'I add the account to the stack'
   end
 end
