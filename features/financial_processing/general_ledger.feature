@@ -19,6 +19,7 @@ Feature: General Ledger
     And   I add balanced Accounting Lines to the <eDoc> document
     And   I save the <eDoc> document
     And   I submit the <eDoc> document
+    Then  the document should have no errors
     And   I route the <eDoc> document to final
     #Remaining validation will be performed after the nightly batch jobs are executed for this feature file
     Then  references to test KFSQA-649 instance data for <docType> are saved for validation after batch job execution
