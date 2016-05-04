@@ -42,7 +42,8 @@ And /^I create a Requisition with required Chart-Organization, Delivery and Addi
     on(RoomLookupPage).search_and_return_random
 
     # ensure required email addresses have data values
-    req_page.delivery_email.set random_email_address if req_page.delivery_email_new.empty? || req_page.delivery_email_new == 'null'
+    req_page.delivery_email.set ''
+    # req_page.delivery_email.set random_email_address if req_page.delivery_email_new.empty? || req_page.delivery_email_new == 'null'
     req_page.requestor_email.set random_email_address if req_page.requestor_email_new.empty? || req_page.requestor_email_new == 'null'
 
     # ensure required phone numbers have data values
