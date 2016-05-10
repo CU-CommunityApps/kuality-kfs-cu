@@ -13,7 +13,7 @@ $file_folder = "#{File.dirname(__FILE__)}/../../lib/resources/"
 # Force standard error and standard out to conform to the same type of output buffering.
 # Setting to "true" forces line buffering for both standard error and standard out.
 # Setting to "false" would force block buffering for standard out and line buffering for standard error.
-$stdout.sync = $stderr.sync = true
+# $stdout.sync = $stderr.sync = true
 
 require "#{File.dirname(__FILE__)}/../../lib/kuality-kfs-cu"
 require 'rspec/matchers'
@@ -78,6 +78,10 @@ After do
 end
 
 After do |scenario|
+
+  if scenario.failed?
+    puts "Encountered FAILED scenario in AFTER clause"
+  end
 
   $users.current_user.sign_out unless $users.current_user.nil?
 
