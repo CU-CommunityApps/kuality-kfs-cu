@@ -13,7 +13,8 @@ $file_folder = "#{File.dirname(__FILE__)}/../../lib/resources/"
 # Force standard error and standard out to conform to the same type of output buffering.
 # Setting to "true" forces line buffering for both standard error and standard out.
 # Setting to "false" would force block buffering for standard out and line buffering for standard error.
-# $stdout.sync = $stderr.sync = true
+$stdout.sync = true
+$stderr.sync = true
 
 require "#{File.dirname(__FILE__)}/../../lib/kuality-kfs-cu"
 require 'rspec/matchers'
@@ -80,7 +81,16 @@ end
 After do |scenario|
 
   if scenario.failed?
-    puts "Encountered FAILED scenario in AFTER clause"
+    $stderr.puts ' '  #for readability in output
+    $stderr.puts 'All instance values for data objects used in this failed test:'
+    #All data objects are based on class KFSDataObject, use it to output instance values utilized in the failed test
+    if ObjectSpace.each_object(KFSDataObject).to_a.empty?
+      $stderr.puts 'KFSDataObject was not instantiated'
+    else
+      count = $stderr.puts ObjectSpace.each_object(KFSDataObject).to_a.display
+      $stderr.puts count
+    end
+    $stderr.puts ' '  #for readability in output
   end
 
   $users.current_user.sign_out unless $users.current_user.nil?
@@ -96,11 +106,11 @@ end
 
 at_exit { kuality.browser.close } unless ENV['DEBUG']
 
-class Exception
-  alias_method :old_message, :message
-
-  def message
-    object_dump = ObjectSpace.each_object(KFSDataObject).to_a.empty? ? 'No KFSDataObjects were instantiated' : "KFSDataObjects: #{ObjectSpace.each_object(KFSDataObject).to_a}"
-    "#{old_message}\n#{object_dump}"
-  end
-end
+# class Exception
+#   alias_method :old_message, :message
+#
+#   def message
+#     object_dump = ObjectSpace.each_object(KFSDataObject).to_a.empty? ? 'No KFSDataObjects were instantiated' : "KFSDataObjects: #{ObjectSpace.each_object(KFSDataObject).to_a}"
+#     "#{old_message}\n#{object_dump}"
+#   end
+# end
