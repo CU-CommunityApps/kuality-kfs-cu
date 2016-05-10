@@ -97,6 +97,6 @@ class Exception
 
   def message
     object_dump = ObjectSpace.each_object(KFSDataObject).to_a.empty? ? 'No KFSDataObjects were instantiated' : "KFSDataObjects: #{ObjectSpace.each_object(KFSDataObject).to_a}"
-    "#{old_message}\n#{object_dump}\n"
+    "#{old_message}\n#{object_dump}"
   end
 end
