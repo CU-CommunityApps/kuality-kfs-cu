@@ -10,12 +10,6 @@ $base_url = ENV['KFS_URL'] ? ENV['KFS_URL'] : @config[:kfs_url]
 $base_rice_url = ENV['RICE_URL'] ? ENV['RICE_URL'] : @config[:rice_url]
 $file_folder = "#{File.dirname(__FILE__)}/../../lib/resources/"
 
-# Force standard error and standard out to conform to the same type of output buffering.
-# Setting to "true" forces line buffering for both standard error and standard out.
-# Setting to "false" would force block buffering for standard out and line buffering for standard error.
-$stdout.sync = true
-$stderr.sync = true
-
 require "#{File.dirname(__FILE__)}/../../lib/kuality-kfs-cu"
 require 'rspec/matchers'
 
@@ -81,16 +75,13 @@ end
 After do |scenario|
 
   if scenario.failed?
-    $stderr.puts ' '  #for readability in output
-    $stderr.puts 'All instance values for data objects used in this failed test:'
+    puts 'All instance values for data objects used in this failed test:'
     #All data objects are based on class KFSDataObject, use it to output instance values utilized in the failed test
-    if ObjectSpace.each_object(KFSDataObject).to_a.empty?
-      $stderr.puts 'KFSDataObject was not instantiated'
-    else
-      count = $stderr.puts ObjectSpace.each_object(KFSDataObject).to_a.display
-      $stderr.puts count
-    end
-    $stderr.puts ' '  #for readability in output
+    ObjectSpace.each_object(KFSDataObject).to_a.empty? ? (puts 'KFSDataObject was not instantiated') : (puts ObjectSpace.each_object(KFSDataObject).to_a)
+    puts ' '  #for readability in output
+    
+    @browser.screenshot.save 'screenshot.png'
+    embed 'screenshot.png', 'image/png'
   end
 
   $users.current_user.sign_out unless $users.current_user.nil?
@@ -105,12 +96,3 @@ After do |scenario|
 end
 
 at_exit { kuality.browser.close } unless ENV['DEBUG']
-
-# class Exception
-#   alias_method :old_message, :message
-#
-#   def message
-#     object_dump = ObjectSpace.each_object(KFSDataObject).to_a.empty? ? 'No KFSDataObjects were instantiated' : "KFSDataObjects: #{ObjectSpace.each_object(KFSDataObject).to_a}"
-#     "#{old_message}\n#{object_dump}"
-#   end
-# end
