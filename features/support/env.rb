@@ -92,7 +92,7 @@ end
 
 at_exit { kuality.browser.close } unless ENV['DEBUG']
 
-class Exception
+class StandardError
   alias_method :old_message, :message
 
   def message
