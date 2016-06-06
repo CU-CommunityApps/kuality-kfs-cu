@@ -149,6 +149,7 @@ When /^I enter (.*) as an invalid Labor Benefit Rate Category Code$/  do |labor_
 end
 
 And /^I clone Account (.*) with the following changes:$/ do |account_number, table|
+  step 'I remember the logged in user'
   unless account_number.empty?
     # Use webservice call to get random account number as it is faster than doing account lookup search for all accounts
     account_number = (account_number == 'nil') ? get_random_account_number : account_number
@@ -194,6 +195,7 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
     step 'the document should have no errors'
     step 'I route the Account document to final'
     step 'I add the account to the stack'
+    step 'I am logged in as the remembered user'
   end
 end
 
