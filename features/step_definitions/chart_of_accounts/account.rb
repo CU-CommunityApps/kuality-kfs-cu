@@ -552,7 +552,7 @@ end
 
 And /^I edit the first active Indirect Cost Recovery Account on the Account to (a|an) (closed|open)(?: (.*))? Contracts & Grants Account$/ do |a_an_ind, open_closed_ind, expired_non_expired_ind|
   # do not continue, fail the test if there there is no icr_account to edit
-  fail ArgumentError, 'No Indirect Cost Recovery Account on the Account, cannot edit. ' if @account.icr_accounts.length == 0
+  fail ArgumentError, 'No Indirect Cost Recovery Account exists on the Account. Cannot continue with scenario because data cannot be modified as requested. ' if @account.icr_accounts.length == 0
 
   random_account_number = find_random_cg_account_number_having(open_closed_ind, expired_non_expired_ind)
 
