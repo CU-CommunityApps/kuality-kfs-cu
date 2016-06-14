@@ -74,16 +74,6 @@ end
 
 After do |scenario|
 
-  if scenario.failed?
-    puts 'All instance values for data objects used in this failed test:'
-    #All data objects are based on class KFSDataObject, use it to output instance values utilized in the failed test
-    ObjectSpace.each_object(KFSDataObject).to_a.empty? ? (puts 'KFSDataObject was not instantiated') : (puts ObjectSpace.each_object(KFSDataObject).to_a)
-    puts ' '  #for readability in output
-
-    @browser.screenshot.save 'screenshot.png'
-    embed 'screenshot.png', 'image/png'
-  end
-
   $users.current_user.sign_out unless $users.current_user.nil?
 
   if ENV['DEBUG']
@@ -96,3 +86,12 @@ After do |scenario|
 end
 
 at_exit { kuality.browser.close } unless ENV['DEBUG']
+
+class StandardError
+  alias_method :old_message, :message
+
+  def message
+    object_dump = ObjectSpace.each_object(KFSDataObject).to_a.empty? ? 'No KFSDataObjects were instantiated' : "KFSDataObjects: #{ObjectSpace.each_object(KFSDataObject).to_a}"
+    "#{old_message}\n#{object_dump}\n"
+  end
+end
