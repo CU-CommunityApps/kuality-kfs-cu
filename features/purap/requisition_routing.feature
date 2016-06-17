@@ -4,6 +4,9 @@ Feature: Requisition routing testing
 
   [KFSQA-1177] Verify a Requisition containing a restricted vendor routes to purchasing for review
 
+  [KFSQA-1178] Verify a Requisition routes for the appropriate Organization Review based on its dollar amount
+
+
 
   @KFSQA-1174 @REQS @Routing @solid @coral
   Scenario Outline: Verify a Requisition containing a sensitive or non-sensitive commodity code routes appropriately for review
@@ -14,6 +17,7 @@ Feature: Requisition routing testing
     And I calculate the Requisition document
     And I submit the Requisition document
     Then the document should have no errors
+    And I capture the Requisition number
     And the Requisition document goes to ENROUTE
     And I switch to the user with the next Pending Action in the Route Log for the Requisition document
     And I display the Requisition document
@@ -34,8 +38,29 @@ Feature: Requisition routing testing
     And I calculate the Requisition document
     And I submit the Requisition document
     Then the document should have no errors
+    And I capture the Requisition number
     And I route the Requisition document to final
     Then the Requisition Document Status is Awaiting Contract Manager Assignment
+
+
+  @KFSQA-1178 @REQS @Routing @solid @coral
+  Scenario Outline: Verify a Requisition routes for the appropriate Organization Review based on its dollar amount
+    Given I am logged in as a KFS User for the REQS document
+    And I create a Requisition with required Chart-Organization, Delivery and Additional Institutional information populated
+    And I add an Item with a unit cost of <unit_cost> to the Requisition with a non-sensitive Commodity Code
+    And I add an Accounting Line to or update the favorite account specified for the Requisition Item just created to contain organization code <organization_code>
+    And I calculate the Requisition document
+    And I submit the Requisition document
+    Then the document should have no errors
+    And I capture the Requisition number
+    And the Requisition document goes to ENROUTE
+    And the Requisition document should route to Groups <group_names> with Group IDs <group_id>
+    Examples:
+      | unit_cost | organization_code | group_names                                     | group_id         |
+      | 25000     | 01*               | ORG 0100 Level 1 Review                         | 3000092          |
+      | 150000    | 01*               | ORG 0100 Level 1 Review                         | 3000092          |
+      | 200000    | 01*               | ORG 0100 Level 1 Review,ORG 0100 Level 2 Review | 3000092, 3000093 |
+      | 250000    | 01*               | ORG 0100 Level 2 Review                         | 3000093          |
 
 
 #############################################################################################
