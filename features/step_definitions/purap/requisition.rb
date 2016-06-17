@@ -87,13 +87,13 @@ And /^I add an Item with a unit cost of (.*) to the Requisition with a (sensitiv
 end
 
 
-And /^I add an Accounting Line to or update the favorite account specified for the Requisition Item just created$/ do
+And /^I add an Accounting Line to or update the favorite account specified for the Requisition Item just created to contain organization code (.*)$/ do |org_code|
   # NOTE: Need to determine whether user has favorite account that could have already pre-populated
   #       the accounting lines. Take the action of overwriting that favorite account with a known
   #       good account because favorite account could be closed which will cause the AFT to fail.
 
   # Requisition item just created is presumed to be the last item in the zero-based collection.
-  # Value used multiple times once so retrieve once and reuse.
+  # Value used multiple times so retrieve once and reuse.
   new_item_index = @requisition.items.length-1
   on ItemsTab do |item_tab|
     item_tab.show_item_accounting_lines(new_item_index) if item_tab.item_accounting_lines_hidden?(new_item_index)
@@ -101,15 +101,20 @@ And /^I add an Accounting Line to or update the favorite account specified for t
       # User's favorite account could be closed.
       # Set accounting line to known good value by deleting the favorite account and adding a known good account.
       item_tab.delete_item_accounting_line(new_item_index)
-      step 'I add an Accounting Line to the Requisition Item just created'
+      step "I add an Accounting Line to the Requisition Item just created for organization code #{org_code}"
     else
-      step 'I add an Accounting Line to the Requisition Item just created'
+      step "I add an Accounting Line to the Requisition Item just created for organization code #{org_code}"
     end
   end
 end
 
 
-And /^I add an Accounting Line to the Requisition Item just created$/ do
+And /^I add an Accounting Line to or update the favorite account specified for the Requisition Item just created$/ do
+  step "I add an Accounting Line to or update the favorite account specified for the Requisition Item just created to contain organization code *"
+end
+
+
+And /^I add an Accounting Line to the Requisition Item just created for organization code (.*)$/ do |org_code|
   # Requisition item just created is presumed to be the last item in the zero-based collection.
   # Value used multiple times once so retrieve once and reuse.
   new_item_index = @requisition.items.length-1
@@ -119,6 +124,7 @@ And /^I add an Accounting Line to the Requisition Item just created$/ do
     item_tab.account_number_new_search(new_item_index)
     on AccountLookupPage do |acct_lookup|
       acct_lookup.sub_fund_group_code.set (get_aft_parameter_values_as_hash(ParameterConstants::DEFAULTS_FOR_ITEMS))[:account_subfund_lookup]
+      acct_lookup.organization_code.set org_code
       acct_lookup.search
       acct_lookup.wait_for_search_results
       acct_lookup.return_random
@@ -209,5 +215,12 @@ end
 Then /^the Requisition Document Status is (.*)$/ do |status_desired|
   on RequisitionPage do |req_page|
     (req_page.requisition_status).should == status_desired
+  end
+end
+
+
+And /^I capture the Requisition number$/ do
+  on page_class_for('Requisition') do |page|
+    @requisition_id = page.is_requisition_document ? page.requisition_id : nil
   end
 end
